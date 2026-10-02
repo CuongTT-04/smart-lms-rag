@@ -137,6 +137,8 @@ Các metadata phục vụ cho việc quản lý, tìm kiếm và tích hợp tà
 
 ## 7. Chất lượng dữ liệu
 
+Việc kiểm tra chất lượng dữ liệu nhằm đảm bảo các tài liệu trong corpus đáp ứng các tiêu chuẩn về khả năng trích xuất văn bản, tính nhất quán của metadata và độ chính xác của nội dung.
+
 ### Các yêu cầu kiểm tra
 
 - Kiểm tra file có thể mở được (không bị lỗi PDF)
@@ -184,7 +186,7 @@ QA pilot được sử dụng để kiểm tra chất lượng dữ liệu học
 | Trường           | Ý nghĩa              |
 | ---------------- | -------------------- |
 | `qa_id`          | ID của câu hỏi       |
-| `course_id`      | Môn học              |
+| `course_id`      | ID của môn học       |
 | `question`       | Câu hỏi              |
 | `question_type`  | Loại câu hỏi         |
 | `ground_truth`   | Đáp án chuẩn         |
