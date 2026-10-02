@@ -8,11 +8,11 @@
 
 ## 1. Mục tiêu của MVP
 
-MVP là phiên bản nguyên mẫu thể hiện được một quy trình học tập hoàn chỉnh: giáo viên tạo khóa học và tải học liệu, học viên được cấp quyền tham gia, sử dụng trợ lý AI trên học liệu đó và thực hiện các hoạt động đánh giá cơ bản. Sản phẩm cần đủ để kiểm chứng giá trị của trợ lý học tập và sự tích hợp với LMS trong phạm vi đồ án.
+MVP là giai đoạn nguyên mẫu đầu tiên để kiểm chứng một quy trình học tập cốt lõi: giáo viên tạo khóa học và tải học liệu, học viên được cấp quyền tham gia, sử dụng trợ lý AI trên học liệu đó và thực hiện các hoạt động đánh giá cơ bản. MVP kiểm chứng trợ lý học tập và sự tích hợp với LMS; sản phẩm cuối còn cần các chức năng sau MVP đã cam kết trong SRS.
 
 Trong phần việc này, em lựa chọn chức năng từ [phân tích actors và use cases](actors-usecases.md) và [yêu cầu chức năng, phi chức năng](requirements.md), đồng thời giới hạn cách triển khai của từng chức năng. Việc chốt phạm vi giúp nhóm tập trung vào sản phẩm chạy được, dữ liệu có thể truy vết và thí nghiệm có kết quả đo.
 
-Tài liệu xác định các chức năng cần triển khai và điều kiện nghiệm thu của nguyên mẫu. Tiến độ thực hiện được trình bày riêng tại mục 12; các mục tiêu định lượng sẽ được kiểm chứng khi nhóm triển khai và đánh giá hệ thống.
+Tài liệu xác định các chức năng cần triển khai và điều kiện nghiệm thu của nguyên mẫu. Tiến độ thực hiện được trình bày riêng tại mục 15 của [SRS phiên bản 1.1](../SRS.md); các mục tiêu định lượng sẽ được kiểm chứng khi nhóm triển khai và đánh giá hệ thống.
 
 ## 2. Quyết định phạm vi
 
@@ -53,17 +53,18 @@ MVP được chốt ở mức nguyên mẫu cho luồng giáo viên tạo khóa 
 
 Phần nghiên cứu của đồ án dự kiến so sánh Base LLM, RAG và QLoRA+RAG trên GPU T4 của Google Colab Free. Nhóm cần chuẩn bị corpus, QA benchmark, thực hiện thí nghiệm và báo cáo kết quả; các đầu ra nghiên cứu được trình bày tại mục 5.
 
-### 2.2. Những nội dung ngoài phạm vi MVP
+### 2.2. Quan hệ giữa MVP và sản phẩm cuối
 
-- Tự đăng ký tài khoản và tìm kiếm khóa học công khai.
-- Lưu, xem lại và tiếp tục hội thoại qua các phiên đăng nhập.
-- Dashboard thống kê tổng hợp toàn nền tảng.
-- Thanh toán, đơn hàng, doanh thu và lịch sử giao dịch.
-- Video streaming, quiz tại mốc video và tự tua lại video.
-- Trả lời bằng tri thức tổng quát ngoài học liệu.
-- Hệ multi-agent tự điều phối, chấm tự luận chính thức bằng AI và các chức năng cá nhân hóa nâng cao.
+| Nhóm | Quyết định |
+|---|---|
+| Đăng ký, tìm lớp, lịch sử AI, dashboard | Ngoài MVP, nhưng bắt buộc triển khai trong sản phẩm cuối. |
+| Công khai/riêng tư, miễn phí/có phí, mã/mật khẩu lớp | MVP dùng cấp quyền thủ công; bản cuối bổ sung đầy đủ điều kiện tham gia. |
+| DOCX/PPTX/TXT và OCR PDF quét | Sau MVP, thuộc sản phẩm cuối; Docling và OCR theo cấu hình, giữ vị trí nguồn tương ứng. |
+| Thanh toán, giao dịch/doanh thu, video tương tác | Sau MVP, thuộc sản phẩm cuối; có yêu cầu và kiểm thử riêng trong SRS. |
+| Nguồn kiến thức tổng quát trong hỏi đáp | Sau MVP, có lựa chọn riêng và nhãn rõ; không tự fallback hoặc bỏ qua chính sách bài tập. |
+| Multi-agent, AI chấm tự luận chính thức, cá nhân hóa nâng cao | Ngoài phạm vi đồ án; không phải phần phải hoàn thành sau MVP. |
 
-Hỏi đáp, gợi ý và tóm tắt là ba chế độ trong cùng giao diện trợ lý. MVP không yêu cầu ba mô hình riêng hoặc một agent điều phối các agent con.
+Hỏi đáp, gợi ý và tóm tắt là ba chế độ trong cùng giao diện, không yêu cầu ba mô hình riêng hoặc agent điều phối. Giới hạn PDF văn bản, ngữ cảnh phiên và tài khoản cấp sẵn trong tài liệu này chỉ áp dụng giai đoạn MVP; không được dùng để loại chức năng của bản cuối.
 
 ### 2.3. Quy mô kiểm chứng
 
@@ -158,11 +159,11 @@ Ba chức năng AI được giới hạn bằng quyền dữ liệu và chính s
 
 | Nội dung | Yêu cầu được chọn | Đầu ra cần có |
 |---|---|---|
-| Corpus và QA | FR-R01; UC-R01 | Danh sách tài liệu, quyền sử dụng, checksum/phiên bản và QA có đáp án hoặc hành vi mong đợi, vị trí nguồn, loại mẫu và split. |
-| QLoRA | FR-R02; UC-R02 | Dry-run, ít nhất một lượt huấn luyện adapter hoàn chỉnh, checkpoint, cấu hình, log và model/adapter card. |
-| So sánh mô hình | FR-R03; UC-R03 | Kết quả Base LLM, RAG và QLoRA+RAG trên cùng protocol, với dữ liệu và cấu hình truy vết được. |
-| Khảo sát retrieval | FR-R03; UC-R03 | Baseline dense và thí nghiệm thêm BM25/fusion, reranker trên development; ghi chất lượng và độ trễ để chọn cấu hình phục vụ. |
-| Đánh giá thủ công | FR-R04; UC-R04 | Rubric, bảng chấm mẫu, phân tích lỗi và đối chiếu với metric tự động. |
+| Corpus và QA | FR-R01; RES-01 | Danh sách tài liệu, quyền sử dụng, checksum/phiên bản và QA có đáp án hoặc hành vi mong đợi, vị trí nguồn, loại mẫu và split. |
+| QLoRA | FR-R02; RES-02 | Dry-run, ít nhất một lượt huấn luyện adapter hoàn chỉnh, checkpoint, cấu hình, log và model/adapter card. |
+| So sánh mô hình | FR-R03; RES-03 | Kết quả Base LLM, RAG và QLoRA+RAG trên cùng protocol, với dữ liệu và cấu hình truy vết được. |
+| Khảo sát retrieval | FR-R03; RES-03 | Baseline dense và thí nghiệm thêm BM25/fusion, reranker trên development; ghi chất lượng và độ trễ để chọn cấu hình phục vụ. |
+| Đánh giá thủ công | FR-R04; RES-04 | Rubric, bảng chấm mẫu, phân tích lỗi và đối chiếu với metric tự động. |
 
 QLoRA là đầu ra bắt buộc của đề tài, không bị chuyển thành chức năng tùy chọn vì upload tài liệu đã dùng RAG. Nhóm không yêu cầu adapter nhất thiết phải làm mọi metric tốt hơn. Kết quả không cải thiện vẫn phải được phân tích và báo cáo; không thay đổi tập test để tạo kết quả tốt hơn.
 
@@ -231,22 +232,23 @@ Các tham số được cấu hình thay vì ghi cứng trong nghiệp vụ. Đ�
 
 Các ngưỡng này là mục tiêu được chọn cho kế hoạch đánh giá, chưa phải kết quả đã đạt. Nếu không đạt, nhóm phải ghi chỉ tiêu chưa đạt và phân tích lỗi. Thay ngưỡng cần quyết định có lý do trước test cuối, không hạ ngưỡng sau khi xem điểm test để tuyên bố nghiệm thu. Tính đạt/chưa đạt của các cấu hình phải được báo riêng; kết quả QLoRA không cải thiện không được che giấu.
 
-## 7. Chức năng ngoài MVP
+## 7. Nội dung ngoài MVP và trạng thái trong sản phẩm cuối
 
-| Yêu cầu hoặc phần mở rộng | Quyết định | Lý do |
+| Yêu cầu hoặc nội dung | MVP | Sản phẩm cuối |
 |---|---|---|
-| FR-05; UC-01 | Hoãn tự đăng ký. | Tài khoản cấp sẵn đủ kiểm chứng luồng theo vai trò; giảm quy trình xác minh và khôi phục tài khoản. |
-| FR-07; UC-05 | Hoãn khám phá/tìm kiếm khóa học công khai. | Bản đầu dùng danh sách lớp được cấp, tập trung vào tương tác học trong khóa học. |
-| FR-25; UC-16 | Hoãn lịch sử hội thoại lâu dài. | Giảm lưu trữ dữ liệu riêng và xử lý citation lịch sử; vẫn bảo vệ ngữ cảnh phiên hiện tại. |
-| FR-33; UC-24 | Hoãn dashboard thống kê tổng nền tảng. | Giữ thống kê lớp và thông tin vận hành cần thiết cho demo. |
-| FR-X01–FR-X02; UC-X01–UC-X02 | Hoãn thanh toán và doanh thu. | Không cần để kiểm chứng trợ lý học tập; có thêm nghiệp vụ giao dịch và đối soát. |
-| FR-X03; UC-X03 | Hoãn video tương tác. | Bài học văn bản/PDF đủ cho lát cắt học tập; streaming và điểm dừng tăng khối lượng tích hợp. |
-| FR-X04; UC-X04 | Không bật chế độ kiến thức tổng quát trong MVP. | Giữ phạm vi trả lời và cách đánh giá theo corpus khóa học. |
-| Các định dạng khác và OCR của FR-16 | Hoãn hỗ trợ trực tiếp; cho phép chuẩn hóa đầu vào sang PDF văn bản. | Cần thêm parser, kiểm tra vị trí nguồn và dữ liệu đánh giá trích xuất. |
-| Tóm tắt toàn khóa học của FR-24 | Hoãn; chỉ một tài liệu/khoảng trang trong giới hạn. | Giảm tác vụ dài và có thể kiểm tra độ bao phủ theo nguồn cụ thể. |
-| Multi-agent, chấm tự luận bằng AI | Ngoài phạm vi phiên bản này. | Ba chế độ không cần nhiều agent; điểm chính thức do giáo viên quyết định. |
+| FR-05; UC-01 | Chưa triển khai đăng ký | Bắt buộc: đăng ký học viên, không tự nâng vai trò. |
+| FR-07; UC-05 | Chưa triển khai tìm lớp công khai | Bắt buộc: tìm/xem giới thiệu, không lộ lớp riêng hoặc học liệu. |
+| FR-25; UC-16 | Chỉ giữ ngữ cảnh phiên | Bắt buộc: lưu/xem/tiếp tục/xóa lịch sử cá nhân theo quyền hiện tại. |
+| FR-33; UC-24 | Chỉ vận hành cơ bản và thống kê lớp | Bắt buộc: dashboard nền tảng theo quyền. |
+| FR-06, FR-08; UC-04, UC-06 | Giáo viên cấp quyền | Bắt buộc: bốn tổ hợp công khai/riêng tư và miễn phí/có phí, điều kiện mã/mật khẩu và giao dịch. |
+| FR-12, FR-16–FR-17, FR-21 | PDF văn bản và vị trí trang PDF | Bắt buộc: PDF/DOCX/PPTX/TXT, OCR PDF quét, vị trí trang/slide/mục/đoạn thực. |
+| FR-X01–FR-X02; UC-X01–UC-X02 | Chưa triển khai thanh toán/doanh thu | Bắt buộc: tích hợp, giao dịch, thống kê và đối soát theo quyền; sandbox cho demo. |
+| FR-X03; UC-X03 | Chưa triển khai video tương tác | Bắt buộc: player, mốc câu hỏi, gợi ý/quay lại và tiến độ nhất quán. |
+| FR-X04; UC-X04 | Chỉ trả lời theo học liệu | Bắt buộc: nguồn tổng quát được chọn riêng và ghi nhãn, giữ chính sách bài tập. |
+| Tóm tắt toàn khóa học không giới hạn | Không triển khai | Ngoài phạm vi đồ án; giữ giới hạn một tài liệu/phạm vi/ngân sách nguồn. |
+| DOC/PPT cũ, multi-agent, AI chấm chính thức, streaming/CDN tự xây | Không triển khai | Ngoài phạm vi đồ án; các định dạng cũ có thể chuẩn hóa trước upload. |
 
-Hoãn một chức năng không có nghĩa bỏ các kiểm soát đi kèm chức năng đang giữ. Ví dụ, không xây lịch sử lâu dài vẫn phải bảo vệ ngữ cảnh hiện tại; không có marketplace vẫn phải kiểm tra quyền tham gia lớp; chưa có OCR vẫn phải phát hiện tài liệu không đủ nội dung.
+Chức năng sau MVP vẫn phải đạt FIN-01–FIN-09 trong SRS trước hoàn thành đồ án. Việc để ngoài MVP chỉ xác định thứ tự triển khai; các kiểm soát quyền, dữ liệu và chính sách luôn áp dụng cho phần đang thực hiện.
 
 ## 8. Lộ trình hoàn thành trong phạm vi đã chốt
 
@@ -255,9 +257,10 @@ Hoãn một chức năng không có nghĩa bỏ các kiểm soát đi kèm chứ
 | M1 — Lát cắt hỏi đáp | Tài khoản, khóa học/thành viên, upload PDF, xử lý nền, hỏi đáp và mở nguồn có quyền. | Demo trực tiếp và test quyền/lỗi; dữ liệu một môn và QA pilot. |
 | M2 — Ba chế độ AI | Gợi ý theo chính sách, tóm tắt có độ bao phủ, quota/timeout và thay thế/gỡ học liệu nhất quán. | Kết quả kiểm thử gợi ý/tóm tắt, lỗi tài liệu và tác vụ bị ngắt. |
 | M3 — LMS cơ bản | Bài học, tiến độ, quiz, bài tập, chấm điểm và thống kê lớp tích hợp với quyền/chính sách AI. | Luồng học viên làm/nộp bài, giáo viên chấm/công bố và kiểm thử trạng thái. |
-| M4 — Nghiên cứu và nghiệm thu | Corpus/benchmark đủ quy mô, adapter QLoRA, so sánh và đánh giá thủ công; đóng gói, khôi phục và tài liệu chạy. | Log, kết quả từng mẫu, bảng chỉ số, rubric và bản demo có cấu hình tái lập. |
+| M4 — Nghiên cứu và kiểm chứng lõi | Corpus/benchmark đủ quy mô, adapter QLoRA, so sánh và đánh giá thủ công; đóng gói, khôi phục và tài liệu chạy. | Log, kết quả từng mẫu, bảng chỉ số, rubric và bản demo có cấu hình tái lập. |
+| M5 — Hoàn thiện sản phẩm cuối | Đăng ký/tìm lớp, điều kiện lớp có phí, Docling/OCR, lịch sử, dashboard, thanh toán/video và triển khai. | FIN-01–FIN-09 trong SRS và kiểm thử lại các luồng MVP. |
 
-M1 là mốc tích hợp đầu tiên, không phải toàn bộ MVP. Ba chế độ AI, nghiệp vụ học tập cơ bản và đầu ra nghiên cứu vẫn là điều kiện hoàn thành phiên bản cuối. Nhóm phát triển và đo thử từ sớm, không đợi hoàn thành từng module độc lập mới tích hợp.
+M1 là mốc tích hợp đầu tiên, không phải toàn bộ MVP. Ba chế độ AI, nghiệp vụ học tập cơ bản và đầu ra nghiên cứu vẫn cần hoàn thành; bản cuối còn gồm các chức năng sau MVP tại mục 7. Nhóm phát triển và đo thử từ sớm, không đợi hoàn thành từng module độc lập mới tích hợp.
 
 ## 9. Kịch bản nghiệm thu MVP
 
@@ -290,13 +293,13 @@ Nếu mới có web LMS và notebook AI riêng, nhóm có thể chứng minh hai
 
 | Rủi ro/phụ thuộc | Cách xử lý trong phạm vi |
 |---|---|
-| Corpus có nhiều file quét hoặc định dạng khác PDF | Kiểm tra từ khi chọn dữ liệu; bổ sung PDF văn bản có quyền sử dụng hoặc chuẩn hóa file. Không đưa OCR vào MVP chỉ để xử lý một file demo mà chưa có phép kiểm chứng. |
+| Corpus có nhiều file quét hoặc định dạng khác PDF khi đang làm MVP | Kiểm tra từ khi chọn dữ liệu; bổ sung PDF văn bản có quyền sử dụng hoặc chuẩn hóa file. OCR được triển khai sau MVP theo phạm vi bản cuối và kiểm chứng bằng bộ mẫu riêng. |
 | PDF quá dài hoặc layout khó | Áp dụng giới hạn, kiểm tra nội dung/vị trí; chia tài liệu hợp lý hoặc báo chưa hỗ trợ. Không bỏ lỗi nguồn để giữ trạng thái sẵn sàng. |
 | T4 không đủ tài nguyên hoặc runtime ngắt | Dry-run, giới hạn context/concurrency, lưu checkpoint; chọn model nhỏ hơn bằng quyết định và chạy lại baseline tương ứng. |
 | Chưa có nơi inference cho demo web | Đánh giá khả năng triển khai ngay từ M1; xác định môi trường được phép dùng. Nếu chưa giải quyết, ghi blocker tích hợp, không cắt tiêu chí model thật khỏi nghiệm thu. |
 | QA thiếu nhãn hoặc trùng | Thống nhất schema/định danh nguồn giữa A và B, rà trước khi đóng băng split; giữ đủ số mẫu hợp lệ thay vì đếm bản trùng. |
 | QLoRA hoặc hybrid/rerank không cải thiện | Báo kết quả và phân tích; chọn cấu hình phục vụ theo development và tài nguyên, giữ đầy đủ kết quả thí nghiệm. |
-| Tiến độ thiếu thời gian | Hoãn chức năng ở mục 7 trước; mọi cắt giảm ba chế độ AI, nghiệp vụ được chọn hoặc nghiên cứu bắt buộc phải có quyết định thay đổi phạm vi riêng. |
+| Tiến độ thiếu thời gian | Phân chia việc sau MVP theo mốc tích hợp; không tự bỏ chức năng bản cuối tại mục 7. Cắt giảm chức năng hoặc đầu ra nghiên cứu phải có quyết định thay đổi phạm vi riêng. |
 
 ## 11. Đầu ra và nguyên tắc kiểm soát thay đổi
 
@@ -313,4 +316,3 @@ Nếu mới có web LMS và notebook AI riêng, nhóm có thể chứng minh hai
 Khi phát hiện cần thay đổi phạm vi, nhóm ghi rõ nội dung, lý do, yêu cầu/use case bị ảnh hưởng, tác động tới dữ liệu và kiểm thử, cùng quyết định thay thế. Thay đổi chức năng phải được cập nhật vào tài liệu SRS và danh sách nghiệm thu; các bản yêu cầu tổng thể vẫn được giữ để biết chức năng nào đang hoãn.
 
 Thay đổi ngưỡng AI, model hoặc cấu hình retrieval phải được quyết định trên development trước đánh giá cuối. Nhóm không tự mở thêm chức năng chỉ vì có công nghệ mới, không cắt phần nghiên cứu bắt buộc mà vẫn giữ nguyên tuyên bố hoàn thành đề tài và không coi việc viết xong tài liệu phạm vi là sản phẩm đã được nghiệm thu.
-

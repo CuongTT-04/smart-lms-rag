@@ -4,6 +4,7 @@
 - **Sinh viên thực hiện:** Trần Tuấn Cường.
 - **Hạng mục:** Xác định functional và non-functional requirements.
 - **Ngày lập:** 01/10/2026.
+- **Ngày cập nhật:** 02/10/2026.
 
 ## 1. Mục đích và phạm vi phân tích
 
@@ -11,7 +12,7 @@ Hệ thống được xây dựng để giáo viên tổ chức khóa học và 
 
 Trong phần việc này, em chuyển kết quả [phân tích actors và use cases](actors-usecases.md) thành các yêu cầu có thể thiết kế, triển khai và kiểm thử. Yêu cầu chức năng mô tả những hành vi hệ thống cần thực hiện. Yêu cầu phi chức năng xác định chất lượng, điều kiện vận hành và các giới hạn cần kiểm soát khi thực hiện những hành vi đó.
 
-Phạm vi bao gồm nghiệp vụ LMS, xử lý học liệu và trợ lý theo khóa học. Các yêu cầu đối với corpus, huấn luyện QLoRA và benchmark được tách thành nhóm nghiên cứu. Thanh toán, doanh thu, video tương tác và trả lời kiến thức tổng quát được phân loại mở rộng. Việc lựa chọn chính thức các chức năng cho MVP được thực hiện ở Issue #7.
+Phạm vi bao gồm nghiệp vụ LMS, xử lý học liệu và trợ lý theo khóa học. Các yêu cầu đối với corpus, huấn luyện QLoRA và benchmark được tách thành nhóm nghiên cứu. Thanh toán, doanh thu, video tương tác và nguồn kiến thức tổng quát được triển khai sau MVP nhưng thuộc phạm vi sản phẩm cuối. Chức năng được chọn và giới hạn triển khai đã được cụ thể hóa trong [phạm vi MVP](mvp-scope.md) và [SRS phiên bản 1.1](../SRS.md); tài liệu này đặc tả toàn bộ danh mục yêu cầu của sản phẩm cuối để truy vết.
 
 ## 2. Quy ước và điều kiện áp dụng
 
@@ -20,27 +21,27 @@ Phạm vi bao gồm nghiệp vụ LMS, xử lý học liệu và trợ lý theo 
 | Ký hiệu | Ý nghĩa |
 |---|---|
 | FR-xx | Yêu cầu chức năng của sản phẩm LMS. |
-| FR-Rxx | Yêu cầu chức năng của công cụ nghiên cứu, huấn luyện và đánh giá. |
-| FR-Xxx | Yêu cầu chức năng mở rộng. |
+| FR-Rxx | Đầu ra nghiên cứu, huấn luyện và đánh giá của đồ án; không phải chức năng dành cho người dùng LMS. |
+| FR-Xxx | Yêu cầu sản phẩm triển khai sau MVP; mã được giữ để truy vết, không có nghĩa tùy chọn. |
 | NFR-xx | Yêu cầu phi chức năng hoặc tiêu chí chất lượng. |
 | P0 | Ưu tiên luồng tạo khóa học, tải học liệu và hỏi đáp có nguồn. |
-| P1 | Hoàn thiện nghiệp vụ học tập, quản lý và chất lượng của nguyên mẫu. |
-| P2 | Mở rộng khi các chức năng cốt lõi đã được kiểm chứng. |
+| P1 | Hoàn thiện nghiệp vụ học tập, quản lý và chất lượng của sản phẩm. |
+| Sau MVP | Chức năng thuộc sản phẩm cuối, triển khai sau giai đoạn nguyên mẫu và vẫn bắt buộc nghiệm thu. |
 
 Mã UC, BR và AC được giữ thống nhất với tài liệu actors/use cases. Một yêu cầu có thể phục vụ nhiều use case; một use case có thể cần nhiều yêu cầu chức năng và phi chức năng.
 
 ### 2.2. Cách đọc tiêu chí chấp nhận
 
-Trong các bảng dưới đây, từ **phải** mô tả hành vi mong đợi khi chức năng được chọn triển khai. Với yêu cầu có điều kiện như tự đăng ký hoặc lưu hội thoại, điều kiện áp dụng được ghi ngay trong nội dung. Mức ưu tiên không tự động quyết định một chức năng đã thuộc MVP.
+Trong các bảng dưới đây, từ **phải** mô tả hành vi bắt buộc trong phạm vi sản phẩm cuối. Đăng ký và lịch sử hội thoại thuộc bản cuối; giai đoạn triển khai được xác định riêng trong ma trận phạm vi. Mức ưu tiên không tự động quyết định một chức năng đã thuộc MVP.
 
-Các yêu cầu phân quyền, bảo toàn dữ liệu và xử lý trạng thái được kiểm tra bằng những tình huống có kết quả xác định. Với chất lượng sinh câu trả lời và hiệu năng, các con số trong mục 4 là **mục tiêu đề xuất của nguyên mẫu**, chưa phải kết quả đo hoặc cam kết đã được nhóm phê duyệt. Nhóm sẽ kiểm chứng trên dữ liệu pilot/validation, ghi lại cấu hình và quyết định ngưỡng trước khi đánh giá tập test độc lập.
+Các yêu cầu phân quyền, bảo toàn dữ liệu và xử lý trạng thái được kiểm tra bằng những tình huống có kết quả xác định. Với chất lượng sinh câu trả lời và hiệu năng, các con số trong mục 4 là **mục tiêu kiểm chứng ban đầu của nguyên mẫu**, được đưa vào phạm vi MVP và SRS, chưa phải kết quả đo. Nhóm sẽ kiểm chứng trên dữ liệu development, ghi cấu hình và quyết định mọi điều chỉnh ngưỡng trước khi đánh giá tập test độc lập.
 
-### 2.3. Điều kiện của nguyên mẫu
+### 2.3. Điều kiện áp dụng và quy mô kiểm chứng
 
 - Học viên, giáo viên và quản trị viên có vai trò và phạm vi truy cập khác nhau; quyền được kiểm tra trên từng đối tượng dữ liệu.
 - Tài liệu phục vụ AI phải có quyền sử dụng, thuộc đúng khóa học và đã xử lý thành công.
 - Ba chế độ hỏi đáp, gợi ý và tóm tắt dùng chung kho học liệu được phân quyền, nhưng có cách xử lý riêng.
-- Thí nghiệm dự kiến dùng tài liệu của 2–3 môn học và khoảng 300–800 câu hỏi chuẩn. Nhóm chuẩn bị 50 QA pilot, mỗi thành viên 25 mẫu, trước khi mở rộng bộ đánh giá.
+- Dữ liệu hiện có thuộc ba môn THMLN, KTCTMLN và CNXHKH, gồm 27 PDF và 50 QA pilot: 24 mẫu THMLN của thành viên A, 26 mẫu của thành viên B chia đều KTCTMLN/CNXHKH. Benchmark hoàn thiện đặt mục tiêu tối thiểu 300 mẫu hợp lệ, gồm 100 development và 200 test độc lập, theo phạm vi MVP.
 - Tài nguyên thử nghiệm AI dự kiến là GPU T4 của Google Colab Free. Nguyên mẫu cần xử lý được tình huống dịch vụ AI bị ngắt; chưa đặt yêu cầu phục vụ liên tục 24/7.
 - Công nghệ model, vector store và cách điều phối được xác định ở phần kiến trúc; các yêu cầu nghiệp vụ không phụ thuộc vào một thư viện cụ thể.
 
@@ -54,42 +55,42 @@ Các yêu cầu phân quyền, bảo toàn dữ liệu và xử lý trạng thá
 | FR-02 | Hệ thống phải cho phép đăng xuất và kết thúc hiệu lực phiên tương ứng. | Sau đăng xuất, sử dụng lại phiên đã kết thúc để gọi API được bảo vệ phải bị từ chối; phiên hết hạn yêu cầu xác thực lại. | UC-02 | P0 |
 | FR-03 | Quản trị viên phải có thể tạo, cập nhật và khóa/mở khóa tài khoản theo quyền quản trị. | Thay đổi được lưu; tài khoản bị khóa không tiếp tục thực hiện yêu cầu được bảo vệ; định danh tài khoản trùng bị từ chối. | UC-03 | P0 |
 | FR-04 | Hệ thống phải cho phép quản trị viên được cấp quyền quản lý vai trò của tài khoản. | Học viên không thể tự nâng quyền; thay đổi vai trò ảnh hưởng đến các yêu cầu tiếp theo. Thao tác làm mất tài khoản quản trị hoạt động cuối cùng phải được ngăn chặn trong cơ chế cấp quyền được chọn. | UC-03 | P0 |
-| FR-05 | Nếu áp dụng đăng ký tự phục vụ, khách phải có thể tạo tài khoản học viên. | Kiểm tra thông tin bắt buộc và định danh trùng; tài khoản mới chỉ nhận vai trò học viên, không tự có quyền khóa học hoặc quyền giáo viên/admin. | UC-01 | P1, có điều kiện |
+| FR-05 | Hệ thống phải cho khách đăng ký tài khoản học viên. | Kiểm tra dữ liệu bắt buộc và định danh trùng; mật khẩu lưu bằng cơ chế băm. Tài khoản mới chỉ có vai trò học viên, chưa có quyền khóa học; không tự cấp giáo viên/admin. | UC-01 | P1 |
 
 ### 3.2. Khóa học, bài học và thành viên
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-06 | Giáo viên phải có thể tạo và chỉnh sửa thông tin khóa học do mình quản lý. | Khóa học lưu định danh, thông tin giới thiệu và giáo viên phụ trách; người không có quyền không thể sửa bằng cách thay ID trong yêu cầu. | UC-04 | P0 |
-| FR-07 | Hệ thống phải cung cấp danh sách và chức năng tìm thông tin giới thiệu của khóa học công khai. | Kết quả chỉ chứa khóa học được phép hiển thị; tìm kiếm không công bố tài liệu riêng hoặc lớp riêng tư. | UC-05 | P1 |
-| FR-08 | Hệ thống phải cấp quyền tham gia khóa học sau khi học viên đáp ứng điều kiện của khóa học. | Có quan hệ tham gia hợp lệ mới cho phép học; thao tác tham gia lặp không tạo bản ghi trùng. Nếu chọn lớp riêng tư, mã/mật khẩu sai không cấp quyền. | UC-06 | P0 |
+| FR-06 | Giáo viên phải có thể tạo và chỉnh sửa thông tin khóa học do mình quản lý. | Giáo viên tạo/sửa khóa học phụ trách với tên, mô tả, trạng thái, loại công khai/riêng tư và miễn phí/có phí; khóa có phí lưu giá hợp lệ phía server. Không được sửa bằng cách thay ID lớp của người khác. | UC-04 | P0 |
+| FR-07 | Hệ thống phải cung cấp danh sách và chức năng tìm thông tin giới thiệu của khóa học công khai. | Tìm theo tên/từ khóa, xem giới thiệu và điều kiện tham gia các khóa đang mở, được công khai. Không công bố nội dung học liệu, đáp án hoặc lớp riêng tư qua kết quả tìm kiếm. | UC-05 | P1 |
+| FR-08 | Hệ thống phải cấp quyền học khi đáp ứng điều kiện tham gia của khóa học. | MVP dùng giáo viên cấp quyền. Bản cuối hỗ trợ lớp công khai miễn phí tự tham gia, lớp riêng tư xác thực mã/mật khẩu và khóa có phí yêu cầu giao dịch thành công được xác thực. Cấp quyền lặp không tạo bản ghi trùng; các điều kiện riêng tư và có phí phải cùng thỏa mãn khi áp dụng. | UC-06 | P0 |
 | FR-09 | Giáo viên phải có thể xem và quản lý thành viên trong khóa học phụ trách. | Cấp/thu hồi quyền theo cơ chế tham gia đã chọn; thay đổi có hiệu lực với truy cập tiếp theo và không tự xóa điểm/lượt nộp đã có. | UC-07 | P1 |
-| FR-10 | Giáo viên phải có thể tạo, chỉnh sửa, sắp xếp và liên kết học liệu với bài học. | Bài học thuộc đúng khóa học, có thứ tự hiển thị; không liên kết tài liệu ngoài quyền quản lý; học viên chỉ thấy nội dung được công bố cho mình. | UC-08 | P1 |
-| FR-11 | Hệ thống phải ghi và hiển thị tiến độ học của từng học viên. | Tiến độ gắn đúng học viên/bài học, được cập nhật theo tiêu chí hoàn thành đã cấu hình; tải lại trang không làm tăng tiến độ hoặc tự đánh dấu hoàn thành. | UC-09 | P1 |
+| FR-10 | Giáo viên phải có thể tạo, chỉnh sửa, sắp xếp và liên kết học liệu với bài học. | Giáo viên tạo/sửa bài học văn bản, sắp xếp và liên kết tài liệu/bài đánh giá trong cùng khóa học. Học viên chỉ thấy bài đã công bố; liên kết ngoài quyền bị từ chối. | UC-08 | P1 |
+| FR-11 | Hệ thống phải ghi và hiển thị tiến độ học của từng học viên. | Lưu đánh dấu hoàn thành bài theo học viên/bài học; hiển thị tiến độ trên nội dung đã công bố. Với video tương tác, lưu riêng các mốc đã trả lời và tiến độ xem; tải lại/tua/gửi sự kiện lặp không nhân đôi tiến độ hoặc tự chứng minh đã học xong. | UC-09 | P1 |
 
 ### 3.3. Quản lý và xử lý học liệu
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-12 | Giáo viên phải có thể tải tài liệu vào khóa học được quản lý. | Kiểm tra quyền, loại file và giới hạn đã cấu hình; tài liệu được lưu với người tải, khóa học và định danh. File bị từ chối không tạo tài liệu sẵn sàng. | UC-10 | P0 |
-| FR-13 | Hệ thống phải quản lý việc thay thế và gỡ tài liệu theo phiên bản. | Bản thay thế có phiên bản riêng và được xử lý lại; tài liệu đã gỡ ngừng phục vụ retrieval/mở nguồn theo chính sách. Thay file gốc không được coi là chỉ mục đã cập nhật. | UC-10 | P0 |
-| FR-14 | Hệ thống phải xử lý tài liệu ở nền và hiển thị trạng thái cho giáo viên. | Phân biệt chờ xử lý, đang xử lý, sẵn sàng, lỗi và đã gỡ; chỉ chuyển sẵn sàng sau khi hoàn thành các bước cần thiết và kiểm tra kết quả trích xuất. | UC-11 | P0 |
+| FR-12 | Giáo viên phải có thể tải tài liệu vào khóa học được quản lý. | Kiểm tra quyền, loại file thực tế và giới hạn trước lưu. MVP nhận PDF văn bản; bản cuối nhận PDF, DOCX, PPTX, TXT và PDF quét có thể OCR. Lưu người tải, lớp, file và phiên bản; file chưa xử lý không được báo sẵn sàng. | UC-10 | P0 |
+| FR-13 | Hệ thống phải quản lý việc thay thế và gỡ tài liệu theo phiên bản. | Thay thế tạo phiên bản mới, giữ bản cũ hợp lệ đến khi bản mới sẵn sàng. Gỡ ngừng phục vụ retrieval/mở nguồn ngay; kết quả tác vụ cũ không khôi phục bản đã gỡ. | UC-10 | P0 |
+| FR-14 | Hệ thống phải xử lý tài liệu ở nền và hiển thị trạng thái cho giáo viên. | Xử lý nền sau tiếp nhận upload; có trạng thái chờ, đang xử lý, sẵn sàng, lỗi và đã gỡ. Chỉ sẵn sàng khi trích xuất, chia đoạn, lưu vị trí, tạo chỉ mục và kiểm tra nội dung hoàn tất. | UC-11 | P0 |
 | FR-15 | Giáo viên phải có thể yêu cầu thử lại tác vụ xử lý tài liệu bị lỗi. | Lưu nguyên nhân và kết quả lần thử; thử lại không tạo chunk/chỉ mục trùng hoặc phục vụ sai phiên bản. File đã gỡ không tự xuất hiện lại vì một tác vụ cũ kết thúc. | UC-11 | P0 |
-| FR-16 | Pipeline phải trích xuất nội dung, chia đoạn và lưu thông tin nguồn cho các định dạng được chọn hỗ trợ. | Mỗi đoạn gắn với khóa học, tài liệu, phiên bản và vị trí trang/slide/mục; trang ảnh cần OCR được xử lý hoặc thông báo giới hạn. Không gán số trang khi không xác định được vị trí thực. | UC-10–UC-11 | P0 |
-| FR-17 | Người có quyền phải có thể xem học liệu và mở vị trí được trích dẫn. | Kiểm tra lại quyền khi mở; hiển thị đúng tài liệu/phiên bản/vị trí hoặc chỉ dẫn vị trí nếu viewer chưa hỗ trợ nhảy trực tiếp. Nguồn không còn khả dụng được thông báo rõ. | UC-12 | P0 |
+| FR-16 | Pipeline phải trích xuất, chuẩn hóa và chia đoạn học liệu thuộc các định dạng đã chọn. | Bản cuối dùng Docling cho PDF/DOCX/PPTX và OCR PDF quét khi cần; TXT được chuẩn hóa bằng bộ đọc văn bản phù hợp. Mỗi chunk có lớp/tài liệu/phiên bản và vị trí thực: trang PDF, slide PPTX hoặc mục/đoạn DOCX/TXT. Kết quả thiếu nội dung/OCR không đáp ứng kiểm tra chất lượng phải báo lỗi hoặc yêu cầu bản rõ hơn, không âm thầm bỏ phần lỗi. | UC-10–UC-11 | P0 |
+| FR-17 | Người có quyền phải có thể xem học liệu và mở vị trí được trích dẫn. | Mở học liệu hoặc vị trí được trích dẫn theo quyền và phiên bản hiện hành. Hiển thị tên nguồn và trang/slide/mục/đoạn thực; cung cấp chỉ dẫn vị trí nếu viewer không nhảy trực tiếp. Không mở nguồn đã gỡ hoặc ngoài quyền qua link cũ. | UC-12 | P0 |
 
 ### 3.4. Trợ lý AI theo khóa học
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-18 | Mỗi yêu cầu trợ lý phải được xác định phạm vi khóa học và học liệu theo quyền hiện tại của người gửi. | Không chỉ tin mã khóa học từ client; cả các nhánh truy xuất, tóm tắt và cache chỉ dùng dữ liệu hợp lệ. Tài liệu chưa sẵn sàng hoặc đáp án riêng bị loại khỏi context học viên. | UC-13–UC-17 | P0 |
+| FR-18 | Mỗi yêu cầu trợ lý phải được xác định phạm vi khóa học và học liệu theo quyền hiện tại của người gửi. | Backend xác định quyền lớp/học liệu và chính sách theo tài khoản hiện hành. Mọi nhánh retrieval, tóm tắt, ngữ cảnh, lịch sử và cache loại dữ liệu ngoài quyền/đáp án riêng; kiểm tra lại trước khi trả. Nhánh kiến thức tổng quát được tách riêng, không đọc học liệu ngoài quyền. | UC-13–UC-17, UC-X04 | P0 |
 | FR-19 | Học viên phải có thể hỏi đáp nội dung trong học liệu khóa học. | Hệ thống nhận câu hỏi, truy xuất bằng chứng và trả câu trả lời theo phạm vi được chọn; lưu/hiển thị trạng thái xử lý khi yêu cầu chưa hoàn thành. | UC-13 | P0 |
-| FR-20 | Trợ lý phải có nhánh xử lý câu hỏi mơ hồ, thiếu bằng chứng hoặc ngoài phạm vi học liệu. | Câu hỏi mơ hồ được yêu cầu làm rõ; không đủ bằng chứng thì thông báo thiếu nguồn. Trong chế độ học liệu, không tự chuyển sang trả lời kiến thức tổng quát. | UC-13–UC-14 | P0 |
-| FR-21 | Câu trả lời sử dụng học liệu phải có thông tin trích dẫn tương ứng. | Hiển thị tên tài liệu, vị trí và tham chiếu nguồn; nguồn thuộc tập đã truy xuất, đúng phiên bản và được phép đọc. Tham chiếu không hợp lệ không được trình bày như citation đã xác nhận. | UC-12–UC-15 | P0 |
-| FR-22 | Trợ lý phải cung cấp gợi ý làm bài theo mức trợ giúp được phép. | Có thể hỏi học viên bổ sung đề/cách làm, nhắc kiến thức và gợi ý bước tiếp theo; với bài trong LMS, trạng thái bài được lấy từ backend. Không xác định được chính sách không được tự coi là được giải toàn bộ. | UC-14 | P1 |
+| FR-20 | Trợ lý phải có nhánh xử lý câu hỏi mơ hồ, thiếu bằng chứng hoặc ngoài phạm vi học liệu. | Trong chế độ học liệu, câu hỏi mơ hồ yêu cầu làm rõ, thiếu nguồn thông báo giới hạn. Nếu học viên chọn nguồn kiến thức tổng quát theo FR-X04 thì ghi nhãn riêng; không tự fallback mà trình bày câu trả lời như đã được học liệu chứng minh. | UC-13–UC-14 | P0 |
+| FR-21 | Câu trả lời sử dụng học liệu phải có thông tin trích dẫn tương ứng. | Câu trả lời dùng học liệu hiển thị tên tài liệu, phiên bản, vị trí trang/slide/mục/đoạn và tham chiếu nguồn. Citation thuộc bằng chứng hợp lệ, đúng quyền; không gán trang PDF cho DOCX khi không có bản phân trang. Nguồn hỗ trợ nhận định được đánh giá riêng ở NFR-29. | UC-12–UC-15 | P0 |
+| FR-22 | Trợ lý phải cung cấp gợi ý làm bài theo mức trợ giúp được phép. | Học viên có thể nhận gợi nhắc khái niệm/bước tiếp theo theo chính sách bài hoặc mốc video. Lấy trạng thái từ backend, loại đáp án riêng; bài đang thi/tắt trợ giúp được xử lý theo chính sách, không tự coi là được giải toàn bộ. | UC-14, UC-X03 | P1 |
 | FR-23 | Giáo viên phải có thể thiết lập học liệu được sử dụng và chính sách trợ giúp của trợ lý trong khóa học. | Cấu hình phân biệt tài liệu học viên và tài liệu riêng/đáp án; lưu chính sách có phiên bản, áp dụng trong các yêu cầu tiếp theo; không cho phép cấu hình bỏ qua quyền nền tảng. | UC-17 | P1 |
-| FR-24 | Học viên phải có thể yêu cầu tóm tắt tài liệu hoặc phạm vi nội dung được chọn. | Kiểm tra quyền trên toàn phạm vi; xử lý nhiều phần khi cần; trả ý chính và nguồn, ghi rõ phần chưa xử lý nếu chưa bao phủ đủ. Không dùng vài đoạn top-k để đại diện cho toàn tài liệu. | UC-15 | P1 |
-| FR-25 | Nếu bật lưu hội thoại, hệ thống phải cho học viên xem lại và tiếp tục lịch sử của mình. | Lịch sử gắn tài khoản/khóa học; mở lại kiểm tra quyền hiện tại. Người khác không đọc được; nội dung liên quan nguồn đã gỡ hoặc quyền đã thu hồi được xử lý theo chính sách lưu trữ. | UC-16 | P1, có điều kiện |
+| FR-24 | Học viên phải có thể yêu cầu tóm tắt tài liệu hoặc phạm vi nội dung được chọn. | Tóm tắt một tài liệu hoặc phạm vi trang/slide/mục được chọn. MVP dùng PDF; bản cuối áp dụng các định dạng được hỗ trợ, tối đa 10.000 token nguồn và 20 trang/slide khi định dạng có đơn vị đó. Kiểm tra quyền/độ bao phủ, gắn nguồn; vượt giới hạn yêu cầu thu hẹp, ngắt thì báo phần thiếu. | UC-15 | P1 |
+| FR-25 | Hệ thống phải cho học viên lưu, xem lại và tiếp tục hội thoại cá nhân. | Hội thoại/lượt trao đổi gắn học viên và khóa học, được giữ sau restart; học viên có thể xóa lịch sử của mình. Khi mở/tiếp tục phải kiểm tra quyền hiện tại; lớp mất quyền hoặc nguồn đã gỡ không được trả lại từ lịch sử/cache. Giáo viên/admin không mặc định đọc toàn bộ hội thoại. | UC-16 | P1 |
 
 Kiểm tra tham chiếu nguồn tồn tại trong FR-21 là kiểm tra cấu trúc. Việc nguồn có thực sự hỗ trợ nhận định trong câu trả lời hay không được đánh giá riêng ở NFR-29. Tương tự, FR-22 xác định chức năng gợi ý; chất lượng hướng dẫn và mức tuân thủ được đo ở NFR-31.
 
@@ -97,11 +98,11 @@ Kiểm tra tham chiếu nguồn tồn tại trong FR-21 là kiểm tra cấu tr�
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu đề, kiểu bài, tiêu chí chấm, thời gian/lượt làm và chính sách trợ giúp nếu áp dụng; tách đáp án/rubric riêng khỏi dữ liệu trả cho học viên. | UC-18 | P1 |
-| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Chỉ bắt đầu khi có quyền, còn thời gian và lượt; lượt làm gắn phiên bản đề. Hạn và thời gian được kiểm soát phía server, không phụ thuộc đồng hồ client. | UC-19 | P1 |
+| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu quiz một lựa chọn đúng hoặc tự luận/nộp file, đề, hạn/thời lượng, chính sách trợ giúp và công bố. Đáp án/rubric riêng tách khỏi dữ liệu học viên; đề đã có lượt làm giữ nguyên phiên bản. | UC-18 | P1 |
+| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Mỗi học viên một lượt quiz, chỉ bắt đầu khi có quyền và còn thời gian. Lượt gắn phiên bản đề; server kiểm soát hạn/thời lượng và chốt câu trả lời đã lưu khi hết thời gian. | UC-19 | P1 |
 | FR-28 | Hệ thống phải nhận bài quiz và tự chấm theo đáp án của phiên bản đề tương ứng. | Lưu câu trả lời/điểm nhất quán; yêu cầu nộp lặp không tạo điểm khác nhau cho cùng lượt; chỉ trả kết quả/đáp án theo thời điểm được công bố. | UC-19 | P1 |
-| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Kiểm tra quyền, định dạng và hạn; lưu người nộp, phiên bản bài, nội dung/file và thời điểm, rồi xác nhận đã nhận. Nộp muộn/nộp lại áp dụng đúng cấu hình. | UC-20 | P1 |
-| FR-30 | Giáo viên phải có thể chấm và phản hồi bài nộp trong lớp phụ trách. | Kiểm tra thang điểm, lưu nhận xét và trạng thái công bố; sửa điểm có dấu vết. Không mặc định giao AI quyền chấm tự luận chính thức. | UC-21 | P1 |
+| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Nhận một lượt nộp bằng văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB trong hạn. Lưu người nộp, phiên bản bài và thời điểm server; không nhận nộp muộn/nộp lại, gửi lặp cùng thao tác không tạo bản ghi trùng. | UC-20 | P1 |
+| FR-30 | Giáo viên phải có thể chấm và phản hồi bài nộp trong lớp phụ trách. | Giáo viên lớp phụ trách chấm tự luận thang 0–10, ghi nhận xét, lưu và công bố. Sửa điểm có dấu vết; AI không quyết định điểm chính thức. | UC-21 | P1 |
 | FR-31 | Học viên phải có thể xem điểm và phản hồi cá nhân đã được công bố. | Chỉ hiển thị kết quả của đúng học viên; chưa chấm/chưa công bố có trạng thái riêng; không dùng điểm 0 để thay cho kết quả còn thiếu. | UC-22 | P1 |
 
 ### 3.6. Thống kê và vận hành
@@ -109,30 +110,30 @@ Kiểm tra tham chiếu nguồn tồn tại trong FR-21 là kiểm tra cấu tr�
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
 | FR-32 | Giáo viên phải có thể xem thống kê tiến độ và kết quả trong khóa học phụ trách. | Có phạm vi và thời điểm tính; số liệu khớp dữ liệu học/lượt nộp/điểm; học viên chưa có điểm được phân biệt với điểm 0. | UC-23 | P1 |
-| FR-33 | Quản trị viên phải có thể xem thống kê sử dụng nền tảng ở mức tổng hợp. | Tổng người dùng, khóa học và hoạt động được tính theo định nghĩa đã chọn; quyền xem thống kê không tự cấp quyền đọc hội thoại hoặc học liệu riêng. | UC-24 | P1 |
-| FR-34 | Người được cấp quyền vận hành phải có thể theo dõi tình trạng xử lý tài liệu và dịch vụ AI. | Có trạng thái, lỗi và thời gian xử lý; AI bị ngắt không được hiển thị là đang sẵn sàng hoặc đã xử lý thành công. | UC-11, UC-25 | P1 |
-| FR-35 | Hệ thống phải hỗ trợ cấu hình và thực thi hạn mức sử dụng AI. | Áp dụng quota tại backend theo phạm vi được chọn; vượt hạn trả thông báo phù hợp, không gọi model tiếp và không ảnh hưởng quyền xem bài học. | UC-25 | P1 |
+| FR-33 | Quản trị viên phải có thể xem thống kê sử dụng nền tảng ở mức tổng hợp. | Dashboard hiển thị người dùng, khóa học, hoạt động và giao dịch/doanh thu theo định nghĩa thống nhất. Có phạm vi/thời điểm tính, phân biệt chờ/thất bại/hoàn tiền; quyền tổng hợp không tự cho đọc nội dung riêng. | UC-24, UC-X02 | P1 |
+| FR-34 | Người được cấp quyền vận hành phải có thể theo dõi tình trạng xử lý tài liệu và dịch vụ AI. | Người có quyền vận hành xem trạng thái, loại lỗi và thời gian xử lý AI/ingestion; người dùng có thông báo tương ứng. AI ngắt không báo sẵn sàng; không yêu cầu dashboard tổng hợp toàn nền tảng. | UC-11, UC-25 | P1 |
+| FR-35 | Hệ thống phải hỗ trợ cấu hình và thực thi hạn mức sử dụng AI. | Thực thi quota 20 yêu cầu AI/giờ/học viên, một lượt sinh đồng thời, tối đa 5 tác vụ chờ và timeout theo loại tác vụ. Vượt quota/hàng đợi không gọi model tiếp; không ảnh hưởng quyền đọc bài. | UC-25 | P1 |
 | FR-36 | Hệ thống phải ghi dấu vết các thay đổi quản trị và nghiệp vụ có ảnh hưởng tới quyền hoặc kết quả học tập. | Ghi người thao tác, đối tượng, thời điểm và loại thay đổi cho cấp/thu hồi quyền, gỡ tài liệu, chỉnh chính sách và sửa điểm; chỉ người có quyền đọc được dấu vết. | UC-03, UC-07, UC-10, UC-17, UC-21, UC-25 | P1 |
 
-### 3.7. Nghiên cứu, huấn luyện và đánh giá
+### 3.7. Đầu ra nghiên cứu, huấn luyện và đánh giá
 
 Các yêu cầu này được thực hiện qua công cụ hoặc notebook nghiên cứu. Chúng không yêu cầu xây giao diện huấn luyện dành cho người dùng LMS và không đồng nghĩa giao toàn bộ hoạt động nghiên cứu cho một thành viên.
 
-| Mã | Yêu cầu | Tiêu chí chấp nhận | Use case |
+| Mã | Yêu cầu | Tiêu chí chấp nhận | Hoạt động nghiên cứu |
 |---|---|---|---|
-| FR-R01 | Bộ công cụ nghiên cứu phải hỗ trợ quản lý corpus và QA benchmark có phiên bản. | Mỗi mẫu có câu hỏi, đáp án hoặc hành vi mong đợi, định danh nguồn/vị trí khi có, loại tình huống và split; có manifest, quyền sử dụng và kết quả rà soát dữ liệu. | UC-R01 |
-| FR-R02 | Quy trình huấn luyện phải tạo và lưu adapter QLoRA từ dữ liệu instruction được kiểm soát. | Có dry-run, cấu hình, checkpoint, log và model/adapter card; tách dữ liệu huấn luyện khỏi nhãn test; ghi lại lỗi OOM/ngắt phiên và điểm tiếp tục nếu có. | UC-R02 |
-| FR-R03 | Bộ công cụ đánh giá phải chạy và lưu kết quả so sánh Base LLM, RAG và QLoRA+RAG. | Dùng cùng QA và protocol; lưu câu trả lời, context, citation, cấu hình, latency và metric từng mẫu; hỗ trợ khảo sát retrieval dense/hybrid/rerank khi được chọn, ghi nhận lượt lỗi. | UC-R03 |
-| FR-R04 | Quy trình đánh giá phải hỗ trợ kiểm tra thủ công và phân tích lỗi. | Có rubric và bộ mẫu được chấm; phân loại lỗi truy xuất, sinh câu trả lời, nguồn, từ chối và gợi ý; số liệu báo cáo truy ngược tới kết quả đã lưu. | UC-R04 |
+| FR-R01 | Bộ công cụ nghiên cứu phải hỗ trợ quản lý corpus và QA benchmark có phiên bản. | Mỗi mẫu có câu hỏi, đáp án hoặc hành vi mong đợi, định danh nguồn/vị trí khi có, loại tình huống và split; có manifest, quyền sử dụng và kết quả rà soát dữ liệu. | RES-01 |
+| FR-R02 | Quy trình huấn luyện phải tạo và lưu adapter QLoRA từ dữ liệu instruction được kiểm soát. | Có dry-run, cấu hình, checkpoint, log và model/adapter card; tách dữ liệu huấn luyện khỏi nhãn test; ghi lại lỗi OOM/ngắt phiên và điểm tiếp tục nếu có. | RES-02 |
+| FR-R03 | Bộ công cụ đánh giá phải chạy và lưu kết quả so sánh Base LLM, RAG và QLoRA+RAG. | Dùng cùng QA và protocol; lưu câu trả lời, context, citation, cấu hình, latency và metric từng mẫu; hỗ trợ khảo sát retrieval dense/hybrid/rerank khi được chọn, ghi nhận lượt lỗi. | RES-03 |
+| FR-R04 | Quy trình đánh giá phải hỗ trợ kiểm tra thủ công và phân tích lỗi. | Có rubric và bộ mẫu được chấm; phân loại lỗi truy xuất, sinh câu trả lời, nguồn, từ chối và gợi ý; số liệu báo cáo truy ngược tới kết quả đã lưu. | RES-04 |
 
-### 3.8. Chức năng mở rộng
+### 3.8. Chức năng bản cuối triển khai sau MVP
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận khi triển khai | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-X01 | Hệ thống hỗ trợ thanh toán để tham gia khóa học trả phí. | Kết quả giao dịch được xác thực phía server; chỉ cấp quyền khi thành công; thông báo giao dịch lặp không cấp quyền/ghi doanh thu nhiều lần. | UC-X01 | P2 |
-| FR-X02 | Hệ thống cung cấp lịch sử giao dịch và thống kê doanh thu theo vai trò. | Học viên xem giao dịch cá nhân, giáo viên xem doanh thu của mình, admin xem tổng hợp; phân biệt giao dịch chờ, thất bại và hoàn tiền. | UC-X02 | P2 |
-| FR-X03 | Hệ thống hỗ trợ video có câu hỏi tại các mốc thời gian. | Giáo viên cấu hình mốc; học viên xem, trả lời và nhận phản hồi theo chính sách; tiến độ không tăng sai khi tua lại hoặc tải lại. | UC-X03 | P2 |
-| FR-X04 | Trợ lý có chế độ kiến thức tổng quát được lựa chọn riêng. | Ghi rõ câu trả lời chưa được xác nhận bằng học liệu; không tự bật khi thiếu nguồn và không bỏ qua quyền/chính sách bài tập. | UC-X04 | P2 |
+| FR-X01 | Hệ thống phải hỗ trợ thanh toán để tham gia khóa học có phí. | Server tạo đơn với giá/điều kiện khóa học đã kiểm tra; xác thực thông báo hoặc đối soát với cổng thanh toán. Chỉ cấp quyền khi giao dịch thành công và đủ điều kiện lớp; callback/gửi lại không cấp quyền hoặc ghi doanh thu nhiều lần. Chờ/thất bại/hủy/hết hạn không cấp quyền; demo kiểm chứng trong sandbox. | UC-X01 | P1 |
+| FR-X02 | Hệ thống phải cung cấp lịch sử giao dịch và thống kê doanh thu theo vai trò. | Học viên xem giao dịch cá nhân, giáo viên xem khóa học phụ trách và admin xem tổng hợp theo quyền. Doanh thu là số tiền giao dịch thành công trừ khoản hoàn tiền đã xác nhận, ghi đơn vị tiền/phạm vi/thời điểm. Hoàn tiền có bằng chứng đối soát và dấu vết; không xóa giao dịch cũ. | UC-X02 | P1 |
+| FR-X03 | Hệ thống phải hỗ trợ video có câu hỏi tại các mốc thời gian. | Giáo viên quản lý video và mốc hỏi trong bài học; player dừng tại mốc, nhận câu trả lời rồi cho tiếp tục theo cấu hình. Trả lời sai có thể nhận gợi ý được phép hoặc quay lại đoạn đã chỉ định. Mốc/sự kiện gắn học viên và phiên bản, tua/tải lại không tăng tiến độ sai; không để đáp án riêng trong dữ liệu player. | UC-X03 | P1 |
+| FR-X04 | Trợ lý phải hỗ trợ lựa chọn nguồn kiến thức tổng quát riêng trong chế độ hỏi đáp. | Mặc định dùng học liệu. Khi thiếu nguồn, học viên có thể chủ động chọn nguồn tổng quát; phản hồi ghi chưa được xác nhận bằng học liệu, không có citation khóa học giả. Tất cả chính sách bài tập, quyền và quota vẫn áp dụng; không dùng lựa chọn này để lấy đáp án riêng. | UC-X04 | P1 |
 
 ## 4. Yêu cầu phi chức năng
 
@@ -140,11 +141,11 @@ Các yêu cầu này được thực hiện qua công cụ hoặc notebook nghi�
 
 | Mã | Yêu cầu chất lượng | Cách kiểm tra và tiêu chí chấp nhận | Liên quan |
 |---|---|---|---|
-| NFR-01 | Phân quyền phải được thực thi nhất quán ở mức đối tượng, kể cả file, retrieval, history và cache. | Bộ test sai vai trò/sai khóa học/sai chủ thể phải bị chặn ở tất cả trường hợp đã liệt kê. Kiểm tra lại trước khi trả kết quả AI nếu quyền thay đổi trong lúc xử lý. Thất bại một test truy cập trái phép là lỗi cần sửa, không bù bằng điểm AI cao. | FR-03–FR-04, FR-06–FR-36; BR-01–BR-02, BR-09 |
+| NFR-01 | Phân quyền phải áp dụng cho API, file, video, retrieval, lịch sử/cache và giao dịch. | Toàn bộ tình huống sai vai trò/lớp/chủ thể bị chặn, gồm media, hội thoại và đơn/giao dịch. Kiểm tra lại trước trả AI khi quyền thay đổi; quyền dashboard không cho đọc dữ liệu riêng. | FR-03–FR-04, FR-06–FR-36; BR-01–BR-02, BR-09 |
 | NFR-02 | Thông tin xác thực và bí mật hệ thống phải được bảo vệ khi lưu, truyền và ghi log. | Mật khẩu dùng cơ chế băm mật khẩu thích hợp, không lưu rõ; token/bí mật không xuất hiện trong repo, phản hồi hoặc log. Truy cập từ xa có xác thực phải dùng kết nối mã hóa; cấu hình cookie/token được rà theo cách triển khai đã chọn. | FR-01–FR-04 |
-| NFR-03 | File tải lên phải được kiểm tra trước khi lưu vào vùng phục vụ hoặc xử lý. | Test file sai loại, giả phần mở rộng, vượt giới hạn và tên file có ý đồ truy cập đường dẫn; tất cả bị từ chối hoặc cô lập an toàn. Không thực thi file như mã; dùng định danh lưu trữ do hệ thống tạo. | FR-12, FR-16, FR-29 |
-| NFR-04 | Nội dung câu hỏi và học liệu không được thay đổi quyền hoặc chính sách hệ thống. | Dùng bộ test prompt injection từ câu hỏi và tài liệu; kiểm tra không có quyền bị nâng, không truy xuất khóa học khác và không lộ đáp án riêng. Tỷ lệ tuân thủ nội dung sinh ra được báo cáo riêng theo NFR-31. | FR-18, FR-22–FR-23; UC-R04 |
-| NFR-05 | Dữ liệu hội thoại và log phải được thu thập ở mức cần thiết, với phạm vi truy cập rõ ràng. | Mặc định log vận hành không lưu toàn văn học liệu/hội thoại. Nếu cần dữ liệu đánh giá, nêu mục đích, quyền truy cập, cách ẩn danh và thời gian lưu; việc mở lịch sử áp dụng quyền hiện tại. | FR-25, FR-34, FR-36, FR-R04 |
+| NFR-03 | File tải lên phải được kiểm tra trước khi lưu vào vùng phục vụ hoặc xử lý. | Kiểm tra file sai loại/giả phần mở rộng, hỏng, vượt giới hạn hoặc tên có ý đồ truy cập đường dẫn; DOCX/PPTX phải được kiểm tra trước parse. Không thực thi file như mã; định danh lưu do hệ thống tạo. Video và học liệu tuân giới hạn riêng. | FR-12, FR-16, FR-29 |
+| NFR-04 | Nội dung câu hỏi và học liệu không được thay đổi quyền hoặc chính sách hệ thống. | Dùng bộ test prompt injection từ câu hỏi và tài liệu; kiểm tra không có quyền bị nâng, không truy xuất khóa học khác và không lộ đáp án riêng. Tỷ lệ tuân thủ nội dung sinh ra được báo cáo riêng theo NFR-31. | FR-18, FR-22–FR-23; RES-04 |
+| NFR-05 | Hội thoại, dữ liệu đánh giá và log phải có mục đích/phạm vi lưu và truy cập rõ. | MVP giữ ngữ cảnh phiên; bản cuối lưu lịch sử cá nhân, cho xóa và kiểm tra quyền hiện tại. Log không mặc định ghi toàn văn. Thời hạn lưu/cách xóa, mục đích đánh giá và quyền truy cập được cấu hình, ghi rõ trước triển khai. | FR-25, FR-34, FR-36, FR-R04 |
 | NFR-06 | Hệ thống phải giới hạn lạm dụng tài nguyên ở các chức năng xác thực, upload và AI. | Gửi yêu cầu vượt cấu hình kiểm thử phải nhận phản hồi giới hạn; không tạo vô hạn tác vụ hoặc hàng đợi. Quota và giới hạn tải lên kiểm tra phía server, không chỉ qua giao diện. | FR-01, FR-12, FR-19, FR-24, FR-35 |
 
 Các tiêu chí bảo mật được kiểm tra trên bộ tình huống đã xây dựng và cấu hình được lưu. Kết quả đạt bộ test không được diễn giải thành bảo đảm chống mọi cách tấn công có thể xảy ra.
@@ -154,8 +155,8 @@ Các tiêu chí bảo mật được kiểm tra trên bộ tình huống đã x�
 | Mã | Yêu cầu chất lượng | Điều kiện đo và mục tiêu đề xuất | Liên quan |
 |---|---|---|---|
 | NFR-07 | API nghiệp vụ LMS phải đáp ứng trong thời gian phù hợp với thao tác web. | Đề xuất p95 không quá 2 giây khi chạy 1.000 yêu cầu với 10 người dùng ảo trên dữ liệu thử nghiệm đã ghi nhận. Không tính truyền file, AI và dịch vụ ngoài; đo riêng từng nhóm endpoint thay vì chỉ lấy trung bình chung. | FR-01–FR-11, FR-17, FR-26–FR-33 |
-| NFR-08 | Thời gian trả lời AI phải được đo và kiểm soát theo cấu hình tài nguyên. | Đề xuất p95 không quá 120 giây cho 50 câu hỏi trong phạm vi ở tập pilot/validation, một lượt sinh đồng thời, tối đa 4.096 token đầu vào và 512 token đầu ra. Đo toàn bộ retrieval/rerank/generation phía server; ghi thêm thời gian chờ nếu có. Ghi model, lượng tử hóa, phần cứng và lỗi thay vì loại lượt lỗi khỏi báo cáo. | FR-19, FR-22, FR-R03 |
-| NFR-09 | Tác vụ ingestion không được giữ kết nối của thao tác tải lên đến khi xử lý hoàn tất. | Sau khi nhận và lưu file, đề xuất xác nhận tiếp nhận tác vụ trong 3 giây; thời gian truyền file đo riêng. Với bộ pilot, đo thời gian trích xuất/embedding và OCR riêng, không gộp PDF văn bản với PDF quét để báo một con số. | FR-12, FR-14–FR-16 |
+| NFR-08 | Thời gian trả lời AI phải được đo và kiểm soát theo cấu hình tài nguyên. | Mục tiêu p95 ≤ 120 giây cho 50 câu hỏi trong phạm vi ở development, một lượt sinh đồng thời, tối đa 4.096 token đầu vào/512 token sinh. Đo retrieval/rerank/generation và thời gian chờ; ghi model, phần cứng, lượng tử hóa, cache, lỗi và timeout. Tóm tắt có phép đo riêng. | FR-19, FR-22, FR-R03 |
+| NFR-09 | Tác vụ ingestion không được giữ kết nối của thao tác tải lên đến khi xử lý hoàn tất. | Sau nhận/lưu file, mục tiêu xác nhận tiếp nhận trong 3 giây; truyền file và xử lý nền đo riêng. Đo theo PDF văn bản, PDF OCR, DOCX, PPTX, TXT; không gộp các loại để che lỗi OCR hoặc thời gian xử lý. | FR-12, FR-14–FR-16 |
 | NFR-10 | Khối lượng yêu cầu AI phải được giới hạn theo khả năng phục vụ của nguyên mẫu. | Khởi đầu đề xuất một lượt generation đồng thời, tối đa 5 tác vụ chờ; quá giới hạn thì từ chối có thông báo. Chạy toàn bộ bộ pilot trong cấu hình đã chọn, ghi peak RAM/VRAM và số OOM; có lỗi OOM phải điều chỉnh trước khi khóa cấu hình demo. | FR-14–FR-15, FR-19, FR-24, FR-35 |
 
 Với tóm tắt tài liệu dài, nhóm chia tác vụ theo phần và hiển thị trạng thái tiến độ; không áp ngưỡng hỏi đáp 512 token đầu ra cho bản tóm tắt đầy đủ. Thời gian xử lý tóm tắt được đo theo số trang/token và loại tài liệu, từ đó xác định timeout phù hợp trước khi chốt MVP. Thời gian khởi động model và tải lại checkpoint được ghi riêng khỏi latency của dịch vụ đã sẵn sàng.
@@ -165,16 +166,16 @@ Với tóm tắt tài liệu dài, nhóm chia tác vụ theo phần và hiển t
 | Mã | Yêu cầu chất lượng | Cách kiểm tra và tiêu chí chấp nhận | Liên quan |
 |---|---|---|---|
 | NFR-11 | Lỗi AI phải được cô lập khỏi các nghiệp vụ LMS không phụ thuộc AI. | Tắt dịch vụ AI rồi kiểm tra đăng nhập, mở bài học, xem học liệu và nộp bài vẫn hoạt động; yêu cầu AI nhận trạng thái lỗi phù hợp, không chờ vô hạn. | FR-01, FR-10–FR-11, FR-17, FR-19, FR-29, FR-34 |
-| NFR-12 | Thao tác lặp hoặc thử lại không được gây dữ liệu trùng/mâu thuẫn. | Gửi lặp enrollment, retry ingestion và nộp cùng lượt quiz/bài tập; kết quả chỉ có bản ghi hợp lệ theo chính sách, không chấm hai lần hoặc nhân đôi chunk. | FR-08, FR-15, FR-28–FR-29 |
-| NFR-13 | Dữ liệu đã xác nhận lưu phải tồn tại sau khi tiến trình ứng dụng khởi động lại. | Lưu tài khoản/khóa học/file/lượt nộp/điểm, khởi động lại và đối chiếu. Các tác vụ bị gián đoạn phải được phát hiện để thử lại hoặc báo lỗi, không bị kẹt ở trạng thái đang xử lý mãi. | FR-03, FR-06, FR-12–FR-15, FR-28–FR-31 |
-| NFR-14 | Nguyên mẫu phải có quy trình sao lưu và kiểm tra khôi phục dữ liệu cần thiết. | Thực hiện một lần khôi phục trên môi trường thử: đối chiếu số bản ghi, quyền, điểm và checksum file với bản sao lưu. Chỉ mục có thể khôi phục hoặc xây lại từ corpus/manifest có phiên bản; checkpoint cần thiết không chỉ nằm trong phiên GPU tạm thời. | FR-12–FR-16, FR-28–FR-31, FR-R01–FR-R02 |
+| NFR-12 | Thao tác lặp hoặc thử lại không được gây dữ liệu trùng/mâu thuẫn. | Gửi lặp tham gia, ingestion, nộp bài, callback thanh toán và sự kiện video; không tạo quyền/chunk/điểm/doanh thu/tiến độ trùng. Giao dịch sai thứ tự được xử lý theo trạng thái đã xác thực. | FR-08, FR-15, FR-28–FR-29 |
+| NFR-13 | Dữ liệu đã xác nhận lưu phải tồn tại sau khi tiến trình ứng dụng khởi động lại. | Sau xác nhận lưu, restart và đối chiếu tài khoản/lớp/file/bài nộp/điểm, lịch sử, giao dịch và tiến độ video. Tác vụ gián đoạn được phát hiện để thử lại/báo lỗi; không kẹt xử lý vô hạn. | FR-03, FR-06, FR-12–FR-15, FR-28–FR-31 |
+| NFR-14 | Nguyên mẫu phải có quy trình sao lưu và kiểm tra khôi phục dữ liệu cần thiết. | Thử khôi phục DB/file và đối chiếu quyền, điểm, giao dịch, lịch sử, tiến độ video, checksum. Chỉ mục khôi phục hoặc xây lại từ corpus/manifest; checkpoint cần giữ ngoài phiên GPU tạm thời. | FR-12–FR-16, FR-28–FR-31, FR-R01–FR-R02 |
 
 ### 4.4. Tính toàn vẹn và nhất quán dữ liệu
 
 | Mã | Yêu cầu chất lượng | Cách kiểm tra và tiêu chí chấp nhận | Liên quan |
 |---|---|---|---|
 | NFR-15 | Các đối tượng dữ liệu phải có quan hệ hợp lệ và đúng phạm vi sở hữu. | Không tạo bài học, chunk, lượt nộp hoặc điểm tham chiếu đối tượng không tồn tại/sai khóa học. Bản ghi trùng định danh và quan hệ không hợp lệ bị từ chối; thao tác nhiều bước có kết quả nhất quán khi lỗi giữa chừng. | FR-06–FR-17, FR-26–FR-32 |
-| NFR-16 | File, metadata, chỉ mục và citation phải nhất quán theo phiên bản phục vụ. | Thay/gỡ tài liệu trong lúc truy vấn; kết quả phải dùng snapshot hợp lệ và được kiểm tra lại trước khi trả. Nếu nguồn hoặc quyền không còn hợp lệ, hủy/trả trạng thái thay đổi và cho thử lại, không trả nguồn cũ như hiện hành. | FR-13–FR-21, FR-24–FR-25 |
+| NFR-16 | File, metadata, chỉ mục và citation phải nhất quán theo phiên bản phục vụ. | Thử thay/gỡ tài liệu hoặc thu hồi quyền khi truy vấn. Phải dùng phiên bản hợp lệ và kiểm tra lại trước khi trả; nguồn/quyền không còn hợp lệ thì hủy/báo trạng thái thay đổi, không trả nội dung cũ như nguồn hiện hành. | FR-13–FR-21, FR-24–FR-25 |
 | NFR-17 | Thời gian và trạng thái bài đánh giá phải được xác định phía server. | Thử đổi giờ client, nộp tại thời điểm hết hạn và sửa đề khi đã có lượt làm; kết quả tuân theo thời gian server và phiên bản đề. Thời điểm lưu có múi giờ rõ, hiển thị cho người dùng Việt Nam theo UTC+7. | FR-27–FR-32 |
 
 ### 4.5. Khả năng sử dụng và tương thích giao diện
@@ -189,9 +190,9 @@ Với tóm tắt tài liệu dài, nhóm chia tác vụ theo phần và hiển t
 
 | Mã | Yêu cầu chất lượng | Cách kiểm tra và tiêu chí chấp nhận | Liên quan |
 |---|---|---|---|
-| NFR-21 | Môi trường phải có hướng dẫn cài đặt và cấu hình có thể tái lập. | Cài từ checkout sạch theo hướng dẫn, áp dụng cấu hình mẫu không chứa bí mật và chạy luồng tạo khóa học → upload → hỏi đáp. Ghi phiên bản dependency, dữ liệu mẫu và vị trí lấy model/adapter thay vì đưa toàn bộ weights vào Git. | FR-06, FR-12–FR-21, FR-R02 |
+| NFR-21 | Môi trường phải có hướng dẫn cài đặt và cấu hình có thể tái lập. | Cài từ checkout sạch, cấu hình mẫu không chứa bí mật, chạy cả luồng lõi và các tích hợp bản cuối; có đóng gói/hướng dẫn triển khai, cấu hình sandbox/production được phân biệt. Không đưa toàn bộ model weights vào Git. | FR-06, FR-12–FR-21, FR-R02 |
 | NFR-22 | Nghiệp vụ LMS, ingestion và xử lý AI phải có ranh giới rõ để thay đổi cấu hình. | Có giao diện đầu vào/đầu ra được mô tả; đổi adapter hoặc cấu hình retrieval không làm thay đổi quyền khóa học hay buộc huấn luyện lại khi thêm tài liệu. Kiểm thử cùng luồng với các cấu hình thí nghiệm được chọn. | FR-14–FR-24, FR-R02–FR-R03 |
-| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Có test cho các AC-01–AC-09 và các nhánh quyền/lỗi tương ứng với chức năng đã chọn. Toàn bộ test bắt buộc phải đạt trước khi nghiệm thu cấu hình; ghi rõ các use case chưa triển khai, không dùng code coverage để thay cho kiểm tra hành vi. | Toàn bộ yêu cầu trong phạm vi triển khai |
+| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Kiểm thử truy vết MVP-01–MVP-10 và FIN-01–FIN-09, BR và các nhánh quyền/lỗi. Chức năng sau MVP phải có bằng chứng trước nghiệm thu cuối; chưa triển khai ghi chưa kiểm chứng, không thay bằng code coverage. | Toàn bộ yêu cầu trong phạm vi triển khai |
 | NFR-24 | Tác vụ phải có thông tin đủ để theo dõi và phân tích lỗi. | Yêu cầu/tác vụ có ID, trạng thái, thời gian, loại lỗi và phiên bản cấu hình liên quan; kết quả benchmark truy được từng mẫu. Không ghi toàn văn dữ liệu nhạy cảm chỉ để phục vụ giám sát. | FR-14–FR-15, FR-34–FR-36, FR-R03–FR-R04 |
 | NFR-25 | Kết quả nghiên cứu phải có khả năng tái lập và so sánh công bằng. | Lưu checksum/split dữ liệu, cấu hình, seed, commit và môi trường chạy; chạy lại một tập mẫu theo protocol. Nếu có yếu tố không xác định, báo biến thiên và sai khác thay vì yêu cầu mọi lần sinh giống hệt từng chữ. | FR-R01–FR-R04 |
 
@@ -256,7 +257,9 @@ Khi đo hiệu năng, cấu hình quota của môi trường kiểm thử phải
 | AC-08 — Điểm, quyền lớp và nộp lặp | FR-09, FR-26–FR-32; NFR-01, NFR-12, NFR-15, NFR-17 |
 | AC-09 — Tái lập nghiên cứu | FR-R01–FR-R04; NFR-24–NFR-25 |
 
-## 6. Ma trận truy vết use cases và yêu cầu
+Ngoài các kịch bản AC, phần hoàn thiện sản phẩm phải đạt FIN-01–FIN-09 tại mục 13.2 của [SRS](../SRS.md). Ma trận tại mục 13.3–13.4 của SRS bao phủ toàn bộ yêu cầu chức năng và phi chức năng, gồm các chức năng triển khai sau MVP. Đạt các kiểm thử MVP chưa đồng nghĩa nghiệm thu sản phẩm cuối.
+
+## 6. Ma trận truy vết use cases, hoạt động nghiên cứu và yêu cầu
 
 | Use case | Yêu cầu chức năng tương ứng | Yêu cầu phi chức năng tiêu biểu |
 |---|---|---|
@@ -285,10 +288,10 @@ Khi đo hiệu năng, cấu hình quota của môi trường kiểm thử phải
 | UC-23 | FR-32 | NFR-01, NFR-07, NFR-15, NFR-17 |
 | UC-24 | FR-33 | NFR-01, NFR-05, NFR-07 |
 | UC-25 | FR-34–FR-36 | NFR-05–NFR-06, NFR-10–NFR-11, NFR-19, NFR-24 |
-| UC-R01 | FR-R01 | NFR-25–NFR-26 |
-| UC-R02 | FR-R02 | NFR-14, NFR-21–NFR-22, NFR-25 |
-| UC-R03 | FR-R03 | NFR-08, NFR-24–NFR-30 |
-| UC-R04 | FR-R04 | NFR-05, NFR-23–NFR-25, NFR-27–NFR-32 |
+| RES-01 | FR-R01 | NFR-25–NFR-26 |
+| RES-02 | FR-R02 | NFR-14, NFR-21–NFR-22, NFR-25 |
+| RES-03 | FR-R03 | NFR-08, NFR-24–NFR-30 |
+| RES-04 | FR-R04 | NFR-05, NFR-23–NFR-25, NFR-27–NFR-32 |
 | UC-X01 | FR-X01 | NFR-01–NFR-02, NFR-12, NFR-15 |
 | UC-X02 | FR-X02 | NFR-01, NFR-05, NFR-15 |
 | UC-X03 | FR-X03 | NFR-01, NFR-12, NFR-18–NFR-20 |
@@ -296,23 +299,23 @@ Khi đo hiệu năng, cấu hình quota của môi trường kiểm thử phải
 
 Ma trận giúp kiểm tra mỗi use case đã có yêu cầu cụ thể và xác định phần nào cần cập nhật khi thay đổi phạm vi. Các NFR dùng chung như triển khai và kiểm thử còn áp dụng cho toàn bộ chức năng được chọn, không chỉ các liên kết tiêu biểu trong bảng.
 
-## 7. Tham số và chính sách cần thống nhất trước khi chốt MVP
+## 7. Phân chia giai đoạn và quyết định nghiệp vụ
 
-| Nội dung | Đề xuất hoặc cách xác định | Tác động |
+| Nội dung | MVP | Sản phẩm cuối |
 |---|---|---|
-| Cấp tài khoản | Có thể dùng tài khoản cấp sẵn cho demo đầu tiên; tự đăng ký chỉ triển khai nếu chọn FR-05. | FR-01–FR-05 |
-| Điều kiện tham gia | Chọn luồng lớp công khai/riêng tư và quy trình giáo viên cấp/thu hồi quyền. | FR-06–FR-09 |
-| Định dạng và kích thước file | Ưu tiên PDF văn bản để kiểm chứng luồng đầu tiên; thử nghiệm thêm PPT/PPTX, DOC/DOCX, TXT và OCR trên corpus thực. Mức khởi đầu đề xuất 20 MiB/file, cấu hình được và rà lại bằng kích thước corpus. | FR-12, FR-16, NFR-03, NFR-09 |
-| Thay thế/gỡ học liệu | Đề xuất giữ bản cũ hợp lệ đến khi bản mới sẵn sàng; khi gỡ thì ngừng phục vụ ngay. Xác định cách giữ metadata của citation lịch sử và việc xóa dữ liệu lưu. | FR-13, FR-17, FR-25, NFR-16 |
-| Mức trợ giúp | Xác định mức gợi ý theo bài luyện tập, bài có chấm điểm và bài đang thi; cấu hình từ chối hoặc hỗ trợ giới hạn khi chưa có chính sách rõ. | FR-22–FR-23, NFR-31 |
-| Hội thoại và dữ liệu đánh giá | Xác định có lưu lịch sử, thời hạn lưu và quy trình xóa/ẩn danh. Chỉ số vận hành không yêu cầu toàn văn hội thoại. | FR-25, NFR-05 |
-| Quiz/bài tập và tiến độ | Chốt tiêu chí hoàn thành, số lượt, nộp muộn, nộp lại, sửa đề và công bố điểm/đáp án. | FR-11, FR-26–FR-32 |
-| Quota, hàng đợi và timeout | Khởi đầu đề xuất 20 yêu cầu AI/giờ/học viên, một lượt sinh đồng thời, tối đa 5 tác vụ chờ; timeout hỏi đáp 180 giây. Tóm tắt/ingestion có giới hạn riêng sau đo pilot, không dùng chung timeout hỏi đáp. | FR-35, NFR-06, NFR-08–NFR-11 |
-| Model, retrieval và nơi phục vụ AI | Chọn cấu hình phù hợp tài nguyên thử nghiệm; xác định cách tích hợp với web và thông báo khi dịch vụ ngắt. Không ràng buộc mô hình phải chạy liên tục. | FR-18–FR-24, FR-34, NFR-10–NFR-11 |
-| Chỉ tiêu chất lượng AI | Rà lại NFR-26–NFR-32 bằng pilot/validation, thống nhất rubric và ngưỡng trước test cuối. Nếu thay ngưỡng phải ghi quyết định và lý do. | FR-R01–FR-R04 |
+| Tài khoản | Admin cấp tài khoản | Có thêm đăng ký học viên; vai trò giáo viên/admin do người có quyền cấp. |
+| Khóa học | Giáo viên cấp quyền lớp | Công khai/riêng tư, miễn phí/có phí; mã/mật khẩu và thanh toán theo điều kiện lớp. |
+| Học liệu | PDF văn bản | PDF, DOCX, PPTX, TXT; Docling và OCR PDF quét khi cần, có kiểm tra chất lượng/vị trí nguồn. |
+| Hội thoại | Ngữ cảnh phiên | Lưu/xem/tiếp tục/xóa lịch sử cá nhân; quyền hiện tại vẫn áp dụng. |
+| Thống kê | Kết quả/tiến độ lớp, vận hành cơ bản | Dashboard nền tảng, lịch sử giao dịch và doanh thu theo quyền. |
+| Bài học | Văn bản/PDF, tiến độ tự đánh dấu | Có thêm video tương tác và trạng thái các mốc kiểm tra. |
+| Trợ lý | Ba chế độ dựa trên học liệu | Giữ ba chế độ; lựa chọn nguồn kiến thức tổng quát riêng trong hỏi đáp, ghi nhãn và giữ chính sách bài tập. |
+| Nghiên cứu | Chuẩn bị và thử từ sớm | Bắt buộc có QLoRA, benchmark, so sánh và phân tích lỗi trước hoàn thành đồ án. |
+
+MVP không thay thế phạm vi sản phẩm cuối. Thanh toán/video đã được đưa vào phần cam kết của đồ án; không được đánh dấu tùy chọn chỉ vì triển khai sau MVP. Cấu hình model, retrieval, cổng thanh toán, OCR, video và nơi inference được chốt trong thiết kế kỹ thuật trước nghiệm thu.
 
 ## 8. Kết quả phân tích và hướng hoàn thiện SRS
 
-Phần phân tích xác định 36 yêu cầu chức năng của LMS, 4 yêu cầu nghiên cứu, 4 yêu cầu mở rộng và 32 yêu cầu phi chức năng. Các yêu cầu được liên kết với use cases và có cách kiểm chứng để hỗ trợ thiết kế, triển khai và nghiệm thu nguyên mẫu.
+Phần phân tích xác định 40 yêu cầu chức năng sản phẩm (FR-01–FR-36 và FR-X01–FR-X04), 4 đầu ra nghiên cứu và 32 yêu cầu phi chức năng. Các yêu cầu được liên kết với use cases và có cách kiểm chứng để hỗ trợ thiết kế, triển khai và nghiệm thu sản phẩm cuối; bộ MVP được dùng cho mốc tích hợp đầu tiên.
 
-Ở bước tiếp theo, em sử dụng danh mục và ma trận truy vết để xác định chức năng cần đưa vào MVP, chức năng giữ ở giai đoạn sau và các chính sách phải thống nhất trước khi triển khai. Các tiêu chí định lượng được kiểm chứng bằng dữ liệu pilot, còn quyền truy cập, dữ liệu học tập và khả năng xử lý lỗi là những điều kiện phải được kiểm tra trong các luồng đã chọn.
+Danh mục và ma trận truy vết đã được sử dụng để hoàn thiện phạm vi MVP và SRS phiên bản 1.1. Ở bước tiếp theo, nhóm thiết kế và triển khai theo các yêu cầu được chọn, kiểm chứng mục tiêu định lượng trên development và đánh giá bằng test độc lập. Quyền truy cập, dữ liệu học tập và khả năng xử lý lỗi là những điều kiện phải được kiểm tra trong các luồng đã chọn.
