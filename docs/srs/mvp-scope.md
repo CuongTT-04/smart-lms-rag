@@ -4,6 +4,7 @@
 - **Sinh viên thực hiện:** Trần Tuấn Cường.
 - **Hạng mục:** Chốt phạm vi MVP.
 - **Ngày lập:** 01/10/2026.
+- **Ngày cập nhật:** 02/10/2026.
 
 ## 1. Mục tiêu của MVP
 
@@ -11,21 +12,48 @@ MVP là phiên bản nguyên mẫu thể hiện được một quy trình học 
 
 Trong phần việc này, em lựa chọn chức năng từ [phân tích actors và use cases](actors-usecases.md) và [yêu cầu chức năng, phi chức năng](requirements.md), đồng thời giới hạn cách triển khai của từng chức năng. Việc chốt phạm vi giúp nhóm tập trung vào sản phẩm chạy được, dữ liệu có thể truy vết và thí nghiệm có kết quả đo.
 
-Phạm vi được chốt trong tài liệu là phạm vi cần thực hiện, không phải xác nhận phần mềm hoặc mô hình đã đạt các tiêu chí. Những giới hạn và mục tiêu định lượng đều phải được kiểm chứng trong quá trình triển khai.
+Tài liệu xác định các chức năng cần triển khai và điều kiện nghiệm thu của nguyên mẫu. Tiến độ thực hiện được trình bày riêng tại mục 12; các mục tiêu định lượng sẽ được kiểm chứng khi nhóm triển khai và đánh giá hệ thống.
 
 ## 2. Quyết định phạm vi
 
-### 2.1. Những nội dung bắt buộc
+### 2.1. Phạm vi cần triển khai theo vai trò
 
-- Có tài khoản học viên, giáo viên và quản trị viên; quyền truy cập được kiểm tra theo khóa học và đối tượng.
-- Giáo viên tạo khóa học, bài học, cấp quyền thành viên, tải lên và quản lý học liệu.
-- Học viên đọc học liệu và sử dụng ba chế độ trợ lý: hỏi đáp, gợi ý làm bài, tóm tắt.
-- Câu trả lời dựa trên học liệu có nguồn kiểm chứng; thiếu bằng chứng thì hỏi lại hoặc thông báo giới hạn.
-- Có quiz trắc nghiệm, bài tập tự luận/nộp file, điểm, phản hồi và tiến độ cơ bản.
-- Có trạng thái xử lý tài liệu, kiểm soát sử dụng AI và dấu vết các thay đổi quan trọng.
-- Có corpus/QA benchmark, thí nghiệm QLoRA và so sánh Base LLM, RAG, QLoRA+RAG bằng số liệu.
+MVP được chốt ở mức nguyên mẫu cho luồng giáo viên tạo khóa học, tải tài liệu và cấp quyền học viên; học viên đọc học liệu, dùng trợ lý AI và thực hiện bài đánh giá cơ bản. Các chức năng dưới đây là phạm vi nhóm cần triển khai.
 
-### 2.2. Những nội dung hoãn lại
+**Học viên**
+
+- Đăng nhập, đăng xuất.
+- Mở các khóa học đã được cấp quyền tham gia.
+- Xem bài học và tài liệu thuộc khóa học được phép truy cập.
+- Làm quiz trắc nghiệm, nộp bài tập tự luận hoặc file.
+- Xem điểm, phản hồi và đánh dấu bài học hoàn thành.
+- Dùng trợ lý để hỏi đáp tài liệu, nhận gợi ý làm bài và tóm tắt nội dung.
+
+**Giáo viên**
+
+- Tạo, chỉnh sửa khóa học do mình phụ trách.
+- Tạo và sắp xếp bài học trong khóa học.
+- Tải lên, quản lý PDF có lớp văn bản và theo dõi trạng thái xử lý.
+- Cấp hoặc thu hồi quyền tham gia của học viên.
+- Tạo quiz, bài tập và chấm bài tự luận theo cách thủ công.
+- Xem bài nộp, kết quả và tiến độ của học viên trong lớp.
+
+**Quản trị viên**
+
+- Tạo, cập nhật, khóa hoặc mở khóa tài khoản.
+- Gán vai trò và kiểm soát quyền quản trị theo phạm vi được cấp.
+- Kiểm tra tình trạng vận hành cơ bản của hệ thống.
+
+**Trợ lý AI**
+
+- Hỗ trợ ba chế độ hỏi đáp, gợi ý làm bài và tóm tắt trong cùng giao diện.
+- Chỉ truy xuất học liệu của khóa học mà người dùng có quyền truy cập.
+- Trả lời dựa trên bằng chứng; thiếu thông tin thì hỏi lại hoặc thông báo giới hạn. Gợi ý phải tuân theo chính sách bài tập và không tiết lộ đáp án được bảo vệ.
+- Hiển thị tên tài liệu, trang PDF và mục nguồn để người học đối chiếu.
+
+Phần nghiên cứu của đồ án dự kiến so sánh Base LLM, RAG và QLoRA+RAG trên GPU T4 của Google Colab Free. Nhóm cần chuẩn bị corpus, QA benchmark, thực hiện thí nghiệm và báo cáo kết quả; các đầu ra nghiên cứu được trình bày tại mục 5.
+
+### 2.2. Những nội dung ngoài phạm vi MVP
 
 - Tự đăng ký tài khoản và tìm kiếm khóa học công khai.
 - Lưu, xem lại và tiếp tục hội thoại qua các phiên đăng nhập.
@@ -41,14 +69,14 @@ Hỏi đáp, gợi ý và tóm tắt là ba chế độ trong cùng giao diện 
 
 | Nội dung | Phạm vi được chọn |
 |---|---|
-| Môn học | Hai môn để kiểm chứng ban đầu; môn thứ ba bổ sung nếu hoàn thành dữ liệu và thời gian cho phép. |
-| Corpus | Mục tiêu 20–50 tài liệu có quyền sử dụng, thuộc các môn đã chọn; kiểm tra định dạng và chất lượng trước khi đưa vào bộ demo. |
-| QA pilot | 50 mẫu trước rà soát trùng lặp, gồm 25 mẫu của thành viên A và 25 mẫu của thành viên B. |
+| Môn học | Ba môn đã có dữ liệu pilot: Triết học Mác–Lênin (THMLN), Kinh tế chính trị Mác–Lênin (KTCTMLN) và Chủ nghĩa xã hội khoa học (CNXHKH). |
+| Corpus | Mục tiêu 20–50 tài liệu có quyền sử dụng; hiện đã thu thập 27 PDF cùng metadata. Cần kiểm tra định dạng và chất lượng trước khi đưa vào bộ demo. |
+| QA pilot | Hiện có 50 mẫu trước rà soát trùng lặp: 24 mẫu THMLN của thành viên A và 26 mẫu của thành viên B, gồm 13 mẫu KTCTMLN và 13 mẫu CNXHKH. |
 | Benchmark hoàn thiện | Tối thiểu 300 mẫu hợp lệ: 100 mẫu development, gồm các mẫu pilot được giữ lại, và 200 mẫu test độc lập. |
 | Dữ liệu nghiệp vụ | Ít nhất một admin, hai giáo viên, bốn học viên và hai khóa học có quyền khác nhau; có quiz, bài tập và dữ liệu điểm/tiến độ để kiểm thử. |
 | Người dùng đồng thời | Kiểm thử API LMS với 10 người dùng ảo; dịch vụ model chỉ sinh một câu trả lời tại một thời điểm trong cấu hình ban đầu. |
 
-Các số lượng trên là mục tiêu kiểm chứng của đồ án, không được đưa thành giới hạn cố định cho số người dùng hoặc khóa học của phần mềm. Các mẫu pilot bị loại phải được ghi lý do và bổ sung nếu cần để đủ bộ development đã chọn.
+Số lượng corpus và QA pilot hiện có được ghi để làm căn cứ chuẩn bị đánh giá. Quy mô benchmark hoàn thiện, dữ liệu nghiệp vụ và người dùng đồng thời là mục tiêu kiểm chứng; chúng không đặt giới hạn cố định cho số người dùng hoặc khóa học của phần mềm. Các mẫu pilot bị loại phải được ghi lý do và bổ sung nếu cần để đủ bộ development đã chọn.
 
 ## 3. Chức năng nằm trong MVP
 
@@ -57,7 +85,7 @@ Các số lượng trên là mục tiêu kiểm chứng của đồ án, không 
 | Nhóm chức năng | Yêu cầu được chọn | Mức thực hiện trong MVP | Giới hạn |
 |---|---|---|---|
 | Xác thực | FR-01–FR-02; UC-02 | Đăng nhập, đăng xuất, xử lý tài khoản bị khóa và phiên hết hạn. | Dùng tài khoản cấp sẵn; không xây đăng ký, xác minh email hoặc khôi phục mật khẩu tự phục vụ. |
-| Quản lý tài khoản | FR-03–FR-04; UC-03 | Admin tạo/sửa tài khoản, khóa/mở khóa, gán vai trò qua chức năng quản trị cơ bản. | Không xóa vĩnh viễn tài khoản; không tự cấp vai trò giáo viên/admin; ngăn mất admin hoạt động cuối cùng. |
+| Quản lý tài khoản | FR-03–FR-04; UC-03 | Admin tạo/sửa tài khoản, khóa/mở khóa, gán vai trò và quản lý trong phạm vi quyền được cấp. | Không xóa vĩnh viễn tài khoản; không tự cấp vai trò giáo viên/admin; ngăn mất admin hoạt động cuối cùng. |
 | Khóa học | FR-06; UC-04 | Giáo viên tạo/sửa tên, mô tả và trạng thái khóa học; quản lý khóa học phụ trách. | Dùng lớp được cấp quyền; không có giá bán, danh mục marketplace hoặc tìm kiếm công khai. |
 | Thành viên | FR-08–FR-09; UC-06–UC-07 | Giáo viên chọn tài khoản học viên có sẵn để cấp/thu hồi quyền; học viên mở khóa học trong danh sách được cấp. | Không tự tham gia qua mã/mật khẩu, không duyệt đơn tham gia. Cấp quyền là điều kiện tham gia của MVP. |
 | Bài học | FR-10; UC-08 | Tạo/sửa nội dung văn bản, sắp xếp và liên kết tài liệu/bài đánh giá. | Không xây trình soạn bài giảng phức tạp hoặc dịch vụ streaming. |
@@ -72,7 +100,7 @@ Khóa học có trạng thái nháp, đang mở và lưu trữ. Nháp chỉ hi�
 | Upload học liệu | FR-12; UC-10 | Giáo viên tải PDF văn bản và khai báo tên/phạm vi sử dụng; PDF xuất từ slide được xử lý như PDF. | Tối đa 20 MiB và 100 trang/file; chưa nhận trực tiếp PPT/PPTX, DOC/DOCX, TXT. |
 | Phiên bản và gỡ tài liệu | FR-13; UC-10 | Thay thế tạo bản mới; bản cũ tiếp tục phục vụ đến khi bản mới sẵn sàng. Gỡ tài liệu ngừng phục vụ ngay. | Không xây giao diện lịch sử mọi phiên bản; không trả nội dung bản đã ngừng phục vụ qua citation cũ. |
 | Xử lý nền | FR-14–FR-16; UC-11 | Trích xuất, chia đoạn, tạo embedding/chỉ mục; hiển thị trạng thái và thử lại khi lỗi. | PDF quét hoặc phần trang không trích xuất được phải được phát hiện và báo chưa hỗ trợ/không đủ nội dung; OCR tự động hoãn lại. Không bỏ trang lỗi mà vẫn báo sẵn sàng toàn tài liệu. |
-| Đọc và mở nguồn | FR-17; UC-12 | Mở PDF theo quyền, hiển thị tên tài liệu và số trang của phiên bản phục vụ. | PDF xuất từ slide dùng số trang PDF; không tự gán số slide của file gốc. Nếu viewer không nhảy trang, cung cấp chỉ dẫn trang rõ. |
+| Đọc và mở nguồn | FR-17; UC-12 | Mở PDF theo quyền, hiển thị tên tài liệu, số trang của phiên bản phục vụ và mục nguồn để đối chiếu. Tên chương/mục được bổ sung khi trích xuất được từ tài liệu. | PDF xuất từ slide dùng số trang PDF; không tự gán số slide của file gốc hoặc tạo tên chương/mục không có trong tài liệu. Nếu viewer không nhảy trang, cung cấp chỉ dẫn trang rõ. |
 | Phạm vi trợ lý | FR-18; UC-13–UC-17 | Mọi chế độ lấy học liệu theo quyền hiện tại và trạng thái sẵn sàng. | Không dùng tài liệu khóa học khác, tài liệu đã gỡ hoặc đáp án riêng trong context học viên. |
 | Hỏi đáp | FR-19–FR-21; UC-13 | Trả lời dựa trên bằng chứng, gắn nguồn và xử lý thiếu nguồn/câu hỏi mơ hồ. | Không fallback sang kiến thức tổng quát; không xem ngưỡng tương đồng là bảo đảm mọi câu trả lời đều đúng. |
 | Gợi ý | FR-22–FR-23; UC-14, UC-17 | Giáo viên thiết lập phạm vi học liệu và mức trợ giúp; trợ lý gợi nhắc kiến thức, đặt câu hỏi hoặc chỉ ra bước tiếp theo. | Không tự nộp bài hoặc chấm điểm chính thức; không trả lời theo yêu cầu bỏ qua chính sách. |
@@ -286,8 +314,3 @@ Khi phát hiện cần thay đổi phạm vi, nhóm ghi rõ nội dung, lý do, 
 
 Thay đổi ngưỡng AI, model hoặc cấu hình retrieval phải được quyết định trên development trước đánh giá cuối. Nhóm không tự mở thêm chức năng chỉ vì có công nghệ mới, không cắt phần nghiên cứu bắt buộc mà vẫn giữ nguyên tuyên bố hoàn thành đề tài và không coi việc viết xong tài liệu phạm vi là sản phẩm đã được nghiệm thu.
 
-## 12. Phần việc tiếp theo của em
-
-Sau khi chốt phạm vi, em dùng các chức năng và kịch bản nghiệm thu đã chọn để xây 25 QA pilot của phần B, phối hợp với thành viên A về corpus và định danh nguồn. Các mẫu hỏi đáp, gợi ý, tóm tắt và giới hạn được gán hành vi mong đợi theo đúng phạm vi trợ lý; câu trả lời và vị trí nguồn được kiểm tra trên tài liệu thực tế.
-
-Kết quả phần B được kết hợp với dữ liệu của A để hoàn thiện development, từ đó kiểm chứng cấu hình và chuẩn bị bộ test độc lập. Phân tích SRS/MVP phục vụ việc triển khai của nhóm, không đồng nghĩa một thành viên phải tự thực hiện toàn bộ module và thí nghiệm.
