@@ -4,7 +4,7 @@
 - **Sinh viên thực hiện:** Trần Tuấn Cường.
 - **Hạng mục:** Xác định functional và non-functional requirements.
 - **Ngày lập:** 01/10/2026.
-- **Ngày cập nhật:** 02/10/2026.
+- **Ngày cập nhật:** 03/10/2026.
 
 ## 1. Mục đích và phạm vi phân tích
 
@@ -12,7 +12,7 @@ Hệ thống được xây dựng để giáo viên tổ chức khóa học và 
 
 Trong phần việc này, em chuyển kết quả [phân tích actors và use cases](actors-usecases.md) thành các yêu cầu có thể thiết kế, triển khai và kiểm thử. Yêu cầu chức năng mô tả những hành vi hệ thống cần thực hiện. Yêu cầu phi chức năng xác định chất lượng, điều kiện vận hành và các giới hạn cần kiểm soát khi thực hiện những hành vi đó.
 
-Phạm vi bao gồm nghiệp vụ LMS, xử lý học liệu và trợ lý theo khóa học. Các yêu cầu đối với corpus, huấn luyện QLoRA và benchmark được tách thành nhóm nghiên cứu. Thanh toán, doanh thu, video tương tác và nguồn kiến thức tổng quát được triển khai sau MVP nhưng thuộc phạm vi sản phẩm cuối. Chức năng được chọn và giới hạn triển khai đã được cụ thể hóa trong [phạm vi MVP](mvp-scope.md) và [SRS phiên bản 1.1](../SRS.md); tài liệu này đặc tả toàn bộ danh mục yêu cầu của sản phẩm cuối để truy vết.
+Phạm vi bao gồm nghiệp vụ LMS, xử lý học liệu và trợ lý theo khóa học. Các yêu cầu đối với corpus, huấn luyện QLoRA và benchmark được tách thành nhóm nghiên cứu. Thanh toán, doanh thu, video tương tác và nguồn kiến thức tổng quát được triển khai sau MVP nhưng thuộc phạm vi sản phẩm cuối. Chức năng được chọn và giới hạn triển khai đã được cụ thể hóa trong [phạm vi MVP](mvp-scope.md) và [SRS phiên bản 1.2](../SRS.md); tài liệu này đặc tả toàn bộ danh mục yêu cầu của sản phẩm cuối để truy vết.
 
 ## 2. Quy ước và điều kiện áp dụng
 
@@ -135,6 +135,17 @@ Các yêu cầu này được thực hiện qua công cụ hoặc notebook nghi�
 | FR-X03 | Hệ thống phải hỗ trợ video có câu hỏi tại các mốc thời gian. | Giáo viên quản lý video và mốc hỏi trong bài học; player dừng tại mốc, nhận câu trả lời rồi cho tiếp tục theo cấu hình. Trả lời sai có thể nhận gợi ý được phép hoặc quay lại đoạn đã chỉ định. Mốc/sự kiện gắn học viên và phiên bản, tua/tải lại không tăng tiến độ sai; không để đáp án riêng trong dữ liệu player. | UC-X03 | P1 |
 | FR-X04 | Trợ lý phải hỗ trợ lựa chọn nguồn kiến thức tổng quát riêng trong chế độ hỏi đáp. | Mặc định dùng học liệu. Khi thiếu nguồn, học viên có thể chủ động chọn nguồn tổng quát; phản hồi ghi chưa được xác nhận bằng học liệu, không có citation khóa học giả. Tất cả chính sách bài tập, quyền và quota vẫn áp dụng; không dùng lựa chọn này để lấy đáp án riêng. | UC-X04 | P1 |
 
+### 3.9. Chính sách học liệu và watermark
+
+Học liệu mới tải lên mặc định ở chế độ bảo vệ: chỉ xem trong hệ thống, có watermark và không cho người xem tải bản tài liệu. Giáo viên phụ trách có thể chuyển riêng từng học liệu sang chế độ công khai: bỏ watermark và cho người có quyền đọc tải bản không watermark. Chuyển lại chế độ bảo vệ khôi phục watermark và chặn yêu cầu tải tiếp theo. Công khai học liệu chỉ là chính sách xem/tải, không tự công khai khóa học, cấp quyền thành viên hoặc công bố đáp án riêng. Hai chế độ là một lựa chọn thống nhất, không có nút tắt watermark độc lập trong chế độ bảo vệ.
+
+| Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
+|---|---|---|---|---|
+| FR-37 | Giáo viên phải có thể quản lý chính sách xem/tải theo từng học liệu. | Upload mới mặc định bảo vệ (chỉ xem, có watermark, không tải); công khai (không watermark, được tải) do giáo viên phụ trách chọn trong cài đặt riêng học liệu. Backend kiểm tra quyền hiện tại và chế độ cho mọi yêu cầu tải, kể cả URL/API trực tiếp; công khai không tự mở quyền khóa học hoặc đáp án. Chuyển lại bảo vệ chặn lần tải tiếp theo; thay file giữ chính sách hiện hành của học liệu. | UC-10, UC-12 | P1 |
+| FR-38 | Hệ thống phải tự áp dụng hoặc bỏ watermark theo chế độ của học liệu. | Bản xem của học liệu bảo vệ có watermark nhận diện học liệu/hệ thống và vẫn đọc được, không chỉ là lớp giao diện có thể ẩn để lấy bản sạch. Công khai cung cấp bản xem và bản tải không watermark. Không cho học viên thay chế độ; không phục vụ bản sạch qua API/file/cache/citation khi bảo vệ. Lỗi tạo bản xem bảo vệ không được fallback sang file gốc sạch. Giữ file gốc riêng và vị trí nguồn, không đưa watermark vào RAG. | UC-10–UC-12 | P1 |
+
+Watermark được áp dụng cho bản trình bày học liệu phục vụ người xem; file gốc được giữ riêng để trích xuất/OCR và tạo bản công khai không watermark. Không ghi watermark vào văn bản/chunk đưa vào RAG và không làm lệch vị trí citation. Hệ thống không bảo đảm ngăn chụp màn hình hoặc thu hồi bản đã tải khi học liệu từng công khai; không coi ẩn nút tải hay chặn chuột phải là kiểm soát quyền tải phía máy chủ.
+
 ## 4. Yêu cầu phi chức năng
 
 ### 4.1. Bảo mật và quyền riêng tư
@@ -192,7 +203,7 @@ Với tóm tắt tài liệu dài, nhóm chia tác vụ theo phần và hiển t
 |---|---|---|---|
 | NFR-21 | Môi trường phải có hướng dẫn cài đặt và cấu hình có thể tái lập. | Cài từ checkout sạch, cấu hình mẫu không chứa bí mật, chạy cả luồng lõi và các tích hợp bản cuối; có đóng gói/hướng dẫn triển khai, cấu hình sandbox/production được phân biệt. Không đưa toàn bộ model weights vào Git. | FR-06, FR-12–FR-21, FR-R02 |
 | NFR-22 | Nghiệp vụ LMS, ingestion và xử lý AI phải có ranh giới rõ để thay đổi cấu hình. | Có giao diện đầu vào/đầu ra được mô tả; đổi adapter hoặc cấu hình retrieval không làm thay đổi quyền khóa học hay buộc huấn luyện lại khi thêm tài liệu. Kiểm thử cùng luồng với các cấu hình thí nghiệm được chọn. | FR-14–FR-24, FR-R02–FR-R03 |
-| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Kiểm thử truy vết MVP-01–MVP-10 và FIN-01–FIN-09, BR và các nhánh quyền/lỗi. Chức năng sau MVP phải có bằng chứng trước nghiệm thu cuối; chưa triển khai ghi chưa kiểm chứng, không thay bằng code coverage. | Toàn bộ yêu cầu trong phạm vi triển khai |
+| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Kiểm thử truy vết MVP-01–MVP-10 và FIN-01–FIN-10, BR và các nhánh quyền/lỗi. Chức năng sau MVP phải có bằng chứng trước nghiệm thu cuối; chưa triển khai ghi chưa kiểm chứng, không thay bằng code coverage. | Toàn bộ yêu cầu trong phạm vi triển khai |
 | NFR-24 | Tác vụ phải có thông tin đủ để theo dõi và phân tích lỗi. | Yêu cầu/tác vụ có ID, trạng thái, thời gian, loại lỗi và phiên bản cấu hình liên quan; kết quả benchmark truy được từng mẫu. Không ghi toàn văn dữ liệu nhạy cảm chỉ để phục vụ giám sát. | FR-14–FR-15, FR-34–FR-36, FR-R03–FR-R04 |
 | NFR-25 | Kết quả nghiên cứu phải có khả năng tái lập và so sánh công bằng. | Lưu checksum/split dữ liệu, cấu hình, seed, commit và môi trường chạy; chạy lại một tập mẫu theo protocol. Nếu có yếu tố không xác định, báo biến thiên và sai khác thay vì yêu cầu mọi lần sinh giống hệt từng chữ. | FR-R01–FR-R04 |
 
@@ -257,7 +268,7 @@ Khi đo hiệu năng, cấu hình quota của môi trường kiểm thử phải
 | AC-08 — Điểm, quyền lớp và nộp lặp | FR-09, FR-26–FR-32; NFR-01, NFR-12, NFR-15, NFR-17 |
 | AC-09 — Tái lập nghiên cứu | FR-R01–FR-R04; NFR-24–NFR-25 |
 
-Ngoài các kịch bản AC, phần hoàn thiện sản phẩm phải đạt FIN-01–FIN-09 tại mục 13.2 của [SRS](../SRS.md). Ma trận tại mục 13.3–13.4 của SRS bao phủ toàn bộ yêu cầu chức năng và phi chức năng, gồm các chức năng triển khai sau MVP. Đạt các kiểm thử MVP chưa đồng nghĩa nghiệm thu sản phẩm cuối.
+Ngoài các kịch bản AC, phần hoàn thiện sản phẩm phải đạt FIN-01–FIN-10 tại mục 13.2 của [SRS](../SRS.md). Ma trận tại mục 13.3–13.4 của SRS bao phủ toàn bộ yêu cầu chức năng và phi chức năng, gồm các chức năng triển khai sau MVP. Đạt các kiểm thử MVP chưa đồng nghĩa nghiệm thu sản phẩm cuối.
 
 ## 6. Ma trận truy vết use cases, hoạt động nghiên cứu và yêu cầu
 
@@ -272,9 +283,9 @@ Ngoài các kịch bản AC, phần hoàn thiện sản phẩm phải đạt FIN
 | UC-07 | FR-09, FR-36 | NFR-01, NFR-15–NFR-16 |
 | UC-08 | FR-10 | NFR-01, NFR-15, NFR-18 |
 | UC-09 | FR-11 | NFR-07, NFR-13, NFR-15 |
-| UC-10 | FR-12–FR-13, FR-16, FR-36 | NFR-01, NFR-03, NFR-09, NFR-14–NFR-16 |
-| UC-11 | FR-14–FR-16, FR-34 | NFR-09–NFR-14, NFR-19, NFR-24 |
-| UC-12 | FR-17, FR-21 | NFR-01, NFR-16, NFR-20, NFR-29 |
+| UC-10 | FR-12–FR-13, FR-16, FR-36, FR-37–FR-38 | NFR-01, NFR-03, NFR-09, NFR-14–NFR-16 |
+| UC-11 | FR-14–FR-16, FR-34, FR-37–FR-38 | NFR-09–NFR-14, NFR-19, NFR-24 |
+| UC-12 | FR-17, FR-21, FR-37–FR-38 | NFR-01, NFR-16, NFR-20, NFR-29 |
 | UC-13 | FR-18–FR-21 | NFR-01, NFR-04, NFR-08, NFR-26–NFR-30 |
 | UC-14 | FR-18, FR-20–FR-22 | NFR-01, NFR-04, NFR-08, NFR-29–NFR-31 |
 | UC-15 | FR-18, FR-21, FR-24 | NFR-01, NFR-10, NFR-16, NFR-29, NFR-32 |
@@ -316,6 +327,8 @@ MVP không thay thế phạm vi sản phẩm cuối. Thanh toán/video đã đư
 
 ## 8. Kết quả phân tích và hướng hoàn thiện SRS
 
-Phần phân tích xác định 40 yêu cầu chức năng sản phẩm (FR-01–FR-36 và FR-X01–FR-X04), 4 đầu ra nghiên cứu và 32 yêu cầu phi chức năng. Các yêu cầu được liên kết với use cases và có cách kiểm chứng để hỗ trợ thiết kế, triển khai và nghiệm thu sản phẩm cuối; bộ MVP được dùng cho mốc tích hợp đầu tiên.
+Phần phân tích xác định 42 yêu cầu chức năng sản phẩm (FR-01–FR-38 và FR-X01–FR-X04), 4 đầu ra nghiên cứu và 32 yêu cầu phi chức năng. Các yêu cầu được liên kết với use cases và có cách kiểm chứng để hỗ trợ thiết kế, triển khai và nghiệm thu sản phẩm cuối; bộ MVP được dùng cho mốc tích hợp đầu tiên.
 
-Danh mục và ma trận truy vết đã được sử dụng để hoàn thiện phạm vi MVP và SRS phiên bản 1.1. Ở bước tiếp theo, nhóm thiết kế và triển khai theo các yêu cầu được chọn, kiểm chứng mục tiêu định lượng trên development và đánh giá bằng test độc lập. Quyền truy cập, dữ liệu học tập và khả năng xử lý lỗi là những điều kiện phải được kiểm tra trong các luồng đã chọn.
+Danh mục và ma trận truy vết đã được sử dụng để hoàn thiện phạm vi MVP và SRS phiên bản 1.2. Ở bước tiếp theo, nhóm thiết kế và triển khai theo các yêu cầu được chọn, kiểm chứng mục tiêu định lượng trên development và đánh giá bằng test độc lập. Quyền truy cập, dữ liệu học tập và khả năng xử lý lỗi là những điều kiện phải được kiểm tra trong các luồng đã chọn.
+
+Kiểm chứng chính sách học liệu/watermark bằng AC-10, MVP-11 và FIN-10. Hai yêu cầu FR-37–FR-38 thuộc MVP với PDF văn bản; bản cuối mở rộng cho các định dạng đã cam kết. Các kiểm soát NFR-01/NFR-16 áp dụng cả file gốc, bản trình bày, link và cache.

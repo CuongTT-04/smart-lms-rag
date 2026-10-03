@@ -3,8 +3,8 @@
 - **Đề tài:** Xây dựng hệ thống quản lý học tập thông minh tích hợp mô hình ngôn ngữ lớn tinh chỉnh và kỹ thuật RAG.
 - **Sinh viên thực hiện:** Trần Tuấn Cường.
 - **Hạng mục:** Phân tích actors và use cases.
-- **Ngày cập nhật:** 02/10/2026.
-- **Phạm vi sử dụng:** Phân tích toàn bộ sản phẩm đồ án; giai đoạn MVP được ghi riêng trong [MVP](mvp-scope.md), yêu cầu bản cuối trong [SRS phiên bản 1.1](../SRS.md).
+- **Ngày cập nhật:** 03/10/2026.
+- **Phạm vi sử dụng:** Phân tích toàn bộ sản phẩm đồ án; giai đoạn MVP được ghi riêng trong [MVP](mvp-scope.md), yêu cầu bản cuối trong [SRS phiên bản 1.2](../SRS.md).
 
 ## 1. Tổng quan bài toán
 
@@ -199,6 +199,9 @@ Mỗi use case được mô tả qua mục tiêu, tiền điều kiện, luồng
 - **Ngoại lệ:** file hỏng, định dạng chưa hỗ trợ, vượt giới hạn hoặc lỗi lưu thì báo lỗi; không đưa tài liệu chưa xử lý thành công vào phạm vi trả lời. Bản cũ hợp lệ tiếp tục phục vụ đến khi bản thay thế sẵn sàng; gỡ thì ngừng phục vụ ngay.
 - **Hậu điều kiện:** tài liệu thuộc đúng khóa học; lưu nguồn và phiên bản. Tài liệu đã gỡ hoặc đáp án riêng của giáo viên không được tiếp tục xuất hiện trong context của học viên.
 
+- **Chính sách học liệu:** Học liệu mới tải lên mặc định ở chế độ bảo vệ: chỉ xem trong hệ thống, có watermark và không cho người xem tải bản tài liệu. Giáo viên phụ trách có thể chuyển riêng từng học liệu sang chế độ công khai: bỏ watermark và cho người có quyền đọc tải bản không watermark. Chuyển lại chế độ bảo vệ khôi phục watermark và chặn yêu cầu tải tiếp theo. Công khai học liệu chỉ là chính sách xem/tải, không tự công khai khóa học, cấp quyền thành viên hoặc công bố đáp án riêng. Hai chế độ là một lựa chọn thống nhất, không có nút tắt watermark độc lập trong chế độ bảo vệ.
+- **Watermark và bản gốc:** Watermark được áp dụng cho bản trình bày học liệu phục vụ người xem; file gốc được giữ riêng để trích xuất/OCR và tạo bản công khai không watermark. Không ghi watermark vào văn bản/chunk đưa vào RAG và không làm lệch vị trí citation. Hệ thống không bảo đảm ngăn chụp màn hình hoặc thu hồi bản đã tải khi học liệu từng công khai; không coi ẩn nút tải hay chặn chuột phải là kiểm soát quyền tải phía máy chủ.
+
 ### UC-11 Theo dõi xử lý tài liệu và yêu cầu thử lại
 
 - **Actor / mục tiêu:** giáo viên biết tài liệu đã có thể dùng với AI hay chưa.
@@ -213,7 +216,7 @@ Mỗi use case được mô tả qua mục tiêu, tiền điều kiện, luồng
 - **Tiền điều kiện / kích hoạt:** có quyền đọc tài liệu cụ thể; chọn học liệu hoặc citation.
 - **Luồng chính:** kiểm tra quyền hiện tại → xác định tài liệu/phiên bản và trang, slide hoặc section → mở vị trí nguồn hoặc cung cấp chỉ dẫn vị trí nếu viewer chưa hỗ trợ nhảy trực tiếp.
 - **Ngoại lệ:** nguồn đã gỡ, phiên bản không còn phục vụ hoặc quyền bị thu hồi thì báo không khả dụng; không tạo citation hoặc số trang giả. DOC/DOCX cần vị trí section hoặc bản chuẩn hóa nếu số trang chưa ổn định.
-- **Hậu điều kiện:** người dùng xem được đúng nguồn được phép; không dùng link citation để vượt quyền.
+- **Hậu điều kiện:** người dùng xem được đúng nguồn được phép; không dùng link citation để vượt quyền. Bản xem của học liệu bảo vệ có watermark; người xem chỉ tải bản không watermark khi học liệu công khai và có quyền hiện tại. API/link cũ không vượt chính sách; thay đổi chính sách áp dụng cho lần truy cập tiếp theo.
 
 ### UC-13 Hỏi đáp học liệu khóa học
 
@@ -439,6 +442,7 @@ Tài liệu trong tập kiểm thử có thể được đưa vào chỉ mục R
 | BR-14 | Video/mốc theo quyền và phiên bản; tua, tải lại hoặc sự kiện trùng không tạo tiến độ/hoàn thành sai; đáp án riêng không trả trước công bố. | UC-09, UC-X03 |
 | BR-15 | Lịch sử thuộc học viên, kiểm tra quyền hiện hành khi xem/tiếp tục; xóa theo chính sách, không cấp quyền đọc hội thoại cho giáo viên/admin mặc định. | UC-16 |
 | BR-16 | Nguồn tổng quát cần lựa chọn riêng và ghi nhãn, không gắn citation học liệu giả hoặc bỏ qua chính sách bài tập. | UC-X04, UC-14, UC-17 |
+| BR-17 | Upload mới mặc định bảo vệ: watermark/chỉ xem. Chuyển công khai từng học liệu bỏ watermark và cho tải theo quyền; không tự mở khóa học, không tắt watermark độc lập trong chế độ bảo vệ. | UC-10–UC-12 |
 
 ### 9.2. Kịch bản kiểm thử trọng yếu
 
@@ -453,8 +457,9 @@ Tài liệu trong tập kiểm thử có thể được đưa vào chỉ mục R
 | AC-07 | Worker hoặc LLM bị ngắt trong quá trình xử lý. | Hiển thị lỗi/trạng thái phù hợp; thử lại không tạo dữ liệu trùng; chức năng LMS không phụ thuộc AI vẫn hoạt động. | UC-11, UC-25; BR-12 |
 | AC-08 | Xem điểm người khác, sửa bài của lớp không phụ trách hoặc nộp quiz lặp. | Chặn truy cập sai quyền; lưu lượt nộp nhất quán. | UC-18–UC-23; BR-01, BR-08–BR-09 |
 | AC-09 | Chạy lại thí nghiệm với cùng phiên bản dữ liệu và cấu hình. | Truy vết được câu trả lời, context, citation và kết quả đo; không dùng nhãn test để fine-tune. | RES-01–RES-04; BR-11 |
+| AC-10 | Upload học liệu rồi chuyển bảo vệ → công khai → bảo vệ; thử tải trực tiếp và bằng tài khoản sai quyền. | Mặc định có watermark/không tải; công khai có bản sạch tải được theo quyền; đổi lại bảo vệ chặn tải mới. Không lộ bản sạch qua cache/citation và không ảnh hưởng chính sách tài liệu khác. | UC-10–UC-12; BR-17; FR-37–FR-38 |
 
-Các kịch bản trên xác định hành vi cần kiểm tra. Ngưỡng chất lượng AI, độ trễ, giới hạn file và quota được đặc tả trong yêu cầu phi chức năng và SRS; các mục tiêu ban đầu cần kiểm chứng bằng thử nghiệm. Các chức năng sau MVP phải đạt FIN-01–FIN-09 tại mục 13.2 của SRS, gồm đăng ký/tìm khóa học, học liệu đa định dạng/OCR, lịch sử, dashboard, thanh toán, doanh thu, video và lựa chọn nguồn tổng quát.
+Các kịch bản trên xác định hành vi cần kiểm tra. Ngưỡng chất lượng AI, độ trễ, giới hạn file và quota được đặc tả trong yêu cầu phi chức năng và SRS; các mục tiêu ban đầu cần kiểm chứng bằng thử nghiệm. Các chức năng sau MVP phải đạt FIN-01–FIN-10 tại mục 13.2 của SRS, gồm đăng ký/tìm khóa học, học liệu đa định dạng/OCR, lịch sử, dashboard, thanh toán, doanh thu, video và lựa chọn nguồn tổng quát.
 
 ## 10. Use cases sản phẩm cuối triển khai sau MVP
 

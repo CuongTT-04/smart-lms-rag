@@ -8,7 +8,7 @@
 | Tên dự án | Smart LMS RAG. |
 | Sinh viên biên soạn | Trần Tuấn Cường — phần việc B: SRS và MVP. |
 | Thành viên nhóm | Vũ Nam Dương, Trần Tuấn Cường. |
-| Phiên bản | 1.1. |
+| Phiên bản | 1.2. |
 | Ngày lập | 02/10/2026. |
 | Trạng thái | Bản đặc tả phục vụ triển khai và rà soát với giảng viên. |
 
@@ -22,7 +22,7 @@ Em lập tài liệu SRS để xác định hành vi hệ thống cần thực h
 
 ### 1.2. Phạm vi và cách sử dụng
 
-SRS phiên bản 1.1 đặc tả toàn bộ sản phẩm mà nhóm dự kiến hoàn thành và triển khai trong phạm vi đồ án: nghiệp vụ LMS, xử lý học liệu và ba chế độ trợ lý AI theo khóa học. MVP là giai đoạn triển khai đầu tiên để kiểm chứng luồng cốt lõi; chức năng làm sau MVP nhưng thuộc sản phẩm cuối vẫn phải có yêu cầu và tiêu chí nghiệm thu. Các đầu ra nghiên cứu được thực hiện trong công cụ hoặc notebook riêng, phục vụ báo cáo và tích hợp cấu hình đã chọn vào sản phẩm.
+SRS phiên bản 1.2 đặc tả toàn bộ sản phẩm mà nhóm dự kiến hoàn thành và triển khai trong phạm vi đồ án: nghiệp vụ LMS, xử lý học liệu và ba chế độ trợ lý AI theo khóa học. MVP là giai đoạn triển khai đầu tiên để kiểm chứng luồng cốt lõi; chức năng làm sau MVP nhưng thuộc sản phẩm cuối vẫn phải có yêu cầu và tiêu chí nghiệm thu. Các đầu ra nghiên cứu được thực hiện trong công cụ hoặc notebook riêng, phục vụ báo cáo và tích hợp cấu hình đã chọn vào sản phẩm.
 
 Các chức năng, kiểm soát quyền và trạng thái trong tài liệu là yêu cầu cần triển khai. Mục tiêu định lượng là căn cứ lập kế hoạch đánh giá và cần được kiểm chứng. Việc hoàn thành SRS không xác nhận các chức năng hoặc mô hình đã được nghiệm thu.
 
@@ -104,7 +104,7 @@ Sơ đồ thể hiện trách nhiệm và luồng dữ liệu ở mức yêu c�
 | Học liệu và AI | Nhận PDF/DOCX/PPTX/TXT, OCR PDF quét khi cần; hỏi đáp/gợi ý/tóm tắt có nguồn; nguồn tổng quát được lựa chọn riêng, không giả làm bằng chứng học liệu. |
 | Nghiên cứu | Quản lý corpus/QA/instruction, huấn luyện QLoRA và so sánh Base LLM, RAG, QLoRA+RAG; đánh giá và phân tích lỗi. |
 
-Sản phẩm cuối có **40 yêu cầu chức năng sản phẩm**, **4 đầu ra nghiên cứu** và **32 yêu cầu phi chức năng**. Đây là phạm vi cam kết của đồ án; chưa triển khai một chức năng chỉ là trạng thái tiến độ.
+Sản phẩm cuối có **42 yêu cầu chức năng sản phẩm**, **4 đầu ra nghiên cứu** và **32 yêu cầu phi chức năng**. Đây là phạm vi cam kết của đồ án; chưa triển khai một chức năng chỉ là trạng thái tiến độ.
 
 ### 3.2. Phân chia giai đoạn triển khai
 
@@ -117,7 +117,7 @@ Sản phẩm cuối có **40 yêu cầu chức năng sản phẩm**, **4 đầu 
 | Quản trị/thống kê | Tài khoản/vai trò, vận hành và thống kê lớp | Dashboard nền tảng; thanh toán, lịch sử giao dịch và doanh thu. |
 | Nghiên cứu | Thực hiện song song từ sớm | Hoàn thành adapter, benchmark, so sánh và tái lập trước nghiệm thu cuối. |
 
-MVP giữ 32 yêu cầu sản phẩm đã chọn, với giới hạn giai đoạn đầu. FR-05, FR-07, FR-25, FR-33, FR-X01–FR-X04 và phần mở rộng của học liệu/tham gia lớp/video được thực hiện sau MVP. Chức năng làm sau MVP vẫn phải được kiểm thử và nghiệm thu trước bàn giao sản phẩm cuối; các mục tiêu nghiên cứu không phải vai trò hoặc chức năng giao diện LMS.
+MVP giữ 34 yêu cầu sản phẩm đã chọn, với giới hạn giai đoạn đầu. FR-05, FR-07, FR-25, FR-33, FR-X01–FR-X04 và phần mở rộng của học liệu/tham gia lớp/video được thực hiện sau MVP. Chức năng làm sau MVP vẫn phải được kiểm thử và nghiệm thu trước bàn giao sản phẩm cuối; các mục tiêu nghiên cứu không phải vai trò hoặc chức năng giao diện LMS.
 
 ### 3.3. Ngoài phạm vi đồ án
 
@@ -169,9 +169,9 @@ Quyền quản trị tài khoản không tự cấp quyền đọc toàn bộ h�
 | UC-07 | Quản lý thành viên khóa học | A-03 | FR-09, FR-36 |
 | UC-08 | Tạo và quản lý bài học | A-03 | FR-10 |
 | UC-09 | Học bài và theo dõi tiến độ | A-02 | FR-11 |
-| UC-10 | Tải lên và quản lý tài liệu khóa học | A-03 | FR-12–FR-13, FR-16, FR-36 |
+| UC-10 | Tải lên và quản lý tài liệu khóa học | A-03 | FR-12–FR-13, FR-16, FR-36–FR-38 |
 | UC-11 | Theo dõi xử lý tài liệu và yêu cầu thử lại | A-03 | FR-14–FR-16, FR-34 |
-| UC-12 | Xem học liệu và mở nguồn trích dẫn | A-02, A-03 | FR-17, FR-21 |
+| UC-12 | Xem học liệu và mở nguồn trích dẫn | A-02, A-03 | FR-17, FR-21, FR-37–FR-38 |
 | UC-13 | Hỏi đáp học liệu khóa học | A-02 | FR-18–FR-21 |
 | UC-14 | Nhận gợi ý làm bài | A-02 | FR-18, FR-20–FR-22 |
 | UC-15 | Tóm tắt học liệu | A-02 | FR-18, FR-21, FR-24 |
@@ -214,6 +214,7 @@ UC-01–UC-25 và UC-X01–UC-X04 là use cases của sản phẩm cuối. Mã U
 | BR-14 | Video/mốc theo quyền và phiên bản; tua, tải lại hoặc sự kiện trùng không tạo tiến độ/hoàn thành sai; đáp án riêng không trả trước công bố. |
 | BR-15 | Lịch sử thuộc học viên, kiểm tra quyền hiện hành khi xem/tiếp tục; xóa theo chính sách, không cấp quyền đọc hội thoại cho giáo viên/admin mặc định. |
 | BR-16 | Nguồn tổng quát cần lựa chọn riêng và ghi nhãn, không gắn citation học liệu giả hoặc bỏ qua chính sách bài tập. |
+| BR-17 | Học liệu mặc định bảo vệ (watermark, chỉ xem); giáo viên chuyển từng học liệu sang công khai thì bỏ watermark và cho người có quyền tải. Không tự mở khóa học hoặc đáp án. |
 
 ### 5.1. Quy tắc khóa học và tiến độ
 
@@ -261,6 +262,12 @@ Lịch sử AI của bản cuối được lưu theo học viên/khóa học và
 
 Nguồn học liệu là mặc định của hỏi đáp. Khi học viên chủ động chọn nguồn tổng quát, giao diện và phản hồi phải ghi rõ nội dung chưa được xác nhận bằng học liệu; không tạo citation tài liệu giả. Nguồn tổng quát không được dùng để bỏ qua giới hạn trợ giúp bài có chấm điểm hoặc lấy đáp án riêng. Hai nhóm nguồn được đánh giá riêng trong báo cáo AI.
 
+### 5.5. Chính sách học liệu và watermark
+
+Học liệu mới tải lên mặc định ở chế độ bảo vệ: chỉ xem trong hệ thống, có watermark và không cho người xem tải bản tài liệu. Giáo viên phụ trách có thể chuyển riêng từng học liệu sang chế độ công khai: bỏ watermark và cho người có quyền đọc tải bản không watermark. Chuyển lại chế độ bảo vệ khôi phục watermark và chặn yêu cầu tải tiếp theo. Công khai học liệu chỉ là chính sách xem/tải, không tự công khai khóa học, cấp quyền thành viên hoặc công bố đáp án riêng. Hai chế độ là một lựa chọn thống nhất, không có nút tắt watermark độc lập trong chế độ bảo vệ.
+
+Watermark được áp dụng cho bản trình bày học liệu phục vụ người xem; file gốc được giữ riêng để trích xuất/OCR và tạo bản công khai không watermark. Không ghi watermark vào văn bản/chunk đưa vào RAG và không làm lệch vị trí citation. Hệ thống không bảo đảm ngăn chụp màn hình hoặc thu hồi bản đã tải khi học liệu từng công khai; không coi ẩn nút tải hay chặn chuột phải là kiểm soát quyền tải phía máy chủ.
+
 ## 6. Yêu cầu chức năng
 
 ### 6.1. Yêu cầu chức năng của sản phẩm cuối
@@ -305,6 +312,8 @@ Mỗi yêu cầu cần đạt trong bản cuối; cột giai đoạn xác địn
 | FR-34 | Người được cấp quyền vận hành phải có thể theo dõi tình trạng xử lý tài liệu và dịch vụ AI. | Người có quyền vận hành xem trạng thái, loại lỗi và thời gian xử lý AI/ingestion; người dùng có thông báo tương ứng. AI ngắt không báo sẵn sàng; không yêu cầu dashboard tổng hợp toàn nền tảng. | UC-11, UC-25 | P1 | MVP |
 | FR-35 | Hệ thống phải hỗ trợ cấu hình và thực thi hạn mức sử dụng AI. | Thực thi quota 20 yêu cầu AI/giờ/học viên, một lượt sinh đồng thời, tối đa 5 tác vụ chờ và timeout theo loại tác vụ. Vượt quota/hàng đợi không gọi model tiếp; không ảnh hưởng quyền đọc bài. | UC-25 | P1 | MVP |
 | FR-36 | Hệ thống phải ghi dấu vết các thay đổi quản trị và nghiệp vụ có ảnh hưởng tới quyền hoặc kết quả học tập. | Ghi người thao tác, đối tượng, thời điểm và loại thay đổi cho cấp/thu hồi quyền, gỡ tài liệu, chỉnh chính sách và sửa điểm; chỉ người có quyền đọc được dấu vết. | UC-03, UC-07, UC-10, UC-17, UC-21, UC-25 | P1 | MVP |
+| FR-37 | Giáo viên phải có thể quản lý chính sách xem/tải theo từng học liệu. | Upload mới mặc định bảo vệ (chỉ xem, có watermark, không tải); công khai (không watermark, được tải) do giáo viên phụ trách chọn trong cài đặt riêng học liệu. Backend kiểm tra quyền hiện tại và chế độ cho mọi yêu cầu tải, kể cả URL/API trực tiếp; công khai không tự mở quyền khóa học hoặc đáp án. Chuyển lại bảo vệ chặn lần tải tiếp theo; thay file giữ chính sách hiện hành của học liệu. | UC-10, UC-12 | P1 | MVP; hoàn thiện bản cuối |
+| FR-38 | Hệ thống phải tự áp dụng hoặc bỏ watermark theo chế độ của học liệu. | Bản xem của học liệu bảo vệ có watermark nhận diện học liệu/hệ thống và vẫn đọc được, không chỉ là lớp giao diện có thể ẩn để lấy bản sạch. Công khai cung cấp bản xem và bản tải không watermark. Không cho học viên thay chế độ; không phục vụ bản sạch qua API/file/cache/citation khi bảo vệ. Lỗi tạo bản xem bảo vệ không được fallback sang file gốc sạch. Giữ file gốc riêng và vị trí nguồn, không đưa watermark vào RAG. | UC-10–UC-12 | P1 | MVP; hoàn thiện bản cuối |
 | FR-X01 | Hệ thống phải hỗ trợ thanh toán để tham gia khóa học có phí. | Server tạo đơn với giá/điều kiện khóa học đã kiểm tra; xác thực thông báo hoặc đối soát với cổng thanh toán. Chỉ cấp quyền khi giao dịch thành công và đủ điều kiện lớp; callback/gửi lại không cấp quyền hoặc ghi doanh thu nhiều lần. Chờ/thất bại/hủy/hết hạn không cấp quyền; demo kiểm chứng trong sandbox. | UC-X01 | P1 | Sau MVP — bắt buộc bản cuối |
 | FR-X02 | Hệ thống phải cung cấp lịch sử giao dịch và thống kê doanh thu theo vai trò. | Học viên xem giao dịch cá nhân, giáo viên xem khóa học phụ trách và admin xem tổng hợp theo quyền. Doanh thu là số tiền giao dịch thành công trừ khoản hoàn tiền đã xác nhận, ghi đơn vị tiền/phạm vi/thời điểm. Hoàn tiền có bằng chứng đối soát và dấu vết; không xóa giao dịch cũ. | UC-X02 | P1 | Sau MVP — bắt buộc bản cuối |
 | FR-X03 | Hệ thống phải hỗ trợ video có câu hỏi tại các mốc thời gian. | Giáo viên quản lý video và mốc hỏi trong bài học; player dừng tại mốc, nhận câu trả lời rồi cho tiếp tục theo cấu hình. Trả lời sai có thể nhận gợi ý được phép hoặc quay lại đoạn đã chỉ định. Mốc/sự kiện gắn học viên và phiên bản, tua/tải lại không tăng tiến độ sai; không để đáp án riêng trong dữ liệu player. | UC-X03 | P1 | Sau MVP — bắt buộc bản cuối |
@@ -352,10 +361,10 @@ Các use case còn lại thực hiện theo yêu cầu và tiêu chí chấp nh�
 - **Kích hoạt:** upload học liệu mới, thay file, gỡ tài liệu hoặc retry tác vụ lỗi.
 - **Luồng chính:**
   1. Kiểm tra quyền, loại file thực tế, kích thước và giới hạn định dạng; MVP dùng PDF văn bản, bản cuối thêm DOCX/PPTX/TXT và OCR PDF quét.
-  2. Lưu file cùng metadata/phiên bản, tạo tác vụ và trả trạng thái tiếp nhận.
+  2. Lưu file gốc riêng cùng metadata/phiên bản; học liệu mới mặc định bảo vệ, chỉ xem có watermark và không tải. Tạo tác vụ và trả trạng thái tiếp nhận.
   3. Worker dùng Docling cho PDF/DOCX/PPTX, OCR PDF quét khi cần và bộ đọc cho TXT; kiểm tra nội dung, chia đoạn và giữ vị trí trang/slide/mục/đoạn.
-  4. Tạo embedding/chỉ mục, kiểm tra tính nhất quán và chuyển sẵn sàng.
-  5. Khi thay thế, chuyển sang bản mới sau khi bản mới sẵn sàng; nguồn cũ ngừng phục vụ.
+  4. Tạo embedding/chỉ mục từ nội dung gốc; chuẩn bị bản xem theo chính sách, kiểm tra tính nhất quán rồi chuyển sẵn sàng. Không fallback bản sạch nếu tạo watermark lỗi.
+  5. Khi thay thế, giữ chính sách học liệu và chuyển sang bản mới sau khi bản mới sẵn sàng; nguồn cũ ngừng phục vụ. Giáo viên đổi chế độ ở cài đặt học liệu; backend áp dụng chính sách mới cho xem/tải/citation/cache và ghi dấu vết.
 - **Ngoại lệ:** file hỏng, định dạng không hỗ trợ, OCR/trích xuất thiếu nội dung hoặc không đạt kiểm tra chất lượng, timeout hoặc worker ngắt chuyển lỗi/báo giới hạn; không báo đủ toàn tài liệu nếu bỏ trang lỗi. Retry không tạo chunk trùng. Gỡ ngừng phục vụ ngay; tác vụ đang chạy không được phục hồi bản đã gỡ.
 - **Hậu điều kiện:** chỉ phiên bản sẵn sàng, đang phục vụ và được công bố mới có thể vào context học viên.
 
@@ -471,7 +480,7 @@ Bảng mô tả dữ liệu nghiệp vụ cần có. Tên bảng, kiểu cột v
 | Thành viên khóa học | Khóa học, học viên, trạng thái quyền, người cấp/thu hồi, thời điểm | Một quan hệ hiện hành/học viên/khóa học; thu hồi không xóa điểm/lượt nộp. |
 | Bài học | ID, khóa học, tiêu đề, nội dung, thứ tự, trạng thái công bố, liên kết học liệu/bài đánh giá | Liên kết cùng phạm vi được phép; tiến độ dựa trên bài đã công bố. |
 | Hoàn thành bài học | Học viên, bài học, trạng thái/thời điểm hoàn thành | Không trùng học viên/bài học; tải lại không tự cập nhật. |
-| Tài liệu và phiên bản | ID, khóa học, tên hiển thị, phiên bản, file/checksum, người tải, loại file, số trang/slide khi có, cấu hình/kết quả OCR, phạm vi đọc/AI, trạng thái phục vụ | File và chỉ mục phải cùng phiên bản; học liệu học viên tách khỏi nguồn riêng. |
+| Tài liệu và phiên bản | ID, khóa học, tên hiển thị, phiên bản, file/checksum, người tải, loại file, số trang/slide khi có, cấu hình/kết quả OCR, phạm vi đọc/AI, trạng thái phục vụ, chế độ bảo vệ/công khai, phiên bản chính sách, bản xem có/không watermark | File và chỉ mục phải cùng phiên bản; học liệu học viên tách khỏi nguồn riêng. Bản gốc sạch không công khai; upload mới mặc định bảo vệ. Bản trình bày/cache phải đúng chính sách hiện hành. |
 | Chunk | ID, khóa học, tài liệu, phiên bản, văn bản, loại vị trí, trang/slide hoặc section/đoạn, thông tin chỉ mục | Truy được về file/trang; không phục vụ chunk của bản đã gỡ hoặc ngoài quyền. |
 | Tác vụ xử lý | ID, loại, đối tượng/phiên bản, người yêu cầu, trạng thái, lần thử, thời gian, mã lỗi/cấu hình | Retry không nhân đôi kết quả; hoàn thành muộn không khôi phục đối tượng đã gỡ. |
 | Chính sách trợ lý | Khóa học/bài đánh giá, mức trợ giúp, học liệu được dùng, phiên bản, người sửa | Không mở rộng quyền nền tảng; áp dụng chính sách hiện hành trước trả kết quả. |
@@ -545,10 +554,10 @@ Dữ liệu nghiệp vụ đã xác nhận lưu phải tồn tại sau restart. 
 | Mã | Nhóm màn hình | Hành vi cần có |
 |---|---|---|
 | UI-01 | Đăng ký/đăng nhập | Đăng ký học viên hoặc nhập thông tin xác thực; báo lỗi phù hợp; chuyển tới chức năng theo quyền. |
-| UI-02 | Học viên — khóa học/bài học | Tìm khóa công khai, nhập điều kiện lớp riêng tư, mở lớp có quyền; đọc các định dạng được hỗ trợ, đánh dấu hoàn thành và xem tiến độ. |
+| UI-02 | Học viên — khóa học/bài học | Tìm khóa công khai, nhập điều kiện lớp riêng tư, mở lớp có quyền; đọc các định dạng được hỗ trợ theo chính sách watermark; tải bản không watermark chỉ khi học liệu công khai và có quyền, đánh dấu hoàn thành và xem tiến độ. |
 | UI-03 | Học viên — trợ lý | Một giao diện với ba chế độ hỏi đáp/gợi ý/tóm tắt, nguồn học liệu/tổng quát được phân biệt và phạm vi khóa học rõ; nhập câu hỏi hoặc chọn tài liệu/trang; hiển thị trạng thái và nguồn có thể mở. |
 | UI-04 | Học viên — bài đánh giá/kết quả | Xem đề được giao, thời gian quiz, lựa chọn câu trả lời, nộp tự luận/file, xác nhận đã nhận và điểm/nhận xét đã công bố. |
-| UI-05 | Giáo viên — quản lý lớp | Tạo/sửa lớp và điều kiện công khai/riêng tư, miễn phí/có phí; quản lý bài học, quyền, học liệu, trạng thái OCR/trích xuất và retry. |
+| UI-05 | Giáo viên — quản lý lớp | Tạo/sửa lớp và điều kiện công khai/riêng tư, miễn phí/có phí; quản lý bài học, quyền, học liệu, trạng thái OCR/trích xuất và retry; cài đặt từng học liệu bảo vệ/công khai, hiển thị hệ quả watermark/tải trước xác nhận. |
 | UI-06 | Giáo viên — đánh giá | Tạo quiz/tự luận và chính sách AI; xem bài nộp, chấm/công bố; xem tiến độ và kết quả lớp. |
 | UI-07 | Quản trị/vận hành | Quản lý tài khoản/vai trò; dashboard người dùng, lớp, hoạt động/giao dịch; vận hành AI/ingestion và hạn mức theo quyền. |
 | UI-08 | Thanh toán/giao dịch | Tạo đơn, chuyển cổng, xem trạng thái được server xác nhận, lịch sử cá nhân và doanh thu theo quyền; ghi rõ sandbox khi demo. |
@@ -646,7 +655,7 @@ Các tiêu chí phân quyền, dữ liệu và trạng thái được kiểm tra
 |---|---|---|
 | NFR-21 | Môi trường phải có hướng dẫn cài đặt và cấu hình có thể tái lập. | Cài từ checkout sạch, cấu hình mẫu không chứa bí mật, chạy cả luồng lõi và các tích hợp bản cuối; có đóng gói/hướng dẫn triển khai, cấu hình sandbox/production được phân biệt. Không đưa toàn bộ model weights vào Git. |
 | NFR-22 | Nghiệp vụ LMS, ingestion và xử lý AI phải có ranh giới rõ để thay đổi cấu hình. | Có giao diện đầu vào/đầu ra được mô tả; đổi adapter hoặc cấu hình retrieval không làm thay đổi quyền khóa học hay buộc huấn luyện lại khi thêm tài liệu. Kiểm thử cùng luồng với các cấu hình thí nghiệm được chọn. |
-| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Kiểm thử truy vết MVP-01–MVP-10 và FIN-01–FIN-09, BR và các nhánh quyền/lỗi. Chức năng sau MVP phải có bằng chứng trước nghiệm thu cuối; chưa triển khai ghi chưa kiểm chứng, không thay bằng code coverage. |
+| NFR-23 | Các luồng và quy tắc trọng yếu phải có kiểm thử truy vết tới yêu cầu. | Kiểm thử truy vết MVP-01–MVP-11 và FIN-01–FIN-10, BR và các nhánh quyền/lỗi. Chức năng sau MVP phải có bằng chứng trước nghiệm thu cuối; chưa triển khai ghi chưa kiểm chứng, không thay bằng code coverage. |
 | NFR-24 | Tác vụ phải có thông tin đủ để theo dõi và phân tích lỗi. | Yêu cầu/tác vụ có ID, trạng thái, thời gian, loại lỗi và phiên bản cấu hình liên quan; kết quả benchmark truy được từng mẫu. Không ghi toàn văn dữ liệu nhạy cảm chỉ để phục vụ giám sát. |
 | NFR-25 | Kết quả nghiên cứu phải có khả năng tái lập và so sánh công bằng. | Lưu checksum/split dữ liệu, cấu hình, seed, commit và môi trường chạy; chạy lại một tập mẫu theo protocol. Nếu có yếu tố không xác định, báo biến thiên và sai khác thay vì yêu cầu mọi lần sinh giống hệt từng chữ. |
 
@@ -766,6 +775,7 @@ Các trách nhiệm này thuộc quá trình thực hiện đồ án; không ph�
 | MVP-08 | Dùng tài khoản khác quyền và prompt injection ở câu hỏi/tài liệu. | Toàn bộ test sai quyền bị chặn; không lộ bí mật/đáp án riêng; log không chứa toàn văn dữ liệu ngoài chính sách. | NFR-01–NFR-06; AC-02, AC-05 |
 | MVP-09 | Chạy so sánh mô hình và tái lập một phần thí nghiệm. | Có adapter thực, split độc lập, cấu hình và kết quả từng mẫu; báo metric đúng phạm vi áp dụng, có đánh giá thủ công và phân tích lỗi. | FR-R01–FR-R04, NFR-24–NFR-32; AC-09 |
 | MVP-10 | Cài và chạy sản phẩm từ checkout sạch. | Hướng dẫn tái lập được; gọi model thật trong luồng web–AI, mở được nguồn theo quyền; phiên bản model/dữ liệu và cấu hình được ghi. | NFR-21–NFR-25; AC-01 |
+| MVP-11 | Upload PDF văn bản và đổi chính sách học liệu | Mặc định watermark/chỉ xem; công khai mới cho xem/tải bản sạch theo quyền; đổi lại bảo vệ chặn yêu cầu tải mới. API/link/cache/citation không vượt chính sách; tài liệu khác giữ nguyên. | FR-37–FR-38, BR-17, NFR-01, NFR-16; AC-10 |
 
 MVP-10 bổ sung kiểm tra giao diện tiếng Việt, viewport 360 px/1.280 px và thao tác chính bằng bàn phím theo NFR-18–NFR-20. AC-01–AC-09 là các kịch bản trọng yếu đã phân tích trong tài liệu actors/use cases, được cụ thể hóa bằng các kịch bản MVP ở trên.
 
@@ -782,6 +792,7 @@ MVP-10 bổ sung kiểm tra giao diện tiếng Việt, viewport 360 px/1.280 px
 | FIN-07 | Video dừng hỏi, trả lời đúng/sai, gợi ý/quay lại, tua/tải lại/mất quyền | Mốc hợp lệ, server giữ đáp án riêng; gợi ý theo chính sách; sự kiện lặp/tua không tạo hoàn thành sai; nguồn video bị chặn sau mất quyền; AI lỗi không làm ngừng phần không cần AI. | FR-X03, FR-11, FR-22; UC-X03 |
 | FIN-08 | Chọn nguồn tổng quát khi thiếu học liệu và thử yêu cầu đáp án hạn chế | Mặc định giữ nguồn học liệu, thiếu nguồn báo giới hạn; chỉ chuyển khi học viên chọn rõ, phản hồi ghi nhãn không xác nhận bằng học liệu và không có citation giả; chính sách bài tập vẫn áp dụng. | FR-X04, FR-20, FR-22–FR-23; UC-X04 |
 | FIN-09 | Triển khai bản cuối và chạy các luồng tích hợp theo vai trò | Có hướng dẫn/cấu hình, kiểm thử lại cả MVP và FIN, gọi model thật, mở nguồn/media đúng quyền, thanh toán sandbox ghi rõ chế độ; restart/khôi phục không mất dữ liệu đã lưu. | Toàn bộ yêu cầu sản phẩm trong phạm vi; NFR-11–NFR-25 |
+| FIN-10 | Upload và chuyển chế độ bảo vệ/công khai của từng học liệu | Upload mới có watermark, không tải được bản sạch qua URL/API/citation/cache. Giáo viên đúng quyền chuyển công khai: xem/tải không watermark; học liệu khác và quyền khóa học giữ nguyên. Chuyển lại bảo vệ hoặc thu hồi quyền chặn yêu cầu tiếp theo, kể cả URL cũ. Thay file giữ chính sách; watermark lỗi không trả bản sạch. Kiểm thử PDF trong MVP và các định dạng bổ sung ở bản cuối; OCR/RAG/citation không bị watermark làm sai. | FR-37–FR-38; UC-10–UC-12; BR-17; NFR-01, NFR-03, NFR-16, NFR-18–NFR-20 |
 
 ### 13.3. Ma trận bao phủ yêu cầu chức năng
 
@@ -802,6 +813,7 @@ MVP-10 bổ sung kiểm tra giao diện tiếng Việt, viewport 360 px/1.280 px
 | FR-X03 | UC-X03 | FIN-07 |
 | FR-X04 | UC-X04 | FIN-08 |
 | FR-R01–FR-R04 | RES-01–RES-04 | MVP-09; kết quả nghiên cứu trong nghiệm thu cuối |
+| FR-37–FR-38 | UC-10–UC-12 | MVP-11; FIN-10 |
 
 ### 13.4. Ma trận bao phủ yêu cầu phi chức năng
 
@@ -811,9 +823,11 @@ MVP-10 bổ sung kiểm tra giao diện tiếng Việt, viewport 360 px/1.280 px
 | NFR-07–NFR-10 | Phép đo tải LMS, 50 yêu cầu AI, tiếp nhận ingestion và RAM/VRAM/hàng đợi; MVP-03, MVP-07, MVP-09. |
 | NFR-11–NFR-14 | Ngắt AI/worker, thao tác lặp (gồm callback/video), restart và khôi phục; FIN-03, FIN-05, FIN-07, FIN-09; MVP-02, MVP-06–MVP-07, MVP-10. |
 | NFR-15–NFR-17 | Quan hệ dữ liệu, phiên bản nguồn, thu hồi quyền và thời gian server; MVP-01–MVP-02, MVP-04–MVP-06. |
-| NFR-18–NFR-20 | Kiểm tra giao diện/trạng thái/bàn phím của cả chức năng sau MVP trên hai viewport; FIN-01–FIN-09; MVP-03–MVP-07, MVP-10. |
+| NFR-18–NFR-20 | Kiểm tra giao diện/trạng thái/bàn phím của cả chức năng sau MVP trên hai viewport; FIN-01–FIN-10; MVP-03–MVP-07, MVP-10. |
 | NFR-21–NFR-25 | Cài từ checkout sạch, tích hợp bản cuối, thay cấu hình, kiểm thử/truy vết và chạy lại thí nghiệm; FIN-09; MVP-07, MVP-09–MVP-10. |
 | NFR-26–NFR-32 | Benchmark có nguồn, nhóm giới hạn/gợi ý/tóm tắt và chấm thủ công; MVP-03–MVP-05, MVP-09. |
+
+Kiểm chứng bổ sung cho NFR-01, NFR-03, NFR-16 và NFR-18–NFR-20: MVP-11 và FIN-10, gồm chính sách file/cache/citation, tính đọc được và khả năng mở đúng vị trí nguồn.
 
 ### 13.5. Điều kiện hoàn thành
 
@@ -868,7 +882,7 @@ Nhóm đã hoàn thành bước phân tích actors/use cases, yêu cầu chức 
 | M2 | Gợi ý, tóm tắt, thay/gỡ nguồn, quota và timeout | Kiểm thử chính sách, độ bao phủ và tác vụ ngắt. |
 | M3 | Bài học/tiến độ, quiz, tự luận, chấm/công bố và thống kê lớp | Luồng học/làm/nộp/chấm và test dữ liệu/trạng thái. |
 | M4 | Hoàn thành QLoRA, benchmark và so sánh | Adapter/log, báo cáo từng mẫu và chấm thủ công. |
-| M5 | Hoàn thiện đăng ký/tìm lớp, lớp có phí, Docling/OCR, lịch sử, dashboard, thanh toán/video và triển khai bản cuối | FIN-01–FIN-09, kiểm thử lại MVP, hướng dẫn triển khai và restore. |
+| M5 | Hoàn thiện đăng ký/tìm lớp, lớp có phí, Docling/OCR, lịch sử, dashboard, thanh toán/video và triển khai bản cuối | FIN-01–FIN-10, kiểm thử lại MVP, hướng dẫn triển khai và restore. |
 
 M1 là mốc tích hợp đầu tiên. MVP hoàn thành các luồng sản phẩm cốt lõi; nghiên cứu thực hiện song song. M5 bao gồm các chức năng sau MVP nhưng vẫn phải hoàn thành trong thời gian đồ án, không phải kế hoạch sau tốt nghiệp. Nhóm tích hợp và đo thử từ sớm; các mốc là nhóm đầu ra, có thể triển khai song song theo phân công.
 
@@ -880,5 +894,6 @@ Mỗi thay đổi cần ghi nội dung, lý do, người thực hiện/quyết �
 |---|---|---|
 | 1.0 | 02/10/2026 | Hợp nhất phân tích thành SRS, ban đầu tập trung phạm vi nguyên mẫu MVP. |
 | 1.1 | 02/10/2026 | Đặc tả sản phẩm cuối; đăng ký/tìm lớp, dashboard, Docling/OCR, thanh toán và video là phần cần hoàn thành sau MVP. Tách trách nhiệm nghiên cứu khỏi actors LMS; bổ sung yêu cầu, dữ liệu, giao diện và FIN-01–FIN-09. |
+| 1.2 | 03/10/2026 | Bổ sung FR-37/FR-38: học liệu mới mặc định bảo vệ có watermark và không tải; công khai từng học liệu bỏ watermark và cho người có quyền tải. Bổ sung BR-17, MVP-11 và FIN-10; MVP có 34 FR, sản phẩm cuối có 42 FR. |
 
 Quyết định phạm vi 1.1 được ghi theo mục tiêu sản phẩm đầy đủ của nhóm. MVP giữ luồng cốt lõi đã chốt để triển khai trước; phạm vi đồ án không bị thu hẹp theo giới hạn MVP. Nguồn tổng quát được tách lựa chọn riêng để giữ minh bạch với câu trả lời có bằng chứng; không tự fallback và gắn citation học liệu giả.

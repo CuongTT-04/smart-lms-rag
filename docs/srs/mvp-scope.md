@@ -4,7 +4,7 @@
 - **Sinh viên thực hiện:** Trần Tuấn Cường.
 - **Hạng mục:** Chốt phạm vi MVP.
 - **Ngày lập:** 01/10/2026.
-- **Ngày cập nhật:** 02/10/2026.
+- **Ngày cập nhật:** 03/10/2026.
 
 ## 1. Mục tiêu của MVP
 
@@ -12,7 +12,7 @@ MVP là giai đoạn nguyên mẫu đầu tiên để kiểm chứng một quy t
 
 Trong phần việc này, em lựa chọn chức năng từ [phân tích actors và use cases](actors-usecases.md) và [yêu cầu chức năng, phi chức năng](requirements.md), đồng thời giới hạn cách triển khai của từng chức năng. Việc chốt phạm vi giúp nhóm tập trung vào sản phẩm chạy được, dữ liệu có thể truy vết và thí nghiệm có kết quả đo.
 
-Tài liệu xác định các chức năng cần triển khai và điều kiện nghiệm thu của nguyên mẫu. Tiến độ thực hiện được trình bày riêng tại mục 15 của [SRS phiên bản 1.1](../SRS.md); các mục tiêu định lượng sẽ được kiểm chứng khi nhóm triển khai và đánh giá hệ thống.
+Tài liệu xác định các chức năng cần triển khai và điều kiện nghiệm thu của nguyên mẫu. Tiến độ thực hiện được trình bày riêng tại mục 15 của [SRS phiên bản 1.2](../SRS.md); các mục tiêu định lượng sẽ được kiểm chứng khi nhóm triển khai và đánh giá hệ thống.
 
 ## 2. Quyết định phạm vi
 
@@ -111,6 +111,10 @@ Giới hạn token của tóm tắt áp dụng cho toàn bộ nội dung nguồn
 
 Các file gốc khác định dạng được giáo viên/nhóm dữ liệu chuyển sang PDF trước khi tải lên. Thao tác chuyển đổi nằm ngoài pipeline MVP; file PDF sau chuyển đổi vẫn phải được kiểm tra quyền sử dụng và tính đầy đủ. Hỗ trợ nhiều định dạng và OCR được ghi nhận là phần mở rộng của FR-16.
 
+Chính sách học liệu được triển khai ngay trong MVP qua FR-37–FR-38 cho PDF văn bản. Học liệu mới tải lên mặc định ở chế độ bảo vệ: chỉ xem trong hệ thống, có watermark và không cho người xem tải bản tài liệu. Giáo viên phụ trách có thể chuyển riêng từng học liệu sang chế độ công khai: bỏ watermark và cho người có quyền đọc tải bản không watermark. Chuyển lại chế độ bảo vệ khôi phục watermark và chặn yêu cầu tải tiếp theo. Công khai học liệu chỉ là chính sách xem/tải, không tự công khai khóa học, cấp quyền thành viên hoặc công bố đáp án riêng. Hai chế độ là một lựa chọn thống nhất, không có nút tắt watermark độc lập trong chế độ bảo vệ.
+
+Watermark được áp dụng cho bản trình bày học liệu phục vụ người xem; file gốc được giữ riêng để trích xuất/OCR và tạo bản công khai không watermark. Không ghi watermark vào văn bản/chunk đưa vào RAG và không làm lệch vị trí citation. Hệ thống không bảo đảm ngăn chụp màn hình hoặc thu hồi bản đã tải khi học liệu từng công khai; không coi ẩn nút tải hay chặn chuột phải là kiểm soát quyền tải phía máy chủ.
+
 ### 3.3. Quiz, bài tập và thống kê lớp
 
 | Nhóm chức năng | Yêu cầu được chọn | Mức thực hiện trong MVP | Giới hạn |
@@ -133,7 +137,7 @@ Quiz có thời lượng tối đa do giáo viên thiết lập và hạn chung 
 | Hạn mức AI | FR-35; UC-25 | Áp dụng quota, giới hạn hàng đợi và timeout phía server; có cấu hình được mô tả cho người vận hành. | Không có gói thuê bao, hạn mức thương mại hoặc điều phối nhiều GPU. |
 | Dấu vết thay đổi | FR-36 | Ghi người thao tác, đối tượng, thời điểm và loại thay đổi quyền, tài liệu, chính sách và điểm. | Không mặc định ghi toàn văn hội thoại trong log; quyền đọc log tách khỏi quyền đọc nội dung lớp. |
 
-MVP chọn **32 yêu cầu chức năng sản phẩm**: FR-01–FR-04, FR-06, FR-08–FR-24, FR-26–FR-32 và FR-34–FR-36. Các yêu cầu được thực hiện trong giới hạn chức năng đã mô tả, không bao gồm mọi biến thể nghiệp vụ của hệ thống hoàn chỉnh.
+MVP chọn **34 yêu cầu chức năng sản phẩm**: FR-01–FR-04, FR-06, FR-08–FR-24, FR-26–FR-32 và FR-34–FR-38. Các yêu cầu được thực hiện trong giới hạn chức năng đã mô tả, không bao gồm mọi biến thể nghiệp vụ của hệ thống hoàn chỉnh.
 
 ## 4. Chính sách nghiệp vụ được chọn
 
@@ -248,7 +252,7 @@ Các ngưỡng này là mục tiêu được chọn cho kế hoạch đánh giá
 | Tóm tắt toàn khóa học không giới hạn | Không triển khai | Ngoài phạm vi đồ án; giữ giới hạn một tài liệu/phạm vi/ngân sách nguồn. |
 | DOC/PPT cũ, multi-agent, AI chấm chính thức, streaming/CDN tự xây | Không triển khai | Ngoài phạm vi đồ án; các định dạng cũ có thể chuẩn hóa trước upload. |
 
-Chức năng sau MVP vẫn phải đạt FIN-01–FIN-09 trong SRS trước hoàn thành đồ án. Việc để ngoài MVP chỉ xác định thứ tự triển khai; các kiểm soát quyền, dữ liệu và chính sách luôn áp dụng cho phần đang thực hiện.
+Chức năng sau MVP vẫn phải đạt FIN-01–FIN-10 trong SRS trước hoàn thành đồ án. Việc để ngoài MVP chỉ xác định thứ tự triển khai; các kiểm soát quyền, dữ liệu và chính sách luôn áp dụng cho phần đang thực hiện.
 
 ## 8. Lộ trình hoàn thành trong phạm vi đã chốt
 
@@ -258,7 +262,7 @@ Chức năng sau MVP vẫn phải đạt FIN-01–FIN-09 trong SRS trước hoà
 | M2 — Ba chế độ AI | Gợi ý theo chính sách, tóm tắt có độ bao phủ, quota/timeout và thay thế/gỡ học liệu nhất quán. | Kết quả kiểm thử gợi ý/tóm tắt, lỗi tài liệu và tác vụ bị ngắt. |
 | M3 — LMS cơ bản | Bài học, tiến độ, quiz, bài tập, chấm điểm và thống kê lớp tích hợp với quyền/chính sách AI. | Luồng học viên làm/nộp bài, giáo viên chấm/công bố và kiểm thử trạng thái. |
 | M4 — Nghiên cứu và kiểm chứng lõi | Corpus/benchmark đủ quy mô, adapter QLoRA, so sánh và đánh giá thủ công; đóng gói, khôi phục và tài liệu chạy. | Log, kết quả từng mẫu, bảng chỉ số, rubric và bản demo có cấu hình tái lập. |
-| M5 — Hoàn thiện sản phẩm cuối | Đăng ký/tìm lớp, điều kiện lớp có phí, Docling/OCR, lịch sử, dashboard, thanh toán/video và triển khai. | FIN-01–FIN-09 trong SRS và kiểm thử lại các luồng MVP. |
+| M5 — Hoàn thiện sản phẩm cuối | Đăng ký/tìm lớp, điều kiện lớp có phí, Docling/OCR, lịch sử, dashboard, thanh toán/video và triển khai. | FIN-01–FIN-10 trong SRS và kiểm thử lại các luồng MVP. |
 
 M1 là mốc tích hợp đầu tiên, không phải toàn bộ MVP. Ba chế độ AI, nghiệp vụ học tập cơ bản và đầu ra nghiên cứu vẫn cần hoàn thành; bản cuối còn gồm các chức năng sau MVP tại mục 7. Nhóm phát triển và đo thử từ sớm, không đợi hoàn thành từng module độc lập mới tích hợp.
 
@@ -276,6 +280,7 @@ M1 là mốc tích hợp đầu tiên, không phải toàn bộ MVP. Ba chế đ
 | MVP-08 | Dùng tài khoản khác quyền và prompt injection ở câu hỏi/tài liệu. | Toàn bộ test sai quyền bị chặn; không lộ bí mật/đáp án riêng; log không chứa toàn văn dữ liệu ngoài chính sách. | NFR-01–NFR-06; AC-02, AC-05 |
 | MVP-09 | Chạy so sánh mô hình và tái lập một phần thí nghiệm. | Có adapter thực, split độc lập, cấu hình và kết quả từng mẫu; báo metric đúng phạm vi áp dụng, có đánh giá thủ công và phân tích lỗi. | FR-R01–FR-R04, NFR-24–NFR-32; AC-09 |
 | MVP-10 | Cài và chạy sản phẩm từ checkout sạch. | Hướng dẫn tái lập được; gọi model thật trong luồng web–AI, mở được nguồn theo quyền; phiên bản model/dữ liệu và cấu hình được ghi. | NFR-21–NFR-25; AC-01 |
+| MVP-11 | Upload PDF văn bản và đổi chính sách học liệu | Mặc định watermark/chỉ xem; công khai mới cho xem/tải bản sạch theo quyền; đổi lại bảo vệ chặn yêu cầu tải mới. API/link/cache/citation không vượt chính sách; tài liệu khác giữ nguyên. | FR-37–FR-38, BR-17, NFR-01, NFR-16; AC-10 |
 
 Không nghiệm thu nếu còn lỗi truy cập trái phép, lộ đáp án riêng do sai quyền, mất/nhân đôi dữ liệu điểm hoặc bài nộp, hay citation dẫn tới tài liệu không được phép. Phần chất lượng AI phải có báo cáo đạt/chưa đạt mục tiêu; một chỉ số tốt không bù cho lỗi nghiêm trọng của nghiệp vụ hoặc bảo mật.
 
@@ -316,3 +321,5 @@ Nếu mới có web LMS và notebook AI riêng, nhóm có thể chứng minh hai
 Khi phát hiện cần thay đổi phạm vi, nhóm ghi rõ nội dung, lý do, yêu cầu/use case bị ảnh hưởng, tác động tới dữ liệu và kiểm thử, cùng quyết định thay thế. Thay đổi chức năng phải được cập nhật vào tài liệu SRS và danh sách nghiệm thu; các bản yêu cầu tổng thể vẫn được giữ để biết chức năng nào đang hoãn.
 
 Thay đổi ngưỡng AI, model hoặc cấu hình retrieval phải được quyết định trên development trước đánh giá cuối. Nhóm không tự mở thêm chức năng chỉ vì có công nghệ mới, không cắt phần nghiên cứu bắt buộc mà vẫn giữ nguyên tuyên bố hoàn thành đề tài và không coi việc viết xong tài liệu phạm vi là sản phẩm đã được nghiệm thu.
+
+Cập nhật phạm vi ngày 03/10/2026: thêm FR-37/FR-38 và MVP-11; không bổ sung cơ chế tắt watermark độc lập. Mở rộng bản xem cho DOCX/PPTX/TXT/OCR được kiểm chứng ở FIN-10 của sản phẩm cuối.
