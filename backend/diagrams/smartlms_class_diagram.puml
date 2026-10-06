@@ -1,0 +1,794 @@
+@startuml
+title Smart LMS RAG - Complete Class Diagram
+
+skinparam classAttributeIconSize 0
+hide circle
+
+' =========================
+' Enums
+' =========================
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum CourseRole {
+  OWNER
+  TEACHER
+  ASSISTANT
+  STUDENT
+}
+
+enum MemberStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REMOVED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum AccessType {
+  FREE
+  PAID
+}
+
+enum LessonStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentType {
+  TEXT
+  DOCUMENT
+  VIDEO
+  QUIZ
+  ASSIGNMENT
+}
+
+enum DocumentType {
+  PDF
+  DOCX
+  PPTX
+  TXT
+}
+
+enum DocumentStatus {
+  UPLOADED
+  PROCESSING
+  READY
+  FAILED
+  REMOVED
+}
+
+enum ProcessingJobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum DocumentVisibility {
+  PROTECTED
+  PUBLIC_CLEAN
+}
+
+enum DownloadPolicy {
+  VIEW_ONLY
+  ALLOW_DOWNLOAD
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum AIMode {
+  QA
+  HINT
+  SUMMARY
+}
+
+enum AIProviderType {
+  LOCAL
+  OPENAI_COMPATIBLE
+  COLAB_SERVICE
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  ESSAY
+}
+
+enum QuizAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  EXPIRED
+}
+
+enum SubmissionStatus {
+  DRAFT
+  SUBMITTED
+  LATE
+  GRADED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELED
+  EXPIRED
+  REFUNDED
+}
+
+enum VideoEventType {
+  PLAY
+  PAUSE
+  SEEK
+  CHECKPOINT_ANSWERED
+  COMPLETED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  GRANT_ACCESS
+  REVOKE_ACCESS
+  PROCESS_DOCUMENT
+  PAYMENT_CALLBACK
+  AI_REQUEST
+}
+
+' =========================
+' Identity and access
+' =========================
+
+package "apps.users" {
+  class User {
+    - id: UUID
+    - username: String
+    - email: String
+    - passwordHash: String
+    - fullName: String
+    - avatarUrl: String
+    - phone: String
+    - role: UserRole
+    - status: UserStatus
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    - lastLoginAt: DateTime
+  }
+
+  class StudentProfile {
+    - id: UUID
+    - learningGoal: String
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class TeacherProfile {
+    - id: UUID
+    - bio: String
+    - specialization: String
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+}
+
+' =========================
+' Courses and enrollment
+' =========================
+
+package "apps.courses" {
+  class Course {
+    - id: UUID
+    - title: String
+    - description: Text
+    - thumbnailUrl: String
+    - status: CourseStatus
+    - visibility: Visibility
+    - accessType: AccessType
+    - price: Decimal
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    - publishedAt: DateTime
+  }
+
+  class Classroom {
+    - id: UUID
+    - name: String
+    - classCode: String
+    - passwordHash: String
+    - visibility: Visibility
+    - accessType: AccessType
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class AccessPolicy {
+    - id: UUID
+    - visibility: Visibility
+    - accessType: AccessType
+    - price: Decimal
+    - requireClassCode: Boolean
+    - requirePassword: Boolean
+    - requirePayment: Boolean
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class CourseMember {
+    - id: UUID
+    - role: CourseRole
+    - status: MemberStatus
+    - joinedAt: DateTime
+    - removedAt: DateTime
+  }
+
+  class Enrollment {
+    - id: UUID
+    - enrolledAt: DateTime
+    - status: MemberStatus
+    - progressPercent: Float
+    - completedAt: DateTime
+  }
+}
+
+' =========================
+' Learning content
+' =========================
+
+package "apps.learning" {
+  class Lesson {
+    - id: UUID
+    - title: String
+    - description: Text
+    - orderIndex: Integer
+    - status: LessonStatus
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    - publishedAt: DateTime
+  }
+
+  class LessonContent {
+    - id: UUID
+    - contentType: ContentType
+    - title: String
+    - body: Text
+    - orderIndex: Integer
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class LessonProgress {
+    - id: UUID
+    - progressPercent: Float
+    - lastPosition: Integer
+    - completed: Boolean
+    - completedAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class Video {
+    - id: UUID
+    - storagePath: String
+    - videoUrl: String
+    - duration: Integer
+    - thumbnailUrl: String
+    - version: Integer
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class InteractiveCheckpoint {
+    - id: UUID
+    - timestamp: Integer
+    - questionText: Text
+    - type: QuestionType
+    - hintText: Text
+    - rewindOnWrong: Boolean
+    - rewindTimestamp: Integer
+    - orderIndex: Integer
+  }
+
+  class VideoProgress {
+    - id: UUID
+    - lastPosition: Integer
+    - watchedSeconds: Integer
+    - completed: Boolean
+    - completedAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class VideoCheckpointAttempt {
+    - id: UUID
+    - selectedOptionId: UUID
+    - textAnswer: Text
+    - isCorrect: Boolean
+    - answeredAt: DateTime
+  }
+
+  class VideoEvent {
+    - id: UUID
+    - eventType: VideoEventType
+    - position: Integer
+    - idempotencyKey: String
+    - createdAt: DateTime
+  }
+}
+
+' =========================
+' Documents and ingestion
+' =========================
+
+package "apps.documents" {
+  class KnowledgeDocument {
+    - id: UUID
+    - title: String
+    - originalFileName: String
+    - fileType: DocumentType
+    - mimeType: String
+    - fileSize: Long
+    - checksum: String
+    - status: DocumentStatus
+    - visibility: DocumentVisibility
+    - downloadPolicy: DownloadPolicy
+    - watermarkEnabled: Boolean
+    - activeVersionNumber: Integer
+    - uploadedAt: DateTime
+    - removedAt: DateTime
+  }
+
+  class DocumentVersion {
+    - id: UUID
+    - versionNumber: Integer
+    - storagePath: String
+    - protectedStoragePath: String
+    - publicStoragePath: String
+    - checksum: String
+    - pageCount: Integer
+    - parserName: String
+    - parserVersion: String
+    - ocrStatus: String
+    - language: String
+    - status: DocumentStatus
+    - processingError: Text
+    - createdAt: DateTime
+    - processedAt: DateTime
+  }
+
+  class DocumentProcessingJob {
+    - id: UUID
+    - status: ProcessingJobStatus
+    - jobType: String
+    - startedAt: DateTime
+    - finishedAt: DateTime
+    - retryCount: Integer
+    - errorMessage: Text
+    - workerName: String
+  }
+
+  class DocumentPage {
+    - id: UUID
+    - pageNumber: Integer
+    - rawText: Text
+    - normalizedText: Text
+    - extractionQuality: Float
+    - createdAt: DateTime
+  }
+
+  class DocumentChunk {
+    - id: UUID
+    - chunkIndex: Integer
+    - content: Text
+    - normalizedContent: Text
+    - pageNumberStart: Integer
+    - pageNumberEnd: Integer
+    - startOffset: Integer
+    - endOffset: Integer
+    - vectorId: String
+    - tokenCount: Integer
+    - createdAt: DateTime
+  }
+}
+
+' =========================
+' AI and RAG
+' =========================
+
+package "apps.ai" {
+  class RAGConfiguration {
+    - id: UUID
+    - embeddingModel: String
+    - vectorStoreType: String
+    - similarityThreshold: Float
+    - topK: Integer
+    - chunkSize: Integer
+    - chunkOverlap: Integer
+    - rerankerModel: String
+    - enabled: Boolean
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class AIModel {
+    - id: UUID
+    - name: String
+    - version: String
+    - providerType: AIProviderType
+    - modelType: String
+    - contextWindow: Integer
+    - isActive: Boolean
+    - createdAt: DateTime
+  }
+
+  class LoRAAdapter {
+    - id: UUID
+    - name: String
+    - version: String
+    - filePath: String
+    - datasetVersion: String
+    - enabled: Boolean
+    - createdAt: DateTime
+  }
+
+  class AIConversation {
+    - id: UUID
+    - mode: AIMode
+    - title: String
+    - deletedAt: DateTime
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class AIConversationScope {
+    - id: UUID
+    - mode: AIMode
+    - includeGeneralSource: Boolean
+    - createdAt: DateTime
+  }
+
+  class AIMessage {
+    - id: UUID
+    - role: MessageRole
+    - content: Text
+    - tokenCount: Integer
+    - createdAt: DateTime
+  }
+
+  class AIResponse {
+    - id: UUID
+    - confidenceScore: Float
+    - similarityScore: Float
+    - isRefused: Boolean
+    - refusalReason: Text
+    - modelName: String
+    - promptTokens: Integer
+    - completionTokens: Integer
+    - latencyMs: Integer
+    - createdAt: DateTime
+  }
+
+  class SourceCitation {
+    - id: UUID
+    - pageNumber: Integer
+    - startOffset: Integer
+    - endOffset: Integer
+    - snippet: Text
+    - relevanceScore: Float
+    - documentVersionNumber: Integer
+    - createdAt: DateTime
+  }
+
+  class AIUsageLog {
+    - id: UUID
+    - requestId: String
+    - mode: AIMode
+    - modelName: String
+    - promptTokens: Integer
+    - completionTokens: Integer
+    - latencyMs: Integer
+    - success: Boolean
+    - errorMessage: Text
+    - createdAt: DateTime
+  }
+
+  class AIExperiment {
+    - id: UUID
+    - name: String
+    - description: Text
+    - enabled: Boolean
+    - trafficPercent: Float
+    - startedAt: DateTime
+    - endedAt: DateTime
+  }
+}
+
+' =========================
+' Assessments
+' =========================
+
+package "apps.assessments" {
+  class AssessmentPolicy {
+    - id: UUID
+    - allowAIHint: Boolean
+    - showCorrectAnswerAfterSubmit: Boolean
+    - maxAttempts: Integer
+    - openAt: DateTime
+    - closeAt: DateTime
+    - publishScoreAt: DateTime
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class Quiz {
+    - id: UUID
+    - title: String
+    - description: Text
+    - timeLimit: Integer
+    - totalPoints: Float
+    - passingScore: Float
+    - shuffleQuestions: Boolean
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class Question {
+    - id: UUID
+    - content: Text
+    - questionType: QuestionType
+    - points: Float
+    - orderIndex: Integer
+  }
+
+  class QuestionOption {
+    - id: UUID
+    - content: Text
+    - isCorrect: Boolean
+    - orderIndex: Integer
+  }
+
+  class QuizAttempt {
+    - id: UUID
+    - attemptNumber: Integer
+    - startedAt: DateTime
+    - submittedAt: DateTime
+    - score: Float
+    - status: QuizAttemptStatus
+  }
+
+  class Answer {
+    - id: UUID
+    - textAnswer: Text
+    - isCorrect: Boolean
+    - score: Float
+    - answeredAt: DateTime
+  }
+
+  class Assignment {
+    - id: UUID
+    - title: String
+    - description: Text
+    - maxScore: Float
+    - dueDate: DateTime
+    - timeLimit: Integer
+    - createdAt: DateTime
+    - updatedAt: DateTime
+  }
+
+  class AssignmentSubmission {
+    - id: UUID
+    - fileUrl: String
+    - submittedAt: DateTime
+    - score: Float
+    - feedback: Text
+    - status: SubmissionStatus
+    - gradedAt: DateTime
+  }
+}
+
+' =========================
+' Payments
+' =========================
+
+package "apps.payments" {
+  class Order {
+    - id: UUID
+    - orderCode: String
+    - totalAmount: Decimal
+    - currency: String
+    - status: OrderStatus
+    - idempotencyKey: String
+    - createdAt: DateTime
+    - paidAt: DateTime
+    - expiredAt: DateTime
+  }
+
+  class OrderItem {
+    - id: UUID
+    - price: Decimal
+    - quantity: Integer
+  }
+
+  class PaymentTransaction {
+    - id: UUID
+    - transactionCode: String
+    - gatewayProvider: String
+    - gatewayTransactionId: String
+    - paymentMethod: String
+    - amount: Decimal
+    - currency: String
+    - status: PaymentStatus
+    - callbackPayloadHash: String
+    - failureReason: Text
+    - paidAt: DateTime
+    - createdAt: DateTime
+  }
+
+  class Refund {
+    - id: UUID
+    - refundCode: String
+    - amount: Decimal
+    - reason: Text
+    - status: PaymentStatus
+    - refundedAt: DateTime
+    - createdAt: DateTime
+  }
+}
+
+' =========================
+' Operations
+' =========================
+
+package "apps.operations" {
+  class AuditLog {
+    - id: UUID
+    - actorId: UUID
+    - action: AuditAction
+    - targetType: String
+    - targetId: UUID
+    - ipAddress: String
+    - userAgent: String
+    - metadataJson: Text
+    - createdAt: DateTime
+  }
+
+  class QuotaUsage {
+    - id: UUID
+    - quotaKey: String
+    - usedCount: Integer
+    - limitCount: Integer
+    - windowStartedAt: DateTime
+    - windowEndedAt: DateTime
+  }
+
+  class Notification {
+    - id: UUID
+    - title: String
+    - body: Text
+    - readAt: DateTime
+    - createdAt: DateTime
+  }
+}
+
+' =========================
+' Relationships
+' =========================
+
+User "1" *-- "0..1" StudentProfile
+User "1" *-- "0..1" TeacherProfile
+User "1" -- "0..*" CourseMember
+User "1" -- "0..*" AuditLog
+User "1" -- "0..*" Notification
+
+Course "1" -- "0..*" CourseMember
+Course "1" *-- "0..*" Classroom
+Course "1" *-- "0..*" Lesson
+Course "1" *-- "1" AccessPolicy
+Course "1" *-- "1" RAGConfiguration
+
+Classroom "1" -- "0..*" Enrollment
+Course "1" -- "0..*" Enrollment
+StudentProfile "1" -- "0..*" Enrollment
+
+Lesson "1" *-- "0..*" LessonContent
+Lesson "1" -- "0..*" LessonProgress
+StudentProfile "1" -- "0..*" LessonProgress
+LessonContent "1" -- "0..1" Video
+Video "1" *-- "0..*" InteractiveCheckpoint
+Video "1" -- "0..*" VideoProgress
+Video "1" -- "0..*" VideoEvent
+StudentProfile "1" -- "0..*" VideoProgress
+StudentProfile "1" -- "0..*" VideoEvent
+InteractiveCheckpoint "1" -- "0..*" VideoCheckpointAttempt
+StudentProfile "1" -- "0..*" VideoCheckpointAttempt
+
+Course "1" *-- "0..*" KnowledgeDocument
+KnowledgeDocument "0..*" -- "1" User : uploadedBy
+KnowledgeDocument "1" *-- "1..*" DocumentVersion
+KnowledgeDocument "0..1" -- "0..*" KnowledgeDocument : replaces
+DocumentVersion "1" *-- "0..*" DocumentProcessingJob
+DocumentVersion "1" *-- "0..*" DocumentPage
+DocumentVersion "1" *-- "0..*" DocumentChunk
+DocumentPage "1" -- "0..*" DocumentChunk
+
+AIConversation "0..*" -- "1" StudentProfile
+AIConversation "0..*" -- "1" Course
+AIConversation "1" *-- "0..*" AIMessage
+AIConversation "1" *-- "1" AIConversationScope
+AIConversationScope "0..*" -- "0..1" Lesson
+AIConversationScope "0..*" -- "0..*" KnowledgeDocument
+AIMessage "1" *-- "0..1" AIResponse
+AIResponse "1" *-- "0..*" SourceCitation
+AIResponse "0..*" -- "1" AIModel
+AIResponse "0..*" -- "0..1" LoRAAdapter
+SourceCitation "0..*" -- "1" KnowledgeDocument
+SourceCitation "0..*" -- "1" DocumentVersion
+SourceCitation "0..*" -- "1" DocumentChunk
+AIUsageLog "0..*" -- "1" User
+AIUsageLog "0..*" -- "0..1" Course
+AIModel "1" *-- "0..*" LoRAAdapter
+AIExperiment "0..*" -- "1" AIModel
+AIExperiment "0..*" -- "0..1" LoRAAdapter
+
+Course "1" -- "0..*" Quiz
+Lesson "0..1" -- "0..*" Quiz
+Quiz "1" *-- "1..*" Question
+Quiz "1" *-- "1" AssessmentPolicy
+Question "1" *-- "0..*" QuestionOption
+QuizAttempt "0..*" -- "1" Quiz
+QuizAttempt "0..*" -- "1" StudentProfile
+QuizAttempt "1" *-- "0..*" Answer
+Answer "0..*" -- "1" Question
+Answer "0..*" -- "0..1" QuestionOption
+
+Course "1" -- "0..*" Assignment
+Lesson "0..1" -- "0..*" Assignment
+Assignment "1" *-- "1" AssessmentPolicy
+Assignment "1" *-- "0..*" AssignmentSubmission
+AssignmentSubmission "0..*" -- "1" StudentProfile
+AssignmentSubmission "0..*" -- "0..1" User : gradedBy
+
+Order "0..*" -- "1" StudentProfile
+Order "1" *-- "1..*" OrderItem
+OrderItem "0..*" -- "1" Course
+Order "1" *-- "0..*" PaymentTransaction
+PaymentTransaction "1" -- "0..*" Refund
+
+QuotaUsage "0..*" -- "0..1" User
+QuotaUsage "0..*" -- "0..1" Course
+
+@enduml
