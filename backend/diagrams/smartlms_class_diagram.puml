@@ -27,6 +27,12 @@ enum CourseRole {
   STUDENT
 }
 
+note right of CourseRole
+  W2: each course has one teacher OWNER.
+  Only OWNER and STUDENT memberships are supported.
+  TEACHER / ASSISTANT are legacy REMOVED records only.
+end note
+
 enum MemberStatus {
   INVITED
   ACTIVE
@@ -206,6 +212,18 @@ package "apps.users" {
     - createdAt: DateTime
     - updatedAt: DateTime
   }
+
+  note right of User
+    Django mappings:
+    passwordHash -> password (hashed, never returned)
+    createdAt -> date_joined
+    lastLoginAt -> last_login
+    Other fields use snake_case.
+    Registration requires STUDENT or TEACHER and creates an ACTIVE user.
+    Subsequent role changes are database-only for now.
+    Only the profile matching the selected role is provisioned and returned;
+    permissions are determined by role, not profile existence.
+  end note
 }
 
 ' =========================
