@@ -1,0 +1,54 @@
+{
+  "verified_at": "2026-10-08T03:47:59.461440+00:00",
+  "fixture_only": true,
+  "database": "disposable SQLite, fresh migrations, separate worker processes",
+  "sources": [
+    {
+      "subject": "KTCTMLN",
+      "course_id": "4fcb447e-bf3c-4738-ac6b-8e264bab7081",
+      "member_id": "6f6eda68-fdb3-4126-bad9-b8ed237161f6",
+      "document_id": "edc957ad-ec38-417a-93c6-4f072dffa0a2",
+      "version_id": "8c35d0c5-aace-414e-9a85-c978eaa01b93",
+      "job_id": "aacd830d-301b-4e9f-bbc5-7ffdc38c5055",
+      "extraction_status": "EXTRACTED",
+      "rag_ready": false,
+      "checksum_sha256": "a279ffb8a9c612f9e6cd2dfed148c87d3dd3d852cd4df8cc3779db7858cad8f3",
+      "upload_seconds": 0.031,
+      "page_count": 29,
+      "parser_version": "2.135.0",
+      "physical_pages_verified": true
+    },
+    {
+      "subject": "CNXHKH",
+      "course_id": "5a6c4b9d-a51b-418c-aa08-6a4863505ed3",
+      "member_id": "e908d9f4-4198-44be-8ffa-03a3408f9c22",
+      "document_id": "163afc1b-fc1c-4bb0-a1c8-5845f691f454",
+      "version_id": "53166efc-f437-4f75-9d63-dc3dd57cabfb",
+      "job_id": "fe2faf7f-716b-4f64-83ac-4fe32c121c39",
+      "extraction_status": "EXTRACTED",
+      "rag_ready": false,
+      "checksum_sha256": "6089d967204ea6619aaa3f61c73d7fcb9c5034b669bcb582e39c8ce32f5f0963",
+      "upload_seconds": 0.016,
+      "page_count": 24,
+      "parser_version": "2.135.0",
+      "physical_pages_verified": true
+    }
+  ],
+  "worker_process_seconds": [
+    50.265,
+    43.531,
+    1.079
+  ],
+  "restart_recovery": "WORKER_INTERRUPTED -> API retry -> EXTRACTED",
+  "retry_idempotent": true,
+  "failed_pdf": {
+    "job_status": "FAILED",
+    "error_code": "OCR_REQUIRED"
+  },
+  "membership_revocation_checked": true,
+  "publication_fixture_only": true,
+  "viewer_watermark_implemented": false,
+  "rag_ready": false,
+  "postgresql_verified": false,
+  "browser_demo_recorded": false
+}

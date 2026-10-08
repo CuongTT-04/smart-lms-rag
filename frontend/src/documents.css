@@ -1,0 +1,13 @@
+.documents-page { max-width: 1040px; margin: 36px auto; padding: 0 24px; }
+.documents-page header, .documents-page nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.documents-page label, .materials-upload label { display: grid; gap: 8px; }
+.documents-page select, .materials-upload input { padding: 12px; border: 1px solid #d9dce4; border-radius: 8px; font: inherit; }
+.materials-panel { margin-top: 28px; padding: 24px; background: #fff; border: 1px solid #e4e6eb; border-radius: 16px; }
+.materials-panel > p { margin: 12px 0; color: #606675; }
+.materials-upload { display: grid; gap: 16px; margin: 20px 0; }
+.materials-upload span { color: #606675; font-size: 14px; }
+.materials-upload button { justify-self: start; }
+.materials-list { display: grid; gap: 14px; margin-top: 20px; }
+.material-row { padding: 18px; border: 1px solid #e4e6eb; border-radius: 10px; }
+.material-row p { margin: 8px 0; }.material-row button { margin-top: 12px; }
+@media (max-width: 600px) { .documents-page header { align-items: flex-start; flex-direction: column; }.documents-page { padding: 0 14px; }.materials-panel { padding: 16px; } }

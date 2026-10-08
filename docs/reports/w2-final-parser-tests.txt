@@ -1,0 +1,21 @@
+
+Loading weights:   0%|          | 0/770 [00:00<?, ?it/s]
+Loading weights:  32%|███▏      | 243/770 [00:00<00:00, 2428.46it/s]
+Loading weights:  63%|██████▎   | 486/770 [00:00<00:00, 1809.71it/s]
+Loading weights: 100%|██████████| 770/770 [00:00<00:00, 2771.98it/s]
+.EOF marker not found
+................usage: ingest_documents.py [-h] --course-id COURSE_ID --document-id
+                           DOCUMENT_ID --version-id VERSION_ID
+                           [--subject-code SUBJECT_CODE] --output OUTPUT
+                           pdf
+ingest_documents.py: error: Corpus originals/sidecars are read-only; choose data/processed or private runtime storage.
+.usage: ingest_documents.py [-h] --course-id COURSE_ID --document-id
+                           DOCUMENT_ID --version-id VERSION_ID
+                           [--subject-code SUBJECT_CODE] --output OUTPUT
+                           pdf
+ingest_documents.py: error: Output cannot replace the original input PDF.
+.
+----------------------------------------------------------------------
+Ran 19 tests in 23.245s
+
+OK

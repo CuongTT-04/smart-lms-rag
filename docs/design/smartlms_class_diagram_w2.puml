@@ -1,0 +1,5 @@
+' W2 projection of the full diagram; edit the full source, not this wrapper.
+@startuml
+!define W2_ONLY
+!include smartlms_class_diagram.puml
+@enduml
