@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import TeacherHomePage from './TeacherHomePage'
 import {
-  createCourse, grantStudentAccess, listAllCourseMembers, listAllCourses,
+  createCourse, listAllCourseMembers, listAllCourses,
   revokeStudentAccess, updateCourse,
 } from '../services/course.service'
 
 vi.mock('../services/course.service', async (importOriginal) => ({
   ...await importOriginal(),
-  createCourse: vi.fn(), grantStudentAccess: vi.fn(), listAllCourseMembers: vi.fn(),
+  createCourse: vi.fn(), listAllCourseMembers: vi.fn(),
   listAllCourses: vi.fn(), revokeStudentAccess: vi.fn(), updateCourse: vi.fn(),
 }))
 
@@ -65,24 +65,23 @@ describe('teacher home', () => {
     const title = screen.getByLabelText('Tên khóa học')
     await userEvent.clear(title)
     await userEvent.type(title, 'Python nâng cao')
-    await userEvent.selectOptions(screen.getByLabelText('Trạng thái'), 'ARCHIVED')
+    await userEvent.click(screen.getByRole('combobox', { name: 'Trạng thái' }))
+    await userEvent.click(screen.getByRole('option', { name: 'Đã lưu trữ' }))
     await userEvent.click(screen.getByRole('button', { name: 'Lưu thay đổi' }))
     expect(updateCourse).toHaveBeenCalledWith('course-1', expect.objectContaining({ title: 'Python nâng cao', status: 'ARCHIVED' }))
     expect(await screen.findByText('Đã cập nhật khóa học.')).toBeVisible()
   })
 
-  it('grants and revokes student access', async () => {
-    grantStudentAccess.mockResolvedValueOnce(student)
+  it('removes direct grants and retains student revocation', async () => {
     revokeStudentAccess.mockResolvedValueOnce(undefined)
     render(<TeacherHomePage user={teacher} onLogout={vi.fn()} />)
     await screen.findByText('Lập trình Python')
     await userEvent.click(screen.getByRole('button', { name: /Quản lý/ }))
     await userEvent.click(screen.getByRole('button', { name: /Thành viên/ }))
-    await userEvent.type(screen.getByLabelText('UUID học viên'), '11111111-1111-4111-8111-111111111111')
-    await userEvent.click(screen.getByRole('button', { name: 'Thêm' }))
-    expect(grantStudentAccess).toHaveBeenCalledWith('course-1', '11111111-1111-4111-8111-111111111111')
-    await waitFor(() => expect(listAllCourseMembers).toHaveBeenCalledTimes(2))
-    await userEvent.click(screen.getByRole('button', { name: 'Thu hồi' }))
+    expect(screen.queryByLabelText('UUID học viên')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Lớp học' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Yêu cầu tham gia' })).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Thu hồi cả khóa' }))
     expect(revokeStudentAccess).toHaveBeenCalledWith('course-1', 'member-1')
   })
 

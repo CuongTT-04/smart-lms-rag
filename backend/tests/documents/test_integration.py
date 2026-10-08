@@ -9,6 +9,7 @@ from reportlab.pdfgen.canvas import Canvas
 from apps.documents.models import KnowledgeDocument, DocumentVersion
 from apps.documents.worker import claim_job, process_job
 from apps.documents.processors.parser import ExtractionResult, ExtractedPage
+from apps.courses.models import CourseMember
 
 class AIntegrationTests(TestCase):
     def setUp(self):
@@ -25,8 +26,15 @@ class AIntegrationTests(TestCase):
         self.assertEqual(response.status_code,201,response.content);self.course_id=response.json()["id"]
         response=self.client.patch(f"/api/courses/{self.course_id}/",{"status":"PUBLISHED"},content_type="application/json")
         self.assertEqual(response.status_code,200,response.content)
-        response=self.client.post(f"/api/courses/{self.course_id}/members/",{"user_id":str(self.student.pk)},content_type="application/json")
-        self.assertEqual(response.status_code,201,response.content);self.member_id=response.json()["id"]
+        response=self.client.get(f"/api/courses/{self.course_id}/classrooms/")
+        self.assertEqual(response.status_code,200,response.content)
+        self.classroom=response.json()["results"][0]
+        self.login("student","Student123!")
+        response=self.client.post("/api/courses/join/",{"class_code":self.classroom["class_code"]},content_type="application/json")
+        self.assertEqual(response.status_code,201,response.content)
+        self.enrollment_id=response.json()["enrollment"]["id"]
+        self.member_id=str(CourseMember.objects.get(course_id=self.course_id,user=self.student).pk)
+        self.login("teacher","Teacher123!")
         self.url=f"/api/courses/{self.course_id}/documents/"
     def login(self,username,password):
         self.client.defaults.pop("HTTP_AUTHORIZATION",None)
@@ -120,3 +128,43 @@ class AIntegrationTests(TestCase):
         self.assertEqual(self.client.get(self.url).json()["results"],[])
         for suffix in ("status/","extraction/"):
             self.assertEqual(self.client.get(f"/api/documents/{document_id}/{suffix}").status_code,404)
+
+    def test_classroom_withdrawal_keeps_material_access_until_last_enrollment_removed(self):
+        document_id=self.upload().json()["document_id"]
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        response=self.client.post(f"/api/courses/{self.course_id}/classrooms/",{"name":"Second classroom"},content_type="application/json")
+        self.assertEqual(response.status_code,201,response.content);second=response.json()
+        self.login("student","Student123!")
+        response=self.client.post("/api/courses/join/",{"class_code":second["class_code"]},content_type="application/json")
+        self.assertEqual(response.status_code,201,response.content);second_enrollment=response.json()["enrollment"]["id"]
+        self.login("teacher","Teacher123!")
+        response=self.client.delete(f"/api/courses/{self.course_id}/classrooms/{self.classroom['id']}/enrollments/{self.enrollment_id}/")
+        self.assertEqual(response.status_code,204,response.content)
+        self.login("student","Student123!")
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,200)
+        self.login("teacher","Teacher123!")
+        response=self.client.delete(f"/api/courses/{self.course_id}/classrooms/{second['id']}/enrollments/{second_enrollment}/")
+        self.assertEqual(response.status_code,204,response.content)
+        self.login("student","Student123!")
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,404)
+
+    def test_pending_request_cannot_read_materials_until_teacher_approves(self):
+        document_id=self.upload().json()["document_id"]
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        response=self.client.patch(f"/api/courses/{self.course_id}/access-policy/",{"require_approval":True},content_type="application/json")
+        self.assertEqual(response.status_code,200,response.content)
+        get_user_model().objects.create_user("waiting",password="Student123!")
+        self.login("waiting","Student123!")
+        response=self.client.post("/api/courses/join/",{"class_code":self.classroom["class_code"]},content_type="application/json")
+        self.assertEqual(response.status_code,201,response.content)
+        self.assertEqual(response.json()["status"],"PENDING");request_id=response.json()["join_request"]["id"]
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,404)
+        self.login("teacher","Teacher123!")
+        response=self.client.post(f"/api/courses/{self.course_id}/join-requests/{request_id}/review/",{"decision":"approve"},content_type="application/json")
+        self.assertEqual(response.status_code,200,response.content)
+        self.login("waiting","Student123!")
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,200)
+
+    def test_direct_member_grant_is_no_longer_a_supported_join_flow(self):
+        response=self.client.post(f"/api/courses/{self.course_id}/members/",{"user_id":str(self.student.pk)},content_type="application/json")
+        self.assertEqual(response.status_code,405)

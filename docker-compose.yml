@@ -1,0 +1,91 @@
+name: smart-lms-rag
+
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smart_lms}
+      POSTGRES_USER: ${POSTGRES_USER:-smart_lms}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smart-lms-local-only}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    environment: &backend-environment
+      DJANGO_SETTINGS_MODULE: config.settings.docker
+      DJANGO_DEBUG: "true"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-smart-lms-docker-local-only-change-before-production}
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      JWT_ACCESS_TOKEN_MINUTES: ${JWT_ACCESS_TOKEN_MINUTES:-15}
+      JWT_REFRESH_TOKEN_DAYS: ${JWT_REFRESH_TOKEN_DAYS:-7}
+      JWT_REFRESH_COOKIE_SECURE: "false"
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      EMAIL_HOST: ${EMAIL_HOST:-localhost}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-true}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-OHAYO <noreply@ohayo.local>}
+      PASSWORD_RESET_TIMEOUT: ${PASSWORD_RESET_TIMEOUT:-1800}
+      PASSWORD_RESET_PREVIEW: ${PASSWORD_RESET_PREVIEW:-true}
+      PASSWORD_RESET_URL: ${PASSWORD_RESET_URL:-http://localhost:5173/reset-password}
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: ${POSTGRES_DB:-smart_lms}
+      DB_USER: ${POSTGRES_USER:-smart_lms}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-smart-lms-local-only}
+      DB_HOST: database
+      DB_PORT: "5432"
+      DOCUMENTS_STORAGE_ROOT: /app/.private/documents
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./data/backups:/bootstrap:ro
+      - media_data:/app/media
+      - documents_data:/app/.private/documents
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    restart: unless-stopped
+
+  ingestion-worker:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    environment: *backend-environment
+    entrypoint: ["python", "manage.py", "run_ingestion_worker"]
+    command: ["--poll-seconds", "2"]
+    volumes:
+      - ./backend:/app/backend
+      - documents_data:/app/.private/documents
+      - docling_cache:/home/app/.cache
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  media_data:
+  documents_data:
+  docling_cache:

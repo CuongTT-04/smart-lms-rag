@@ -120,17 +120,18 @@ class W2APIScenarioTests(TestCase):
             row["actual"] = "201 DRAFT owner; 200 PUBLISHED with timestamp"
 
         members = f"/api/courses/{course_id}/members/"
-        with self.case("Grant and student read", "Membership enables PUBLISHED course visibility", "201 grant; student list/detail 200") as row:
-            self.write(self.teacher, "post", members, 201, {"user_id": str(self.users["student"].pk)})
+        with self.case("Join and student read", "Class code enables free PUBLISHED course visibility", "201 join; student list/detail 200") as row:
+            code = self.request(self.teacher, "get", f"/api/courses/{course_id}/classrooms/", 200).json()["results"][0]["class_code"]
             self.login(self.student, "student")
+            self.write(self.student, "post", "/api/courses/join/", 201, {"class_code": code})
             self.assertEqual(self.request(self.student, "get", "/api/courses/", 200).json()["count"], 1)
             self.request(self.student, "get", detail, 200)
-            row["actual"] = "201 grant; 200 list/detail for student"
+            row["actual"] = "201 join; 200 list/detail for student"
 
         with self.case("Student management denial", "Read permission does not grant course mutation", "403 on course and member writes") as row:
             self.write(self.student, "post", "/api/courses/", 403, {"title": "Denied"})
             self.write(self.student, "patch", detail, 403, {"title": "Denied"})
-            self.write(self.student, "post", members, 403, {"user_id": str(self.users["student"].pk)})
+            self.write(self.student, "patch", f"/api/courses/{course_id}/access-policy/", 403, {"require_approval": False})
             row["actual"] = "403 x3 with valid student bearer token"
 
         with self.case("Missing bearer token", "Protected APIs reject anonymous requests", "401 for profile and business API") as row:

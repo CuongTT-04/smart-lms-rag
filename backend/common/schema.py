@@ -1,7 +1,7 @@
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse
 from rest_framework import serializers
 
-from apps.courses.models import Course, CourseMember
+from apps.courses.models import Course, CourseMember, Enrollment, JoinRequest
 from apps.users.models import User
 from apps.users.services import REGISTRATION_ROLE_CHOICES
 
@@ -11,6 +11,8 @@ USER_STATUS_CHOICES = User.Status.choices
 COURSE_STATUS_CHOICES = Course.Status.choices
 COURSE_ROLE_CHOICES = CourseMember.Role.choices
 MEMBER_STATUS_CHOICES = CourseMember.Status.choices
+ENROLLMENT_STATUS_CHOICES = Enrollment.Status.choices
+JOIN_REQUEST_STATUS_CHOICES = JoinRequest.Status.choices
 
 
 class DetailSerializer(serializers.Serializer):
@@ -82,10 +84,11 @@ AVATAR_BAD_REQUEST = validation_error_response(
     OpenApiExample("Oversized file", value={"avatar": ["Avatar must not exceed 5 MB."]}),
     OpenApiExample("Invalid image", value={"avatar": ["Upload a valid JPG, PNG or WebP image, at most 4096 pixels per side."]}),
 )
-GRANT_BAD_REQUEST = validation_error_response(
-    OpenApiExample("Ineligible account", value={"user_id": ["Select an existing active student account."]}),
-    OpenApiExample("Unexpected role", value={"role": "This field is not accepted."}),
-    PARSE_ERROR,
+ENROLLMENT_BAD_REQUEST = validation_error_response(
+    OpenApiExample("Invalid code or unavailable class", value={"class_code": ["This classroom is not accepting enrollment."]}),
+    OpenApiExample("Already processed", value={"status": ["This request has already been processed."]}),
+    OpenApiExample("Invalid decision", value={"decision": ['"invalid" is not a valid choice.']}),
+    OpenApiExample("Immutable field", value={"class_code": ["This field is not accepted."]}),
 )
 REVOKE_BAD_REQUEST = validation_error_response(
     OpenApiExample("Protected membership", value={"member_id": ["Only student memberships can be revoked."]}),
@@ -100,7 +103,7 @@ UNAUTHORIZED = OpenApiResponse(
 )
 NOT_FOUND = OpenApiResponse(
     response=DetailSerializer,
-    description="Course or course-scoped membership not found.",
+    description="Không tìm thấy khóa học, thành viên, lớp, ghi danh hoặc yêu cầu trong phạm vi được phép; với danh sách phân trang, page có thể không hợp lệ hoặc vượt phạm vi.",
 )
 PAGE_NOT_FOUND = OpenApiResponse(
     response=DetailSerializer,
@@ -113,11 +116,14 @@ COURSE_OR_PAGE_NOT_FOUND = OpenApiResponse(
 def align_request_constraints(result, generator, request, public):
     # These serializers reject unknown fields; PATCH also rejects an empty object.
     schemas = result["components"]["schemas"]
-    for name in ("CourseCreateRequest", "PatchedCourseUpdateRequest", "GrantStudentAccessRequest", "RegistrationRequest", "PasswordResetRequestRequest", "PasswordResetConfirmRequest", "AvatarUploadRequest"):
+    for name in ("CourseCreateRequest", "PatchedCourseUpdateRequest", "RegistrationRequest", "PasswordResetRequestRequest", "PasswordResetConfirmRequest", "AvatarUploadRequest", "JoinByCodeRequest", "ReviewRequestRequest", "ClassroomInputRequest", "PatchedClassroomInputRequest", "PatchedPolicyUpdateRequest", "EmptyRequestRequest"):
         if name in schemas:
             schemas[name]["additionalProperties"] = False
     if "PatchedCourseUpdateRequest" in schemas:
         schemas["PatchedCourseUpdateRequest"]["minProperties"] = 1
+    for name in ("PatchedClassroomInputRequest", "PatchedPolicyUpdateRequest"):
+        if name in schemas:
+            schemas[name]["minProperties"] = 1
     for name in ("PatchedUserUpdateRequest", "StudentProfileUpdateRequest", "TeacherProfileUpdateRequest"):
         if name in schemas:
             schemas[name]["additionalProperties"] = False

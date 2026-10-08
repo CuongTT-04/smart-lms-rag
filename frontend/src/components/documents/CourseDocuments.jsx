@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import '../../documents.css'
 import { listDocuments, uploadDocument, documentStatus, retryDocument, documentExtraction } from '../../services/document.service'
 
 const LABELS = { NOT_STARTED: 'Chưa xử lý', QUEUED: 'Đang chờ xử lý', PROCESSING: 'Đang trích xuất', EXTRACTED: 'Đã trích xuất', FAILED: 'Xử lý thất bại', READY: 'Đã trích xuất' }

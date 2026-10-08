@@ -1,18 +1,18 @@
 Creating test database for alias 'default'...
 
-........................................................................................................................................................................
+.....................................................................................................................................................................................................ssss.
 ----------------------------------------------------------------------
-Ran 168 tests in 4.463s
+Ran 202 tests in 20.727s
 
-OK
+OK (skipped=4)
 Destroying test database for alias 'default'...
 
-Found 168 test(s).
+Found 202 test(s).
 System check identified no issues (0 silenced).
 W2 scenario 01: PASS | Health | 200; status=ok
 W2 scenario 02: PASS | Teacher login + bearer profile | 200/200; bearer access; refresh cookie; safe user fields and profiles
 W2 scenario 03: PASS | Create and publish course | 201 DRAFT owner; 200 PUBLISHED with timestamp
-W2 scenario 04: PASS | Grant and student read | 201 grant; 200 list/detail for student
+W2 scenario 04: PASS | Join and student read | 201 join; 200 list/detail for student
 W2 scenario 05: PASS | Student management denial | 403 x3 with valid student bearer token
 W2 scenario 06: PASS | Missing bearer token | 401 x3
 W2 scenario 07: PASS | JWT refresh rotation | 200 access; refresh rotated and previous JTI blacklisted

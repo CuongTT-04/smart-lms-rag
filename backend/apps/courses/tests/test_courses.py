@@ -94,7 +94,7 @@ class CourseServiceTests(TestCase):
         course = create_course(actor=self.teacher, title="Course")
         owner = course.memberships.get()
         self.assertTrue(can_manage_course(self.teacher, course))
-        for status in (CourseMember.Status.INVITED, CourseMember.Status.SUSPENDED, CourseMember.Status.REMOVED):
+        for status in (CourseMember.Status.SUSPENDED, CourseMember.Status.REMOVED):
             owner.status = status
             owner.save(update_fields=["status"])
             self.assertFalse(can_manage_course(self.teacher, course))

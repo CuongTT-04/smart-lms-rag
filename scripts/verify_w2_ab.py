@@ -51,7 +51,7 @@ def main():
         assert payload["course_id"]==course_id and payload["page_count"]==2
         assert "PAGE ONE" in payload["pages"][0]["text"] and "PAGE TWO" in payload["pages"][1]["text"]
         assert payload["rag_ready"] is False and payload["indexed_at"] is None
-        report={"fixture_only":True,"a_commit":"b8b03df","actual_models":["users.User","courses.Course","courses.CourseMember"],
+        report={"fixture_only":True,"a_commit":"0a0d63e","actual_models":["users.User","courses.Course","courses.CourseMember"],
             "actual_login":"/api/users/login/","authentication":"JWT Bearer","upload_http":202,
             "upload_seconds":round(upload_seconds,3),"extraction_seconds":round(seconds,3),
             "job_status":job.status,"version_status":version.status,"page_count":2,"physical_pages_verified":True,

@@ -10,7 +10,7 @@ from apps.courses.api.serializers import CourseSerializer
 from apps.courses.models import Course, CourseMember
 from apps.courses.permissions import can_view_course
 from apps.courses.selectors import list_accessible_courses
-from apps.courses.services import create_course, grant_student_access, update_course
+from apps.courses.services import create_course, update_course
 from common.testing import authenticate_client
 
 
@@ -88,8 +88,8 @@ class CourseAccessAPITests(TestCase):
         )
         CourseMember.objects.create(course=cls.outside, user=cls.admin, role=CourseMember.Role.STUDENT)
         for course in (cls.draft, cls.published, cls.archived):
-            grant_student_access(actor=cls.teacher, course=course, user_id=cls.student.pk)
-        grant_student_access(actor=cls.other_teacher, course=cls.outside, user_id=cls.other_student.pk)
+            CourseMember.objects.create(course=course, user=cls.student)
+        CourseMember.objects.create(course=cls.outside, user=cls.other_student)
 
     def setUp(self):
         self.list_url = reverse("courses:create")
@@ -122,8 +122,9 @@ class CourseAccessAPITests(TestCase):
         self.assertEqual(response.json()["id"], str(self.published.pk))
         self.assertEqual(
             set(response.json()),
-            {"id", "title", "description", "status", "created_at", "updated_at", "published_at"},
+            {"id", "title", "description", "status", "created_at", "updated_at", "published_at", "my_classrooms"},
         )
+        self.assertEqual(response.json()["my_classrooms"], [])
         for course in (self.draft, self.archived, self.outside, self.co_taught):
             denied = self.client.get(self.detail_url(course))
             self.assertEqual(denied.status_code, 403)
@@ -163,9 +164,9 @@ class CourseAccessAPITests(TestCase):
         self.assertEqual(len(actual), len(set(actual)))
         self.assertEqual(set(actual), expected)
 
-    def test_invited_suspended_and_removed_memberships_are_hidden(self):
+    def test_suspended_and_removed_memberships_are_hidden(self):
         member = self.published.memberships.get(user=self.student)
-        for state in (CourseMember.Status.INVITED, CourseMember.Status.SUSPENDED, CourseMember.Status.REMOVED):
+        for state in (CourseMember.Status.SUSPENDED, CourseMember.Status.REMOVED):
             member.status = state
             member.save(update_fields=["status"])
             self.assertEqual(self.listed_ids(), set())
@@ -180,10 +181,13 @@ class CourseAccessAPITests(TestCase):
         self.assertEqual(self.listed_ids(), set())
         self.assertEqual(self.client.get(self.detail_url(self.published)).status_code, 403)
         self.assertEqual(self.client.get(reverse("users:me")).status_code, 200)
-        url = reverse("courses:members", args=[self.published.pk])
-        restored = teacher_client.post(url, {"user_id": str(self.student.pk)}, format="json")
+        classroom = self.published.classrooms.get()
+        pending = self.client.post(reverse("courses:join"), {"class_code": classroom.class_code}, format="json")
+        request_id = pending.json()["join_request"]["id"]
+        url = reverse("courses:request-review", args=[self.published.pk, request_id])
+        restored = teacher_client.post(url, {"decision": "approve"}, format="json")
         self.assertEqual(restored.status_code, 200)
-        self.assertEqual(restored.json()["id"], str(member.pk))
+        self.assertEqual(restored.json()["status"], "APPROVED")
         self.assertEqual(self.listed_ids(), {str(self.published.pk)})
         self.assertEqual(self.client.get(self.detail_url(self.published)).status_code, 200)
 

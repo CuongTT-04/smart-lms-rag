@@ -57,14 +57,16 @@ class DocumentAPIView(APIView):
 
 
 class CourseDocumentsView(DocumentAPIView):
-    @extend_schema(tags=["Documents"], request={"multipart/form-data": DocumentUploadRequest}, responses={202: OpenApiTypes.OBJECT},
+    @extend_schema(tags=["Documents"], summary="Upload course material", description="The active course owner uploads a PDF. Returns a durable extraction job after storing the source privately; document processing runs separately in the worker.",
+                   request={"multipart/form-data": DocumentUploadRequest}, responses={202: OpenApiTypes.OBJECT, 401: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT},
                    parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)])
     def post(self, request, course_id):
         course = course_model().objects.get(pk=course_id)
         op = upload_document(request.user, course, request.FILES.get("file"), request.data.get("title"), request.headers.get("Idempotency-Key"))
         return Response(operation_payload(op), status=202)
 
-    @extend_schema(tags=["Documents"], responses={200: OpenApiTypes.OBJECT})
+    @extend_schema(tags=["Documents"], summary="List course materials", description="List material metadata using current course permissions. Students only see published materials; no private storage paths are returned.",
+                   responses={200: OpenApiTypes.OBJECT, 401: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT})
     def get(self, request, course_id):
         course = course_model().objects.get(pk=course_id)
         require_access(request.user, course)

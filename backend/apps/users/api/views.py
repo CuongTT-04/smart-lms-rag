@@ -78,8 +78,8 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        operation_id="users_register", tags=["Authentication"], summary="Register a student or teacher account",
-        description="Choose STUDENT or TEACHER (required). Creates an ACTIVE account with only its matching profile, returned as student_profile or teacher_profile; the other key is omitted. learning_goal is student-only; bio and specialization are teacher-only (blank values allowed). ADMIN and permission fields are rejected. Sign in separately after registration.",
+        operation_id="users_register", tags=["Authentication"], summary="Đăng ký tài khoản học viên hoặc giáo viên",
+        description="API công khai, không cần đăng nhập. Bắt buộc chọn role là STUDENT (học viên) hoặc TEACHER (giáo viên). Tạo tài khoản ACTIVE và chỉ tạo/trả về hồ sơ tương ứng: student_profile hoặc teacher_profile; không có khóa hồ sơ của vai trò còn lại. learning_goal dành cho học viên; bio và specialization dành cho giáo viên, cho phép bỏ trống. Không chấp nhận ADMIN hay trường phân quyền. Thành công trả 201; cần đăng nhập riêng sau khi đăng ký.",
         request=RegistrationSerializer, auth=[],
         responses={201: CurrentUserSerializer, 400: REGISTER_BAD_REQUEST},
     )
@@ -106,8 +106,8 @@ class PasswordResetRequestView(APIView):
 
     @extend_schema(
         operation_id="users_password_reset_request", tags=["Authentication"],
-        summary="Request a password reset email", auth=[], request=PasswordResetRequestSerializer,
-        description="Normally returns a generic message and sends a link by email. Development-only DEBUG + PASSWORD_RESET_PREVIEW returns reset_url for direct navigation instead of sending email. Never use preview with real user data. Limited to 5 requests/IP/hour and 3 requests/email/hour.",
+        summary="Yêu cầu liên kết đặt lại mật khẩu", auth=[], request=PasswordResetRequestSerializer,
+        description="API công khai, nhận email. Thông thường trả thông báo chung và gửi liên kết qua email, không tiết lộ email có tài khoản hay không. Trong môi trường phát triển, khi DEBUG và PASSWORD_RESET_PREVIEW cùng bật, trả thêm reset_url để điều hướng trực tiếp thay vì gửi email. Không dùng chế độ này với dữ liệu người dùng thật. Giới hạn 5 yêu cầu/IP/giờ và 3 yêu cầu/email/giờ; vượt giới hạn trả 429.",
         responses={200: PasswordResetResponseSerializer, 400: RESET_BAD_REQUEST, 429: DetailSerializer},
     )
     def post(self, request):
@@ -128,8 +128,8 @@ class PasswordResetConfirmView(APIView):
 
     @extend_schema(
         operation_id="users_password_reset_confirm", tags=["Authentication"],
-        summary="Set a new password using a reset link", auth=[], request=PasswordResetConfirmSerializer,
-        description="Supply uid and token from the email. Tokens expire and cannot be reused. Success revokes old JWTs and requires a new login. Limited to 20 requests/IP/hour.",
+        summary="Đặt mật khẩu mới bằng liên kết khôi phục", auth=[], request=PasswordResetConfirmSerializer,
+        description="API công khai. Gửi uid và token lấy từ liên kết đặt lại mật khẩu, cùng password và password_confirm khớp nhau. Mật khẩu tối thiểu 8 ký tự, có chữ in hoa, chữ số và ký tự đặc biệt. Token có thời hạn và không thể dùng lại sau khi đổi mật khẩu thành công. Thành công trả 200, vô hiệu hóa JWT cũ và yêu cầu đăng nhập lại. Giới hạn 20 yêu cầu/IP/giờ; vượt giới hạn trả 429.",
         responses={200: DetailSerializer, 400: RESET_BAD_REQUEST, 429: DetailSerializer},
     )
     def post(self, request):
@@ -150,12 +150,12 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        operation_id="users_login", tags=["Authentication"], summary="Login with username/password",
-        description="Returns a short-lived access token and sets an HttpOnly refresh-token cookie. Disabled accounts cannot login.",
+        operation_id="users_login", tags=["Authentication"], summary="Đăng nhập bằng tên tài khoản và mật khẩu",
+        description="API công khai. Nhận username và password; thành công trả thông tin user cùng access token JWT ngắn hạn, đồng thời lưu refresh token trong cookie HttpOnly. Dùng access token trong mục Authorize của Swagger để gọi API cần xác thực; trình duyệt tự gửi cookie khi làm mới token. Sai thông tin hoặc tài khoản không khả dụng trả 401. Tài khoản bị vô hiệu hóa không thể đăng nhập.",
         request=LoginSerializer, auth=[],
         responses={
             200: LoginResponseSerializer, 400: LOGIN_BAD_REQUEST, 403: FORBIDDEN,
-            401: OpenApiResponse(DetailSerializer, description="Invalid credentials or unavailable account."),
+            401: OpenApiResponse(DetailSerializer, description="Tên tài khoản/mật khẩu không đúng hoặc tài khoản không khả dụng."),
         },
     )
     def post(self, request):
@@ -182,7 +182,8 @@ class TokenRefreshView(APIView):
 
     @extend_schema(
         operation_id="users_token_refresh", tags=["Authentication"],
-        summary="Refresh access token", request=None, auth=[],
+        summary="Làm mới access token", request=None, auth=[],
+        description="Không gửi body hay Bearer token. Trình duyệt cần gửi cookie refresh token nhận khi đăng nhập. Thành công trả access token mới và cập nhật cookie nếu refresh token được xoay vòng. Cookie thiếu, token không hợp lệ/hết hạn hoặc tài khoản không khả dụng trả 401 và xóa cookie; khi đó cần đăng nhập lại.",
         responses={200: TokenRefreshResponseSerializer, 401: UNAUTHORIZED},
     )
     def post(self, request):
@@ -212,7 +213,8 @@ class SessionView(APIView):
 
     @extend_schema(
         operation_id="users_session", tags=["Authentication"],
-        summary="Restore browser session", request=None, auth=[],
+        summary="Khôi phục phiên đăng nhập trên trình duyệt", request=None, auth=[],
+        description="API công khai dùng khi mở hoặc tải lại ứng dụng, không cần Bearer token. Nếu cookie refresh token hợp lệ, trả authenticated=true cùng user và access token. Nếu không có cookie hoặc phiên không hợp lệ, vẫn trả 200 với authenticated=false; cookie không hợp lệ được xóa. Khách chưa đăng nhập không bị coi là lỗi xác thực.",
         responses={200: SessionResponseSerializer},
     )
     def get(self, request):
@@ -239,7 +241,8 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        operation_id="users_logout", tags=["Authentication"], summary="Logout and revoke refresh token",
+        operation_id="users_logout", tags=["Authentication"], summary="Đăng xuất và thu hồi refresh token",
+        description="Yêu cầu Bearer JWT hợp lệ, không gửi body. Thu hồi refresh token trong cookie nếu có và xóa cookie trên trình duyệt. Thành công trả 204 không có body. Frontend phải xóa access token đang giữ; access token đã cấp không bị thu hồi ngay bởi thao tác đăng xuất và có thể còn hiệu lực đến khi hết hạn.",
         request=None, responses={204: None, 401: UNAUTHORIZED, 403: FORBIDDEN},
     )
     def post(self, request):
@@ -259,15 +262,16 @@ class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        operation_id="users_me", tags=["Authentication"], summary="Get current account",
+        operation_id="users_me", tags=["Authentication"], summary="Xem thông tin tài khoản hiện tại",
+        description="Yêu cầu Bearer JWT. Trả về user của tài khoản đang đăng nhập cùng hồ sơ tương ứng với vai trò: student_profile hoặc teacher_profile. Không nhận user_id để xem tài khoản người khác và không trả mật khẩu hay mật khẩu băm. Token thiếu, không hợp lệ hoặc hết hạn trả 401.",
         responses={200: CurrentUserSerializer, 401: UNAUTHORIZED, 403: FORBIDDEN},
     )
     def get(self, request):
         return Response({"user": UserSerializer(request.user).data})
 
     @extend_schema(
-        operation_id="users_update_me", tags=["Authentication"], summary="Update own account and role-specific profile",
-        description="Partial update, at least one editable field required. Role, status, IDs and privilege fields cannot be changed. Use snake_case fields. Changing email or password requires current_password; password also requires password_confirm. Password is hashed server-side. Password changes revoke existing JWTs and set requires_login=true.",
+        operation_id="users_update_me", tags=["Authentication"], summary="Cập nhật tài khoản và hồ sơ theo vai trò",
+        description="Yêu cầu Bearer JWT. Cập nhật một phần tài khoản của mình, gửi ít nhất một trường được phép: username, email, full_name, avatar_url, phone, mật khẩu hoặc hồ sơ tương ứng vai trò. Dùng tên trường snake_case. Không được sửa role, status, ID hay quyền hệ thống. student_profile nhận learning_goal; teacher_profile nhận bio và specialization. Đổi email hoặc mật khẩu cần current_password; mật khẩu mới cần password_confirm, tối thiểu 8 ký tự có chữ in hoa, chữ số và ký tự đặc biệt. Server tự băm mật khẩu, không nhận passwordHash. Đổi mật khẩu vô hiệu hóa JWT cũ và trả requires_login=true; các cập nhật khác không buộc đăng nhập lại.",
         request=UserUpdateSerializer,
         responses={200: UserUpdateResponseSerializer, 400: USER_UPDATE_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN},
     )
@@ -299,8 +303,8 @@ class AvatarUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     @extend_schema(
-        operation_id="users_upload_avatar", tags=["Authentication"], summary="Upload own avatar",
-        description="Multipart field avatar: JPG, PNG or WebP up to 5 MB and 4096 pixels per side. Decoded, resized to at most 512 pixels and re-encoded with metadata removed. Replaces the current avatar without changing role or profile.",
+        operation_id="users_upload_avatar", tags=["Authentication"], summary="Tải ảnh đại diện từ máy lên",
+        description="Yêu cầu Bearer JWT. Gửi multipart/form-data với trường tệp avatar, không gửi JSON. Chấp nhận JPG, PNG hoặc WebP tối đa 5 MB và 4096 pixel mỗi chiều. Server giải mã, thu nhỏ còn tối đa 512 pixel và mã hóa lại để loại bỏ metadata. Thay ảnh đại diện hiện tại, không đổi vai trò hay hồ sơ; thành công trả 200 cùng user đã cập nhật. Tệp không hợp lệ trả 400, kiểu nội dung không được hỗ trợ trả 415.",
         request=AvatarUploadSerializer,
         responses={200: CurrentUserSerializer, 400: AVATAR_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN, 415: DetailSerializer},
     )

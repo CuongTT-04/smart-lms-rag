@@ -1,10 +1,24 @@
+from django.db.models import Prefetch
+
 from apps.users.models import User
 
-from .models import Course, CourseMember
+from .models import Course, CourseMember, Enrollment
 
 
-def get_course(*, course_id):
-    return Course.objects.filter(pk=course_id).first()
+def with_student_classrooms(courses, user):
+    if user and user.is_authenticated and user.role == User.Role.STUDENT:
+        return courses.prefetch_related(Prefetch(
+            "classrooms__enrollments",
+            queryset=Enrollment.objects.filter(student__user=user).exclude(
+                status=Enrollment.Status.WITHDRAWN
+            ).select_related("classroom__course").order_by("enrolled_at", "id"),
+            to_attr="student_enrollments",
+        ))
+    return courses
+
+
+def get_course(*, course_id, user=None):
+    return with_student_classrooms(Course.objects.filter(pk=course_id), user).first()
 
 
 def list_course_members(*, course):
@@ -30,5 +44,5 @@ def list_accessible_courses(*, user):
     if user.role == User.Role.TEACHER:
         return courses
     if user.role == User.Role.STUDENT:
-        return courses.filter(status=Course.Status.PUBLISHED)
+        return with_student_classrooms(courses.filter(status=Course.Status.PUBLISHED), user)
     return Course.objects.none()

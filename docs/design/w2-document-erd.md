@@ -1,6 +1,6 @@
 # Thiết kế dữ liệu học liệu — B1 ngày 07/10/2026
 
-Trạng thái ngày 08/10: đã chốt và kiểm thử migration học liệu với users.User/courses.Course UUID nguyên bản nhánh A b8b03df. JWT và quyền CourseMember dùng code A; không tạo model User/Course trùng trong app documents. Phần kiểm chứng hiện dùng SQLite local, chưa xác nhận PostgreSQL/production.
+Trạng thái ngày 09/10: đã kiểm thử migration học liệu với users.User/courses.Course UUID nhánh A 0a0d63e và migration Classroom/Enrollment mới. JWT và quyền CourseMember dùng code A; không tạo model User/Course trùng trong app documents. Phần kiểm chứng hiện dùng SQLite local, chưa xác nhận PostgreSQL/production.
 
 ```mermaid
 erDiagram
@@ -133,8 +133,12 @@ API tài liệu xác thực access token bằng JWT Bearer. Không dùng session
 
 Bổ sung bảng `DocumentOperation` lưu actor, course, action, client_key, payload_digest và liên kết document/version/job. Ràng buộc unique(actor, course, action, client_key) bảo đảm request lặp không tạo thêm học liệu/phiên bản; payload khác trả 409. IngestionJob vẫn lưu định danh và lease riêng cho worker.
 
-Migration `documents.0001_initial` sử dụng `DOCUMENTS_COURSE_MODEL` và `AUTH_USER_MODEL`. Phải thống nhất Course model trước lần migrate đầu tiên, không đổi app/model sau khi đã triển khai database. Model User/Course trong `tests.document_support` chỉ phục vụ kiểm thử, không dùng trong production. Bản kiểm thử đã chạy migration với Course fixture; chưa phải bằng chứng migration tích hợp A đã chạy.
+Migration `documents.0001_initial` sử dụng `DOCUMENTS_COURSE_MODEL` và `AUTH_USER_MODEL`. Phải thống nhất Course model trước lần migrate đầu tiên, không đổi app/model sau khi đã triển khai database. Model Course/Membership trong `tests.document_support` chỉ phục vụ kiểm thử độc lập, không dùng trong production. Test tích hợp và script delivery chạy migration với model User/Course thực tế của A.
 
 ## Chốt tích hợp với A ngày 08/10
 
 User UUID, Course UUID và CourseMember dùng nguyên bản nhánh A b8b03df. Course không có FK teacher trực tiếp: giáo viên sở hữu được xác định qua CourseMember(role=OWNER,status=ACTIVE). B dùng apps.courses.permissions.can_manage_course/can_view_course. Học viên cần STUDENT/ACTIVE và Course PUBLISHED. Migration documents đã kiểm thử với model/migration A thật; cấu hình bổ sung nằm ở config.settings.w2. Xem báo cáo w2-b-handoff-and-ab-decisions.md.
+
+## Cập nhật ngày 09/10
+
+Nhánh A 0a0d63e thêm AccessPolicy/Classroom/Enrollment/JoinRequest; học viên vào lớp bằng mã hoặc yêu cầu được duyệt. Enrollment đồng bộ quyền CourseMember. Rút khỏi lớp cuối hoặc thu hồi cả khóa chặn quyền học liệu; còn enrollment hiệu lực ở lớp khác cùng khóa thì vẫn được đọc. KnowledgeDocument tiếp tục FK trực tiếp Course nên các lớp cùng khóa dùng chung tài liệu; chưa thêm FK Classroom/Lesson. INVITED không còn là trạng thái CourseMember; chờ duyệt được biểu diễn bằng JoinRequest.PENDING và chưa có quyền đọc học liệu.

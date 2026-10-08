@@ -41,6 +41,7 @@ def main():
         from datetime import timedelta
         from pypdf import PdfWriter
         from apps.documents.models import IngestionJob, KnowledgeDocument
+        from apps.courses.models import CourseMember
         from apps.documents.worker import claim_job, recover_expired_jobs
 
         assert Path(settings.DATABASES['default']['NAME']).resolve() == database.resolve()
@@ -68,8 +69,15 @@ def main():
             course_id = response.json()["id"]
             response = client.patch(f"/api/courses/{course_id}/", {"status": "PUBLISHED"}, content_type="application/json")
             assert response.status_code == 200
-            member = post_json(f"/api/courses/{course_id}/members/", {"user_id": str(student.pk)})
-            assert member.status_code == 201
+            classroom = client.get(f"/api/courses/{course_id}/classrooms/")
+            assert classroom.status_code == 200
+            class_code = classroom.json()["results"][0]["class_code"]
+            login("w2-delivery-student")
+            joined = post_json("/api/courses/join/", {"class_code": class_code})
+            assert joined.status_code == 201
+            assert joined.json()["status"] == "ENROLLED"
+            login("w2-delivery-teacher")
+            member_id = str(CourseMember.objects.get(course_id=course_id, user=student).pk)
             source = ROOT / "data/corpus" / subject / "ch01.pdf"
             data = source.read_bytes()
             started = time.monotonic()
@@ -78,7 +86,7 @@ def main():
                 HTTP_IDEMPOTENCY_KEY=subject)
             assert response.status_code == 202, response.content
             records.append({"subject": subject, "course_id": course_id,
-                "member_id": member.json()["id"], **response.json(),
+                "member_id": member_id, **response.json(),
                 "checksum_sha256": hashlib.sha256(data).hexdigest(),
                 "upload_seconds": round(time.monotonic() - started, 3)})
 

@@ -5,7 +5,7 @@ from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.validation import validate_schema
 from rest_framework.test import APIClient
 
-from apps.courses.models import Course, CourseMember
+from apps.courses.models import Course, CourseMember, Enrollment, JoinRequest
 from apps.users.models import User
 
 
@@ -39,8 +39,23 @@ class OpenAPITests(SimpleTestCase):
             ("/api/courses/{course_id}/", "get"),
             ("/api/courses/{course_id}/", "patch"),
             ("/api/courses/{course_id}/members/", "get"),
-            ("/api/courses/{course_id}/members/", "post"),
+            ("/api/courses/join/", "post"),
+            ("/api/courses/join-requests/mine/", "get"),
+            ("/api/courses/join-requests/{request_id}/cancel/", "post"),
+            ("/api/courses/enrollments/mine/", "get"),
+            ("/api/courses/{course_id}/access-policy/", "get"),
+            ("/api/courses/{course_id}/access-policy/", "patch"),
+            ("/api/courses/{course_id}/classrooms/", "get"),
+            ("/api/courses/{course_id}/classrooms/", "post"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/", "patch"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/", "get"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/{enrollment_id}/", "delete"),
+            ("/api/courses/{course_id}/my-classrooms/", "get"),
+            ("/api/courses/{course_id}/join-requests/", "get"),
+            ("/api/courses/{course_id}/join-requests/{request_id}/review/", "post"),
             ("/api/courses/{course_id}/members/{member_id}/", "delete"),
+        }
+        expected.update({
             ("/api/courses/{course_id}/documents/", "get"),
             ("/api/courses/{course_id}/documents/", "post"),
             ("/api/documents/{document_id}/status/", "get"),
@@ -48,7 +63,7 @@ class OpenAPITests(SimpleTestCase):
             ("/api/documents/{document_id}/retry/", "post"),
             ("/api/documents/{document_id}/extraction/", "get"),
             ("/api/documents/{document_id}/", "delete"),
-        }
+        })
         actual = {(path, method) for path, methods in self.schema["paths"].items() for method in methods}
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]
@@ -70,7 +85,7 @@ class OpenAPITests(SimpleTestCase):
     def test_swagger_groups_and_operations_follow_endpoint_index(self):
         self.assertEqual(
             [tag["name"] for tag in self.schema["tags"]],
-            ["System", "Authentication", "Courses", "Course Members"],
+            ["System", "Authentication", "Courses", "Course Members", "Enrollment"],
         )
         operations = [
             operation["operationId"]
@@ -79,11 +94,28 @@ class OpenAPITests(SimpleTestCase):
             for operation in methods.values()
             if tag["name"] in operation["tags"]
         ]
-        self.assertEqual(operations, [
+        self.assertEqual(operations[:17], [
             "health_check", "users_register", "users_login", "users_password_reset_request", "users_password_reset_confirm", "users_token_refresh", "users_session", "users_logout", "users_me", "users_update_me", "users_upload_avatar",
             "courses_list", "courses_create", "courses_retrieve", "courses_update",
-            "course_members_list", "course_members_grant", "course_members_revoke",
+            "course_members_list", "course_members_revoke",
         ])
+        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
+
+    def test_classroom_management_schemas_expose_roster_and_own_classrooms(self):
+        course = self.schema["components"]["schemas"]["Course"]
+        self.assertIn("my_classrooms", course["properties"])
+        self.assertTrue(course["properties"]["my_classrooms"]["readOnly"])
+        roster = self.schema["components"]["schemas"]["ClassroomEnrollment"]
+        self.assertIn("student", roster["properties"])
+        self.assertNotIn("class_code", roster["properties"])
+        path = "/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/"
+        operation = self.schema["paths"][path]["get"]
+        self.assertIn("status", [p["name"] for p in operation["parameters"]])
+        page = self.component(operation["responses"]["200"]["content"]["application/json"]["schema"])
+        self.assertEqual(set(page["properties"]), {"count", "next", "previous", "results"})
+        revoke = self.schema["paths"][path + "{enrollment_id}/"]["delete"]
+        self.assertNotIn("requestBody", revoke)
+        self.assertNotIn("content", revoke["responses"]["204"])
 
     def test_input_and_output_schemas_match_serializers(self):
         paths = self.schema["paths"]
@@ -114,8 +146,7 @@ class OpenAPITests(SimpleTestCase):
             page = self.component(operation["responses"]["200"]["content"]["application/json"]["schema"])
             self.assertEqual(set(page["properties"]), {"count", "next", "previous", "results"})
             self.assertIn("page", [parameter["name"] for parameter in operation["parameters"]])
-        grant = paths["/api/courses/{course_id}/members/"]["post"]
-        self.assertEqual(set(grant["responses"]), {"200", "201", "400", "403", "404"})
+        self.assertNotIn("post", paths["/api/courses/{course_id}/members/"])
         revoke = paths["/api/courses/{course_id}/members/{member_id}/"]["delete"]
         self.assertNotIn("content", revoke["responses"]["204"])
         for parameter in revoke["parameters"]:
@@ -193,6 +224,8 @@ class OpenAPITests(SimpleTestCase):
             "UserRole": User.Role.values, "UserStatus": User.Status.values,
             "CourseStatus": Course.Status.values, "CourseRole": CourseMember.Role.values,
             "MemberStatus": CourseMember.Status.values,
+            "EnrollmentStatus": Enrollment.Status.values,
+            "JoinRequestStatus": JoinRequest.Status.values,
         }
         for name, values in expected.items():
             self.assertEqual(self.schema["components"]["schemas"][name]["enum"], values)
@@ -225,9 +258,66 @@ class OpenAPITests(SimpleTestCase):
 
     def test_strict_course_request_constraints_match_runtime(self):
         schemas = self.schema["components"]["schemas"]
-        for name in ("CourseCreateRequest", "PatchedCourseUpdateRequest", "GrantStudentAccessRequest"):
+        for name in ("CourseCreateRequest", "PatchedCourseUpdateRequest", "JoinByCodeRequest", "ReviewRequestRequest", "ClassroomInputRequest", "PatchedPolicyUpdateRequest"):
             self.assertIs(schemas[name]["additionalProperties"], False)
         self.assertEqual(schemas["PatchedCourseUpdateRequest"]["minProperties"], 1)
+
+    def test_authentication_operations_have_vietnamese_summaries_and_descriptions(self):
+        expected = {
+            "users_register": "Đăng ký tài khoản học viên hoặc giáo viên",
+            "users_login": "Đăng nhập bằng tên tài khoản và mật khẩu",
+            "users_password_reset_request": "Yêu cầu liên kết đặt lại mật khẩu",
+            "users_password_reset_confirm": "Đặt mật khẩu mới bằng liên kết khôi phục",
+            "users_token_refresh": "Làm mới access token",
+            "users_session": "Khôi phục phiên đăng nhập trên trình duyệt",
+            "users_logout": "Đăng xuất và thu hồi refresh token",
+            "users_me": "Xem thông tin tài khoản hiện tại",
+            "users_update_me": "Cập nhật tài khoản và hồ sơ theo vai trò",
+            "users_upload_avatar": "Tải ảnh đại diện từ máy lên",
+        }
+        operations = {
+            operation["operationId"]: operation
+            for methods in self.schema["paths"].values()
+            for operation in methods.values()
+        }
+        for operation_id, summary in expected.items():
+            with self.subTest(operation_id=operation_id):
+                self.assertEqual(operations[operation_id]["summary"], summary)
+                self.assertGreater(len(operations[operation_id]["description"]), 100)
+
+    def test_course_operations_include_explanations_and_enrollment_auth_errors(self):
+        for path, methods in self.schema["paths"].items():
+            if not path.startswith("/api/courses/"):
+                continue
+            for method, operation in methods.items():
+                with self.subTest(path=path, method=method):
+                    self.assertTrue(operation["summary"])
+                    self.assertGreater(len(operation["description"]), 100)
+                    if "Enrollment" in operation["tags"]:
+                        self.assertIn("401", operation["responses"])
+
+    def test_course_documentation_examples_match_request_serializers(self):
+        from apps.courses.api.serializers import (
+            ClassroomInputSerializer, CourseCreateSerializer, CourseUpdateSerializer,
+            JoinByCodeSerializer, PolicyUpdateSerializer, ReviewRequestSerializer,
+        )
+
+        cases = (
+            ("/api/courses/", "post", CourseCreateSerializer),
+            ("/api/courses/{course_id}/", "patch", CourseUpdateSerializer),
+            ("/api/courses/{course_id}/access-policy/", "patch", PolicyUpdateSerializer),
+            ("/api/courses/{course_id}/classrooms/", "post", ClassroomInputSerializer),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/", "patch", ClassroomInputSerializer),
+            ("/api/courses/join/", "post", JoinByCodeSerializer),
+            ("/api/courses/{course_id}/join-requests/{request_id}/review/", "post", ReviewRequestSerializer),
+        )
+        for path, method, serializer_class in cases:
+            examples = self.schema["paths"][path][method]["requestBody"]["content"]["application/json"]["examples"]
+            self.assertTrue(examples)
+            for example in examples.values():
+                with self.subTest(path=path, example=example["value"]):
+                    serializer = serializer_class(data=example["value"], partial=method == "patch")
+                    self.assertTrue(serializer.is_valid(), serializer.errors)
 
     def test_schema_swagger_and_health_are_public(self):
         client = APIClient()

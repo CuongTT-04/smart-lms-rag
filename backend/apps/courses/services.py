@@ -1,9 +1,8 @@
-from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.utils import timezone
 
-from .models import Course, CourseMember
+from .models import AccessPolicy, Classroom, Course, CourseMember, Enrollment
 from .permissions import can_create_course, can_manage_course
 
 
@@ -23,6 +22,8 @@ def create_course(*, actor, title, description=""):
     )
     member.full_clean()
     member.save()
+    AccessPolicy.objects.create(course=course)
+    Classroom.objects.create(course=course, name=course.title)
     return course
 
 
@@ -47,34 +48,6 @@ def update_course(*, actor, course, changes):
 
 
 @transaction.atomic
-def grant_student_access(*, actor, course, user_id):
-    course = Course.objects.select_for_update().get(pk=course.pk)
-    if not can_manage_course(actor, course):
-        raise PermissionDenied("You cannot manage this course.")
-
-    User = get_user_model()
-    student = User.objects.select_for_update().filter(pk=user_id).first()
-    if student is None or not student.is_active or student.role != User.Role.STUDENT:
-        raise ValidationError({"user_id": "Select an existing active student account."})
-
-    member, created = CourseMember.objects.get_or_create(
-        course=course,
-        user=student,
-        defaults={"role": CourseMember.Role.STUDENT, "status": CourseMember.Status.ACTIVE},
-    )
-    if member.role != CourseMember.Role.STUDENT:
-        raise ValidationError({"user_id": "This account has a non-student membership."})
-    if not created and (
-        member.status != CourseMember.Status.ACTIVE or member.removed_at is not None
-    ):
-        member.status = CourseMember.Status.ACTIVE
-        member.removed_at = None
-        member.full_clean()
-        member.save(update_fields=["status", "removed_at"])
-    return member, created
-
-
-@transaction.atomic
 def revoke_student_access(*, actor, course, member_id):
     course = Course.objects.select_for_update().get(pk=course.pk)
     if not can_manage_course(actor, course):
@@ -92,4 +65,7 @@ def revoke_student_access(*, actor, course, member_id):
         member.removed_at = timezone.now()
         member.full_clean()
         member.save(update_fields=["status", "removed_at"])
+    Enrollment.objects.filter(classroom__course=course, student__user_id=member.user_id).exclude(
+        status=Enrollment.Status.WITHDRAWN
+    ).update(status=Enrollment.Status.WITHDRAWN)
     return member

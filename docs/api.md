@@ -63,3 +63,7 @@ Lỗi trước lưu/queue từ chối request; lỗi extraction sau 202 cập nh
 - extraction_status=EXTRACTED, rag_ready=false, indexed_at=null trong W2 standalone.
 
 Kiểm tra lại quyền/policy/version trước trả nội dung. Source/license corpus là khai báo, chưa thay thế bằng chứng cho phép công bố. Không đưa PDF hoặc extraction nội bộ lên dịch vụ ngoài để xử lý.
+
+## Tích hợp tham gia lớp ngày 09/10/2026
+
+Theo nhánh A 0a0d63e, giáo viên tạo lớp và chọn yêu cầu duyệt; học viên tham gia qua POST `/api/courses/join/` với `class_code`. POST `/members/` không còn được hỗ trợ. Enrollment hợp lệ đồng bộ CourseMember ACTIVE; chỉ đọc học liệu khi quyền khóa hiện hành cho phép và học liệu đã công bố. Rút một lớp không mất quyền khóa nếu còn enrollment hiệu lực ở lớp khác; rút lớp cuối hoặc thu hồi cả khóa chặn metadata/status. Học liệu của B vẫn thuộc Course, chưa có phân quyền học liệu riêng từng Classroom.

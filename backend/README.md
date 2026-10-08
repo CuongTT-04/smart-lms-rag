@@ -1,6 +1,6 @@
 # Bàn giao W2 — tích hợp phần B với code A nguyên bản
 
-Tham chiếu nhánh A `origin/VuNamDuong_B22DCVT119_W2Tasks`, commit `b8b03df`. Phần User/Course/CourseMember, JWT và frontend A được dùng nguyên bản. Không commit/push lên nhánh A. Cấu hình bổ sung của B nằm ở w2.py; route học liệu được gộp vào config/urls.py theo yêu cầu. Theo yêu cầu gộp dependency, `requirements.txt` trong nhánh hiện tại chứa thư viện chung A+B và thư viện tạo PDF cho kiểm thử.
+Tham chiếu nhánh A `origin/VuNamDuong_B22DCVT119_W2Tasks`, commit `0a0d63e`. Phần User/Course/CourseMember, JWT và frontend A được dùng nguyên bản. Không commit/push lên nhánh A. Cấu hình bổ sung của B nằm ở w2.py; route học liệu được gộp vào config/urls.py theo yêu cầu. Theo yêu cầu gộp dependency, `requirements.txt` trong nhánh hiện tại chứa thư viện chung A+B và thư viện tạo PDF cho kiểm thử.
 
 ## Cài đặt
 
@@ -27,7 +27,7 @@ npm run dev
 
 Mở http://127.0.0.1:5173/documents.html. Đăng nhập bằng tài khoản A đã tạo, chọn khóa học thuộc quyền của mình. Giáo viên upload PDF, xem trạng thái, retry lỗi và kiểm tra văn bản trích xuất theo trang. Nút làm mới tải lại danh sách và kiểm tra quyền; lỗi mất quyền xóa nội dung đang hiển thị. Học viên chỉ thấy metadata của học liệu đã công bố trong khóa học được phép. Học liệu mới là draft/PROTECTED; W2 chưa có viewer/policy/publication UI hoặc tải sạch. Không công bố draft tự động khi extraction xong; các test công bố chỉ dùng fixture, chưa phải chức năng người dùng.
 
-Trang chính A ở `/` giữ nguyên. Component `src/components/documents/CourseDocuments.jsx` có thể được A gắn vào trang khóa học sau; chưa sửa trang TeacherHomePage/StudentHomePage của A. B2 đã có trang riêng dùng đúng User/Course/JWT/API client A để kiểm chứng luồng.
+Trên nhánh B đã ghép, trang chính `/` có tab **Học liệu** trong quản lý khóa của giáo viên và danh sách học liệu trong chi tiết khóa của học viên. Hai trang dùng `CourseDocuments.jsx` theo UUID khóa học. `/documents.html` vẫn dùng được. Nhánh A không bị sửa hoặc push. Học viên tham gia bằng mã lớp/duyệt yêu cầu; không dùng POST cấp thành viên trực tiếp.
 
 Build cả trang chính và trang học liệu:
 
@@ -66,3 +66,14 @@ PDF tối đa 20 MiB/100 trang; kiểm tra file thực, mã hóa/cấu trúc; up
 Trang B poll 2 giây khi QUEUED/PROCESSING, dừng ở trạng thái cuối hoặc rời trang; mất quyền xóa metadata đang hiển thị. Network failure không bị coi là extraction failure và giữ Idempotency-Key cho thao tác chưa rõ kết quả.
 
 Chưa kiểm chứng PostgreSQL/nhiều worker/Colab T4; thời gian local chỉ là mẫu đo. Crash upload có thể để lại file tạm/original chưa có record, cần dọn theo đối chiếu DB. Các API viewer/policy/download và RAG tiếp tục ở phạm vi sau B2; không mở file sạch thay viewer watermark.
+
+## Docker tích hợp API và worker
+
+Từ root repo, khi Docker Desktop engine đã chạy:
+
+```powershell
+docker compose up --build -d
+docker compose logs -f ingestion-worker
+```
+
+Compose khởi động database, backend và ingestion-worker. Backend migrate trước; worker đợi backend healthy, dùng cùng database và volume `documents_data` ở `/app/.private/documents`. Volume không phục vụ qua MEDIA_URL. Cache Docling riêng tránh tải lại model khi tạo lại worker; lần đầu cần mạng để tải model. Không dùng `docker compose down -v` nếu cần giữ dữ liệu. Lần kiểm chứng 09/10 mới kiểm tra cú pháp Compose; Docker engine chưa chạy, chưa xác nhận runtime Docker/PostgreSQL.
