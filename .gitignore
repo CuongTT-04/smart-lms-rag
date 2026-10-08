@@ -29,8 +29,11 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+db-w2.sqlite3
+db-w2.sqlite3-*
 media/
 staticfiles/
+backend/test-reports/
 
 # Node / Frontend
 node_modules/
@@ -55,6 +58,8 @@ pnpm-debug.log*
 Thumbs.db
 
 # Vector DB / Local data
+data/backups/*
+!data/backups/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
 # data/corpus/*
