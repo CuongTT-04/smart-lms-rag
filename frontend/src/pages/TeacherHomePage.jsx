@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
+import CustomSelect from '../components/CustomSelect'
 import {
   AlertCircle, ArrowLeft, BookOpen, Check, ChevronRight, CircleUserRound,
   FilePenLine, Home, LayoutGrid, LoaderCircle, LogOut, Menu,
-  MoreHorizontal, Plus, RefreshCw, Search, Send, Sun, UsersRound, X,
+  MoreHorizontal, Plus, RefreshCw, Search, Send, Sun, UserMinus, UsersRound, X,
 } from 'lucide-react'
 import { authErrorMessage } from '../services/auth.service'
 import ProfileEditor from '../components/ProfileEditor'
 import UserAvatar from '../components/UserAvatar'
 import HeaderProfile from '../components/HeaderProfile'
+import { TeacherEnrollmentPanel } from '../components/EnrollmentPanels'
 import {
-  courseErrorMessage, createCourse, grantStudentAccess, listAllCourseMembers,
+  courseErrorMessage, createCourse, listAllCourseMembers,
   listAllCourses, revokeStudentAccess, updateCourse,
 } from '../services/course.service'
 
@@ -19,7 +21,7 @@ const STATUS = {
   ARCHIVED: { label: 'Đã lưu trữ', className: 'status-archived' },
 }
 const MEMBER_STATUS = {
-  ACTIVE: 'Đang tham gia', INVITED: 'Đã mời', SUSPENDED: 'Tạm dừng', REMOVED: 'Đã thu hồi',
+  ACTIVE: 'Đang tham gia', SUSPENDED: 'Tạm dừng', REMOVED: 'Đã thu hồi',
 }
 const MEMBER_ROLE = { OWNER: 'Chủ khóa học', TEACHER: 'Đồng giảng cũ', ASSISTANT: 'Trợ giảng cũ', STUDENT: 'Học viên' }
 
@@ -205,7 +207,6 @@ function CreateCourseModal({ onClose, onCreated }) {
 function CourseDetail({ course, members, onBack, onUpdated, onRefreshMembers, onError, onNotice }) {
   const [tab, setTab] = useState('info')
   const [values, setValues] = useState({ title: course.title, description: course.description, status: course.status })
-  const [studentId, setStudentId] = useState('')
   const [pending, setPending] = useState(false)
   const [memberPending, setMemberPending] = useState('')
   async function save(event) {
@@ -214,22 +215,15 @@ function CourseDetail({ course, members, onBack, onUpdated, onRefreshMembers, on
     catch (requestError) { onError(courseErrorMessage(requestError)) }
     finally { setPending(false) }
   }
-  async function addStudent(event) {
-    event.preventDefault()
-    if (!studentId.trim()) { onError('Vui lòng nhập UUID của học viên.'); return }
-    setMemberPending('add')
-    try { await grantStudentAccess(course.id, studentId.trim()); await onRefreshMembers(); setStudentId(''); onNotice('Đã cấp quyền học viên.') }
-    catch (requestError) { onError(courseErrorMessage(requestError)) }
-    finally { setMemberPending('') }
-  }
   async function revoke(member) {
     setMemberPending(member.id)
     try { await revokeStudentAccess(course.id, member.id); await onRefreshMembers(); onNotice(`Đã thu hồi quyền của ${member.user.full_name || member.user.username}.`) }
     catch (requestError) { onError(courseErrorMessage(requestError)) }
     finally { setMemberPending('') }
   }
-  return <section className="course-detail" aria-labelledby="course-detail-title"><button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button><div className="detail-header"><div><StatusBadge status={course.status} /><h1 id="course-detail-title">{course.title}</h1><p>{course.description || 'Chưa có mô tả cho khóa học này.'}</p></div><button className="icon-button" type="button" title="Làm mới thành viên" aria-label="Làm mới thành viên" onClick={onRefreshMembers}><RefreshCw size={18} /></button></div><div className="detail-tabs"><button className={tab === 'info' ? 'active' : ''} onClick={() => setTab('info')}>Thông tin khóa học</button><button className={tab === 'members' ? 'active' : ''} onClick={() => setTab('members')}>Thành viên <span>{members.length}</span></button></div>
-    {tab === 'info' && <form className="course-form" onSubmit={save}><div className="form-section-heading"><FilePenLine size={20} /><div><h2>Thông tin chung</h2><p>Chỉnh sửa nội dung và trạng thái hiển thị.</p></div></div><label>Tên khóa học<input maxLength={255} required value={values.title} onChange={(event) => setValues({ ...values, title: event.target.value })} /></label><label>Mô tả<textarea rows="6" value={values.description} onChange={(event) => setValues({ ...values, description: event.target.value })} /></label><label>Trạng thái<select value={values.status} onChange={(event) => setValues({ ...values, status: event.target.value })}><option value="DRAFT">Bản nháp</option><option value="PUBLISHED">Đã xuất bản</option><option value="ARCHIVED">Đã lưu trữ</option></select></label><div className="form-save"><span>Cập nhật gần nhất: {formatDate(course.updated_at)}</span><button className="solid-button" type="submit" disabled={pending}>{pending ? <LoaderCircle className="spin" size={18} /> : <Check size={18} />} Lưu thay đổi</button></div></form>}
-    {tab === 'members' && <div className="members-panel"><form className="add-member" onSubmit={addStudent}><div><h2>Thêm học viên</h2><p>Nhập UUID tài khoản học viên đang hoạt động.</p></div><div><input aria-label="UUID học viên" value={studentId} onChange={(event) => setStudentId(event.target.value)} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button className="solid-button" disabled={memberPending === 'add'}>{memberPending === 'add' ? <LoaderCircle className="spin" size={18} /> : <Plus size={18} />} Thêm</button></div></form><div className="member-list"><div className="member-list-head"><h2>Danh sách thành viên</h2><span>{members.filter((member) => member.status === 'ACTIVE').length} đang hoạt động</span></div>{members.length === 0 ? <div className="teacher-empty compact"><UsersRound size={30} /><h3>Chưa có thành viên</h3></div> : members.map((member) => <div className="member-row" key={member.id}><span className="member-avatar">{initials(member.user.full_name || member.user.username)}</span><div><strong>{member.user.full_name || member.user.username}</strong><span>{member.user.email || member.user.username}</span></div><span className="member-role">{MEMBER_ROLE[member.role] || member.role}</span><span className={`member-state state-${member.status.toLowerCase()}`}>{MEMBER_STATUS[member.status] || member.status}</span>{member.role === 'STUDENT' && member.status !== 'REMOVED' ? <button className="revoke-button" type="button" disabled={memberPending === member.id} onClick={() => revoke(member)}>{memberPending === member.id ? <LoaderCircle className="spin" size={16} /> : <X size={16} />} Thu hồi</button> : <span className="member-menu"><MoreHorizontal size={18} /></span>}</div>)}</div></div>}
+  return <section className="course-detail" aria-labelledby="course-detail-title"><button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button><div className="detail-header"><div><StatusBadge status={course.status} /><h1 id="course-detail-title">{course.title}</h1><p>{course.description || 'Chưa có mô tả cho khóa học này.'}</p></div><button className="icon-button" type="button" title="Làm mới thành viên" aria-label="Làm mới thành viên" onClick={onRefreshMembers}><RefreshCw size={18} /></button></div><div className="detail-tabs"><button className={tab === 'info' ? 'active' : ''} onClick={() => setTab('info')}>Thông tin khóa học</button><button className={tab === 'members' ? 'active' : ''} onClick={() => setTab('members')}>Thành viên <span>{members.length}</span></button><button className={tab === 'classrooms' ? 'active' : ''} onClick={() => setTab('classrooms')}>Lớp học</button><button className={tab === 'requests' ? 'active' : ''} onClick={() => setTab('requests')}>Yêu cầu tham gia</button></div>
+    {(tab === 'classrooms' || tab === 'requests') && <TeacherEnrollmentPanel key={course.id + tab} course={course} requestsOnly={tab === 'requests'} onMembersChanged={onRefreshMembers} />}
+    {tab === 'info' && <form className="course-form" onSubmit={save}><div className="form-section-heading"><FilePenLine size={20} /><div><h2>Thông tin chung</h2><p>Chỉnh sửa nội dung và trạng thái hiển thị.</p></div></div><label>Tên khóa học<input maxLength={255} required value={values.title} onChange={(event) => setValues({ ...values, title: event.target.value })} /></label><label>Mô tả<textarea rows="6" value={values.description} onChange={(event) => setValues({ ...values, description: event.target.value })} /></label><label>Trạng thái<CustomSelect aria-label="Trạng thái" value={values.status} onChange={(event) => setValues({ ...values, status: event.target.value })}><option value="DRAFT">Bản nháp</option><option value="PUBLISHED">Đã xuất bản</option><option value="ARCHIVED">Đã lưu trữ</option></CustomSelect></label><div className="form-save"><span>Cập nhật gần nhất: {formatDate(course.updated_at)}</span><button className="solid-button" type="submit" disabled={pending}>{pending ? <LoaderCircle className="spin" size={18} /> : <Check size={18} />} Lưu thay đổi</button></div></form>}
+    {tab === 'members' && <div className="members-panel"><div className="member-list"><div className="member-list-head"><h2>Thành viên toàn khóa học</h2><span>{members.filter((member) => member.status === 'ACTIVE').length} đang hoạt động</span></div>{members.length === 0 ? <div className="teacher-empty compact"><UsersRound size={30} /><h3>Chưa có thành viên</h3></div> : members.map((member) => <div className="member-row" key={member.id}><span className="member-avatar">{initials(member.user.full_name || member.user.username)}</span><div><strong>{member.user.full_name || member.user.username}</strong><span>{member.user.email || member.user.username}</span></div><span className="member-role">{MEMBER_ROLE[member.role] || member.role}</span><span className={`member-state state-${member.status.toLowerCase()}`}>{MEMBER_STATUS[member.status] || member.status}</span>{member.role === 'STUDENT' && member.status !== 'REMOVED' ? <button className="revoke-button course-revoke-button" title="Thu hồi quyền tham gia toàn bộ khóa học" type="button" disabled={memberPending === member.id} onClick={() => revoke(member)}>{memberPending === member.id ? <LoaderCircle className="spin" size={16} /> : <UserMinus size={16} />} <span>Thu hồi cả khóa</span></button> : <span className="member-menu"><MoreHorizontal size={18} /></span>}</div>)}</div></div>}
   </section>
 }

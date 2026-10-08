@@ -54,9 +54,32 @@ export async function listAllCourseMembers(courseId, signal) {
   return members
 }
 
-export function grantStudentAccess(courseId, userId) {
-  return writeRequest(`/courses/${courseId}/members/`, 'POST', { user_id: userId })
+export async function listAllEnrollmentRecords(path, signal) {
+  const records = []
+  let data
+  let page = 1
+  do {
+    data = await apiRequest(`${path}${path.includes('?') ? '&' : '?'}page=${page}`, { signal })
+    records.push(...resultsOf(data))
+    page += 1
+  } while (data?.next)
+  return records
 }
+
+export const getAccessPolicy = (id, signal) => apiRequest(`/courses/${id}/access-policy/`, { signal })
+export const updateAccessPolicy = (id, values) => writeRequest(`/courses/${id}/access-policy/`, 'PATCH', values)
+export const listClassrooms = (id, signal) => listAllEnrollmentRecords(`/courses/${id}/classrooms/`, signal)
+export const createClassroom = (id, values) => writeRequest(`/courses/${id}/classrooms/`, 'POST', values)
+export const updateClassroom = (id, classroomId, values) => writeRequest(`/courses/${id}/classrooms/${classroomId}/`, 'PATCH', values)
+export const listJoinRequests = (id, status = '', signal) => listAllEnrollmentRecords(`/courses/${id}/join-requests/${status ? `?status=${encodeURIComponent(status)}` : ''}`, signal)
+export const reviewJoinRequest = (id, requestId, values) => writeRequest(`/courses/${id}/join-requests/${requestId}/review/`, 'POST', values)
+export const joinClassroom = (values) => writeRequest('/courses/join/', 'POST', values)
+export const listMyJoinRequests = (signal) => listAllEnrollmentRecords('/courses/join-requests/mine/', signal)
+export const listMyEnrollments = (signal) => listAllEnrollmentRecords('/courses/enrollments/mine/', signal)
+export const cancelJoinRequest = (id) => writeRequest(`/courses/join-requests/${id}/cancel/`, 'POST', {})
+export const listClassroomEnrollments = (id, classroomId, status = '', signal) => listAllEnrollmentRecords(`/courses/${id}/classrooms/${classroomId}/enrollments/${status ? `?status=${encodeURIComponent(status)}` : ''}`, signal)
+export const revokeClassroomEnrollment = (id, classroomId, enrollmentId) => writeRequest(`/courses/${id}/classrooms/${classroomId}/enrollments/${enrollmentId}/`, 'DELETE')
+export const listMyCourseClassrooms = (id, signal) => listAllEnrollmentRecords(`/courses/${id}/my-classrooms/`, signal)
 
 export function revokeStudentAccess(courseId, memberId) {
   return writeRequest(`/courses/${courseId}/members/${memberId}/`, 'DELETE')
@@ -67,13 +90,23 @@ export function resultsOf(data) {
 }
 
 export function courseErrorMessage(error) {
+  if (error.status === 401) return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
+  if (error.status === 429) return 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.'
   if (error.status === 403) return 'Bạn không có quyền thực hiện thao tác này hoặc phiên đăng nhập đã hết hạn.'
   if (error.status === 404) return 'Không tìm thấy khóa học hoặc dữ liệu yêu cầu.'
   if (error.status === 400) {
     const data = error.data
+    const messages = {
+      'Invalid class code.': 'Mã lớp không đúng. Vui lòng kiểm tra lại với giáo viên.',
+      'This classroom is not accepting enrollment.': 'Lớp hiện không nhận đăng ký hoặc khóa học chưa được xuất bản.',
+      'Only free courses support joining by class code.': 'Chỉ khóa học miễn phí được tham gia bằng mã lớp.',
+      'This request has already been processed.': 'Yêu cầu đã được xử lý. Vui lòng làm mới danh sách.',
+      'Only pending requests can be canceled.': 'Chỉ có thể hủy yêu cầu đang chờ duyệt.',
+      'The applicant is no longer an active student.': 'Tài khoản học viên hiện không còn đủ điều kiện tham gia.',
+    }
     if (typeof data?.detail === 'string') return data.detail
     const first = data && Object.values(data).flat().find((message) => typeof message === 'string')
-    return first || 'Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại.'
+    return messages[first] || first || 'Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại.'
   }
   return 'Không thể kết nối với hệ thống. Vui lòng thử lại.'
 }

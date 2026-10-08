@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError as ModelValidationError
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.generics import GenericAPIView
@@ -12,17 +12,17 @@ from apps.courses.models import CourseMember
 from apps.courses.permissions import CanManageCourse, CanViewCourse, IsTeacher
 from apps.courses.selectors import get_course, list_accessible_courses, list_course_members
 from apps.courses.services import (
-    create_course, grant_student_access, revoke_student_access, update_course,
+    create_course, revoke_student_access, update_course,
 )
 from common.schema import (
     COURSE_OR_PAGE_NOT_FOUND, CREATE_BAD_REQUEST, FORBIDDEN,
-    GRANT_BAD_REQUEST, NOT_FOUND, PAGE_NOT_FOUND, REVOKE_BAD_REQUEST,
+    NOT_FOUND, PAGE_NOT_FOUND, REVOKE_BAD_REQUEST,
     UPDATE_BAD_REQUEST,
 )
 
 from .serializers import (
     CourseCreateSerializer, CourseMemberSerializer, CourseSerializer,
-    CourseUpdateSerializer, GrantStudentAccessSerializer,
+    CourseUpdateSerializer,
 )
 
 
@@ -41,10 +41,12 @@ class CourseListCreateView(GenericAPIView):
         return CourseSerializer
 
     @extend_schema(
-        operation_id="courses_list", tags=["Courses"], summary="List accessible courses",
+        operation_id="courses_list", tags=["Courses"], summary="Danh sách khóa học được phép truy cập",
         description=(
-            "Paginated (20/page). Teachers see their ACTIVE OWNER memberships in all course states; "
-            "students see PUBLISHED courses with ACTIVE STUDENT membership. Admin has no automatic access."
+            "Yêu cầu Bearer JWT. Phân trang 20 bản ghi/trang, chuyển trang bằng query page. "
+            "Giáo viên xem khóa học mình là OWNER đang ACTIVE ở mọi trạng thái; học viên chỉ xem "
+            "khóa học PUBLISHED có thành viên STUDENT đang ACTIVE. ADMIN không tự có quyền truy cập. "
+            "Danh sách rỗng trả 200 với results=[]. Không trả mã lớp; đây không phải danh mục mọi khóa học công khai."
         ),
         responses={200: CourseSerializer(many=True), 403: FORBIDDEN, 404: PAGE_NOT_FOUND},
     )
@@ -57,9 +59,10 @@ class CourseListCreateView(GenericAPIView):
         return Response(serializer.data)
 
     @extend_schema(
-        operation_id="courses_create", tags=["Courses"], summary="Create a draft course",
-        description="Active TEACHER only. Creates the single ACTIVE OWNER membership atomically.",
+        operation_id="courses_create", tags=["Courses"], summary="Giáo viên tạo khóa học nháp",
+        description="Chỉ giáo viên (TEACHER) đang hoạt động. title bắt buộc, tối đa 255 ký tự; description tùy chọn, cho phép rỗng. Tạo khóa học DRAFT, thành viên OWNER duy nhất, chính sách miễn phí mặc định và một lớp mặc định trong cùng giao dịch. Không gửi owner_id hay status. Sau khi tạo, dùng API lớp học để lấy mã lớp và PATCH khóa học sang PUBLISHED trước khi học viên tham gia.",
         request=CourseCreateSerializer,
+        examples=[OpenApiExample("Khóa học mới", value={"title": "Nhập môn Python", "description": "Khóa học Python cơ bản."}, request_only=True)],
         responses={201: CourseSerializer, 400: CREATE_BAD_REQUEST, 403: FORBIDDEN},
     )
     def post(self, request):
@@ -77,7 +80,7 @@ class CourseManagementView(GenericAPIView):
     permission_classes = [IsAuthenticated, CanManageCourse]
 
     def get_course(self, course_id):
-        course = get_course(course_id=course_id)
+        course = get_course(course_id=course_id, user=self.request.user)
         if course is None:
             raise NotFound("Course not found.")
         self.check_object_permissions(self.request, course)
@@ -96,8 +99,8 @@ class CourseDetailView(CourseManagementView):
         return CourseSerializer
 
     @extend_schema(
-        operation_id="courses_retrieve", tags=["Courses"], summary="View an accessible course",
-        description="Current account and membership are checked on every request. Revocation takes effect immediately.",
+        operation_id="courses_retrieve", tags=["Courses"], summary="Xem chi tiết khóa học",
+        description="Giáo viên là chủ khóa học hoặc học viên có thành viên STUDENT đang ACTIVE trong khóa học PUBLISHED. Dùng id từ danh sách khóa học làm course_id. Quyền tài khoản và thành viên được kiểm tra mỗi lần gọi; thu hồi quyền có hiệu lực ngay cả khi JWT còn hạn. Không đủ quyền trả 403, khóa học không tồn tại trả 404.",
         responses={200: CourseSerializer, 403: FORBIDDEN, 404: NOT_FOUND},
     )
     def get(self, request, course_id):
@@ -105,9 +108,10 @@ class CourseDetailView(CourseManagementView):
         return Response(self.get_serializer(course).data)
 
     @extend_schema(
-        operation_id="courses_update", tags=["Courses"], summary="Update course information or status",
-        description="Only the active global TEACHER with ACTIVE OWNER membership. At least one field required.",
+        operation_id="courses_update", tags=["Courses"], summary="Cập nhật hoặc xuất bản khóa học",
+        description="Chỉ giáo viên đang hoạt động và là OWNER đang ACTIVE. Gửi ít nhất một trường title, description hoặc status; trường không gửi được giữ nguyên. status nhận DRAFT (nháp), PUBLISHED (xuất bản), ARCHIVED (lưu trữ). Học viên chỉ truy cập/tham gia khi khóa học PUBLISHED. Không hỗ trợ chuyển chủ khóa học hay cập nhật chính sách tham gia qua endpoint này.",
         request=CourseUpdateSerializer,
+        examples=[OpenApiExample("Xuất bản khóa học", value={"status": "PUBLISHED"}, request_only=True)],
         responses={200: CourseSerializer, 400: UPDATE_BAD_REQUEST, 403: FORBIDDEN, 404: NOT_FOUND},
     )
     def patch(self, request, course_id):
@@ -126,13 +130,11 @@ class CourseDetailView(CourseManagementView):
 
 class CourseMembersView(CourseManagementView):
     def get_serializer_class(self):
-        if self.request.method == "POST":
-            return GrantStudentAccessSerializer
         return CourseMemberSerializer
 
     @extend_schema(
-        operation_id="course_members_list", tags=["Course Members"], summary="List course memberships",
-        description="Managers only. Paginated (20/page); includes invited, active, suspended, and removed members.",
+        operation_id="course_members_list", tags=["Course Members"], summary="Danh sách thành viên khóa học",
+        description="Chỉ chủ khóa học. Phân trang 20 bản ghi/trang bằng query page; gồm cả thành viên ACTIVE, SUSPENDED và REMOVED. id là mã bản ghi thành viên (member_id), khác user.id. Dùng member_id để thu hồi quyền học viên. Không còn POST cấp quyền trực tiếp; học viên phải tham gia bằng mã lớp và được duyệt nếu chính sách yêu cầu.",
         responses={200: CourseMemberSerializer(many=True), 403: FORBIDDEN, 404: COURSE_OR_PAGE_NOT_FOUND},
     )
     def get(self, request, course_id):
@@ -144,38 +146,14 @@ class CourseMembersView(CourseManagementView):
             return self.get_paginated_response(serializer.data)
         return Response(serializer.data)
 
-    @extend_schema(
-        operation_id="course_members_grant", tags=["Course Members"], summary="Grant or restore student access",
-        description=(
-            "Managers only; target must be an active STUDENT account. Returns 201 for a new membership "
-            "or 200 for an existing/restored membership. Cannot replace a non-STUDENT membership."
-        ),
-        request=GrantStudentAccessSerializer,
-        responses={200: CourseMemberSerializer, 201: CourseMemberSerializer,
-                   400: GRANT_BAD_REQUEST, 403: FORBIDDEN, 404: NOT_FOUND},
-    )
-    def post(self, request, course_id):
-        course = self.get_course(course_id)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        try:
-            member, created = grant_student_access(
-                actor=request.user, course=course, **serializer.validated_data
-            )
-        except ModelValidationError as error:
-            raise ValidationError(error.message_dict) from error
-        return Response(
-            CourseMemberSerializer(member).data,
-            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
-        )
-
-
 class CourseMemberRevokeView(CourseManagementView):
     @extend_schema(
-        operation_id="course_members_revoke", tags=["Course Members"], summary="Revoke student access",
+        operation_id="course_members_revoke", tags=["Course Members"], summary="Thu hồi quyền truy cập của học viên",
         description=(
-            "Managers only. Use membership UUID, not user UUID. Soft-removes STUDENT membership; "
-            "repeated requests return 204. Membership must belong to this course."
+            "Chỉ chủ khóa học. member_id là UUID bản ghi thành viên trong khóa học, không phải UUID người dùng. "
+            "Không gửi body. Chuyển thành viên STUDENT sang REMOVED và các lượt ghi danh của học viên "
+            "trong khóa học sang WITHDRAWN; không xóa tài khoản hoặc lịch sử. Thành công trả 204 không có body; "
+            "gọi lại vẫn trả 204. Không thể thu hồi OWNER. Học viên muốn tham gia lại phải gửi mã lớp và chờ chủ khóa học duyệt."
         ),
         request=None,
         responses={204: None, 400: REVOKE_BAD_REQUEST, 403: FORBIDDEN, 404: NOT_FOUND},

@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   AlertCircle, ArrowLeft, BookOpen, Check, ChevronRight, CircleUserRound,
-  GraduationCap, Home, LayoutGrid, LoaderCircle, LogOut, Menu, Search, Sun, X,
+  DoorOpen, GraduationCap, Home, LayoutGrid, LoaderCircle, LogOut, Menu, Sun, X,
 } from 'lucide-react'
 import { authErrorMessage } from '../services/auth.service'
 import ProfileEditor from '../components/ProfileEditor'
 import UserAvatar from '../components/UserAvatar'
 import HeaderProfile from '../components/HeaderProfile'
+import { StudentEnrollmentPanel } from '../components/EnrollmentPanels'
+import StudentCourseClassrooms from '../components/StudentCourseClassrooms'
+import StudentCoursesView from '../components/StudentCoursesView'
 import { courseErrorMessage, getCourse, listAllCourses } from '../services/course.service'
 
 function formatDate(value) {
@@ -15,16 +18,12 @@ function formatDate(value) {
 }
 
 
-function firstName(name) {
-  return (name || '').trim().split(/\s+/).at(-1) || 'bạn'
-}
-
 function PublishedBadge() {
   return <span className="course-status status-published"><span />Đã xuất bản</span>
 }
 
 function EmptyCourses() {
-  return <div className="student-empty"><GraduationCap size={34} aria-hidden="true" /><h3>Chưa có khóa học</h3><p>Khi được giáo viên cấp quyền, các khóa học phù hợp sẽ xuất hiện ở đây.</p></div>
+  return <div className="student-empty"><GraduationCap size={34} aria-hidden="true" /><h3>Chưa có khóa học</h3><p>Bạn chưa tham gia khóa học nào.</p></div>
 }
 
 export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
@@ -38,6 +37,8 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
   const [search, setSearch] = useState('')
   const [mobileNav, setMobileNav] = useState(false)
   const [pendingLogout, setPendingLogout] = useState(false)
+  const detailRequest = useRef(0)
+  const listScroll = useRef(0)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -54,32 +55,40 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
     return () => controller.abort()
   }, [])
 
-  const filteredCourses = useMemo(() => courses.filter((course) => (
-    `${course.title} ${course.description || ''}`.toLocaleLowerCase('vi').includes(search.trim().toLocaleLowerCase('vi'))
-  )), [courses, search])
-
   function navigate(nextView) {
+    detailRequest.current += 1
     setView(nextView)
     setSelectedId(null)
     setSelectedCourse(null)
     setMobileNav(false)
     setError('')
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   async function openCourse(course) {
+    const request = ++detailRequest.current
+    listScroll.current = view === 'courses' && !selectedId ? window.scrollY : 0
     setView('courses')
     setSelectedId(course.id)
     setSelectedCourse(null)
     setDetailLoading(true)
     setMobileNav(false)
     setError('')
+    window.scrollTo({ top: 0, behavior: 'instant' })
     try {
-      setSelectedCourse(await getCourse(course.id))
+      const result = await getCourse(course.id)
+      if (request === detailRequest.current) setSelectedCourse(result)
     } catch (requestError) {
-      setError(courseErrorMessage(requestError))
+      if (request === detailRequest.current) setError(courseErrorMessage(requestError))
     } finally {
-      setDetailLoading(false)
+      if (request === detailRequest.current) setDetailLoading(false)
     }
+  }
+
+  function backToCourses() {
+    detailRequest.current += 1
+    setSelectedId(null); setSelectedCourse(null); setDetailLoading(false); setError('')
+    requestAnimationFrame(() => window.scrollTo({ top: listScroll.current, behavior: 'instant' }))
   }
 
   async function handleLogout() {
@@ -95,6 +104,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
         <nav aria-label="Điều hướng học viên">
           <button className={view === 'overview' ? 'active' : ''} type="button" onClick={() => navigate('overview')}><Home size={19} /> Tổng quan</button>
           <button className={view === 'courses' ? 'active' : ''} type="button" onClick={() => navigate('courses')}><BookOpen size={19} /> Khóa học của tôi</button>
+          <button className={view === 'join' ? 'active' : ''} type="button" onClick={() => navigate('join')}><DoorOpen size={19} /> Tham gia lớp</button>
           <button className={view === 'account' ? 'active' : ''} type="button" onClick={() => navigate('account')}><CircleUserRound size={19} /> Tài khoản</button>
         </nav>
         <div className="sidebar-profile"><UserAvatar user={user} /><span><strong>{user.full_name || user.username}</strong><small>Học viên</small></span><button className="icon-button" type="button" title="Đăng xuất" aria-label="Đăng xuất" disabled={pendingLogout} onClick={handleLogout}>{pendingLogout ? <LoaderCircle className="spin" size={18} /> : <LogOut size={18} />}</button></div>
@@ -104,7 +114,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
       <div className="student-main">
         <header className="student-topbar">
           <button className="icon-button mobile-menu" type="button" aria-label="Mở menu" onClick={() => setMobileNav(true)}><Menu size={22} /></button>
-          <div><span className="topbar-eyebrow">KHÔNG GIAN HỌC TẬP</span><strong>{view === 'overview' ? 'Tổng quan' : view === 'courses' ? 'Khóa học của tôi' : 'Tài khoản'}</strong></div>
+          <div><span className="topbar-eyebrow">KHÔNG GIAN HỌC TẬP</span><strong>{view === 'overview' ? 'Tổng quan' : view === 'courses' ? 'Khóa học của tôi' : view === 'join' ? 'Tham gia lớp' : 'Tài khoản'}</strong></div>
           <HeaderProfile user={user} onAccount={() => navigate('account')} />
         </header>
 
@@ -113,9 +123,18 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
           {loading ? <div className="dashboard-loading"><LoaderCircle className="spin" size={24} /> Đang tải không gian học tập...</div> : (
             <>
               {view === 'overview' && <Overview user={user} courses={courses} onCourses={() => navigate('courses')} onOpen={openCourse} />}
-              {view === 'courses' && !selectedId && <CoursesView courses={filteredCourses} search={search} setSearch={setSearch} onOpen={openCourse} />}
-              {view === 'courses' && selectedId && <CourseDetail course={selectedCourse} loading={detailLoading} onBack={() => { setSelectedId(null); setSelectedCourse(null) }} />}
+              {view === 'courses' && <div hidden={!!selectedId}><StudentCoursesView courses={courses} search={search} setSearch={setSearch} onOpen={openCourse} onRefresh={async () => setCourses(await listAllCourses())} onJoin={() => navigate('join')} /></div>}
+              {view === 'courses' && selectedId && <CourseDetail course={selectedCourse} loading={detailLoading} onBack={backToCourses} onClassroomsUpdated={(items) => {
+                setSelectedCourse((current) => current?.id === selectedId ? { ...current, my_classrooms: items } : current)
+                setCourses((current) => current.map((item) => item.id === selectedId ? { ...item, my_classrooms: items } : item))
+              }} onUnavailable={(err) => {
+                setCourses((current) => current.filter((item) => item.id !== selectedId))
+                setSelectedId((current) => current === selectedId ? null : current)
+                setSelectedCourse((current) => current?.id === selectedId ? null : current)
+                setError(courseErrorMessage(err))
+              }} />}
               {view === 'account' && <ProfileEditor user={user} onUserUpdated={onUserUpdated} onSessionExpired={onSessionExpired} logoutPending={pendingLogout} onLogout={handleLogout} />}
+              {view === 'join' && <StudentEnrollmentPanel onCoursesChanged={async () => setCourses(await listAllCourses())} onOpenCourse={(courseId) => openCourse({ id: courseId })} />}
             </>
           )}
         </div>
@@ -131,7 +150,7 @@ function Overview({ user, courses, onCourses, onOpen }) {
     { label: 'Đã xuất bản', value: courses.length, icon: Check, tone: 'blue' },
   ]
   return <section className="student-view" aria-labelledby="student-welcome">
-    <div className="student-welcome"><div><span className="welcome-note"><span className="note-line" /> CHÀO MỪNG TRỞ LẠI</span><h1 id="student-welcome">Chào {firstName(user.full_name || user.username)}!</h1><p>{courses.length > 0 ? `Bạn đang có ${courses.length} khóa học sẵn sàng để khám phá.` : 'Không gian học tập của bạn đang chờ khóa học đầu tiên.'}</p></div><button className="solid-button" type="button" onClick={onCourses}><BookOpen size={18} /> Xem khóa học</button></div>
+    <div className="student-welcome"><div><span className="welcome-note"><span className="note-line" /> CHÀO MỪNG TRỞ LẠI</span><h1 id="student-welcome">Chào {(user.full_name || user.username)}!</h1><p>{courses.length > 0 ? `Bạn đang có ${courses.length} khóa học sẵn sàng để khám phá.` : 'Không gian học tập của bạn đang chờ khóa học đầu tiên.'}</p></div><button className="solid-button" type="button" onClick={onCourses}><BookOpen size={18} /> Xem khóa học</button></div>
     <div className="student-stats-grid">{statItems.map(({ label, value, icon: Icon, tone }) => <article className="student-stat-card" key={label}><span className={`stat-icon ${tone}`}><Icon size={20} /></span><div><strong>{value}</strong><span>{label}</span></div></article>)}</div>
     <section className="student-section"><div className="section-heading"><div><h2>Tiếp tục với khóa học</h2><p>Các khóa học giáo viên đã cấp quyền cho bạn.</p></div>{courses.length > 0 && <button className="text-button" type="button" onClick={onCourses}>Xem tất cả <ChevronRight size={17} /></button>}</div>
       {courses.length === 0 ? <EmptyCourses /> : <div className="student-course-grid">{courses.slice(0, 3).map((course) => <CourseCard course={course} key={course.id} onOpen={() => onOpen(course)} />)}</div>}
@@ -139,20 +158,19 @@ function Overview({ user, courses, onCourses, onOpen }) {
   </section>
 }
 
-function CoursesView({ courses, search, setSearch, onOpen }) {
-  return <section className="student-view" aria-labelledby="student-courses-title">
-    <div className="page-title"><div><span className="welcome-note"><BookOpen size={16} /> KHO KHÓA HỌC</span><h1 id="student-courses-title">Khóa học của tôi</h1><p>Chọn một khóa học để xem thông tin được giáo viên công bố.</p></div></div>
-    <div className="student-course-toolbar"><label className="search-field"><Search size={18} /><span className="sr-only">Tìm khóa học</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm theo tên hoặc mô tả..." /></label><span>{courses.length} khóa học</span></div>
-    {courses.length === 0 ? (search ? <div className="student-empty"><Search size={32} /><h3>Không tìm thấy khóa học</h3><p>Thử thay đổi từ khóa tìm kiếm của bạn.</p></div> : <EmptyCourses />) : <div className="student-course-grid full">{courses.map((course) => <CourseCard course={course} key={course.id} onOpen={() => onOpen(course)} />)}</div>}
-  </section>
-}
 
 function CourseCard({ course, onOpen }) {
-  return <article className="student-course-card"><div className="student-course-icon"><BookOpen size={23} /></div><div className="student-course-card-content"><PublishedBadge /><h3>{course.title}</h3><p>{course.description || 'Giáo viên chưa thêm mô tả cho khóa học này.'}</p></div><div className="student-course-card-footer"><span>Cập nhật {formatDate(course.updated_at)}</span><button className="outline-button" type="button" onClick={onOpen}>Xem khóa học <ChevronRight size={17} /></button></div></article>
+  return <article className="student-course-card"><div className="student-course-icon"><BookOpen size={23} /></div><div className="student-course-card-content"><PublishedBadge /><h3>{course.title}</h3><p>{course.description || 'Giáo viên chưa thêm mô tả cho khóa học này.'}</p><ul className="course-class-tags" aria-label="Lớp đang tham gia">{(course.my_classrooms || []).map((item) => <li key={item.id}><GraduationCap size={14} aria-hidden="true" />{item.classroom_name}</li>)}</ul></div><div className="student-course-card-footer"><span>Cập nhật {formatDate(course.updated_at)}</span><button className="outline-button" type="button" onClick={onOpen}>Xem khóa học <ChevronRight size={17} /></button></div></article>
 }
 
-function CourseDetail({ course, loading, onBack }) {
-  if (loading) return <div className="dashboard-loading"><LoaderCircle className="spin" size={24} /> Đang mở khóa học...</div>
-  if (!course) return <section className="student-detail"><button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button></section>
-  return <section className="student-detail" aria-labelledby="student-course-detail-title"><button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button><div className="student-detail-hero"><div className="student-detail-icon"><GraduationCap size={27} /></div><div><PublishedBadge /><h1 id="student-course-detail-title">{course.title}</h1><p>{course.description || 'Giáo viên chưa thêm mô tả cho khóa học này.'}</p></div></div><section className="student-information"><div className="student-information-heading"><BookOpen size={20} /><div><h2>Thông tin khóa học</h2><p>Nội dung chi tiết, bài học và tiến độ sẽ xuất hiện ở đây khi giáo viên công bố.</p></div></div><dl><div><dt>Trạng thái</dt><dd><PublishedBadge /></dd></div><div><dt>Ngày xuất bản</dt><dd>{formatDate(course.published_at || course.updated_at)}</dd></div><div><dt>Cập nhật gần nhất</dt><dd>{formatDate(course.updated_at)}</dd></div></dl></section></section>
+function CourseDetail({ course, loading, onBack, onClassroomsUpdated, onUnavailable }) {
+  return <section className="student-detail student-course-detail" aria-labelledby={course ? 'student-course-detail-title' : undefined}>
+    <button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button>
+    {loading ? <div className="dashboard-loading"><LoaderCircle className="spin" size={24} /> Đang mở khóa học...</div> : course && <>
+      <header className="student-detail-hero"><div className="student-detail-icon"><BookOpen size={27} /></div><div><PublishedBadge /><h1 id="student-course-detail-title">{course.title}</h1></div></header>
+      {course.description && <details className="course-description-details" open><summary>Mô tả khóa học</summary><p>{course.description}</p></details>}
+      <StudentCourseClassrooms key={course.id} course={course} onUpdated={onClassroomsUpdated} onUnavailable={onUnavailable} />
+      <details className="course-metadata"><summary>Thông tin khóa học</summary><dl><div><dt>Trạng thái</dt><dd><PublishedBadge /></dd></div><div><dt>Ngày xuất bản</dt><dd>{formatDate(course.published_at)}</dd></div><div><dt>Cập nhật gần nhất</dt><dd>{formatDate(course.updated_at)}</dd></div></dl></details>
+    </>}
+  </section>
 }

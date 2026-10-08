@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Course, CourseMember
+from .models import AccessPolicy, Classroom, Course, CourseMember, Enrollment, JoinRequest
 
 
 class ReadOnlyAdmin(admin.ModelAdmin):
@@ -32,3 +32,8 @@ class CourseMemberAdmin(ReadOnlyAdmin):
     list_select_related = ("course", "user")
     search_fields = ("course__title", "user__username", "user__email")
     readonly_fields = ("id", "course", "user", "role", "status", "joined_at", "removed_at")
+
+
+@admin.register(AccessPolicy, Classroom, Enrollment, JoinRequest)
+class EnrollmentReadOnlyAdmin(ReadOnlyAdmin):
+    pass
