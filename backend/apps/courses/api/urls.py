@@ -5,9 +5,16 @@ from .enrollment_views import PolicyView, ClassroomsView, ClassroomDetailView, J
 from .enrollment_views import ClassroomEnrollmentsView, ClassroomEnrollmentRevokeView, MyCourseClassroomsView
 
 
+from .session_views import ClassroomSessionsView, ClassroomSessionDetailView
+from .announcement_views import ClassroomAnnouncementsView, ClassroomAnnouncementImageView
+
 app_name = "courses"
 
 urlpatterns = [
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/<uuid:session_id>/", ClassroomSessionDetailView.as_view(), name="classroom-session-update"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/image/", ClassroomAnnouncementImageView.as_view(), name="classroom-announcement-image"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/", ClassroomAnnouncementsView.as_view(), name="classroom-announcements"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/", ClassroomSessionsView.as_view(), name="classroom-sessions"),
     path("join/", JoinByCodeView.as_view(), name="join"),
     path("join-requests/mine/", MyJoinRequestsView.as_view(), name="requests-mine"),
     path("join-requests/<uuid:request_id>/cancel/", CancelJoinRequestView.as_view(), name="request-cancel"),

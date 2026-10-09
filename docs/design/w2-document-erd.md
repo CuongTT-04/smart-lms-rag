@@ -16,6 +16,7 @@ erDiagram
     DOCUMENT_VERSION o|--o{ DOCUMENT_OPERATION : phien_ban
     INGESTION_JOB o|--o{ DOCUMENT_OPERATION : job
     KNOWLEDGE_DOCUMENT o|--o| DOCUMENT_VERSION : active_version
+    KNOWLEDGE_DOCUMENT o|--o| DOCUMENT_VERSION : published_version
     USER {
         uuid id PK
     }
@@ -39,6 +40,7 @@ erDiagram
         int policy_revision
         boolean is_published
         uuid active_version_id FK
+        uuid published_version_id FK
         datetime removed_at
         datetime created_at
         datetime updated_at
@@ -54,6 +56,7 @@ erDiagram
         int page_count
         string checksum_sha256
         string extracted_storage_key
+        string watermarked_sha256
         string watermarked_view_key
         string watermark_status
         string status
@@ -108,7 +111,7 @@ W2 upload chỉ PDF văn bản <=20 MiB và <=100 trang; enum định dạng c�
 - Job: QUEUED → RUNNING → SUCCEEDED/FAILED/CANCELLED; retry có token/lần thử và kiểm tra nguồn chưa gỡ. job_type: EXTRACT/INDEX/PREPARE_VIEW.
 - watermark_status: NOT_STARTED/PROCESSING/READY/FAILED; protected viewer chỉ trả derivative READY. Không fallback bản sạch.
 - API extraction_status được suy ra từ extracted_at và job EXTRACT hiện hành: NOT_STARTED/QUEUED/PROCESSING/EXTRACTED/FAILED. Không cần một trạng thái text tự do thứ ba trong DB.
-- W2 kết quả standalone có extraction_status=EXTRACTED, indexed_at=null, rag_ready=false. Chưa tạo khóa học/database runtime.
+- W2 kết quả standalone có extraction_status=EXTRACTED, indexed_at=null, rag_ready=false. Đã kiểm chứng DB runtime tạm với model A; chưa seed DB demo chung.
 - active_version_id phải trỏ phiên bản thuộc cùng document, READY và có các kết quả cần thiết. Khi chưa index xong giữ rỗng hoặc giữ bản đang phục vụ trước đó; viewer chọn version đã chuẩn bị theo quyền và không tự quảng bá thành bản AI đang phục vụ.
 
 ## ERD sang migration
@@ -142,3 +145,9 @@ User UUID, Course UUID và CourseMember dùng nguyên bản nhánh A b8b03df. Co
 ## Cập nhật ngày 09/10
 
 Nhánh A 0a0d63e thêm AccessPolicy/Classroom/Enrollment/JoinRequest; học viên vào lớp bằng mã hoặc yêu cầu được duyệt. Enrollment đồng bộ quyền CourseMember. Rút khỏi lớp cuối hoặc thu hồi cả khóa chặn quyền học liệu; còn enrollment hiệu lực ở lớp khác cùng khóa thì vẫn được đọc. KnowledgeDocument tiếp tục FK trực tiếp Course nên các lớp cùng khóa dùng chung tài liệu; chưa thêm FK Classroom/Lesson. INVITED không còn là trạng thái CourseMember; chờ duyệt được biểu diễn bằng JoinRequest.PENDING và chưa có quyền đọc học liệu.
+
+## Công bố và bản xem hoàn thiện ngày 09/10
+
+Migration documents.0002 thêm published_version nullable và watermarked_sha256. published_version phải thuộc chính học liệu, còn hiệu lực, EXTRACTED/READY và có derivative watermark READY. Công bố không gán active_version/indexed_at hay rag_ready. Thay nguồn giữ published_version cũ; gỡ hoặc thu hồi công bố xóa tham chiếu này.
+
+Worker EXTRACT tạo extraction và derivative có watermark trước khi chốt EXTRACTED; gốc sạch không bị sửa. Policy ở cấp KnowledgeDocument mặc định PROTECTED, revision bắt đầu 1; PUBLIC_DOWNLOAD giữ nguyên quyền Course. Policy update khóa document và kiểm tra revision, view/download kiểm tra checksum và không fallback nguồn sạch khi derivative thiếu/hỏng.

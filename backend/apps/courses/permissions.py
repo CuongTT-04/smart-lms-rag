@@ -64,3 +64,11 @@ class CanViewCourse(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return can_view_course(request.user, obj)
+
+
+def can_view_classroom(user, classroom):
+    if can_manage_course(user, classroom.course):
+        return True
+    return can_view_course(user, classroom.course) and classroom.enrollments.filter(
+        student__user=user, status__in=['ACTIVE', 'COMPLETED'],
+    ).exists()

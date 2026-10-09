@@ -1,0 +1,45 @@
+import { expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import SessionWorkspace from './SessionWorkspace'
+import { updateClassroomSession } from '../services/course.service'
+vi.mock('../services/course.service', async (original) => ({ ...await original(), updateClassroomSession: vi.fn(async (_, __, ___, values) => ({ id: 's1', ...values })) }))
+vi.mock('./documents/CourseDocuments', () => ({ default: () => <div>Học liệu buổi học</div> }))
+it('finalizes a draft session independently of the selected PDF', async () => {
+  const saved = vi.fn()
+  render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'s1',title:'Buổi 1',is_draft:true}} onSaved={saved} />)
+  expect(screen.getByText('Bản nháp')).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: 'Tạo buổi học' }))
+  expect(updateClassroomSession).toHaveBeenCalledWith('c1','r1','s1',{is_draft:false})
+  expect(saved).toHaveBeenCalledWith(expect.objectContaining({is_draft:false}))
+  expect(screen.queryByText('Bản nháp')).not.toBeInTheDocument()
+  expect(screen.getByRole('button',{name:'Đã tạo buổi học'})).toBeDisabled()
+})
+it('keeps sidebar content mounted but inaccessible while collapsed and restores it on opening', async () => {
+  render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'s1',title:''}} />)
+  await userEvent.click(screen.getByRole('button', {name:'Thêm học liệu'}))
+  const menu = screen.getByRole('button', {name:'Ẩn hiện nội dung buổi học'})
+  await userEvent.click(screen.getByRole('button', {name:'Đóng thanh nội dung'}))
+  expect(menu).toHaveFocus()
+  expect(menu).toHaveAttribute('aria-expanded','false')
+  expect(screen.queryByRole('navigation',{name:'Nội dung buổi học'})).not.toBeInTheDocument()
+  expect(document.querySelector('.session-sidebar-slot')).toHaveAttribute('inert')
+  expect(document.querySelector('.session-content-sidebar')).toBeInTheDocument()
+  await userEvent.click(menu)
+  expect(menu).toHaveAttribute('aria-expanded','true')
+  expect(screen.getByRole('button',{name:'Học liệu chưa đặt tên'})).toBeVisible()
+})
+it('opens a green content sidebar and saves a session title', async () => {
+  const back = vi.fn()
+  render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'s1',title:''}} onBack={back} />)
+  expect(screen.getByRole('navigation', { name: 'Nội dung buổi học' })).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: 'Đổi tên buổi học' }))
+  await userEvent.type(screen.getByLabelText('Tên buổi học'), 'Ngày 1')
+  await userEvent.click(screen.getByRole('button', { name: 'Lưu tên buổi học' }))
+  expect(updateClassroomSession).toHaveBeenCalledWith('c1', 'r1', 's1', {title:'Ngày 1'})
+  expect(await screen.findByRole('heading', {name:'Ngày 1'})).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: 'Trợ lý AI' }))
+  expect(screen.getByRole('complementary', { name:'Trợ lý AI của buổi học' })).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name:'Các buổi học' }))
+  expect(back).toHaveBeenCalled()
+})

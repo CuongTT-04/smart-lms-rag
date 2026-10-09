@@ -25,7 +25,7 @@ npm ci
 npm run dev
 ```
 
-Mở http://127.0.0.1:5173/documents.html. Đăng nhập bằng tài khoản A đã tạo, chọn khóa học thuộc quyền của mình. Giáo viên upload PDF, xem trạng thái, retry lỗi và kiểm tra văn bản trích xuất theo trang. Nút làm mới tải lại danh sách và kiểm tra quyền; lỗi mất quyền xóa nội dung đang hiển thị. Học viên chỉ thấy metadata của học liệu đã công bố trong khóa học được phép. Học liệu mới là draft/PROTECTED; W2 chưa có viewer/policy/publication UI hoặc tải sạch. Không công bố draft tự động khi extraction xong; các test công bố chỉ dùng fixture, chưa phải chức năng người dùng.
+Mở http://127.0.0.1:5173/documents.html. Giáo viên chọn khóa, upload PDF, theo dõi xử lý và kiểm tra extraction theo trang. Khi bản xem có watermark đã sẵn sàng, chọn **Công bố phiên bản này** để học viên trong khóa được xem. Có thao tác thu hồi công bố, đổi chính sách, thay PDF và gỡ học liệu. Thay file giữ bản đã công bố đến khi công bố phiên bản mới. Mặc định PROTECTED: xem có watermark, không tải bản sạch. **Cho phép tải bản sạch** chuyển PUBLIC_DOWNLOAD cho người có quyền khóa; chuyển lại bảo vệ chặn yêu cầu sạch mới.
 
 Trên nhánh B đã ghép, trang chính `/` có tab **Học liệu** trong quản lý khóa của giáo viên và danh sách học liệu trong chi tiết khóa của học viên. Hai trang dùng `CourseDocuments.jsx` theo UUID khóa học. `/documents.html` vẫn dùng được. Nhánh A không bị sửa hoặc push. Học viên tham gia bằng mã lớp/duyệt yêu cầu; không dùng POST cấp thành viên trực tiếp.
 
@@ -41,7 +41,7 @@ npm test
 
 ```powershell
 # API tích hợp với model/auth/permission thật của A:
-.\.venv\Scripts\python.exe backend/manage.py test tests.documents.test_integration tests.common apps.users.tests apps.courses.tests --settings=config.settings.w2_test
+.\.venv\Scripts\python.exe backend/manage.py test tests.documents.test_material_access tests.documents.test_integration tests.common apps.users.tests apps.courses.tests --settings=config.settings.w2_test
 # Bộ test riêng về upload/worker của B:
 .\.venv\Scripts\python.exe backend/manage.py test tests.documents.test_upload tests.documents.test_worker --settings=tests.documents_settings
 # Parser/corpus/CLI độc lập:
@@ -57,7 +57,7 @@ Kiểm chứng W2 bằng hai PDF corpus, database SQLite mới và worker chạy
 .\.venv\Scripts\python.exe scripts/verify_w2_delivery.py
 ```
 
-Script tự tạo database/storage tạm trong `data/processed`, chạy migration, kiểm tra restart/retry/file cần OCR/thu hồi quyền rồi dọn fixture. Không seed hay xóa database của ứng dụng. Report không chứa password/token hoặc toàn văn học liệu. Bàn giao hiện tại và các quyết định A/B: [w2-b-handoff-and-ab-decisions.md](../docs/reports/w2-b-handoff-and-ab-decisions.md).
+Script tự tạo database/storage tạm trong `data/processed`, chạy migration, kiểm tra restart/retry/file cần OCR, công bố qua API, viewer watermark, policy/tải sạch và thu hồi quyền rồi dọn fixture. Không seed hay xóa database của ứng dụng. Report không chứa password/token hoặc toàn văn học liệu. Bàn giao hiện tại và các quyết định A/B: [w2-b-handoff-and-ab-decisions.md](../docs/reports/w2-b-handoff-and-ab-decisions.md).
 
 ## Hành vi đã triển khai và giới hạn
 
@@ -65,7 +65,7 @@ PDF tối đa 20 MiB/100 trang; kiểm tra file thực, mã hóa/cấu trúc; up
 
 Trang B poll 2 giây khi QUEUED/PROCESSING, dừng ở trạng thái cuối hoặc rời trang; mất quyền xóa metadata đang hiển thị. Network failure không bị coi là extraction failure và giữ Idempotency-Key cho thao tác chưa rõ kết quả.
 
-Chưa kiểm chứng PostgreSQL/nhiều worker/Colab T4; thời gian local chỉ là mẫu đo. Crash upload có thể để lại file tạm/original chưa có record, cần dọn theo đối chiếu DB. Các API viewer/policy/download và RAG tiếp tục ở phạm vi sau B2; không mở file sạch thay viewer watermark.
+Chưa kiểm chứng PostgreSQL/nhiều worker/Colab T4; thời gian local chỉ là mẫu đo. Crash upload có thể để lại file tạm/original chưa có record, cần dọn theo đối chiếu DB. Viewer/publication/policy/download đã triển khai; RAG tiếp tục W3. Watermark không ngăn tuyệt đối chụp màn hình hoặc lưu bản đã nhận. Migration documents.0002 thêm published_version và hash derivative; chạy migrate trước API/worker. Học liệu EXTRACTED cũ thiếu watermark có nút **Tạo lại bản xem**, xử lý lại cùng phiên bản.
 
 ## Docker tích hợp API và worker
 

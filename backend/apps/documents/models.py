@@ -10,6 +10,7 @@ class DocumentBase(models.Model):
     class Meta: abstract=True
 
 class KnowledgeDocument(DocumentBase):
+    session=models.ForeignKey("courses.ClassroomSession",null=True,blank=True,on_delete=models.PROTECT,related_name="materials")
     course=models.ForeignKey(COURSE_MODEL,on_delete=models.PROTECT,related_name="learning_documents")
     uploaded_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT,related_name="uploaded_documents")
     title=models.CharField(max_length=255)
@@ -17,6 +18,7 @@ class KnowledgeDocument(DocumentBase):
     policy_revision=models.PositiveIntegerField(default=1)
     is_published=models.BooleanField(default=False)
     active_version=models.ForeignKey("DocumentVersion",null=True,blank=True,on_delete=models.PROTECT,related_name="active_for_documents")
+    published_version=models.ForeignKey("DocumentVersion",null=True,blank=True,on_delete=models.PROTECT,related_name="published_for_documents")
     removed_at=models.DateTimeField(null=True,blank=True)
     updated_at=models.DateTimeField(auto_now=True)
     class Meta:
@@ -33,6 +35,7 @@ class DocumentVersion(DocumentBase):
     page_count=models.PositiveIntegerField()
     extracted_storage_key=models.CharField(max_length=255,blank=True,default="")
     watermarked_view_key=models.CharField(max_length=255,blank=True,default="")
+    watermarked_sha256=models.CharField(max_length=64,blank=True,default="")
     watermark_status=models.CharField(max_length=20,default="NOT_STARTED")
     status=models.CharField(max_length=20,choices=[(s,s) for s in ("QUEUED","PROCESSING","EXTRACTED","READY","FAILED","REMOVED")],default="QUEUED")
     ocr_used=models.BooleanField(default=False)

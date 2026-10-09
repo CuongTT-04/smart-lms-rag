@@ -93,7 +93,7 @@ class UploadTests(TestCase):
     def test_status_checks_membership_and_never_exposes_original(self):
         response=self.upload();self.assertEqual(response.status_code,202,response.content)
         url=f"/api/documents/{response.json()['document_id']}/status/"
-        KnowledgeDocument.objects.filter(pk=response.json()['document_id']).update(is_published=True)
+        KnowledgeDocument.objects.filter(pk=response.json()['document_id']).update(is_published=True,published_version_id=response.json()["version_id"])
         self.authenticate(self.student)
         self.assertEqual(self.client.get(url).status_code,200)
         Membership.objects.filter(user=self.student).update(active=False)
@@ -129,4 +129,4 @@ class UploadTests(TestCase):
         self.assertEqual(post().status_code,404)
     def test_original_download_route_is_not_exposed(self):
         response=self.upload();document_id=response.json()["document_id"]
-        self.assertEqual(self.client.get(f"/api/documents/{document_id}/download/").status_code,404)
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/download/").status_code,403)

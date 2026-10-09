@@ -39,7 +39,7 @@ class PolicyView(CourseManagementView):
     @extend_schema(
         operation_id="course_policy_retrieve", tags=["Enrollment"],
         summary="Xem chính sách tham gia khóa học",
-        description="Chỉ giáo viên đang hoạt động và là chủ khóa học (OWNER). Trả về mức hiển thị, loại truy cập, giá và điều kiện tham gia. Hiện chỉ hỗ trợ khóa học miễn phí, vào lớp bằng mã; require_approval cho biết học viên có cần chờ duyệt không. PUBLIC không đồng nghĩa với quyền xem nội dung khi chưa là thành viên.",
+        description="Chỉ giáo viên đang hoạt động và là chủ khóa học (OWNER). Trả về mức hiển thị, loại truy cập, giá và điều kiện tham gia. Hiện chỉ hỗ trợ khóa học miễn phí, vào lớp bằng mã; Điều kiện xét duyệt hiện áp dụng theo require_approval của từng Classroom. PUBLIC không đồng nghĩa với quyền xem nội dung khi chưa là thành viên.",
         responses={200: PolicySerializer, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND},
     )
     def get(self, request, course_id):
@@ -48,7 +48,7 @@ class PolicyView(CourseManagementView):
     @extend_schema(
         operation_id="course_policy_update", tags=["Enrollment"],
         summary="Cập nhật chính sách tham gia khóa học",
-        description="Chỉ chủ khóa học. Gửi ít nhất một trong hai trường require_approval hoặc visibility (PUBLIC/PRIVATE). Không nhận price, access_type hay require_class_code. Bật require_approval để học viên gửi yêu cầu thay vì vào lớp ngay. Tắt duyệt không tự chấp nhận yêu cầu PENDING cũ; thành viên bị đình chỉ/thu hồi vẫn phải được duyệt lại.",
+        description="Chỉ chủ khóa học. Gửi ít nhất một trong hai trường require_approval hoặc visibility (PUBLIC/PRIVATE). Không nhận price, access_type hay require_class_code. Thiết lập require_approval ở endpoint này được giữ để tương thích dữ liệu cũ; không thay đổi chính sách của các lớp. Dùng PATCH classroom để thay đổi xét duyệt riêng lớp. Tắt duyệt không tự chấp nhận yêu cầu PENDING cũ; thành viên bị đình chỉ/thu hồi vẫn phải được duyệt lại.",
         request=PolicyUpdateSerializer,
         examples=[OpenApiExample("Bật xét duyệt", value={"require_approval": True}, request_only=True)],
         responses={200: PolicySerializer, 400: UPDATE_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND},
@@ -75,7 +75,7 @@ class ClassroomsView(CourseManagementView):
     @extend_schema(
         operation_id="classrooms_create", tags=["Enrollment"],
         summary="Tạo lớp học trong khóa học",
-        description="Chỉ chủ khóa học. name bắt buộc, tối đa 255 ký tự; is_join_enabled tùy chọn, mặc định true. Server tự sinh mã lớp duy nhất gồm 12 ký tự hệ thập lục phân; không gửi class_code hay course_id trong body. Trả về 201 cùng thông tin lớp và mã tham gia. Tạo lớp không tự xuất bản khóa học.",
+        description="Chỉ chủ khóa học. name bắt buộc, tối đa 255 ký tự; is_join_enabled tùy chọn, mặc định true. visibility mặc định PRIVATE, require_approval mặc định false, áp dụng riêng lớp. Server tự sinh mã lớp duy nhất gồm 12 ký tự hệ thập lục phân; không gửi class_code hay course_id trong body. Trả về 201 cùng thông tin lớp và mã tham gia. Tạo lớp không tự xuất bản khóa học.",
         request=ClassroomInputSerializer,
         examples=[OpenApiExample("Lớp mới", value={"name": "Lớp Python buổi tối", "is_join_enabled": True}, request_only=True)],
         responses={201: ClassroomSerializer, 400: UPDATE_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND},
@@ -92,8 +92,8 @@ class ClassroomDetailView(CourseManagementView):
 
     @extend_schema(
         operation_id="classrooms_update", tags=["Enrollment"],
-        summary="Đổi tên hoặc đóng/mở đăng ký lớp",
-        description="Chỉ chủ khóa học. classroom_id phải thuộc course_id trên đường dẫn. Gửi ít nhất một trường name hoặc is_join_enabled; không thể đổi mã lớp. is_join_enabled=false chặn lượt tham gia mới và thao tác chấp nhận yêu cầu đang chờ, nhưng không thu hồi quyền của học viên đã tham gia.",
+        summary="Chỉnh sửa tên và chính sách riêng của lớp",
+        description="Chỉ chủ khóa học. classroom_id phải thuộc course_id trên đường dẫn. Gửi ít nhất một trường name, is_join_enabled, visibility (PUBLIC/PRIVATE) hoặc require_approval; các thay đổi được lưu nguyên tử và chỉ áp dụng cho lớp này; không thể đổi mã lớp. is_join_enabled=false chặn lượt tham gia mới và thao tác chấp nhận yêu cầu đang chờ, nhưng không thu hồi quyền của học viên đã tham gia.",
         request=ClassroomInputSerializer,
         examples=[OpenApiExample("Đóng đăng ký lớp", value={"is_join_enabled": False}, request_only=True)],
         responses={200: ClassroomSerializer, 400: UPDATE_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND},

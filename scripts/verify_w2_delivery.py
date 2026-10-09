@@ -141,12 +141,32 @@ def main():
         failed_job = IngestionJob.objects.get(pk=failed.json()["job_id"])
         assert failed_job.status == "FAILED" and failed_job.error_code == "OCR_REQUIRED"
 
-        # Publication below is a test fixture, explicitly not a shipped publication API.
+        # Real publication/view/policy APIs; no direct database publication fixture.
         document_id = records[0]["document_id"]
         login("w2-delivery-student")
         assert client.get(f"/api/documents/{document_id}/status/").status_code == 404
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        login("w2-delivery-teacher")
+        published=client.patch(f"/api/documents/{document_id}/publication/",{"is_published":True,"version_id":records[0]["version_id"]},content_type="application/json")
+        assert published.status_code==200,published.content
+        login("w2-delivery-student")
         assert client.get(f"/api/documents/{document_id}/status/").status_code == 200
+        view=client.get(f"/api/documents/{document_id}/view/")
+        assert view.status_code==200 and view["Cache-Control"]=="private, no-store"
+        from pypdf import PdfReader
+        assert "OHAYO" in PdfReader(io.BytesIO(view.content)).pages[0].extract_text()
+        assert client.get(f"/api/documents/{document_id}/download/").status_code==403
+        login("w2-delivery-teacher")
+        changed=client.patch(f"/api/documents/{document_id}/policy/",{"material_policy":"PUBLIC_DOWNLOAD","policy_revision":1},content_type="application/json")
+        assert changed.status_code==200
+        login("w2-delivery-student")
+        download=client.get(f"/api/documents/{document_id}/download/")
+        assert download.status_code==200
+        assert hashlib.sha256(download.content).hexdigest()==records[0]["checksum_sha256"]
+        login("w2-delivery-teacher")
+        changed=client.patch(f"/api/documents/{document_id}/policy/",{"material_policy":"PROTECTED","policy_revision":2},content_type="application/json")
+        assert changed.status_code==200
+        login("w2-delivery-student")
+        assert client.get(f"/api/documents/{document_id}/download/").status_code==403
         assert client.get(f"/api/documents/{document_id}/extraction/").status_code == 404
         login("w2-delivery-teacher")
         assert client.delete(f"/api/courses/{records[0]['course_id']}/members/{records[0]['member_id']}/").status_code == 204
@@ -158,8 +178,8 @@ def main():
             "sources": records, "worker_process_seconds": worker_seconds,
             "restart_recovery": "WORKER_INTERRUPTED -> API retry -> EXTRACTED",
             "retry_idempotent": True, "failed_pdf": {"job_status":"FAILED","error_code":"OCR_REQUIRED"},
-            "membership_revocation_checked": True, "publication_fixture_only": True,
-            "viewer_watermark_implemented": False, "rag_ready": False,
+            "membership_revocation_checked": True, "publication_fixture_only": False,
+            "viewer_watermark_implemented": True, "policy_roundtrip_checked":True,"rag_ready": False,
             "postgresql_verified": False, "browser_demo_recorded": False}
         output = ROOT/"docs/reports/w2-delivery-verification.json"
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

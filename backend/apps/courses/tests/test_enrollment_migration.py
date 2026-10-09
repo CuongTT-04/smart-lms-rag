@@ -39,4 +39,5 @@ class EnrollmentMigrationTests(TransactionTestCase):
             self.assertEqual(enrolled.enrolled_at, active.joined_at)
             self.assertEqual(Enrollment.objects.get(student__user_id=invited.pk).status, "WITHDRAWN")
         finally:
-            MigrationExecutor(connection).migrate([("courses", NEW_MIGRATION)])
+            executor = MigrationExecutor(connection)
+            executor.migrate(executor.loader.graph.leaf_nodes())

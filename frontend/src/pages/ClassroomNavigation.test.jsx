@@ -1,0 +1,30 @@
+import { expect, it, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import TeacherHomePage from './TeacherHomePage'
+vi.mock('../services/course.service', async (original) => ({ ...await original(), listAllCourses: vi.fn(async () => [{ id: 'c1', title: 'Python', status: 'PUBLISHED' }, { id: 'c2', title: 'Toán', status: 'PUBLISHED' }]), listAllCourseMembers: vi.fn(async () => []), listClassrooms: vi.fn(async (id) => [{ id: id === 'c1' ? 'r1' : 'r2', name: id === 'c1' ? 'Lớp sáng' : 'Lớp tối', class_code: 'ABCDEF123456', is_join_enabled: true, enrolled_count: 2 }]), listClassroomSessions: vi.fn(async () => []), createClassroomSession: vi.fn(async () => ({ id: 's1', title: 'Buổi đầu', material_count: 0 })) }))
+it('opens a classroom directly from the sidebar and filters by course', async () => {
+  render(<TeacherHomePage user={{ full_name: 'Giáo viên', role: 'TEACHER' }} />)
+  await screen.findByRole('heading', { name: 'Xin chào, Giáo viên!' })
+  await userEvent.click(within(screen.getByRole('navigation')).getByRole('button', { name: 'Lớp học', exact: true }))
+  await screen.findByRole('button', { name: 'Mở lớp Lớp sáng' })
+  expect(screen.getByText('Toán', { selector: '.class-directory-course' })).toBeVisible()
+  await userEvent.type(screen.getByLabelText('Tìm lớp học'), 'sáng')
+  expect(screen.queryByRole('button', { name: 'Mở lớp Lớp tối' })).not.toBeInTheDocument()
+  await userEvent.clear(screen.getByLabelText('Tìm lớp học'))
+  await userEvent.click(screen.getByRole('combobox', { name: 'Lọc theo khóa học' }))
+  await userEvent.click(screen.getByRole('option', { name: 'Python', exact: true }))
+  expect(screen.queryByRole('button', { name: 'Mở lớp Lớp tối' })).not.toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: 'Mở lớp Lớp sáng' }))
+  expect(await screen.findByRole('heading', { name: 'Lớp sáng' })).toBeVisible()
+  expect(screen.queryByRole('button', { name: 'Thêm buổi học' })).not.toBeInTheDocument()
+  const navigation = screen.getByRole('navigation', { name: 'Điều hướng lớp học' })
+  expect(within(navigation).getAllByRole('button').map((item) => item.textContent)).toEqual(['Bảng tin', 'Buổi học', 'Học viên', 'Kết quả'])
+  expect(within(navigation).getByRole('button', { name: 'Bảng tin' })).toHaveAttribute('aria-current', 'page')
+  await userEvent.click(within(navigation).getByRole('button', { name: 'Kết quả' }))
+  expect(screen.getByRole('heading', { name: 'Kết quả học tập' })).toBeVisible()
+  await userEvent.click(within(navigation).getByRole('button', { name: 'Buổi học' }))
+  await userEvent.click(screen.getByRole('button', { name: 'Chỉnh sửa lớp học' }))
+  expect(screen.getByRole('dialog')).toBeVisible()
+  expect(within(screen.getByRole('dialog')).getByLabelText('Tên lớp')).toHaveValue('Lớp sáng')
+})

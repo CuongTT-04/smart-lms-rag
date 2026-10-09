@@ -188,9 +188,8 @@ class ClassroomManagementTests(TestCase):
         self.assertEqual(self.learner.get(self.own_url).status_code, 403)
 
     def test_pending_applicant_has_no_classroom_access(self):
-        policy = self.course.access_policy
-        policy.require_approval = True
-        policy.save()
+        self.room.require_approval = True
+        self.room.save()
         join_by_code(actor=self.second, class_code=self.room.class_code)
         client = authenticate_client(APIClient(), self.second)
         self.assertEqual(client.get(self.own_url).status_code, 403)

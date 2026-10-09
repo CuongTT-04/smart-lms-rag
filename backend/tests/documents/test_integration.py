@@ -51,7 +51,7 @@ class AIntegrationTests(TestCase):
         self.login("student","Student123!")
         self.assertEqual(self.client.post(self.url,{}).status_code,404)
         self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,404)
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version_id=DocumentVersion.objects.get(document_id=document_id).pk)
         self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,200)
         self.login("teacher","Teacher123!")
         response=self.client.delete(f"/api/courses/{self.course_id}/members/{self.member_id}/")
@@ -92,7 +92,7 @@ class AIntegrationTests(TestCase):
 
     def test_archived_course_blocks_student_but_preserves_owner_management(self):
         uploaded=self.upload();document_id=uploaded.json()["document_id"]
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version_id=DocumentVersion.objects.get(document_id=document_id).pk)
         self.assertEqual(self.client.patch(f"/api/courses/{self.course_id}/",{"status":"ARCHIVED"},content_type="application/json").status_code,200)
         self.assertEqual(self.client.get(f"/api/documents/{document_id}/status/").status_code,200)
         self.login("student","Student123!")
@@ -101,10 +101,10 @@ class AIntegrationTests(TestCase):
 
     def test_published_metadata_never_grants_student_extraction_or_original(self):
         uploaded=self.upload();document_id=uploaded.json()["document_id"]
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version_id=DocumentVersion.objects.get(document_id=document_id).pk)
         self.login("student","Student123!")
         self.assertEqual(self.client.get(self.url).status_code,200)
-        for suffix in ("extraction/","view/","download/"):
+        for suffix in ("extraction/",):
             self.assertEqual(self.client.get(f"/api/documents/{document_id}/{suffix}").status_code,404)
 
     def test_replace_keeps_protected_policy_and_separate_versions(self):
@@ -131,7 +131,7 @@ class AIntegrationTests(TestCase):
 
     def test_classroom_withdrawal_keeps_material_access_until_last_enrollment_removed(self):
         document_id=self.upload().json()["document_id"]
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version_id=DocumentVersion.objects.get(document_id=document_id).pk)
         response=self.client.post(f"/api/courses/{self.course_id}/classrooms/",{"name":"Second classroom"},content_type="application/json")
         self.assertEqual(response.status_code,201,response.content);second=response.json()
         self.login("student","Student123!")
@@ -150,8 +150,8 @@ class AIntegrationTests(TestCase):
 
     def test_pending_request_cannot_read_materials_until_teacher_approves(self):
         document_id=self.upload().json()["document_id"]
-        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True)
-        response=self.client.patch(f"/api/courses/{self.course_id}/access-policy/",{"require_approval":True},content_type="application/json")
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version_id=DocumentVersion.objects.get(document_id=document_id).pk)
+        response=self.client.patch(f"/api/courses/{self.course_id}/classrooms/{self.classroom['id']}/",{"require_approval":True},content_type="application/json")
         self.assertEqual(response.status_code,200,response.content)
         get_user_model().objects.create_user("waiting",password="Student123!")
         self.login("waiting","Student123!")

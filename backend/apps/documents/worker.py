@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
 from datetime import timedelta
 from pathlib import Path
@@ -16,6 +17,19 @@ from .models import IngestionJob, DocumentVersion, KnowledgeDocument
 from .storage import private_path
 from .processors.parser import ExtractionError, ExtractionResult, ExtractedPage
 from .processors.metadata import write_extraction
+
+
+def run_watermark(source,version,destination,timeout):
+    environment=os.environ.copy()
+    environment["PYTHONPATH"]=os.pathsep.join(str(p) for p in sys.path if p)
+    try:
+        completed=subprocess.run([sys.executable,"-m","apps.documents.processors.watermark_child",str(source),str(destination),
+            str(version.document_id),str(version.version_number)],env=environment,stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,timeout=timeout,check=False)
+        if completed.returncode or not destination.is_file():
+            raise ExtractionError("WATERMARK_FAILED","Protected view could not be created.")
+    except subprocess.TimeoutExpired as exc:
+        raise ExtractionError("TIMEOUT","Protected view exceeded processing deadline.") from exc
 
 
 def lock_document_for_job(job_id):
@@ -87,6 +101,8 @@ def run_parser(source, version):
 def process_job(job, runner=None):
     token = job.worker_token
     candidate = None
+    watermarked = None
+    started=time.monotonic()
     try:
         if not IngestionJob.objects.filter(pk=job.pk,status="RUNNING",worker_token=token).exists(): return
         version = DocumentVersion.objects.select_related("document").get(pk=job.document_version_id)
@@ -101,6 +117,17 @@ def process_job(job, runner=None):
         key = f"extracted/{version.pk}/{token}.json"
         candidate = private_path(key)
         write_extraction(result, {"course_id":version.document.course_id,"document_id":version.document_id,"version_id":version.pk}, candidate)
+        watermark_key=f"views/{version.pk}/{token}.pdf"
+        watermarked=private_path(watermark_key)
+        remaining=getattr(settings,"DOCUMENTS_TIMEOUT_SECONDS",900)-(time.monotonic()-started)
+        if remaining<=0:raise ExtractionError("TIMEOUT","Processing deadline exceeded.")
+        run_watermark(source,version,watermarked,remaining)
+        from pypdf import PdfReader
+        if len(PdfReader(watermarked).pages)!=version.page_count:
+            raise ExtractionError("WATERMARK_FAILED","Protected view page count mismatch.")
+        if hashlib.sha256(source.read_bytes()).hexdigest()!=version.checksum_sha256:
+            raise ExtractionError("SOURCE_CHANGED","Source changed.")
+        watermark_digest=hashlib.sha256(watermarked.read_bytes()).hexdigest()
         with transaction.atomic():
             # Serialize document mutations with removal and retry.
             lock_document_for_job(job.pk)
@@ -108,10 +135,12 @@ def process_job(job, runner=None):
             locked_job = IngestionJob.objects.select_for_update().get(pk=job.pk)
             if (locked_job.status != "RUNNING" or locked_job.worker_token != token or
                 locked_version.removed_at or locked_version.document.removed_at or locked_version.status != "PROCESSING"):
-                candidate.unlink(missing_ok=True); return
+                candidate.unlink(missing_ok=True);watermarked.unlink(missing_ok=True); return
             locked_version.status="EXTRACTED";locked_version.extracted_storage_key=key
             locked_version.extracted_at=timezone.now();locked_version.indexed_at=None
-            locked_version.save(update_fields=["status","extracted_storage_key","extracted_at","indexed_at"])
+            locked_version.watermarked_view_key=watermark_key;locked_version.watermark_status="READY"
+            locked_version.watermarked_sha256=watermark_digest
+            locked_version.save(update_fields=["status","extracted_storage_key","extracted_at","indexed_at","watermarked_view_key","watermark_status","watermarked_sha256"])
             locked_job.status="SUCCEEDED";locked_job.finished_at=timezone.now();locked_job.worker_token=None
             locked_job.save(update_fields=["status","finished_at","worker_token"])
     except Exception as exc:
@@ -122,5 +151,7 @@ def process_job(job, runner=None):
             updated = IngestionJob.objects.filter(pk=job.pk,status="RUNNING",worker_token=token).update(
                 status="FAILED",error_code=code,finished_at=timezone.now(),worker_token=None)
             if updated and not locked_version.removed_at:
-                locked_version.status="FAILED";locked_version.save(update_fields=["status"])
+                locked_version.status="FAILED";locked_version.watermark_status="FAILED"
+                locked_version.save(update_fields=["status","watermark_status"])
         if candidate: candidate.unlink(missing_ok=True)
+        if watermarked:watermarked.unlink(missing_ok=True)

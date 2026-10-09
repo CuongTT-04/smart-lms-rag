@@ -56,6 +56,10 @@ class OpenAPITests(SimpleTestCase):
             ("/api/courses/{course_id}/members/{member_id}/", "delete"),
         }
         expected.update({
+            ("/api/documents/{document_id}/publication/", "patch"),
+            ("/api/documents/{document_id}/policy/", "patch"),
+            ("/api/documents/{document_id}/view/", "get"),
+            ("/api/documents/{document_id}/download/", "get"),
             ("/api/courses/{course_id}/documents/", "get"),
             ("/api/courses/{course_id}/documents/", "post"),
             ("/api/documents/{document_id}/status/", "get"),
@@ -64,7 +68,13 @@ class OpenAPITests(SimpleTestCase):
             ("/api/documents/{document_id}/extraction/", "get"),
             ("/api/documents/{document_id}/", "delete"),
         })
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/", "patch"))
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/{announcement_id}/image/", "get"))
+        expected.update({("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/", "get"), ("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/", "post")})
+        expected.update({("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/", "get"), ("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/", "post")})
         actual = {(path, method) for path, methods in self.schema["paths"].items() for method in methods}
+        expected.add(("/api/documents/{document_id}/", "patch"))
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/", "delete"))
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]
         self.assertEqual(len(ids), len(set(ids)))

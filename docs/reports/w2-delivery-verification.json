@@ -1,43 +1,43 @@
 {
-  "verified_at": "2026-10-08T18:10:18.900932+00:00",
+  "verified_at": "2026-10-08T18:40:45.768200+00:00",
   "fixture_only": true,
   "database": "disposable SQLite, fresh migrations, separate worker processes",
   "sources": [
     {
       "subject": "KTCTMLN",
-      "course_id": "ae52850f-3365-4759-a714-e7a8a6eb8aea",
-      "member_id": "933971b6-f88c-4606-9afc-d560e0a33ba4",
-      "document_id": "fdd5415b-a414-41da-8deb-61cf92e913a1",
-      "version_id": "84c2c0fd-e171-4f90-92ab-9c77107c5088",
-      "job_id": "10ef5db0-bfe5-4846-9dce-feb1ed72d52b",
+      "course_id": "2ec2bc8d-f079-41a9-8472-1201a07bfac0",
+      "member_id": "8ec0b7d6-4318-4002-aca6-3005f713a91f",
+      "document_id": "ebd691ed-07e7-4180-b62d-b689ffa00caa",
+      "version_id": "5c47f8f0-3baf-4f93-9a51-eecc528eeaee",
+      "job_id": "e7e6bd63-5a8b-4e0d-9a1b-ddf1c730916f",
       "extraction_status": "EXTRACTED",
       "rag_ready": false,
       "checksum_sha256": "a279ffb8a9c612f9e6cd2dfed148c87d3dd3d852cd4df8cc3779db7858cad8f3",
-      "upload_seconds": 0.266,
+      "upload_seconds": 0.141,
       "page_count": 29,
       "parser_version": "2.135.0",
       "physical_pages_verified": true
     },
     {
       "subject": "CNXHKH",
-      "course_id": "6b2ed8c1-061e-4c5b-8706-c45f331d762a",
-      "member_id": "ec7c6f57-8bab-46f9-9b88-be63992e5b14",
-      "document_id": "64525c15-a262-4ef2-8836-8263a96c3ca3",
-      "version_id": "faa45cfc-915b-4a7f-b461-a1d72870f198",
-      "job_id": "4028703a-0ac1-465c-ae79-e9fda84352ca",
+      "course_id": "f84084c8-460f-429c-932d-f17e41a4d8cc",
+      "member_id": "17389b30-c536-42ce-b722-2866e9fc04e1",
+      "document_id": "dd7fcb3e-a41b-45b3-8901-dbd847beb7d6",
+      "version_id": "b7c7ad6b-a35a-4a42-b890-65bb62520259",
+      "job_id": "1b27d9cb-dade-4e7c-8a85-82972b740a05",
       "extraction_status": "EXTRACTED",
       "rag_ready": false,
       "checksum_sha256": "6089d967204ea6619aaa3f61c73d7fcb9c5034b669bcb582e39c8ce32f5f0963",
-      "upload_seconds": 0.125,
+      "upload_seconds": 0.11,
       "page_count": 24,
       "parser_version": "2.135.0",
       "physical_pages_verified": true
     }
   ],
   "worker_process_seconds": [
-    123.094,
-    66.109,
-    1.828
+    51.64,
+    45.875,
+    1.219
   ],
   "restart_recovery": "WORKER_INTERRUPTED -> API retry -> EXTRACTED",
   "retry_idempotent": true,
@@ -46,8 +46,9 @@
     "error_code": "OCR_REQUIRED"
   },
   "membership_revocation_checked": true,
-  "publication_fixture_only": true,
-  "viewer_watermark_implemented": false,
+  "publication_fixture_only": false,
+  "viewer_watermark_implemented": true,
+  "policy_roundtrip_checked": true,
   "rag_ready": false,
   "postgresql_verified": false,
   "browser_demo_recorded": false

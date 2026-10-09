@@ -67,7 +67,7 @@ def join_by_code(*, actor, class_code, message=""):
     pending = JoinRequest.objects.filter(classroom=classroom, student=actor, status="PENDING").first()
     if pending:
         return "PENDING", pending, False
-    if policy.require_approval or (member and member.status != "ACTIVE") or (enrollment and enrollment.status == Enrollment.Status.WITHDRAWN):
+    if classroom.require_approval or (member and member.status != "ACTIVE") or (enrollment and enrollment.status == Enrollment.Status.WITHDRAWN):
         request = JoinRequest.objects.create(classroom=classroom, student=actor, message=message)
         return "PENDING", request, True
     return "ENROLLED", activate(course, classroom, actor), True
@@ -132,8 +132,8 @@ def save_policy(*, actor, course, changes):
 @transaction.atomic
 def save_classroom(*, actor, course, changes, classroom_id=None):
     course = locked_course(actor, course)
-    if not changes or set(changes) - {"name", "is_join_enabled"}:
-        raise ValidationError({"classroom": ["Only name and is_join_enabled can be updated."]})
+    if not changes or set(changes) - {"name", "is_join_enabled", "visibility", "require_approval"}:
+        raise ValidationError({"classroom": ["Only classroom name, visibility, approval and registration settings can be updated."]})
     if classroom_id:
         classroom = Classroom.objects.filter(pk=classroom_id, course=course).first()
         if classroom is None:

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('./api', () => ({ apiRequest: vi.fn() }))
 import { apiRequest } from './api'
-import { uploadDocument, retryDocument, listDocuments } from './document.service'
+import { uploadDocument, retryDocument, listDocuments, materialPdf } from './document.service'
 
 describe('document API integration', () => {
   beforeEach(() => vi.clearAllMocks())
@@ -25,4 +25,9 @@ describe('document API integration', () => {
     apiRequest.mockResolvedValueOnce({ results:[{ document_id:'doc' }], next:null })
     expect(await listDocuments('course')).toEqual([{ document_id:'doc' }])
   })
+})
+
+it('accepts PDF bytes and JSON errors while requesting the exact preview version', async () => {
+  await materialPdf('doc', false, undefined, 'v2')
+  expect(apiRequest).toHaveBeenLastCalledWith('/documents/doc/view/?version_id=v2', expect.objectContaining({ headers: { Accept: 'application/pdf, application/json' }, responseType: 'blob' }))
 })

@@ -160,17 +160,13 @@ describe('enrollment workflows', () => {
     expect(service.reviewJoinRequest).toHaveBeenCalledWith('c1', 'r1', { decision, review_note: 'Đã kiểm tra' })
     await waitFor(() => expect(refresh).toHaveBeenCalled())
   })
-  it('updates approval policy, creates classes and closes registration', async () => {
+  it('creates a class without changing another class policy', async () => {
     render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)
-    await userEvent.click(await screen.findByLabelText('Yêu cầu giáo viên xét duyệt'))
-    await userEvent.click(screen.getByRole('button', { name: 'Lưu chính sách' }))
-    await waitFor(() => expect(service.updateAccessPolicy).toHaveBeenCalledWith('c1', { require_approval: true, visibility: 'PRIVATE' }))
+    await screen.findByText('Lớp tối')
     await userEvent.type(screen.getByLabelText('Tên lớp mới'), 'Lớp sáng')
     await userEvent.click(screen.getByRole('button', { name: 'Tạo lớp' }))
     await waitFor(() => expect(service.createClassroom).toHaveBeenCalledWith('c1', { name: 'Lớp sáng' }))
-    await waitFor(() => expect(screen.getByLabelText('Mở đăng ký')).toBeEnabled())
-    await userEvent.click(screen.getByLabelText('Mở đăng ký'))
-    expect(service.updateClassroom).toHaveBeenCalledWith('c1', 'room1', { is_join_enabled: false })
+    expect(service.updateAccessPolicy).not.toHaveBeenCalled()
   })
   it('opens the roster of a specific class and returns to classroom management', async () => {
     render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)
