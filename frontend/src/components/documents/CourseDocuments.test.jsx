@@ -135,3 +135,15 @@ describe('course materials', () => {
   })
 
 })
+
+it('exposes permitted downloads inside the student lesson workspace', async () => {
+  listDocuments.mockResolvedValue([{document_id:'d1',version_id:'v1',title:'Lesson',is_published:true,material_policy:'PUBLIC_DOWNLOAD'}])
+  const {unmount}=render(<CourseDocuments courseId="course" sessionId="session" workspace selectedDocumentId="d1" />)
+  expect(await screen.findByRole('button',{name:'Tải PDF'})).toBeEnabled()
+  expect(screen.queryByRole('button',{name:'Xem PDF'})).not.toBeInTheDocument()
+  unmount()
+  listDocuments.mockResolvedValue([{document_id:'d1',version_id:'v1',title:'Lesson',is_published:true,material_policy:'PROTECTED'}])
+  render(<CourseDocuments courseId="course" sessionId="session" workspace selectedDocumentId="d1" />)
+  await waitFor(()=>expect(listDocuments).toHaveBeenCalledTimes(2))
+  expect(screen.queryByRole('button',{name:'Tải PDF'})).not.toBeInTheDocument()
+})

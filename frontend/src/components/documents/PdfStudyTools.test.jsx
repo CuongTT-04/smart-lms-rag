@@ -22,7 +22,7 @@ it('keeps the requested tool order and restores personal marks after re-entering
   const view = open()
   expect(await screen.findByText('Saved text')).toBeInTheDocument()
   const tools = within(screen.getByRole('toolbar', { name: 'Công cụ học tập' })).getAllByRole('button').map((button) => button.getAttribute('aria-label'))
-  expect(tools).toEqual(['Con trỏ', 'Bút viết tay', 'Tô highlight', 'Tẩy', 'Viết text', 'Undo', 'Xóa toàn bộ', 'Toàn màn hình', 'Ghi chú'])
+  expect(tools).toEqual(['Con trỏ', 'Bàn tay', 'Bút viết tay', 'Tô highlight', 'Tẩy', 'Viết text', 'Undo', 'Xóa toàn bộ', 'Toàn màn hình', 'Ghi chú'])
   await userEvent.click(screen.getByRole('button', { name: 'Ghi chú', exact: true }))
   expect(screen.getByLabelText('Ghi chú của tôi')).toHaveValue('Saved note')
   await userEvent.type(screen.getByLabelText('Ghi chú của tôi'), '!')

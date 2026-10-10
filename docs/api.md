@@ -45,7 +45,7 @@ Kiểm thử phần B dùng JWT thật qua HTTP: token hợp lệ, thiếu/sai/h
 | PATCH /api/documents/{document_id}/publication/ | Giáo viên phụ trách | is_published (boolean), version_id khi công bố | 200 metadata; chỉ công bố version cùng học liệu đã EXTRACTED/READY và có watermark READY; thu hồi công bố xóa published_version |
 | GET /api/documents/{document_id}/view/ | Người có quyền đọc | none | PDF inline: derivative có watermark khi PROTECTED; bản gốc sạch khi PUBLIC_DOWNLOAD; học viên chỉ đọc phiên bản đang công bố |
 | PATCH /api/documents/{document_id}/policy/ | Giáo viên phụ trách | material_policy=PROTECTED/PUBLIC_DOWNLOAD, policy_revision (integer) hiện hành | 200 metadata; tăng revision khi đổi policy; revision cũ trả 409 |
-| GET /api/documents/{document_id}/download/ | Người có quyền đọc, PUBLIC_DOWNLOAD | none | File sạch qua backend kiểm tra quyền; PROTECTED chặn tải sạch |
+| GET /api/documents/{document_id}/download/ | Giáo viên phụ trách; học viên có quyền đọc khi PUBLIC_DOWNLOAD | version_id tùy chọn cho giáo viên | Giáo viên tải bản gốc ngay sau upload, mặc định phiên bản mới nhất; học viên chỉ tải bản đang công bố khi được cho phép |
 
 ## Trạng thái và lỗi
 
@@ -80,7 +80,7 @@ Theo nhánh A 0a0d63e, giáo viên tạo lớp và chọn yêu cầu duyệt; h�
 
 `published_version` dành bản xem, tách `active_version` dành RAG. Thay PDF giữ phiên bản đang công bố; giáo viên chủ động công bố bản mới khi xử lý xong. PDF mới mặc định draft/PROTECTED. Worker tạo derivative có watermark trên từng trang, giữ nguyên gốc sạch và extraction; không tự công bố. Bản EXTRACTED cũ thiếu watermark có thể gửi retry để tạo lại bản xem.
 
-PUBLIC_DOWNLOAD chỉ mở tải sạch cho người có quyền khóa, không tạo link truy cập vô danh. View/download kiểm tra quyền, trạng thái, policy và checksum trước trả bytes; thiếu/hỏng bản xem bảo vệ trả lỗi 503, không fallback gốc sạch. Header `Cache-Control: private, no-store`, `X-Document-Version`, `X-Policy-Revision`; không có URL storage công khai. PROTECTED download trả 403. Đổi lại bảo vệ chặn yêu cầu sạch mới.
+PUBLIC_DOWNLOAD chỉ mở tải sạch cho người có quyền khóa, không tạo link truy cập vô danh. View/download kiểm tra quyền, trạng thái, policy và checksum trước trả bytes; thiếu/hỏng bản xem bảo vệ trả lỗi 503, không fallback gốc sạch. Header `Cache-Control: private, no-store`, `X-Document-Version`, `X-Policy-Revision`; không có URL storage công khai. PROTECTED download trả 403 cho học viên. Giáo viên phụ trách luôn tải được nguồn sạch, kể cả đang xử lý; quyền truy cập và checksum vẫn được kiểm tra. Đổi lại bảo vệ chặn yêu cầu tải sạch mới của học viên.
 
 Frontend nhận PDF qua client JWT thành Blob, kiểm tra trạng thái trước hiển thị, kiểm tra lại mỗi 2 giây khi viewer mở và thu hồi URL Blob khi đóng/rời trang. Watermark hiển thị OHAYO, mã học liệu, phiên bản và trang PDF. Đây là biện pháp hạn chế chia sẻ: không ngăn tuyệt đối chụp màn hình, lưu derivative hoặc thu hồi bytes đã tải hợp lệ.
 

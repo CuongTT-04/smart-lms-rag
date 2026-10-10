@@ -5,7 +5,7 @@ import FilePicker from '../FilePicker'
 import MaterialRemoveDialog from './MaterialRemoveDialog'
 import '../../documents.css'
 
-export default function MaterialActions({ document,canManage=false,onUpdated,onRemoved,onView }) {
+export default function MaterialActions({ document,canManage=false,onUpdated,onRemoved,onView,downloadOnly=false }) {
   const [pending,setPending]=useState(false)
   const [error,setError]=useState('')
   const [confirmRemove,setConfirmRemove]=useState(false)
@@ -19,6 +19,8 @@ export default function MaterialActions({ document,canManage=false,onUpdated,onR
   const unavailable=useCallback((message)=>{setView(false);setError(message)},[])
   const protectedMaterial=(document.material_policy || 'PROTECTED')==='PROTECTED'
   const ready=['EXTRACTED','READY'].includes(document.extraction_status) && document.watermark_status==='READY'
+  const currentPublished=document.is_published && (!document.published_version_id || document.published_version_id===document.version_id)
+  const canDownload=canManage || (document.is_published && !protectedMaterial)
   async function act(task,removed=false) {
     if (locked.current) return
     locked.current=true
@@ -48,7 +50,7 @@ export default function MaterialActions({ document,canManage=false,onUpdated,onR
     setPending(true);setError('')
     let url
     try {
-      const blob=await materialPdf(document.document_id,true)
+      const blob=await materialPdf(document.document_id,true,undefined,canManage ? document.version_id : undefined)
       if (!live.current) return
       url=URL.createObjectURL(blob)
       const link=window.document.createElement('a');link.href=url;link.download=document.file_name || 'hoc-lieu.pdf'
@@ -56,14 +58,14 @@ export default function MaterialActions({ document,canManage=false,onUpdated,onR
     } catch {if (live.current) setError('Không thể tải PDF. Hãy làm mới để kiểm tra chính sách và quyền truy cập.')}
     finally { if (url) setTimeout(()=>URL.revokeObjectURL(url),1000);if (live.current) setPending(false) }
   }
+  if (downloadOnly) return canDownload ? <div className="material-controls"><button type="button" className="outline-button" disabled={pending} onClick={download}>Tải PDF</button>{error && <p role="alert">{error}</p>}</div> : null
   return <div className="material-controls">
     <p>{document.is_published ? 'Đã công bố' : 'Chưa công bố'} · {protectedMaterial ? 'Bảo vệ: bản xem có watermark, không cho tải bản sạch' : 'Công khai học liệu: người có quyền khóa học được xem/tải bản sạch'}</p>
     <div className="material-actions">
       {(document.is_published || (canManage && ready)) && <button type="button" className="outline-button" disabled={pending} onClick={()=>onView ? onView() : setView(!view)}>Xem PDF</button>}
-      {!protectedMaterial && (document.is_published || (canManage && ready)) && <button type="button" className="outline-button" disabled={pending} onClick={download}>Tải PDF</button>}
+      {canDownload && <button type="button" className="outline-button" disabled={pending} onClick={download}>Tải PDF</button>}
       {canManage && <>
-        <button type="button" className="outline-button" disabled={pending || !ready} onClick={()=>act(()=>publishDocument(document.document_id,document.version_id,true))}>Công bố phiên bản này</button>
-        {document.is_published && <button type="button" className="outline-button" disabled={pending} onClick={()=>act(()=>publishDocument(document.document_id,null,false))}>Thu hồi công bố</button>}
+        <button type="button" className="outline-button" disabled={pending || (!currentPublished && !ready)} onClick={()=>act(()=>publishDocument(document.document_id,currentPublished ? null : document.version_id,!currentPublished))}>{currentPublished ? 'Thu hồi công bố' : 'Công bố phiên bản này'}</button>
         <button type="button" className="outline-button" disabled={pending} onClick={()=>act(()=>changeMaterialPolicy(document.document_id,protectedMaterial ? 'PUBLIC_DOWNLOAD' : 'PROTECTED',document.policy_revision || 1))}>{protectedMaterial ? 'Cho phép tải bản sạch' : 'Chuyển về bảo vệ'}</button>
         <button type="button" className="material-danger-button" disabled={pending} onClick={()=>{setError('');setConfirmRemove(true)}}>Gỡ học liệu</button>
       </>}

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Eraser, Flag, Highlighter, Maximize2, MousePointer2, NotebookPen, PenLine, ThumbsDown, ThumbsUp, Trash2, Type, Undo2 } from 'lucide-react'
+import { Eraser, Flag, Hand, Highlighter, Maximize2, MousePointer2, NotebookPen, PenLine, ThumbsDown, ThumbsUp, Trash2, Type, Undo2 } from 'lucide-react'
 import { readStudyNotes, writeStudyNotes } from '../../services/document.service'
 import MaterialRemoveDialog from './MaterialRemoveDialog'
 import LessonReportDialog from './LessonReportDialog'
 
 export default function PdfStudyTools({ enabled, children, ...props }) {
-  return enabled ? <StudyTools {...props}>{children}</StudyTools> : children({ toolbar: null, overlay: null, notes: null })
+  return enabled ? <StudyTools {...props}>{children}</StudyTools> : children({ toolbar: null, overlay: null, notes: null, tool: 'pointer' })
 }
 function StudyTools({ documentId, versionId, pageNumber, ratio = 1, ready, readerRef, showFeedback = true, children }) {
   const [value, setValue] = useState({ items: [], notes: '' })
@@ -65,7 +65,7 @@ function StudyTools({ documentId, versionId, pageNumber, ratio = 1, ready, reade
     return [Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width)), Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height))]
   }
   function start(event) {
-    if (!loaded || !ready || tool === 'pointer' || event.button !== 0) return
+    if (!loaded || !ready || ['pointer', 'hand'].includes(tool) || event.button !== 0) return
     event.preventDefault()
     const [x, y] = point(event)
     if (tool === 'text') { setText(''); setTextPosition({ x, y, page: pageNumber }); return }
@@ -91,7 +91,7 @@ function StudyTools({ documentId, versionId, pageNumber, ratio = 1, ready, reade
     catch { setError('Trình duyệt chưa cho phép mở toàn màn hình.') }
   }
   const disabled = !loaded || !ready
-  const controls = [['pointer', 'Con trỏ', MousePointer2], ['pen', 'Bút viết tay', PenLine], ['highlight', 'Tô highlight', Highlighter], ['eraser', 'Tẩy', Eraser], ['text', 'Viết text', Type]]
+  const controls = [['pointer', 'Con trỏ', MousePointer2], ['hand', 'Bàn tay', Hand], ['pen', 'Bút viết tay', PenLine], ['highlight', 'Tô highlight', Highlighter], ['eraser', 'Tẩy', Eraser], ['text', 'Viết text', Type]]
   const toolbar = <div className="pdf-study-toolbar" role="toolbar" aria-label="Công cụ học tập">
     {controls.map(([id, label, Icon]) => <button type="button" className={`icon-button ${tool === id ? 'is-active' : ''}`} key={id} aria-label={label} title={label} aria-pressed={tool === id} disabled={disabled} onClick={() => { setTool(id); drawing.current = null; setStroke(null) }}><Icon size={18} /></button>)}
     <button type="button" className="icon-button" aria-label="Undo" title="Hoàn tác" disabled={disabled || !historySize} onClick={undo}><Undo2 size={18} /></button>
@@ -100,7 +100,7 @@ function StudyTools({ documentId, versionId, pageNumber, ratio = 1, ready, reade
     <button type="button" className={`icon-button ${notesOpen ? 'is-active' : ''}`} aria-label="Ghi chú" title="Ghi chú" disabled={!loaded} aria-expanded={notesOpen} onClick={() => setNotesOpen(!notesOpen)}><NotebookPen size={18} /></button>
   </div>
   const height = ratio * 1000
-  const overlay = <svg ref={overlayRef} className={`pdf-study-overlay tool-${tool}`} aria-label="Lớp ghi chú trên tài liệu" viewBox={`0 0 1000 ${height}`} preserveAspectRatio="none" style={{ pointerEvents: tool === 'pointer' || disabled ? 'none' : 'auto' }} onPointerDown={start} onPointerMove={move} onPointerUp={finish} onPointerCancel={() => { drawing.current = null; setStroke(null) }}>
+  const overlay = <svg ref={overlayRef} className={`pdf-study-overlay tool-${tool}`} aria-label="Lớp ghi chú trên tài liệu" viewBox={`0 0 1000 ${height}`} preserveAspectRatio="none" style={{ pointerEvents: ['pointer', 'hand'].includes(tool) || disabled ? 'none' : 'auto' }} onPointerDown={start} onPointerMove={move} onPointerUp={finish} onPointerCancel={() => { drawing.current = null; setStroke(null) }}>
     {[...value.items.filter((item) => item.page === pageNumber), ...(stroke?.page === pageNumber ? [stroke] : [])].map((item) => item.kind === 'text' ? <text key={item.id} data-annotation-id={item.id} x={item.x * 1000} y={item.y * height} fill="#234e3c" fontSize="30" dominantBaseline="hanging">{item.text}</text> : <g key={item.id}>
       <polyline data-annotation-id={item.id} points={item.points.map(([x, y]) => `${x * 1000},${y * height}`).join(' ')} fill="none" stroke={item.kind === 'highlight' ? '#f6d34d' : '#234e3c'} strokeOpacity={item.kind === 'highlight' ? '.4' : '1'} strokeWidth={item.kind === 'highlight' ? 28 : 4} strokeLinecap="round" strokeLinejoin="round" />
       {tool === 'eraser' && <polyline data-annotation-id={item.id} points={item.points.map(([x, y]) => `${x * 1000},${y * height}`).join(' ')} fill="none" stroke="transparent" strokeWidth="30" />}
@@ -114,5 +114,5 @@ function StudyTools({ documentId, versionId, pageNumber, ratio = 1, ready, reade
     {textPosition && <div className="pdf-study-text-editor"><form onSubmit={(event) => { event.preventDefault(); if (!text.trim()) return; change({ ...current.current, items: [...current.current.items, { id: crypto.randomUUID(), kind: 'text', ...textPosition, text: text.trim() }] }); setTextPosition(null) }}><label>Text trên tài liệu<input autoFocus maxLength={2000} value={text} onChange={(event) => setText(event.target.value)} /></label><button className="solid-button" type="submit" disabled={!text.trim()}>Thêm text</button><button className="outline-button" type="button" onClick={() => setTextPosition(null)}>Hủy</button></form></div>}
     {confirm && <MaterialRemoveDialog title="nét vẽ và text" headingText="Xóa toàn bộ?" descriptionText="Xóa toàn bộ nét vẽ, highlight và text trên các trang của học liệu này? Ghi chú trong sổ vẫn được giữ." confirmText="Xác nhận xóa" pendingText="Đang xóa…" pending={false} onCancel={() => setConfirm(false)} onConfirm={() => { change({ ...current.current, items: [] }); setConfirm(false) }} />}
   </>
-  return children({ toolbar, overlay, notes })
+  return children({ toolbar, overlay, notes, tool })
 }

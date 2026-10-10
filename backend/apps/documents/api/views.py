@@ -246,13 +246,13 @@ class DocumentViewView(DocumentAPIView):
             manager=is_manager(request.user,document.course)
             if not manager and not document.is_published:raise DocumentError("NOT_FOUND","Resource unavailable.",404)
             version=document.published_version
-            if manager and not self.download and request.query_params.get("version_id"):
+            if manager and (self.download or request.query_params.get("version_id")):
                 version=self.version(request,document)
             if version is None and manager:version=self.version(request,document)
             if not version or version.removed_at:raise DocumentError("VIEW_NOT_READY","No view version available.",409)
-            if self.download and document.material_policy!="PUBLIC_DOWNLOAD":raise DocumentError("DOWNLOAD_DISABLED","Clean download is disabled.",403)
-            protected=document.material_policy=="PROTECTED"
-            if version.status not in {"EXTRACTED","READY"} or (protected and version.watermark_status!="READY"):
+            if self.download and not manager and document.material_policy!="PUBLIC_DOWNLOAD":raise DocumentError("DOWNLOAD_DISABLED","Clean download is disabled.",403)
+            protected=not self.download and document.material_policy=="PROTECTED"
+            if not (self.download and manager) and (version.status not in {"EXTRACTED","READY"} or (protected and version.watermark_status!="READY")):
                 raise DocumentError("VIEW_NOT_READY","View is not ready.",409)
             key=version.watermarked_view_key if protected else version.original_storage_key
             checksum=version.watermarked_sha256 if protected else version.checksum_sha256

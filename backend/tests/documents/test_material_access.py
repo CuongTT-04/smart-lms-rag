@@ -150,3 +150,27 @@ class MaterialAccessTests(TestCase):
         student = self.client.get(self.base+f'view/?version_id={new_id}')
         self.assertEqual(student.status_code, 200)
         self.assertEqual(hashlib.sha256(student.content).hexdigest(), first.watermarked_sha256)
+
+    def test_teacher_downloads_protected_original_before_processing(self):
+        uploaded = self.upload().json()
+        version = DocumentVersion.objects.get(pk=uploaded['version_id'])
+        response = self.client.get(f"/api/documents/{uploaded['document_id']}/download/")
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(hashlib.sha256(response.content).hexdigest(), version.checksum_sha256)
+        self.assertIn('attachment', response['Content-Disposition'])
+        self.login('student', 'Student123!')
+        self.assertEqual(self.client.get(f"/api/documents/{uploaded['document_id']}/download/").status_code, 404)
+
+    def test_teacher_downloads_latest_replacement_student_only_published(self):
+        self.prepare()
+        self.assertEqual(self.publish().status_code, 200)
+        self.assertEqual(self.policy('PUBLIC_DOWNLOAD').status_code, 200)
+        response = self.client.post(self.base+'versions/', {'file': self.upload_file()}, HTTP_IDEMPOTENCY_KEY='download-replacement')
+        new_id = response.json()['version_id']
+        teacher = self.client.get(self.base+'download/')
+        self.assertEqual(teacher.status_code, 200, teacher.content)
+        self.assertEqual(teacher['X-Document-Version'], new_id)
+        self.login('student', 'Student123!')
+        student = self.client.get(self.base+f'download/?version_id={new_id}')
+        self.assertEqual(student.status_code, 200, student.content)
+        self.assertEqual(student['X-Document-Version'], str(self.version.pk))

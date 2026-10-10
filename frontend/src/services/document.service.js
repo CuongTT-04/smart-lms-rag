@@ -54,7 +54,7 @@ export function renameDocument(documentId, title) {
   return apiRequest(`/documents/${documentId}/`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title }) })
 }
 export function materialPdf(documentId,download=false,signal,versionId) {
-  return apiRequest(`/documents/${documentId}/${download ? 'download' : 'view'}/${versionId && !download ? `?version_id=${encodeURIComponent(versionId)}` : ''}`,{
+  return apiRequest(`/documents/${documentId}/${download ? 'download' : 'view'}/${versionId ? `?version_id=${encodeURIComponent(versionId)}` : ''}`,{
     responseType:'blob',headers:{Accept:'application/pdf, application/json'},signal,
   })
 }

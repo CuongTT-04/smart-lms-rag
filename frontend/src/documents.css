@@ -115,3 +115,12 @@
 .pdf-reader-toolbar:has(.pdf-study-toolbar) .pdf-reader-zoom { gap: 8px; }
 .pdf-reader-toolbar:has(.pdf-study-toolbar) .pdf-reader-zoom input { width: 110px; }
 .pdf-reader-toolbar:has(.pdf-study-toolbar) .pdf-reader-pagination { margin-left: auto; }
+
+/* PDF.js TextLayer positioning; transparent glyphs allow native text selection. */
+.pdf-selection-layer { --scale-round-x: 1px; --scale-round-y: 1px; position: absolute; inset: 0; overflow: clip; line-height: 1; text-align: initial; letter-spacing: normal; word-spacing: normal; text-size-adjust: none; forced-color-adjust: none; transform-origin: 0 0; --min-font-size: 1; --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size)); --min-font-size-inv: calc(1 / var(--min-font-size)); }
+.pdf-selection-layer :is(span, br) { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0 0; user-select: text; }
+.pdf-selection-layer > :not(.markedContent), .pdf-selection-layer .markedContent span:not(.markedContent) { --font-height: 0; font-size: calc(var(--text-scale-factor) * var(--font-height)); --scale-x: 1; --rotate: 0deg; transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv)); }
+.pdf-selection-layer .markedContent { display: contents; }
+.pdf-selection-layer ::selection { background: #3877cb55; }
+.pdf-reader-viewport.tool-hand { cursor: grab; touch-action: none; user-select: none; }
+.pdf-reader-viewport.tool-hand.is-dragging { cursor: grabbing; }

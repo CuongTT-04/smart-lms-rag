@@ -17,7 +17,7 @@ it('changes policy only through the material setting with its revision',async()=
   render(<MaterialActions document={row} canManage onUpdated={vi.fn()} onRemoved={vi.fn()} />)
   await userEvent.click(screen.getByRole('button',{name:'Cho phép tải bản sạch'}))
   expect(changeMaterialPolicy).toHaveBeenCalledWith('d','PUBLIC_DOWNLOAD',1)
-  expect(screen.queryByRole('button',{name:'Tải PDF'})).not.toBeInTheDocument()
+  expect(screen.getByRole('button',{name:'Tải PDF'})).toBeInTheDocument()
 })
 it('does not expose management or download controls to protected students',()=>{
   render(<MaterialActions document={{...row,is_published:true}} onUpdated={vi.fn()} onRemoved={vi.fn()} />)
@@ -62,4 +62,28 @@ it('keeps the replacement key after an uncertain network result',async()=>{
   await userEvent.click(screen.getByRole('button',{name:'Thay bằng PDF này'}));await screen.findByRole('alert')
   await userEvent.click(screen.getByRole('button',{name:'Thay bằng PDF này'}))
   expect(replaceDocument.mock.calls[0][2]).toBe(replaceDocument.mock.calls[1][2])
+})
+
+it('shows only revoke for the published current version', async () => {
+  render(<MaterialActions document={{...row,is_published:true,published_version_id:'v'}} canManage onUpdated={vi.fn()} onRemoved={vi.fn()} />)
+  expect(screen.queryByRole('button',{name:'Công bố phiên bản này'})).not.toBeInTheDocument()
+  publishDocument.mockResolvedValue({document_id:'d',is_published:false})
+  await userEvent.click(screen.getByRole('button',{name:'Thu hồi công bố'}))
+  expect(publishDocument).toHaveBeenCalledWith('d',null,false)
+})
+it('can publish a replacement without showing both publication actions', () => {
+  render(<MaterialActions document={{...row,is_published:true,published_version_id:'old'}} canManage onUpdated={vi.fn()} onRemoved={vi.fn()} />)
+  expect(screen.getByRole('button',{name:'Công bố phiên bản này'})).toBeEnabled()
+  expect(screen.queryByRole('button',{name:'Thu hồi công bố'})).not.toBeInTheDocument()
+})
+it('allows teacher downloads immediately after upload while processing', () => {
+  render(<MaterialActions document={{...row,extraction_status:'QUEUED',watermark_status:'NOT_STARTED'}} canManage />)
+  expect(screen.getByRole('button',{name:'Tải PDF'})).toBeEnabled()
+})
+it('offers a compact student download only for published permitted documents', () => {
+  const {rerender}=render(<MaterialActions document={{...row,is_published:true,material_policy:'PUBLIC_DOWNLOAD'}} downloadOnly />)
+  expect(screen.getByRole('button',{name:'Tải PDF'})).toBeEnabled()
+  expect(screen.queryByRole('button',{name:'Xem PDF'})).not.toBeInTheDocument()
+  rerender(<MaterialActions document={{...row,is_published:true}} downloadOnly />)
+  expect(screen.queryByRole('button',{name:'Tải PDF'})).not.toBeInTheDocument()
 })

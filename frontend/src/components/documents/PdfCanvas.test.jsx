@@ -2,9 +2,10 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import PdfCanvas from './PdfCanvas'
-import { getDocument } from 'pdfjs-dist'
-const page = { getViewport: vi.fn(({ scale }) => ({ width: 600 * scale, height: 900 * scale })), render: vi.fn(() => ({ promise: Promise.resolve(), cancel: vi.fn() })) }
-vi.mock('pdfjs-dist', () => ({ GlobalWorkerOptions: {}, getDocument: vi.fn() }))
+import { getDocument, TextLayer } from 'pdfjs-dist'
+const page = { getTextContent: vi.fn(async () => ({items:[],styles:{}})), getViewport: vi.fn(({ scale }) => ({ width: 600 * scale, height: 900 * scale })), render: vi.fn(() => ({ promise: Promise.resolve(), cancel: vi.fn() })) }
+vi.mock('../../services/document.service', () => ({ readStudyNotes: vi.fn(async () => ({items:[],notes:''})), writeStudyNotes: vi.fn(async () => {}) }))
+vi.mock('pdfjs-dist', () => ({ GlobalWorkerOptions: {}, getDocument: vi.fn(), TextLayer: vi.fn(class { constructor({container}) { this.container=container } render() { this.container.textContent='Selectable PDF text';return Promise.resolve() } cancel() {} }) }))
 beforeEach(() => {
   vi.clearAllMocks()
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({})
@@ -51,4 +52,42 @@ it('zooms with the wheel only inside the PDF, prevents page scrolling and respec
   await waitFor(() => expect(Number(slider.value)).toBe(0.05))
   fireEvent.wheel(viewport, { deltaY: 100, cancelable: true })
   expect(Number(slider.value)).toBe(0.05)
+})
+
+it('renders a text selection layer at the page scale and blocks protected copy without disabling selection', async () => {
+  const {rerender}=render(<PdfCanvas url="blob:test" title="Lesson" />)
+  const text=await screen.findByText('Selectable PDF text')
+  expect(TextLayer).toHaveBeenCalledWith(expect.objectContaining({container:text,viewport:expect.objectContaining({width:expect.any(Number)})}))
+  const selection=window.getSelection(), range=document.createRange()
+  range.selectNodeContents(text);selection.removeAllRanges();selection.addRange(range)
+  const clipboardData={setData:vi.fn()}
+  expect(fireEvent.copy(document,{clipboardData,cancelable:true})).toBe(false)
+  expect(selection.toString()).toBe('Selectable PDF text')
+  rerender(<PdfCanvas url="blob:test" title="Lesson" allowCopy />)
+  expect(fireEvent.copy(document,{clipboardData,cancelable:true})).toBe(true)
+  selection.removeAllRanges()
+  expect(fireEvent.copy(document,{clipboardData,cancelable:true})).toBe(true)
+})
+
+it('pans in hand mode without drawing and restores selection in pointer mode', async () => {
+  vi.stubGlobal('PointerEvent', MouseEvent)
+  render(<PdfCanvas url="blob:test" title="Lesson" annotatable documentId="d" versionId="v" />)
+  const hand=screen.getByRole('button',{name:'Bàn tay'})
+  await waitFor(()=>expect(hand).toBeEnabled())
+  const viewport=screen.getByLabelText('PDF Lesson')
+  viewport.scrollLeft=150;viewport.scrollTop=200
+  await userEvent.click(hand)
+  fireEvent.pointerDown(viewport,{button:0,clientX:100,clientY:100})
+  expect(viewport).toHaveClass('is-dragging')
+  fireEvent.pointerMove(viewport,{clientX:140,clientY:160})
+  expect(viewport.scrollLeft).toBe(110)
+  expect(viewport.scrollTop).toBe(140)
+  fireEvent.pointerUp(viewport)
+  expect(viewport).not.toHaveClass('is-dragging')
+  await userEvent.click(screen.getByRole('button',{name:'Con trỏ'}))
+  expect(screen.getByLabelText('Văn bản PDF').style.pointerEvents).toBe('auto')
+  fireEvent.pointerDown(viewport,{button:0,clientX:100,clientY:100})
+  fireEvent.pointerMove(viewport,{clientX:200,clientY:200})
+  expect(viewport.scrollLeft).toBe(110)
+  vi.unstubAllGlobals()
 })

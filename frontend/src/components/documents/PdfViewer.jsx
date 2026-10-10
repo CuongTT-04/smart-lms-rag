@@ -61,6 +61,6 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
       <button type="button" className="outline-button" disabled={saving} onClick={() => setRenaming(false)}>Hủy</button>
       {renameError && <p role="alert">{renameError}</p>}
     </form>}
-    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas key={url} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
+    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas allowCopy={document.material_policy === 'PUBLIC_DOWNLOAD'} key={url} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
   </section>
 }

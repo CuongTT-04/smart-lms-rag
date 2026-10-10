@@ -122,6 +122,15 @@
 .class-announcement-attachments label { display: flex; align-items: center; gap: 8px; }
 .class-announcement-attachments input { width: 100%; box-sizing: border-box; min-height: 46px; padding: 10px 12px; font: inherit; border: 1px solid #cbdcd1; border-radius: 8px; background: #fff; }
 .class-announcement-attachments small { display: block; margin-top: 8px; color: #7c8d83; }
+.class-announcement-attachments .file-picker-field { gap: 0; }
+.class-announcement-attachments .file-picker-field > label,
+.class-announcement-attachments .class-attachment-link-field > label { min-height: 24px; margin-bottom: 12px; }
+.class-announcement-attachments .class-attachment-link-field > input { height: 52px; min-height: 52px; }
+.class-announcement-attachments .file-picker { grid-template-columns: 32px minmax(0, 1fr) auto; height: 52px; min-height: 52px; padding: 8px 12px; gap: 10px; }
+.class-announcement-attachments .file-picker-icon { width: 32px; height: 32px; border-radius: 6px; }
+.class-announcement-attachments .file-picker-copy small { display: none; }
+.class-announcement-attachments .file-picker-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.class-announcement-attachments .file-picker .file-picker-action { grid-column: 3; grid-row: 1; white-space: nowrap; }
 .class-attachment-link-field { position: relative; }
 .class-attachment-link-field input { padding-right: 44px; }
 .class-attachment-link-field .icon-button { position: absolute; right: 4px; top: 34px; }
