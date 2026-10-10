@@ -47,12 +47,12 @@ class ClassroomSessionsView(GenericAPIView):
         if not room or not (can_manage_course(request.user, room.course) if manage else can_view_classroom(request.user, room)):
             raise NotFound('Classroom unavailable.')
         return room
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_list', summary='Danh sách buổi học của lớp', description='Giáo viên sở hữu khóa học hoặc học viên có ghi danh còn hiệu lực trong đúng lớp được xem danh sách buổi học. Không cấp quyền cho học viên chỉ tham gia lớp khác trong cùng khóa học.', responses=SessionSerializer(many=True))
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_list', summary='Danh sách buổi học của lớp', description='Giáo viên sở hữu hoặc học viên còn quyền trong đúng lớp xem danh sách buổi học. Ghi danh lớp khác không cấp quyền xem.', responses=SessionSerializer(many=True))
     def get(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id)
         page = self.paginate_queryset(room.sessions.filter(removed_at__isnull=True))
         return self.get_paginated_response(SessionSerializer(page, many=True, context={'request': request}).data)
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_create', summary='Tạo buổi học trong lớp', description='Chỉ giáo viên sở hữu khóa học được tạo buổi học. Tên buổi học có thể để trống và tối đa 255 ký tự. Máy chủ tự gán thứ tự tiếp theo trong lớp; học viên không được phép tạo buổi học.', request=SessionInput, responses={201: SessionSerializer})
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_create', summary='Tạo buổi học trong lớp', description='Chủ khóa học tạo buổi học; tên có thể để trống, tối đa 255 ký tự. Hệ thống tự gán thứ tự tiếp theo trong lớp.', request=SessionInput, responses={201: SessionSerializer})
     def post(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id, manage=True)
         serializer = SessionInput(data=request.data); serializer.is_valid(raise_exception=True)
@@ -67,7 +67,7 @@ class ClassroomSessionsView(GenericAPIView):
 class ClassroomSessionDetailView(ClassroomSessionsView):
     http_method_names = ['patch', 'delete', 'options']
 
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_session_delete', summary='Xóa buổi học và gỡ học liệu', description='Chỉ giáo viên sở hữu khóa học được xóa buổi học thuộc đúng lớp. Xóa mềm buổi học và gỡ toàn bộ học liệu, thu hồi công bố và hủy tác vụ trích xuất; bản ghi và tệp gốc được giữ lại. Buổi học đã xóa không còn được liệt kê hoặc chỉnh sửa.', responses={204: None})
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_session_delete', summary='Xóa buổi học và gỡ học liệu', description='Chủ khóa học xóa mềm buổi học, gỡ học liệu, thu hồi công bố và hủy trích xuất. Giữ bản ghi và tệp gốc nội bộ.', responses={204: None})
     def delete(self, request, course_id, classroom_id, session_id):
         from apps.documents.services import remove_document
         room = self.room(request, course_id, classroom_id, manage=True)
@@ -82,7 +82,7 @@ class ClassroomSessionDetailView(ClassroomSessionsView):
             session.save(update_fields=['removed_at'])
         return Response(status=204)
 
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_session_update', summary='Cập nhật hoặc hoàn tất tạo buổi học', description='Chỉ giáo viên sở hữu khóa học được đổi tên hoặc gửi is_draft=false để hoàn tất tạo buổi học trong đúng lớp. Không tự công bố các PDF; không chuyển ngược về bản nháp.', request=SessionUpdateInput, responses=SessionSerializer)
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_session_update', summary='Cập nhật hoặc hoàn tất tạo buổi học', description='Chủ khóa học đổi tên hoặc gửi is_draft=false để hoàn tất buổi học. Không tự công bố PDF và không chuyển ngược về bản nháp.', request=SessionUpdateInput, responses=SessionSerializer)
     def patch(self, request, course_id, classroom_id, session_id):
         room = self.room(request, course_id, classroom_id, manage=True)
         serializer = SessionUpdateInput(data=request.data, partial=True)

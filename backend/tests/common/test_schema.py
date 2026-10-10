@@ -268,7 +268,7 @@ class OpenAPITests(SimpleTestCase):
             self.assertLessEqual(set(example["value"]), {"username", "password", "detail"})
         for path in ("/api/courses/", "/api/courses/{course_id}/members/"):
             response = self.schema["paths"][path]["get"]["responses"]["404"]
-            self.assertIn("page", response["description"].lower())
+            self.assertIn("trang", response["description"].lower())
 
     def test_strict_course_request_constraints_match_runtime(self):
         schemas = self.schema["components"]["schemas"]
@@ -297,7 +297,7 @@ class OpenAPITests(SimpleTestCase):
         for operation_id, summary in expected.items():
             with self.subTest(operation_id=operation_id):
                 self.assertEqual(operations[operation_id]["summary"], summary)
-                self.assertGreater(len(operations[operation_id]["description"]), 100)
+                self.assertTrue(operations[operation_id]["description"])
 
     def test_course_operations_include_explanations_and_enrollment_auth_errors(self):
         for path, methods in self.schema["paths"].items():
@@ -306,7 +306,7 @@ class OpenAPITests(SimpleTestCase):
             for method, operation in methods.items():
                 with self.subTest(path=path, method=method):
                     self.assertTrue(operation["summary"])
-                    self.assertGreater(len(operation["description"]), 100)
+                    self.assertTrue(operation["description"])
                     if "Enrollment" in operation["tags"]:
                         self.assertIn("401", operation["responses"])
 
@@ -348,3 +348,19 @@ class OpenAPITests(SimpleTestCase):
         self.assertIsNotNone(finders.find("drf_spectacular_sidecar/swagger-ui-dist/swagger-ui-bundle.js"))
         health = client.get(reverse("health-check"))
         self.assertEqual(health.json(), {"status": "ok", "service": "smart-lms-rag"})
+
+    def test_every_operation_has_concise_vietnamese_documentation(self):
+        import re
+        vietnamese = re.compile('[đĐăĂâÂêÊôÔơƠưƯà-ỹ]')
+        for path, methods in self.schema['paths'].items():
+            for method, operation in methods.items():
+                with self.subTest(path=path, method=method):
+                    for field in ('summary', 'description'):
+                        value = operation.get(field, '')
+                        self.assertRegex(value, vietnamese)
+                        self.assertLessEqual(len(value), 300)
+        create = self.schema['paths']['/api/courses/']['post']['description']
+        self.assertIn('Không tự tạo lớp', create)
+        download = self.schema['paths']['/api/documents/{document_id}/download/']['get']['description']
+        self.assertIn('Giáo viên', download)
+        self.assertIn('PUBLIC_DOWNLOAD', download)

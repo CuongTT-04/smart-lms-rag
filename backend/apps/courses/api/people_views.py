@@ -18,7 +18,7 @@ class ClassroomPeopleView(ClassroomSessionsView):
     http_method_names = ['get', 'head', 'options']
     serializer_class = ClassPeopleSerializer
 
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_people_list', summary='Xem thành viên trong lớp', description='Chủ khóa học và học viên có quyền truy cập đúng lớp được xem tên giáo viên sở hữu và các học viên còn ghi danh. Không trả email, thông tin liên hệ, điểm số hoặc tiến độ của người khác.', responses={200: ClassPeopleSerializer})
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_people_list', summary='Xem thành viên trong lớp', description='Người có quyền đọc lớp xem tên giáo viên sở hữu và các học viên còn ghi danh. Không trả email, điểm số hoặc tiến độ của người khác.', responses={200: ClassPeopleSerializer})
     def get(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id)
         owners = room.course.memberships.filter(role='OWNER', status='ACTIVE', user__is_active=True).select_related('user').order_by('user__full_name', 'user_id')

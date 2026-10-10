@@ -66,13 +66,13 @@ class ClassroomAnnouncementsView(ClassroomSessionsView):
     serializer_class = AnnouncementSerializer
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcements_list', summary='Xem bảng tin của lớp', description='Giáo viên sở hữu khóa học và học viên ghi danh còn hiệu lực trong đúng lớp được đọc thông báo. Các thông báo được hiển thị mới nhất trước và không chia sẻ sang lớp khác.', responses=AnnouncementSerializer(many=True))
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcements_list', summary='Xem bảng tin của lớp', description='Giáo viên sở hữu hoặc học viên còn quyền trong đúng lớp xem thông báo mới nhất trước. Không chia sẻ thông báo sang lớp khác.', responses=AnnouncementSerializer(many=True))
     def get(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id)
         page = self.paginate_queryset(room.announcements.select_related('author'))
         return self.get_paginated_response(AnnouncementSerializer(page, many=True).data)
 
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcements_create', summary='Đăng thông báo của lớp', description='Chỉ giáo viên sở hữu khóa học được đăng thông báo trong lớp. Nội dung phải có ít nhất một ký tự khác khoảng trắng, tối đa 5000 ký tự và được lưu cùng người đăng, thời điểm đăng.', request=AnnouncementInput, responses={201: AnnouncementSerializer})
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcements_create', summary='Đăng thông báo của lớp', description='Chủ khóa học đăng thông báo tối đa 5000 ký tự, kèm ảnh hoặc liên kết tùy chọn. Nội dung không được để trống.', request=AnnouncementInput, responses={201: AnnouncementSerializer})
     def post(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id, manage=True)
         serializer = AnnouncementInput(data=request.data)
@@ -97,7 +97,7 @@ class ClassroomAnnouncementsView(ClassroomSessionsView):
 
 class ClassroomAnnouncementImageView(ClassroomSessionsView):
     http_method_names = ['get', 'head', 'options']
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcement_image', summary='Xem ảnh thông báo', description='Ảnh thông báo được lưu riêng tư và chỉ trả về khi người xem có quyền đọc đúng lớp. Mỗi lần xem đều yêu cầu xác thực JWT; không cung cấp đường dẫn media công khai.', responses={(200, 'image/png'): bytes})
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_announcement_image', summary='Xem ảnh thông báo', description='Trả ảnh riêng tư cho người có quyền đọc đúng lớp. Yêu cầu xác thực mỗi lần xem, không cung cấp liên kết ảnh công khai.', responses={(200, 'image/png'): bytes})
     def get(self, request, course_id, classroom_id, announcement_id):
         room = self.room(request, course_id, classroom_id)
         item = room.announcements.filter(pk=announcement_id).first()

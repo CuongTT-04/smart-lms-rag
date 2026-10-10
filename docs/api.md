@@ -82,7 +82,7 @@ Theo nhánh A 0a0d63e, giáo viên tạo lớp và chọn yêu cầu duyệt; h�
 
 PUBLIC_DOWNLOAD chỉ mở tải sạch cho người có quyền khóa, không tạo link truy cập vô danh. View/download kiểm tra quyền, trạng thái, policy và checksum trước trả bytes; thiếu/hỏng bản xem bảo vệ trả lỗi 503, không fallback gốc sạch. Header `Cache-Control: private, no-store`, `X-Document-Version`, `X-Policy-Revision`; không có URL storage công khai. PROTECTED download trả 403 cho học viên. Giáo viên phụ trách luôn tải được nguồn sạch, kể cả đang xử lý; quyền truy cập và checksum vẫn được kiểm tra. Đổi lại bảo vệ chặn yêu cầu tải sạch mới của học viên.
 
-Frontend nhận PDF qua client JWT thành Blob, kiểm tra trạng thái trước hiển thị, kiểm tra lại mỗi 2 giây khi viewer mở và thu hồi URL Blob khi đóng/rời trang. Watermark hiển thị OHAYO, mã học liệu, phiên bản và trang PDF. Đây là biện pháp hạn chế chia sẻ: không ngăn tuyệt đối chụp màn hình, lưu derivative hoặc thu hồi bytes đã tải hợp lệ.
+Frontend nhận PDF qua client JWT thành Blob, kiểm tra trạng thái trước hiển thị, kiểm tra lại mỗi 2 giây khi viewer mở và thu hồi URL Blob khi đóng/rời trang. Bản xem PROTECTED được tạo trong bộ nhớ từ nguồn đã kiểm tra checksum, với watermark là email của người đang xem, mã học liệu, phiên bản và trang PDF. Tài khoản cũ chưa có email dùng tên tài khoản. Không lưu bản cá nhân lên ổ đĩa; bản gốc và extraction giữ nguyên. Đây là biện pháp hạn chế chia sẻ: không ngăn tuyệt đối chụp màn hình, lưu derivative hoặc thu hồi bytes đã tải hợp lệ.
 
 
 ### Cập nhật chính sách riêng từng lớp (09/10/2026)

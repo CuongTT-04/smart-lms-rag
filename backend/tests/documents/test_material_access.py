@@ -11,7 +11,11 @@ from tests.documents import test_integration as integration
 
 
 class MaterialAccessTests(TestCase):
-    setUp=integration.AIntegrationTests.setUp
+    def setUp(self):
+        integration.AIntegrationTests.setUp(self)
+        for user in (self.teacher, self.student):
+            user.email = f'{user.username}@example.com'
+            user.save(update_fields=['email'])
     login=integration.AIntegrationTests.login
     upload=integration.AIntegrationTests.upload
     upload_file=integration.AIntegrationTests.upload_file
@@ -64,7 +68,7 @@ class MaterialAccessTests(TestCase):
         self.prepare();self.assertEqual(self.publish().status_code,200)
         self.login("student","Student123!")
         response=self.client.get(self.base+"view/");self.assertEqual(response.status_code,200)
-        self.assertIn("OHAYO",PdfReader(io.BytesIO(response.content)).pages[0].extract_text())
+        self.assertIn(self.student.email,PdfReader(io.BytesIO(response.content)).pages[0].extract_text())
         self.assertEqual(response["Cache-Control"],"private, no-store")
         self.assertEqual(self.client.get(self.base+"download/").status_code,403)
         self.login("teacher","Teacher123!")
@@ -145,11 +149,13 @@ class MaterialAccessTests(TestCase):
         replacement = DocumentVersion.objects.get(pk=new_id)
         teacher = self.client.get(self.base+f'view/?version_id={new_id}', HTTP_ACCEPT='application/pdf, application/json')
         self.assertEqual(teacher.status_code, 200)
-        self.assertEqual(hashlib.sha256(teacher.content).hexdigest(), replacement.watermarked_sha256)
+        self.assertEqual(teacher['X-Document-Version'], str(replacement.pk))
+        self.assertIn(self.teacher.email, PdfReader(io.BytesIO(teacher.content)).pages[0].extract_text())
         self.login('student','Student123!')
         student = self.client.get(self.base+f'view/?version_id={new_id}')
         self.assertEqual(student.status_code, 200)
-        self.assertEqual(hashlib.sha256(student.content).hexdigest(), first.watermarked_sha256)
+        self.assertEqual(student['X-Document-Version'], str(first.pk))
+        self.assertIn(self.student.email, PdfReader(io.BytesIO(student.content)).pages[0].extract_text())
 
     def test_teacher_downloads_protected_original_before_processing(self):
         uploaded = self.upload().json()
@@ -174,3 +180,23 @@ class MaterialAccessTests(TestCase):
         student = self.client.get(self.base+f'download/?version_id={new_id}')
         self.assertEqual(student.status_code, 200, student.content)
         self.assertEqual(student['X-Document-Version'], str(self.version.pk))
+
+    def test_protected_watermark_uses_current_viewer_email_and_keeps_source_clean(self):
+        self.prepare()
+        self.assertEqual(self.publish().status_code, 200)
+        teacher = self.client.get(self.base+'view/')
+        teacher_text = PdfReader(io.BytesIO(teacher.content)).pages[0].extract_text()
+        self.assertIn(self.teacher.email, teacher_text)
+        self.assertNotIn('OHAYO', teacher_text)
+        self.login('student', 'Student123!')
+        student = self.client.get(self.base+'view/')
+        student_text = PdfReader(io.BytesIO(student.content)).pages[0].extract_text()
+        self.assertIn(self.student.email, student_text)
+        self.assertNotIn(self.teacher.email, student_text)
+        self.student.email = 'changed@example.com'
+        self.student.save(update_fields=['email'])
+        changed = self.client.get(self.base+'view/')
+        self.assertIn('changed@example.com', PdfReader(io.BytesIO(changed.content)).pages[0].extract_text())
+        original = private_path(self.version.original_storage_key).read_bytes()
+        self.assertEqual(hashlib.sha256(original).hexdigest(), self.version.checksum_sha256)
+        self.assertNotIn('@example.com', PdfReader(io.BytesIO(original)).pages[0].extract_text())

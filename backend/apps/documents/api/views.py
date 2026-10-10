@@ -1,4 +1,5 @@
 """JWT-only document API. Course models and authorization are supplied by A."""
+import io
 import json
 import hashlib
 import uuid
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import DocumentUploadRequest, DocumentRetryRequest
 from ..access import course_model, require_access, require_session_access
@@ -19,6 +20,7 @@ from ..exceptions import DocumentError
 from ..models import KnowledgeDocument
 from ..services import upload_document, retry_ingestion, remove_document, set_publication, set_material_policy
 from ..storage import private_path
+from ..processors.watermark import watermarked_pdf_bytes
 
 
 def operation_payload(op):
@@ -91,7 +93,7 @@ class CourseDocumentsView(DocumentAPIView):
         require_session_access(request.user, session, course, manage=manage)
         return session
 
-    @extend_schema(tags=["Documents"], summary="Upload course material", description="The active course owner uploads a PDF. Returns a durable extraction job after storing the source privately; document processing runs separately in the worker.",
+    @extend_schema(tags=["Documents"], summary='Tải học liệu PDF lên', description='Chủ khóa học tải PDF tối đa 20 MiB và 100 trang. Tệp được lưu riêng tư và xử lý nền; học liệu mới chưa công bố, mặc định được bảo vệ.',
                    request={"multipart/form-data": DocumentUploadRequest}, responses={202: OpenApiTypes.OBJECT, 401: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT},
                    parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)])
     def post(self, request, course_id):
@@ -100,7 +102,7 @@ class CourseDocumentsView(DocumentAPIView):
         op = upload_document(request.user, course, request.FILES.get("file"), request.data.get("title"), request.headers.get("Idempotency-Key"), session=session)
         return Response(operation_payload(op), status=202)
 
-    @extend_schema(tags=["Documents"], summary="List course materials", description="List material metadata using current course permissions. Students only see published materials; no private storage paths are returned.",
+    @extend_schema(tags=["Documents"], summary='Danh sách học liệu', description='Trả học liệu theo quyền khóa học hoặc buổi học. Học viên chỉ thấy bản đang công bố; không trả đường dẫn lưu trữ riêng tư.',
                    responses={200: OpenApiTypes.OBJECT, 401: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT})
     def get(self, request, course_id):
         course = course_model().objects.get(pk=course_id)
@@ -137,7 +139,7 @@ class CourseDocumentsView(DocumentAPIView):
 
 class DocumentStatusView(DocumentAPIView):
     @extend_schema(tags=["Documents"], responses={200: OpenApiTypes.OBJECT},
-                   parameters=[OpenApiParameter("version_id", OpenApiTypes.UUID)])
+                   parameters=[OpenApiParameter("version_id", OpenApiTypes.UUID)], summary='Xem trạng thái xử lý học liệu', description='Trả trạng thái trích xuất, bản xem và chính sách của phiên bản học liệu. Học viên chỉ truy cập bản đang công bố.')
     def get(self, request, document_id):
         document = self.document(request, document_id)
         version = self.version(request, document)
@@ -154,7 +156,7 @@ class DocumentStatusView(DocumentAPIView):
 
 class DocumentVersionsView(DocumentAPIView):
     @extend_schema(tags=["Documents"], request={"multipart/form-data": DocumentUploadRequest}, responses={202: OpenApiTypes.OBJECT},
-                   parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)])
+                   parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)], summary='Thay PDF bằng phiên bản mới', description='Chủ khóa học tải PDF thay thế và tạo tác vụ xử lý. Bản đang công bố được giữ đến khi phiên bản mới được công bố.')
     def post(self, request, document_id):
         document = self.document(request, document_id, manage=True)
         op = upload_document(request.user, document.course, request.FILES.get("file"), document.title,
@@ -164,7 +166,7 @@ class DocumentVersionsView(DocumentAPIView):
 
 class DocumentRetryView(DocumentAPIView):
     @extend_schema(tags=["Documents"], request=DocumentRetryRequest, responses={202: OpenApiTypes.OBJECT},
-                   parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)])
+                   parameters=[OpenApiParameter("Idempotency-Key", str, OpenApiParameter.HEADER, required=True)], summary='Xử lý lại học liệu', description='Chủ khóa học yêu cầu trích xuất hoặc tạo lại bản xem khi xử lý thất bại. Dùng khóa idempotency để tránh tạo tác vụ trùng.')
     def post(self, request, document_id):
         document = self.document(request, document_id, manage=True)
         if not request.data.get("version_id"):
@@ -175,7 +177,7 @@ class DocumentRetryView(DocumentAPIView):
 
 
 class DocumentDetailView(DocumentAPIView):
-    @extend_schema(tags=["Documents"], summary="Rename material", request=OpenApiTypes.OBJECT, responses={200: OpenApiTypes.OBJECT})
+    @extend_schema(tags=["Documents"], summary='Đổi tên học liệu', request=OpenApiTypes.OBJECT, responses={200: OpenApiTypes.OBJECT}, description='Chủ khóa học đổi tên học liệu tối đa 255 ký tự. Không thay đổi tệp PDF hoặc tạo phiên bản mới.')
     def patch(self, request, document_id):
         document = self.document(request, document_id, manage=True)
         title = request.data.get("title")
@@ -185,7 +187,7 @@ class DocumentDetailView(DocumentAPIView):
         document.save(update_fields=["title", "updated_at"])
         return Response({"document_id": str(document.pk), "title": document.title})
 
-    @extend_schema(tags=["Documents"], responses={204: None})
+    @extend_schema(tags=["Documents"], responses={204: None}, summary='Gỡ học liệu', description='Chủ khóa học gỡ học liệu, thu hồi công bố và hủy tác vụ đang chờ. Học liệu không còn được truy cập qua API.')
     def delete(self, request, document_id):
         document = self.document(request, document_id, manage=True)
         remove_document(request.user, document)
@@ -194,7 +196,7 @@ class DocumentDetailView(DocumentAPIView):
 
 class DocumentExtractionView(DocumentAPIView):
     @extend_schema(tags=["Documents"], responses={200: OpenApiTypes.OBJECT},
-                   parameters=[OpenApiParameter("version_id", OpenApiTypes.UUID)])
+                   parameters=[OpenApiParameter("version_id", OpenApiTypes.UUID)], summary='Xem văn bản đã trích xuất', description='Trả văn bản theo trang của phiên bản đã xử lý mà tài khoản được phép xem. Học viên chỉ đọc bản đang công bố.')
     def get(self, request, document_id):
         document = self.document(request, document_id, manage=True)
         version = self.version(request, document)
@@ -215,7 +217,7 @@ class DocumentExtractionView(DocumentAPIView):
 
 
 class DocumentPublicationView(DocumentAPIView):
-    @extend_schema(tags=["Documents"],request=OpenApiTypes.OBJECT,responses={200:OpenApiTypes.OBJECT})
+    @extend_schema(tags=["Documents"],request=OpenApiTypes.OBJECT,responses={200:OpenApiTypes.OBJECT}, summary='Công bố hoặc thu hồi học liệu', description='Chủ khóa học công bố phiên bản đã trích xuất và có bản xem sẵn sàng, hoặc thu hồi công bố. Học viên chỉ xem bản được công bố.')
     def patch(self,request,document_id):
         document=self.document(request,document_id,manage=True)
         if set(request.data)-{"is_published","version_id"}:raise DocumentError("INVALID_PUBLICATION","Unknown publication fields.",400)
@@ -224,7 +226,7 @@ class DocumentPublicationView(DocumentAPIView):
 
 
 class DocumentPolicyView(DocumentAPIView):
-    @extend_schema(tags=["Documents"],request=OpenApiTypes.OBJECT,responses={200:OpenApiTypes.OBJECT})
+    @extend_schema(tags=["Documents"],request=OpenApiTypes.OBJECT,responses={200:OpenApiTypes.OBJECT}, summary='Đổi quyền tải học liệu', description='Chủ khóa học đổi PROTECTED/PUBLIC_DOWNLOAD với policy_revision hiện tại. Cho phép hoặc chặn học viên tải bản sạch; revision cũ trả 409.')
     def patch(self,request,document_id):
         document=self.document(request,document_id,manage=True)
         if set(request.data)-{"material_policy","policy_revision"}:raise DocumentError("INVALID_POLICY","Unknown policy fields.",400)
@@ -235,7 +237,7 @@ class DocumentPolicyView(DocumentAPIView):
 class DocumentViewView(DocumentAPIView):
     download=False
 
-    @extend_schema(tags=["Documents"],responses={(200,"application/pdf"):OpenApiTypes.BINARY})
+    @extend_schema(tags=["Documents"],responses={(200,"application/pdf"):OpenApiTypes.BINARY}, summary='Xem tài liệu PDF', description='Trả PDF để xem theo quyền truy cập: watermark email của người xem khi bảo vệ, bản sạch khi cho phép tải. Học viên chỉ xem bản đang công bố.')
     def get(self,request,document_id):
         # Read under the same document lock used by policy/publication/removal.
         with transaction.atomic():
@@ -260,6 +262,15 @@ class DocumentViewView(DocumentAPIView):
             try:content=private_path(key).read_bytes()
             except OSError as exc:raise DocumentError("VIEW_UNAVAILABLE","View unavailable.",503) from exc
             if hashlib.sha256(content).hexdigest()!=checksum:raise DocumentError("VIEW_UNAVAILABLE","View checksum mismatch.",503)
+            if protected:
+                # Build from the verified clean source, never layer a viewer identity over a shared watermark.
+                try:source=private_path(version.original_storage_key).read_bytes()
+                except OSError as exc:raise DocumentError("VIEW_UNAVAILABLE","View unavailable.",503) from exc
+                if hashlib.sha256(source).hexdigest()!=version.checksum_sha256:
+                    raise DocumentError("VIEW_UNAVAILABLE","Source checksum mismatch.",503)
+                identity=request.user.email.strip() or request.user.username
+                try:content=watermarked_pdf_bytes(io.BytesIO(source),document.pk,version.version_number,identity)
+                except Exception as exc:raise DocumentError("VIEW_UNAVAILABLE","Personalized view unavailable.",503) from exc
             request.user.refresh_from_db();require_access(request.user,document.course,manage=not document.is_published)
             if document.session_id:require_session_access(request.user,document.session,document.course,manage=not document.is_published)
             response=HttpResponse(content,content_type="application/pdf")
@@ -272,5 +283,6 @@ class DocumentViewView(DocumentAPIView):
             return response
 
 
+@extend_schema_view(get=extend_schema(summary='Tải PDF bản sạch', description='Giáo viên phụ trách luôn tải được bản gốc, kể cả đang xử lý. Học viên chỉ tải bản đang công bố khi chính sách là PUBLIC_DOWNLOAD.'))
 class DocumentDownloadView(DocumentViewView):
     download=True

@@ -48,14 +48,14 @@ class StudyNotesSerializer(serializers.Serializer):
 
 
 class StudyNotesView(DocumentAPIView):
-    @extend_schema(tags=['Documents'], summary='Read temporary personal PDF annotations', description='Returns only the authenticated user annotations for an accessible PDF version. Prototype data lives in backend process memory and resets when the backend restarts.', parameters=[OpenApiParameter('version_id', str, required=True)], responses=StudyNotesSerializer)
+    @extend_schema(tags=['Documents'], summary='Xem ghi chú và nét vẽ cá nhân', description='Trả ghi chú, nét vẽ và đánh giá của tài khoản trên phiên bản PDF được phép xem. Dữ liệu tạm trong bộ nhớ, mất khi máy chủ khởi động lại.', parameters=[OpenApiParameter('version_id', str, required=True)], responses=StudyNotesSerializer)
     def get(self, request, document_id):
         document = self.document(request, document_id)
         version = self.version(request, document)
         scope = f'{study_session}:{request.user.pk}:{version.pk}'
         return Response({**study_cache.get(f'{request.user.pk}:{version.pk}', {'items': [], 'notes': ''}), 'scope': scope}, headers={'Cache-Control': 'private, no-store'})
 
-    @extend_schema(tags=['Documents'], summary='Save temporary personal PDF annotations', description='Replaces the authenticated user annotations for an accessible PDF version. Stores no durable records and does not modify the original PDF. Data resets when the backend restarts.', parameters=[OpenApiParameter('version_id', str, required=True)], request=StudyNotesSerializer, responses=StudyNotesSerializer)
+    @extend_schema(tags=['Documents'], summary='Lưu ghi chú và nét vẽ cá nhân', description='Thay ghi chú, nét vẽ và đánh giá cá nhân theo phiên bản PDF và scope hiện tại. Không sửa tệp gốc; dữ liệu mất khi máy chủ khởi động lại.', parameters=[OpenApiParameter('version_id', str, required=True)], request=StudyNotesSerializer, responses=StudyNotesSerializer)
     def put(self, request, document_id):
         document = self.document(request, document_id)
         version = self.version(request, document)
