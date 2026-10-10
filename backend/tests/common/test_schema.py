@@ -48,7 +48,9 @@ class OpenAPITests(SimpleTestCase):
             ("/api/courses/{course_id}/classrooms/", "get"),
             ("/api/courses/{course_id}/classrooms/", "post"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/", "patch"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/", "delete"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/", "get"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/people/", "get"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/{enrollment_id}/", "delete"),
             ("/api/courses/{course_id}/my-classrooms/", "get"),
             ("/api/courses/{course_id}/join-requests/", "get"),
@@ -57,6 +59,8 @@ class OpenAPITests(SimpleTestCase):
         }
         expected.update({
             ("/api/documents/{document_id}/publication/", "patch"),
+            ("/api/documents/{document_id}/study-notes/", "get"),
+            ("/api/documents/{document_id}/study-notes/", "put"),
             ("/api/documents/{document_id}/policy/", "patch"),
             ("/api/documents/{document_id}/view/", "get"),
             ("/api/documents/{document_id}/download/", "get"),
@@ -109,7 +113,7 @@ class OpenAPITests(SimpleTestCase):
             "courses_list", "courses_create", "courses_retrieve", "courses_update",
             "course_members_list", "course_members_revoke",
         ])
-        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
+        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "classrooms_delete", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
 
     def test_classroom_management_schemas_expose_roster_and_own_classrooms(self):
         course = self.schema["components"]["schemas"]["Course"]

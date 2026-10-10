@@ -9,7 +9,7 @@ body { margin: 0; min-width: 0; }
 button, input, textarea, select { font: inherit; letter-spacing: 0; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
-button:disabled { cursor: wait; opacity: .68; }
+button:disabled { cursor: not-allowed; opacity: .68; }
 button, a { touch-action: manipulation; }
 a { color: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid #da815d; outline-offset: 4px; }
@@ -226,6 +226,8 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .course-detail { width: 100%; min-width: 0; }
 .back-button { margin-bottom: 18px; }
 .detail-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.course-detail .detail-header { flex-wrap: wrap; }
+.course-detail-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-left: auto; flex-shrink: 0; }
 .detail-header h1 { margin: 12px 0 8px; font-size: clamp(25px, 3vw, 33px); overflow-wrap: anywhere; }
 .detail-header p { max-width: 720px; margin: 0; color: #75857d; font-size: 14px; line-height: 1.8; }
 .detail-tabs { margin-top: 24px; display: flex; gap: 24px; overflow-x: auto; border-bottom: 1px solid #d9e3dd; }
@@ -258,7 +260,7 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .revoke-button:hover { background: #fbedE9; }
 .member-row .course-revoke-button { justify-self: end; min-height: 40px; width: 154px; padding: 9px 12px; gap: 8px; border: 1px solid #eaccc5; border-radius: 6px; background: #fff; color: #a04435; font-size: 15px; white-space: normal; line-height: 1.5; }
 .member-row .course-revoke-button:hover { border-color: #cb9589; background: #fff1ed; }
-.member-row .course-revoke-button:disabled { cursor: wait; }
+.member-row .course-revoke-button:disabled { cursor: not-allowed; }
 .course-revoke-button span { min-width: 0; overflow-wrap: anywhere; }
 .member-menu { color: #a0aaa5; text-align: center; }
 .account-view { width: min(900px, 100%); }
@@ -505,6 +507,10 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .class-code code { font-size: 18px; color: #226b75; user-select: all; }
 .classroom-row > label:first-child { flex: 1; min-width: 180px; }
 .classroom-row { align-items: flex-end; }
+.classroom-row.is-clickable { position: relative; padding-left: 16px; padding-right: 16px; border-radius: 8px; cursor: pointer; transition: background-color 180ms ease; }
+.classroom-row.is-clickable:hover, .classroom-row.is-clickable:focus-within { background-color: #edf4ef; }
+.classroom-row.is-clickable .classroom-name-link::after { content: ''; position: absolute; inset: 0; }
+.classroom-row.is-clickable > .class-code, .classroom-row.is-clickable > button { position: relative; z-index: 1; }
 .classroom-row > label:first-child input { height: 48px; min-height: 48px; }
 .classroom-row > .class-code,
 .enrollment-panel .classroom-row > .enrollment-check,
@@ -580,7 +586,12 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .my-courses-workspace { min-width: 0; }
 .my-courses-actions { display: flex; align-items: center; gap: 10px; }
 .my-courses-actions .solid-button { min-height: 42px; font-size: 16px; }
-.my-course-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 165px; gap: 18px; padding: 24px 0; border-bottom: 1px solid #dce4df; }
+.my-course-row { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) 190px; gap: 18px; padding: 24px 0; border-bottom: 1px solid #dce4df; border-radius: 8px; cursor: pointer; transition: background-color 180ms ease; }
+.my-courses-list .my-course-row { padding-left: 16px; padding-right: 16px; }
+.my-course-row:hover, .my-course-row:focus-within { background-color: #edf4ef; }
+.my-course-row:focus-within { outline: 2px solid #789688; outline-offset: 2px; }
+.my-course-side .outline-button::after { content: ''; position: absolute; inset: 0; }
+.my-course-classes summary, .my-course-main h2 button { position: relative; z-index: 1; }
 .my-course-symbol { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 6px; background: #fce8df; color: #bb6043; }
 .my-course-main { min-width: 0; }
 .my-course-main h2 { margin: 0 0 8px; font-size: 17px; line-height: 1.5; }
@@ -595,7 +606,7 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .my-course-no-class { color: #7a897f; font-size: 15px; }
 .my-course-side { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .my-course-side .request-state { gap: 6px; font-size: 15px; }
-.my-course-side .outline-button { min-height: 42px; font-size: 16px; }
+.my-course-side .outline-button { min-height: 42px; font-size: 16px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; flex-shrink: 0; }
 .my-course-side time { color: #7a897f; font-size: 14px; }
 .my-courses-workspace :is(input, select, summary):focus-visible { outline: 2px solid #497263; outline-offset: 3px; }
 .my-courses-workspace .join-search input:focus-visible { outline: none; }
@@ -697,8 +708,11 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .join-record-side .text-button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font-size: 16px; }
 .join-cancel-button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 0 4px 8px; border: 0; background: transparent; color: #805f54; font: inherit; font-size: 15px; }
 .join-cancel-button:hover { color: #a43b3b; }
-.join-progress { display: flex; gap: 16px; color: #6a7d72; font-size: 15px; }
-.join-progress strong { color: #245143; }
+.join-record.is-clickable { position: relative; padding-left: 16px; padding-right: 16px; border-radius: 8px; cursor: pointer; transition: background-color 180ms ease; }
+.join-record.is-clickable:hover, .join-record.is-clickable:focus-within { background-color: #edf4ef; }
+.join-record.is-clickable .text-button::after { content: ''; position: absolute; inset: 0; }
+.join-record.is-clickable:focus-within { outline: 2px solid #789688; outline-offset: 2px; }
+.course-class-open { grid-column: 2 / -1; justify-self: end; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .join-review-note { display: flex; align-items: flex-start; gap: 7px; margin: 12px 0 0; color: #486b59; font-size: 16px; line-height: 1.6; }
 .join-review-note svg { flex-shrink: 0; margin-top: 3px; }
 .join-review-note span, .join-sent-message p { overflow-wrap: anywhere; white-space: pre-wrap; }

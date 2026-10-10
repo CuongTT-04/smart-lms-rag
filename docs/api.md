@@ -1,5 +1,12 @@
 # Hợp đồng API học liệu W2 — phần B
 
+### Quản lý khóa học và xóa lớp (10/10/2026)
+
+- Tạo khóa học chỉ tạo khóa, thành viên chủ sở hữu và chính sách; không tự sinh lớp. Các lớp đã có được giữ nguyên.
+- Trang quản lý khóa học đổi trạng thái qua trường Trạng thái và nút Lưu thay đổi, gửi `PATCH /api/courses/{course_id}/`; không có nút xuất bản riêng ở đầu trang. Tab Học liệu được bỏ khỏi trang giáo viên; học liệu theo buổi được quản lý trong chi tiết buổi học.
+- `DELETE /api/courses/{course_id}/classrooms/{classroom_id}/`: chỉ chủ khóa được xóa, trả `204`. Dialog chỉnh sửa lớp có nút Xóa lớp học và bước xác nhận.
+- Migration `courses.0010_classroom_removed_at` thêm xóa mềm lớp. Trong cùng giao dịch, xóa lớp gỡ các buổi học và học liệu của lớp, hủy job đang chờ, chuyển ghi danh sang WITHDRAWN và hủy yêu cầu tham gia PENDING. Mã lớp, bảng tin, buổi học và tài liệu của lớp không còn truy cập được. Lớp khác và học liệu chung khóa không bị gỡ; dữ liệu lịch sử và file được giữ.
+
 Cập nhật 09/10/2026. Hợp đồng phục vụ tích hợp A/B. Upload/list/status/retry/thay phiên bản/gỡ/extraction đã có triển khai phần B và kiểm thử với model khóa học riêng cho test; đã tích hợp trong cấu hình config.settings.w2 với model Course và đăng nhập nguyên bản của A. Nhóm đã thống nhất Django/DRF + JWT Bearer. Phần B sử dụng SimpleJWT để kiểm tra access token; User UUID, Course/CourseMember và JWT dùng nguyên bản nhánh A 0a0d63e. Quyền được kiểm tra bằng apps.courses.permissions.can_manage_course/can_view_course.
 
 ## Quy ước chung
@@ -132,3 +139,15 @@ Session trả thêm `is_draft` (mặc định true). POST tạo buổi học m�
 ### Xóa buổi học (10/10/2026)
 
 `DELETE /api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/` dành cho chủ khóa học, đúng lớp và buổi học; thành công trả 204. Xóa mềm bằng `removed_at`, gỡ toàn bộ học liệu bên trong, thu hồi công bố và hủy tác vụ trích xuất đang chờ/chạy. Bản ghi và tệp gốc được giữ nội bộ. Buổi học đã xóa không còn trong GET danh sách; sửa buổi học hoặc truy cập học liệu đã gỡ trả 404. Migration `courses.0009_classroomsession_removed_at` bổ sung trường xóa mềm.
+
+### Thành viên lớp dành cho học viên (10/10/2026)
+
+`GET /api/courses/{course_id}/classrooms/{classroom_id}/people/` trả hai danh sách `owners` và `students`, mỗi người chỉ có `id` và `name`. Chủ khóa học hoặc học viên còn quyền truy cập đúng lớp được xem. Danh sách học viên gồm ghi danh ACTIVE/COMPLETED có quyền khóa học còn hiệu lực; không trả email, điểm số hay tiến độ. Giao diện đặt chủ lớp trong phần Giáo viên phụ trách phía trên, tách khỏi học viên. Tab Kết quả dành cho kết quả bài làm trong buổi học và hiện chỉ có lời dẫn chờ triển khai.
+
+### Công cụ PDF trong phiên prototype (10/10/2026)
+
+Giáo viên và học viên có thanh công cụ theo thứ tự Con trỏ, Bút viết tay, Highlight, Tẩy, Text, Undo, Xóa toàn bộ, Toàn màn hình, Ghi chú. Nét vẽ/text gắn theo trang với tọa độ chuẩn hóa để giữ vị trí khi thu phóng. Xóa toàn bộ có xác nhận và chỉ xóa nét vẽ/text trên các trang, giữ sổ ghi chú riêng.
+
+Dưới PDF có hàng “Nội dung này có hữu ích không?” với like/unlike (chọn một hoặc bỏ chọn) và báo cáo bài học. Báo cáo mở dialog Lý do (bắt buộc, tối đa 300 ký tự), Ý kiến của bạn (tùy chọn, tối đa 3000 ký tự), Gửi/Hủy. Dữ liệu `feedback` tùy chọn trong cùng payload gồm `vote` (`like/dislike/none`) và `report` (`reason/opinion`); chỉ lưu trong bộ nhớ prototype như ghi chú, chưa có luồng xử lý báo cáo cho quản trị viên. Undo nét vẽ không hoàn tác đánh giá hoặc báo cáo.
+
+`GET/PUT /api/documents/{document_id}/study-notes/?version_id={version_id}` đọc/thay thế `{items, notes, scope}` riêng cho tài khoản đang đăng nhập và đúng phiên bản PDF được phép xem. `items` hỗ trợ `pen/highlight` với các điểm `[x,y]` trong khoảng 0–1, hoặc `text` với `x/y/text`; mỗi mục có `id` và `page`. Quyền truy cập tài liệu và lớp được kiểm tra lại mỗi yêu cầu. Dữ liệu chỉ nằm trong bộ nhớ backend, không có migration hay ghi database/tệp/localStorage. Thoát/vào lại bài học hoặc tải lại trang vẫn đọc lại được trong cùng phiên backend; tắt/khởi động lại backend Docker reset toàn bộ ghi chú prototype. Tải lại mã backend trong chế độ phát triển cũng reset bộ nhớ này. `scope` được cấp khi GET và gửi nguyên khi PUT; ghi từ phiên Docker cũ hoặc tài khoản khác trả 409, tránh khôi phục nhầm dữ liệu sau khi reset.

@@ -71,6 +71,6 @@ export default function MaterialActions({ document,canManage=false,onUpdated,onR
     {canManage && <div className="material-replace"><FilePicker label={`PDF thay thế cho ${document.title}`} file={file} accept=".pdf,application/pdf" disabled={pending} onChange={(event)=>setFile(event.target.files[0] || null)} /><button type="button" className="outline-button" disabled={pending || !file} onClick={replace}>Thay bằng PDF này</button><p>Bản đang công bố được giữ đến khi bạn công bố phiên bản thay thế đã xử lý xong.</p></div>}
     {confirmRemove && <MaterialRemoveDialog title={document.title} pending={pending} error={error} onCancel={()=>{if (!locked.current) setConfirmRemove(false)}} onConfirm={()=>act(()=>removeDocument(document.document_id),true)} />}
     {error && !confirmRemove && <p role="alert">{error}</p>}
-    {view && <PdfViewer key={`${document.policy_revision}:${document.published_version_id}`} document={document} onClose={()=>setView(false)} onUnavailable={unavailable} />}
+    {view && <PdfViewer key={`${document.policy_revision}:${document.published_version_id}`} document={document} showFeedback={!canManage} onClose={()=>setView(false)} onUnavailable={unavailable} />}
   </div>
 }

@@ -61,7 +61,8 @@ describe('course materials', () => {
   it('uploads a PDF and displays queued status without claiming RAG is ready', async () => {
     uploadDocument.mockResolvedValue({ document_id:'d1', version_id:'v1', extraction_status:'QUEUED' })
     render(<CourseDocuments courseId="course" canManage />)
-    await screen.findByText('Chưa có học liệu.')
+    await waitFor(() => expect(screen.getByLabelText('Tài liệu PDF')).toBeEnabled())
+    expect(screen.queryByText('Chưa có học liệu.')).not.toBeInTheDocument()
     await userEvent.upload(screen.getByLabelText('Tài liệu PDF'),new File(['pdf'],'sample.pdf',{type:'application/pdf'}))
     await userEvent.click(screen.getByRole('button',{name:'Tải tài liệu lên'}))
     await waitFor(() => expect(uploadDocument).toHaveBeenCalled())
@@ -71,7 +72,8 @@ describe('course materials', () => {
   it('keeps the upload key when a network error leaves the result uncertain', async () => {
     uploadDocument.mockRejectedValueOnce({status:0}).mockResolvedValueOnce({document_id:'d1',version_id:'v1',extraction_status:'EXTRACTED'})
     render(<CourseDocuments courseId="course" canManage />)
-    await screen.findByText('Chưa có học liệu.')
+    await waitFor(() => expect(screen.getByLabelText('Tài liệu PDF')).toBeEnabled())
+    expect(screen.queryByText('Chưa có học liệu.')).not.toBeInTheDocument()
     await userEvent.upload(screen.getByLabelText('Tài liệu PDF'),new File(['pdf'],'sample.pdf',{type:'application/pdf'}))
     await userEvent.click(screen.getByRole('button',{name:'Tải tài liệu lên'}))
     await screen.findByRole('alert')

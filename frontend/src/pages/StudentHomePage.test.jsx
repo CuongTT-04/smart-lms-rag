@@ -2,16 +2,31 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import StudentHomePage from './StudentHomePage'
-import { getCourse, listAllCourses, listMyCourseClassrooms } from '../services/course.service'
+import { getCourse, listAllCourses, listMyCourseClassrooms, listMyEnrollments, listMyJoinRequests, listClassroomSessions, listClassroomAnnouncements } from '../services/course.service'
 
 vi.mock('../services/course.service', async (importOriginal) => ({
-  ...await importOriginal(), getCourse: vi.fn(), listAllCourses: vi.fn(), listMyCourseClassrooms: vi.fn(),
+  ...await importOriginal(), getCourse: vi.fn(), listAllCourses: vi.fn(), listMyCourseClassrooms: vi.fn(), listMyEnrollments: vi.fn(), listMyJoinRequests: vi.fn(), listClassroomSessions: vi.fn(), listClassroomAnnouncements: vi.fn(),
 }))
 
 const student = { id: 'student-1', username: 'student_a', full_name: 'Nguyễn Minh Anh', email: 'student@example.com', role: 'STUDENT', status: 'ACTIVE' }
 const course = { id: 'course-1', title: 'Lập trình Python căn bản', description: 'Nền tảng cho người mới bắt đầu', status: 'PUBLISHED', published_at: '2026-10-01T10:00:00Z', updated_at: '2026-10-07T10:00:00Z' }
 
 describe('student home', () => {
+  it('opens the selected joined classroom directly and returns to joined classes', async () => {
+    listMyJoinRequests.mockResolvedValue([])
+    listMyEnrollments.mockResolvedValue([{ id:'e1', course_id:'course-1', course_title:course.title, classroom_id:'room-2', classroom_name:'Lớp thứ hai', status:'ACTIVE', enrolled_at:'2026-10-10T10:00:00Z' }])
+    listClassroomSessions.mockResolvedValue([])
+    listClassroomAnnouncements.mockResolvedValue([])
+    render(<StudentHomePage user={student} onLogout={vi.fn()} />)
+    await screen.findByText(course.title)
+    await userEvent.click(screen.getByRole('button', { name:'Tham gia lớp', exact:true }))
+    await userEvent.click(await screen.findByRole('button', { name:'Mở lớp học' }))
+    expect(await screen.findByRole('heading', { name:'Lớp thứ hai' })).toBeVisible()
+    expect(listClassroomSessions).toHaveBeenCalledWith('course-1', 'room-2', expect.any(AbortSignal))
+    expect(screen.queryByRole('heading', { name:'Lớp học của tôi' })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name:'Lớp đã tham gia', exact:true }))
+    expect(screen.getByRole('button', { name:'Mở lớp học' })).toBeVisible()
+  })
   beforeEach(() => {
     vi.clearAllMocks()
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
@@ -85,7 +100,7 @@ describe('student home', () => {
     const classrooms = screen.getByRole('region', { name: 'Lớp học của tôi' })
     expect(within(classrooms).getByText('Đang học')).toBeVisible()
     expect(within(classrooms).getByText('Đã hoàn thành')).toBeVisible()
-    expect(screen.getAllByRole('progressbar')).toHaveLength(2)
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
   })
   it('returns to the course list when refreshing detects revoked access', async () => {
     listMyCourseClassrooms.mockRejectedValue({ status: 403 })

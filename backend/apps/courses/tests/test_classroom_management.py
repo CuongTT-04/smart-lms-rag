@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 import uuid
 from unittest.mock import patch
 
@@ -25,7 +26,7 @@ class ClassroomManagementTests(TestCase):
         self.admin = User.objects.create_superuser("admin")
         self.course = create_course(actor=self.owner, title="Python")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})
-        self.room = self.course.classrooms.get()
+        self.room = Classroom.objects.create(course=self.course, name=self.course.title)
         self.second_room = Classroom.objects.create(course=self.course, name="Second class")
         self.enrollment = join_by_code(actor=self.student, class_code=self.room.class_code)[1]
         self.teacher = authenticate_client(APIClient(), self.owner)
@@ -84,7 +85,7 @@ class ClassroomManagementTests(TestCase):
 
     def test_class_and_enrollment_ids_must_match_course_and_each_other(self):
         foreign = create_course(actor=self.owner, title="Other course")
-        foreign_room = foreign.classrooms.get()
+        foreign_room = Classroom.objects.create(course=foreign, name=foreign.title)
         self.assertEqual(self.teacher.get(reverse("courses:classroom-enrollments", args=[self.course.pk, foreign_room.pk])).status_code, 404)
         self.assertEqual(self.teacher.delete(self.revoke_url(room=self.second_room)).status_code, 404)
         self.assertEqual(self.teacher.delete(self.revoke_url(course=foreign)).status_code, 404)
@@ -150,7 +151,7 @@ class ClassroomManagementTests(TestCase):
     def test_withdraw_does_not_affect_a_different_course(self):
         foreign = create_course(actor=self.owner, title="Other course")
         foreign = update_course(actor=self.owner, course=foreign, changes={"status": "PUBLISHED"})
-        other = join_by_code(actor=self.student, class_code=foreign.classrooms.get().class_code)[1]
+        other = join_by_code(actor=self.student, class_code=Classroom.objects.create(course=foreign, name=foreign.title).class_code)[1]
         self.teacher.delete(self.revoke_url())
         other.refresh_from_db()
         self.assertEqual(other.status, "ACTIVE")
@@ -215,7 +216,7 @@ class ClassroomManagementTests(TestCase):
         for i in range(4):
             extra = create_course(actor=self.owner, title=f"Course {i}")
             update_course(actor=self.owner, course=extra, changes={"status": "PUBLISHED"})
-            join_by_code(actor=self.student, class_code=extra.classrooms.get().class_code)
+            join_by_code(actor=self.student, class_code=Classroom.objects.create(course=extra, name=extra.title).class_code)
         request = Request(APIRequestFactory().get("/"))
         request.user = self.student
         with self.assertNumQueries(3):

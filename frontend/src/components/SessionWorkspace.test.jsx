@@ -43,3 +43,13 @@ it('opens a green content sidebar and saves a session title', async () => {
   await userEvent.click(screen.getByRole('button', { name:'Các buổi học' }))
   expect(back).toHaveBeenCalled()
 })
+it('uses the same session layout for students without teacher management actions', async () => {
+  render(<SessionWorkspace canManage={false} course={{id:'c1'}} room={{id:'r1'}} session={{id:'s1',title:'Student lesson',is_draft:false}} />)
+  expect(screen.getByRole('heading', { name: 'Student lesson' })).toBeVisible()
+  expect(screen.getByRole('navigation', { name: 'Nội dung buổi học' })).toBeVisible()
+  expect(screen.queryByRole('button', { name: 'Thêm học liệu' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Đổi tên buổi học' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Đã tạo buổi học' })).not.toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: 'Trợ lý AI' }))
+  expect(screen.getByRole('complementary', { name: 'Trợ lý AI của buổi học' })).toBeVisible()
+})

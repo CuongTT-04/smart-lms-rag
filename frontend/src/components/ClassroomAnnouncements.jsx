@@ -5,7 +5,7 @@ import { courseErrorMessage, createClassroomAnnouncement, listClassroomAnnouncem
 import AnnouncementImage from './AnnouncementImage'
 import FilePicker from './FilePicker'
 
-export default function ClassroomAnnouncements({ courseId, roomId }) {
+export default function ClassroomAnnouncements({ courseId, roomId, canManage = true }) {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [revision, setRevision] = useState(0)
@@ -61,7 +61,7 @@ export default function ClassroomAnnouncements({ courseId, roomId }) {
   }
   return <section className="class-news" aria-label="Bảng tin của lớp">
     <div className="class-content-toolbar">
-      <button ref={trigger} type="button" className="solid-button" onClick={() => { setEditing(true); setError('') }} disabled={editing || loading}><Plus size={18} />Thêm mới</button>
+      {canManage && <button ref={trigger} type="button" className="solid-button" onClick={() => { setEditing(true); setError('') }} disabled={editing || loading}><Plus size={18} />Thêm mới</button>}
       <button type="button" className="icon-button" aria-label="Tải lại bảng tin" disabled={loading || saving} onClick={() => { setLoading(true); setError(''); setRevision((v) => v + 1) }}><RefreshCw size={18} /></button>
     </div>
     {error && <div className="error-banner" role="alert">{error}</div>}

@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
-from apps.courses.enrollment_services import active_student, cancel_request, join_by_code, review_request, save_classroom, save_policy, withdraw_classroom_enrollment
+from apps.courses.enrollment_services import active_student, cancel_request, join_by_code, review_request, save_classroom, save_policy, withdraw_classroom_enrollment, remove_classroom
 from apps.courses.models import AccessPolicy, Classroom, Enrollment, JoinRequest
 from apps.courses.permissions import CanViewCourse
 from apps.courses.selectors import get_course
@@ -89,6 +89,11 @@ class ClassroomsView(CourseManagementView):
 
 class ClassroomDetailView(CourseManagementView):
     serializer_class = ClassroomSerializer
+
+    @extend_schema(operation_id='classrooms_delete', tags=['Enrollment'], summary='Xóa lớp học', description='Chỉ chủ khóa học được xóa lớp thuộc đúng khóa. Xóa mềm lớp cùng các buổi học, gỡ học liệu và hủy yêu cầu tham gia đang chờ. Các ghi danh được thu hồi; bản ghi và tệp gốc được giữ nội bộ.', responses={204: None, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND})
+    def delete(self, request, course_id, classroom_id):
+        service(remove_classroom, actor=request.user, course=self.get_course(course_id), classroom_id=classroom_id)
+        return Response(status=204)
 
     @extend_schema(
         operation_id="classrooms_update", tags=["Enrollment"],
@@ -197,7 +202,7 @@ class CourseJoinRequestsView(CourseManagementView):
         responses={200: JoinRequestSerializer(many=True), 400: UPDATE_BAD_REQUEST, 401: UNAUTHORIZED, 403: FORBIDDEN, 404: NOT_FOUND},
     )
     def get(self, request, course_id):
-        queryset = JoinRequest.objects.filter(classroom__course=self.get_course(course_id)).select_related("classroom__course", "student")
+        queryset = JoinRequest.objects.filter(classroom__course=self.get_course(course_id), classroom__removed_at__isnull=True).select_related("classroom__course", "student")
         state = request.query_params.get("status")
         if state:
             if state not in JoinRequest.Status.values:

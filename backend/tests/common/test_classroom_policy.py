@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
@@ -14,7 +15,7 @@ class ClassroomPolicyTests(TestCase):
         self.student = User.objects.create_user('policy-student')
         self.course = create_course(actor=self.owner, title='Policy test')
         update_course(actor=self.owner, course=self.course, changes={'status': 'PUBLISHED'})
-        self.first = self.course.classrooms.get()
+        self.first = Classroom.objects.create(course=self.course, name=self.course.title)
         self.second = Classroom.objects.create(course=self.course, name='Second')
         self.client = authenticate_client(APIClient(), self.owner)
 

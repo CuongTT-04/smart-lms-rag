@@ -3,7 +3,22 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TeacherEnrollmentPanel } from './EnrollmentPanels'
 import * as service from '../services/course.service'
-vi.mock('../services/course.service', async (original) => ({ ...await original(), getAccessPolicy: vi.fn(), listClassrooms: vi.fn(), listJoinRequests: vi.fn(), updateClassroom: vi.fn() }))
+vi.mock('../services/course.service', async (original) => ({ ...await original(), getAccessPolicy: vi.fn(), listClassrooms: vi.fn(), listJoinRequests: vi.fn(), updateClassroom: vi.fn(), deleteClassroom: vi.fn() }))
+
+it('deletes a class only after confirmation and removes its row', async () => {
+  service.listClassrooms.mockResolvedValue([{ id:'r1', name:'Lớp cần xóa', class_code:'ABCDEF123456', is_join_enabled:true }])
+  service.listJoinRequests.mockResolvedValue([])
+  service.deleteClassroom.mockResolvedValue(null)
+  render(<TeacherEnrollmentPanel course={{id:'c1',status:'PUBLISHED'}} onMembersChanged={vi.fn()} />)
+  await userEvent.click(await screen.findByRole('button',{name:'Chỉnh sửa lớp Lớp cần xóa'}))
+  await userEvent.click(screen.getByRole('button',{name:'Xóa lớp học'}))
+  expect(service.deleteClassroom).not.toHaveBeenCalled()
+  expect(screen.getByRole('dialog',{name:'Xóa lớp học?'})).toBeVisible()
+  await userEvent.click(screen.getByRole('button',{name:'Xác nhận xóa'}))
+  await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+  expect(service.deleteClassroom).toHaveBeenCalledWith('c1','r1')
+  expect(screen.queryByText('Lớp cần xóa')).not.toBeInTheDocument()
+})
 it('edits one class independently and keeps the draft when saving fails', async () => {
   const room = { id: 'r1', name: 'Lớp một', class_code: 'ABCDEF123456', visibility: 'PRIVATE', require_approval: false, is_join_enabled: true }
   service.getAccessPolicy.mockResolvedValue({ visibility: 'PRIVATE', require_approval: false })

@@ -38,6 +38,10 @@
 .session-pdf-empty h3 { margin: 0; color: #315b47; }
 .session-content-placeholder { padding: 80px 24px; text-align: center; color: #60826b; background: #fff; border-radius: 12px; border: 1px solid #dce5df; }
 .session-assistant-panel { z-index: 65; top: 90px; }
+.session-assistant-panel { transform-origin: top right; transition: transform 240ms cubic-bezier(.2,.75,.25,1), opacity 200ms ease, visibility 240ms; }
+.session-assistant-panel.is-closed { transform: translateY(-8px) scale(.94); opacity: 0; visibility: hidden; pointer-events: none; }
+.session-assistant-panel.is-open { transform: translateY(0) scale(1); opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .session-assistant-panel { transition: none; } }
 @media (max-width: 900px) { .session-layout { grid-template-columns: 230px minmax(0, 1fr); } .session-main-content { padding: 16px; } .session-topbar { padding: 12px 16px; } .session-topbar h1 { font-size: 17px; } .session-topbar-actions { gap: 8px; } }
 @media (max-width: 650px) { .session-topbar { flex-wrap: wrap; gap: 12px; } .session-topbar-title { flex-basis: 100%; } .session-topbar-actions { width: 100%; justify-content: flex-end; } .session-layout { position: relative; grid-template-columns: minmax(0, 1fr); } .session-content-sidebar { position: absolute; z-index: 3; inset: 0 auto 0 0; width: min(280px, 80vw); box-shadow: 10px 0 30px #173e2f25; } .session-main-content { padding: 12px; } .session-assistant-panel { top: 145px; } .session-name-form input { width: 50vw; } .session-pdf-preview, .session-pdf-empty { min-height: 340px; } .session-pdf-preview .material-viewer iframe { min-height: 340px; } }
 

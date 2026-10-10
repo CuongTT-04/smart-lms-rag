@@ -6,10 +6,12 @@ from .views import (
 )
 
 app_name = "documents"
+from .study_notes import StudyNotesView
 
 course_urlpatterns = [path("", CourseDocumentsView.as_view(), name="course-documents")]
 
 urlpatterns = [
+    path("<uuid:document_id>/study-notes/", StudyNotesView.as_view(), name="study-notes"),
     path("<uuid:document_id>/publication/",DocumentPublicationView.as_view(),name="publication"),
     path("<uuid:document_id>/policy/",DocumentPolicyView.as_view(),name="policy"),
     path("<uuid:document_id>/view/",DocumentViewView.as_view(),name="view"),

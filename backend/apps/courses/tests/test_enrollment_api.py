@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from unittest.mock import patch
 import uuid
 
@@ -22,7 +23,7 @@ class EnrollmentAPITests(TestCase):
         self.second_student = User.objects.create_user("second")
         self.course = create_course(actor=self.owner, title="Python")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})
-        self.classroom = self.course.classrooms.get()
+        self.classroom = Classroom.objects.create(course=self.course, name=self.course.title)
         self.client = authenticate_client(APIClient(), self.student)
         self.teacher = authenticate_client(APIClient(), self.owner)
 

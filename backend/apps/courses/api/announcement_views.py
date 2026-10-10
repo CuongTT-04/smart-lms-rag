@@ -83,6 +83,7 @@ class ClassroomAnnouncementsView(ClassroomSessionsView):
         try:
             with transaction.atomic():
                 locked_course(request.user, room.course)
+                room = self.room(request, course_id, classroom_id, manage=True)
                 if image:
                     announcement.image.save(image.name, image, save=False)
                     announcement.image_content_type = 'image/png'

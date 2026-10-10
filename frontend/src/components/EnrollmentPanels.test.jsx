@@ -98,16 +98,16 @@ describe('enrollment workflows', () => {
     expect(screen.queryByText('Lớp tối')).not.toBeInTheDocument()
     expect(screen.getByText('Lớp sáng')).toBeVisible()
   })
-  it('defaults to enrolled classes when none are pending and opens the course', async () => {
+  it('defaults to enrolled classes when none are pending and opens the classroom', async () => {
     service.listMyJoinRequests.mockResolvedValue([])
     service.listMyEnrollments.mockResolvedValue([{ id: 'e1', course_id: 'c1', course_title: 'Python', classroom_name: 'Lớp sáng', status: 'ACTIVE', progress_percent: 15, enrolled_at: request.created_at }])
     const open = vi.fn()
-    render(<StudentEnrollmentPanel onOpenCourse={open} />)
+    render(<StudentEnrollmentPanel onOpenClass={open} />)
     expect(await screen.findByText('Lớp sáng')).toBeVisible()
     expect(screen.getByRole('tab', { name: /Lớp đã tham gia/ })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByText('15%')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Mở khóa học' }))
-    expect(open).toHaveBeenCalledWith('c1')
+    expect(screen.queryByText('15%')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Mở lớp học' }))
+    expect(open).toHaveBeenCalledWith(expect.objectContaining({ course_id: 'c1', classroom_name: 'Lớp sáng' }))
   })
   it('paginates long lists and resets pagination when searching', async () => {
     service.listMyJoinRequests.mockResolvedValue(Array.from({ length: 12 }, (_, i) => ({ ...request, id: `r${i}`, classroom_name: `Lớp số ${i + 1}` })))

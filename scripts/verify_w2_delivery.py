@@ -69,6 +69,8 @@ def main():
             course_id = response.json()["id"]
             response = client.patch(f"/api/courses/{course_id}/", {"status": "PUBLISHED"}, content_type="application/json")
             assert response.status_code == 200
+            created_class = post_json(f"/api/courses/{course_id}/classrooms/", {"name": "Delivery class"})
+            assert created_class.status_code == 201
             classroom = client.get(f"/api/courses/{course_id}/classrooms/")
             assert classroom.status_code == 200
             class_code = classroom.json()["results"][0]["class_code"]

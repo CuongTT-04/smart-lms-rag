@@ -10,5 +10,11 @@
 .file-picker input[type=file] { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0; opacity: 0; cursor: pointer; }
 .file-picker.is-disabled { opacity: .55; }
 .file-picker.is-disabled input { cursor: default; }
+.materials-upload > label > input { box-sizing: border-box; height: 52px; }
+.materials-upload .file-picker { grid-template-columns: 32px minmax(0, 1fr) auto; height: 52px; min-height: 52px; padding: 8px 12px; gap: 10px; }
+.materials-upload .file-picker-icon { width: 32px; height: 32px; border-radius: 6px; }
+.materials-upload .file-picker-copy small { display: none; }
+.materials-upload .file-picker-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.materials-upload .file-picker .file-picker-action { grid-column: 3; grid-row: 1; white-space: nowrap; }
 @media (max-width: 500px) { .file-picker { gap: 10px; padding: 12px; } }
 @media (prefers-reduced-motion: reduce) { .file-picker { transition: none; } }

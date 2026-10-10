@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import PdfCanvas from './PdfCanvas'
 import { materialPdf, documentStatus } from '../../services/document.service'
 
-export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false }) {
+export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false, annotatable = true, hideHeader = false, showFeedback = true }) {
   const [url,setUrl]=useState('')
   const [error,setError]=useState('')
   const [renaming, setRenaming] = useState(false)
@@ -54,13 +54,13 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
     return ()=>{ controller.abort();clearTimeout(timer);if (objectUrl) URL.revokeObjectURL(objectUrl) }
   },[document.document_id,document.material_policy,document.published_version_id,version,revision,onUnavailable,preferCurrent])
   return <section aria-label="Xem PDF" className="material-viewer">
-    <div className="material-actions"><h4>{document.title}</h4>{onRename ? <button type="button" className="outline-button" onClick={() => { setName(document.title); setRenameError(''); setRenaming(true) }}>Đổi tên</button> : <button type="button" className="outline-button" onClick={onClose}>Đóng PDF</button>}</div>
+    {!hideHeader && <div className="material-actions"><h4>{document.title}</h4>{onRename ? <button type="button" className="outline-button" onClick={() => { setName(document.title); setRenameError(''); setRenaming(true) }}>Đổi tên</button> : <button type="button" className="outline-button" onClick={onClose}>Đóng PDF</button>}</div>}
     {renaming && <form className="material-rename-form" onSubmit={saveName}>
       <label>Tên học liệu mới<input autoFocus value={name} maxLength={255} disabled={saving} onChange={(event) => setName(event.target.value)} /></label>
       <button type="submit" className="solid-button" disabled={saving || !name.trim()}>{saving ? 'Đang lưu…' : 'Lưu tên'}</button>
       <button type="button" className="outline-button" disabled={saving} onClick={() => setRenaming(false)}>Hủy</button>
       {renameError && <p role="alert">{renameError}</p>}
     </form>}
-    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas key={url} url={url} title={document.title} /> : <p role="status">Đang mở PDF…</p>}
+    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas key={url} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
   </section>
 }

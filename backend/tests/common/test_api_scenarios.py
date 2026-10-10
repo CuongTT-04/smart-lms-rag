@@ -121,6 +121,7 @@ class W2APIScenarioTests(TestCase):
 
         members = f"/api/courses/{course_id}/members/"
         with self.case("Join and student read", "Class code enables free PUBLISHED course visibility", "201 join; student list/detail 200") as row:
+            self.write(self.teacher, "post", f"/api/courses/{course_id}/classrooms/", 201, {"name":"Scenario class"})
             code = self.request(self.teacher, "get", f"/api/courses/{course_id}/classrooms/", 200).json()["results"][0]["class_code"]
             self.login(self.student, "student")
             self.write(self.student, "post", "/api/courses/join/", 201, {"class_code": code})

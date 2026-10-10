@@ -22,7 +22,7 @@ def locked_course(actor, course):
 def check_joinable(course, classroom):
     policy = AccessPolicy.objects.get(course=course)
     owner = course.memberships.filter(role="OWNER", status="ACTIVE", user__role="TEACHER", user__is_active=True, user__status="ACTIVE").exists()
-    if not owner or course.status != Course.Status.PUBLISHED or not classroom.is_join_enabled:
+    if not owner or classroom.removed_at or course.status != Course.Status.PUBLISHED or not classroom.is_join_enabled:
         raise ValidationError({"class_code": ["This classroom is not accepting enrollment."]})
     if policy.access_type != AccessPolicy.AccessType.FREE or policy.price != 0:
         raise ValidationError({"class_code": ["Only free courses support joining by class code."]})
@@ -145,6 +145,26 @@ def save_classroom(*, actor, course, changes, classroom_id=None):
     classroom.full_clean()
     classroom.save()
     return classroom
+
+
+@transaction.atomic
+def remove_classroom(*, actor, course, classroom_id):
+    from apps.documents.services import remove_document
+    course = locked_course(actor, course)
+    classroom = Classroom.objects.select_for_update().filter(pk=classroom_id, course=course).first()
+    if classroom is None:
+        raise Classroom.DoesNotExist
+    now = timezone.now()
+    for session in classroom.sessions.select_for_update().filter(removed_at__isnull=True).order_by('pk'):
+        for material in session.materials.filter(removed_at__isnull=True).order_by('pk'):
+            remove_document(actor, material)
+        session.removed_at = now
+        session.save(update_fields=['removed_at'])
+    classroom.enrollments.exclude(status=Enrollment.Status.WITHDRAWN).update(status=Enrollment.Status.WITHDRAWN)
+    classroom.join_requests.filter(status='PENDING').update(status='CANCELED', updated_at=now)
+    classroom.removed_at = now
+    classroom.is_join_enabled = False
+    classroom.save(update_fields=['removed_at', 'is_join_enabled', 'updated_at'])
 
 
 @transaction.atomic

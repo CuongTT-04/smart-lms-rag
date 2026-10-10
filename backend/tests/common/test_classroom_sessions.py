@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.courses.services import create_course, update_course
@@ -42,7 +43,7 @@ class ClassroomSessionTests(TestCase):
         self.student=User.objects.create_user('session-student')
         self.course=create_course(actor=self.owner,title='Python')
         update_course(actor=self.owner,course=self.course,changes={'status':'PUBLISHED'})
-        self.room=self.course.classrooms.get()
+        self.room=Classroom.objects.create(course=self.course, name=self.course.title)
         self.url=f'/api/courses/{self.course.pk}/classrooms/{self.room.pk}/sessions/'
         self.client=authenticate_client(APIClient(),self.owner)
 
@@ -85,7 +86,7 @@ class ClassroomSessionTests(TestCase):
     def test_upload_rejects_a_session_from_a_different_course(self):
         from apps.courses.models import ClassroomSession
         other_course=create_course(actor=self.owner,title='Other course')
-        session=ClassroomSession.objects.create(classroom=other_course.classrooms.get(),title='Other lesson')
+        session=ClassroomSession.objects.create(classroom=Classroom.objects.create(course=other_course, name=other_course.title),title='Other lesson')
         result=self.client.post(f'/api/courses/{self.course.pk}/documents/',{'session_id':str(session.pk)},format='multipart',HTTP_IDEMPOTENCY_KEY='other-scope')
         self.assertEqual(result.status_code,404)
 

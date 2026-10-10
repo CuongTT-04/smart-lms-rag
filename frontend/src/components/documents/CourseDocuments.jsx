@@ -155,8 +155,8 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
     setInspection((previous) => previous?.documentId === id ? { ...previous, title: result.title } : previous)
   }
   return <section className={`materials-panel ${workspace ? 'session-materials-panel' : ''}`} aria-label={sessionId ? 'Học liệu buổi học' : 'Học liệu khóa học'}>
-    <h2>{sessionId ? 'Học liệu buổi học' : 'Học liệu khóa học'}</h2><p>Tài liệu PDF được trích xuất theo trang. Học liệu mới mặc định có chính sách bảo vệ.</p>
-    <button type="button" className="outline-button" disabled={pending || loading} onClick={refresh}>Làm mới danh sách</button>
+    {!(workspace && !canManage) && <><h2>{sessionId ? 'Học liệu buổi học' : 'Học liệu khóa học'}</h2><p>Tài liệu PDF được trích xuất theo trang. Học liệu mới mặc định có chính sách bảo vệ.</p>
+    <button type="button" className="outline-button" disabled={pending || loading} onClick={refresh}>Làm mới danh sách</button></>}
     {canManage && (!workspace || draftId) && <form key={formKey} className="materials-upload" onSubmit={submit}>
       <label>Tên học liệu<input value={title} maxLength={255} onChange={(e) => updateForm({ title: e.target.value })} disabled={pending || loading} /></label>
       <FilePicker label="Tài liệu PDF" inputRef={input} file={file} accept=".pdf,application/pdf" onChange={(e) => updateForm({ file: e.target.files[0] || null })} disabled={pending || loading} />
@@ -165,16 +165,16 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
       <button className="solid-button" type="submit" disabled={pending || loading}>{pending ? 'Đang gửi yêu cầu…' : 'Tải tài liệu lên'}</button>
     </form>}
     {error && <p className="error-banner" role="alert">{error}</p>}
-    {loading ? <p role="status">Đang tải học liệu…</p> : documents.length === 0 && <p>Chưa có học liệu.</p>}
-    {workspace && !draftId && <div className="session-pdf-preview" aria-label="Bản xem trước tài liệu">{previewAvailable && !previewClosed ? <PdfViewer key={previewKey} document={currentDocument} preferCurrent onRename={canManage ? rename : undefined} onClose={() => setClosedPreviewKey(previewKey)} onUnavailable={unavailablePreview} /> : <div className="session-pdf-empty"><FileText size={44} /><h3>Bản xem trước tài liệu</h3><p>{currentDocument ? 'Nhấn Xem PDF khi bản xem đã sẵn sàng.' : 'Tải PDF lên để xem tài liệu tại đây.'}</p></div>}</div>}
-    <div className="materials-list">{(workspace ? documents.filter((document) => document.document_id === currentDocument?.document_id) : documents).map((document) => <article key={document.document_id} className="material-row">
+    {loading ? <p role="status">Đang tải học liệu…</p> : !canManage && documents.length === 0 && <p>Chưa có học liệu.</p>}
+    {workspace && !draftId && <div className="session-pdf-preview" aria-label="Bản xem trước tài liệu">{previewAvailable && !previewClosed ? <PdfViewer key={previewKey} document={currentDocument} preferCurrent={canManage} annotatable showFeedback={!canManage} hideHeader={!canManage} onRename={canManage ? rename : undefined} onClose={() => setClosedPreviewKey(previewKey)} onUnavailable={unavailablePreview} /> : <div className="session-pdf-empty"><FileText size={44} /><h3>Bản xem trước tài liệu</h3><p>{currentDocument ? 'Nhấn Xem PDF khi bản xem đã sẵn sàng.' : 'Tải PDF lên để xem tài liệu tại đây.'}</p></div>}</div>}
+    {!(workspace && !canManage) && <div className="materials-list">{(workspace ? documents.filter((document) => document.document_id === currentDocument?.document_id) : documents).map((document) => <article key={document.document_id} className="material-row">
       <h3>{document.title}</h3><p>{document.file_name || ''}{document.page_count ? ` · ${document.page_count} trang` : ''}</p>
       <div className="material-status-line"><strong role="status">{LABELS[document.extraction_status] || 'Chưa xử lý'}</strong>{canManage && ['EXTRACTED','READY'].includes(document.extraction_status) && <button className="outline-button" type="button" disabled={pending || loading} onClick={() => inspect(document)}>Kiểm tra trích xuất</button>}</div>
       {document.error_code && <p>{ERRORS[document.error_code] || 'Không thể trích xuất tài liệu.'}</p>}
       {canManage && document.extraction_status === 'FAILED' && <button className="outline-button" type="button" disabled={pending || loading} onClick={() => retry(document)}>Thử xử lý lại</button>}
       {canManage && ['EXTRACTED','READY'].includes(document.extraction_status) && document.watermark_status!=='READY' && <button className="outline-button" type="button" disabled={pending || loading} onClick={()=>retry(document)}>Tạo lại bản xem</button>}
       <MaterialActions document={document} onView={workspace ? () => setClosedPreviewKey(null) : undefined} canManage={canManage} onUpdated={(result)=>{setInspection(null);merge(result,document.title)}} onRemoved={(id)=>{setInspection(null);setDocuments((previous)=>previous.filter((row)=>row.document_id!==id))}} />
-    </article>)}</div>
+    </article>)}</div>}
     {visibleInspection && <section aria-label="Kết quả trích xuất" className="material-row extraction-result">
       <h3>{visibleInspection.title} — Kết quả trích xuất</h3>
       <button type="button" className="outline-button" onClick={() => setInspection(null)}>Đóng kết quả</button>

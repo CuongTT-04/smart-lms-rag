@@ -67,6 +67,8 @@ class CanViewCourse(BasePermission):
 
 
 def can_view_classroom(user, classroom):
+    if classroom.removed_at:
+        return False
     if can_manage_course(user, classroom.course):
         return True
     return can_view_course(user, classroom.course) and classroom.enrollments.filter(

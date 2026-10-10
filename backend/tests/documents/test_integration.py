@@ -26,6 +26,7 @@ class AIntegrationTests(TestCase):
         self.assertEqual(response.status_code,201,response.content);self.course_id=response.json()["id"]
         response=self.client.patch(f"/api/courses/{self.course_id}/",{"status":"PUBLISHED"},content_type="application/json")
         self.assertEqual(response.status_code,200,response.content)
+        self.client.post(f"/api/courses/{self.course_id}/classrooms/", {"name":"Integration class"}, content_type="application/json")
         response=self.client.get(f"/api/courses/{self.course_id}/classrooms/")
         self.assertEqual(response.status_code,200,response.content)
         self.classroom=response.json()["results"][0]

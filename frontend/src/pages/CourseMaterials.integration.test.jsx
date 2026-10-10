@@ -21,20 +21,17 @@ describe('course material integration', () => {
     listAllCourseMembers.mockResolvedValue([])
     getCourse.mockResolvedValue(course)
   })
-  it('opens B materials within teacher course management', async () => {
+  it('keeps course materials out of teacher course management', async () => {
     render(<TeacherHomePage user={{username:'teacher',role:'TEACHER'}} onLogout={vi.fn()} />)
     await userEvent.click(await screen.findByRole('button',{name:/Quản lý/}))
-    await userEvent.click(screen.getByRole('button',{name:'Học liệu'}))
-    const materials = screen.getByRole('region',{name:'Học liệu kiểm thử'})
-    expect(materials).toHaveAttribute('data-course-id','course-1')
-    expect(materials).toHaveAttribute('data-manage','true')
+    expect(screen.queryByRole('button',{name:'Học liệu'})).not.toBeInTheDocument()
+    expect(screen.queryByRole('region',{name:'Học liệu kiểm thử'})).not.toBeInTheDocument()
   })
-  it('shows B material metadata without teacher controls on the student detail', async () => {
+  it('keeps course materials out of the student detail', async () => {
     render(<StudentHomePage user={{username:'student',role:'STUDENT'}} onLogout={vi.fn()} />)
     await userEvent.click(await screen.findByRole('button',{name:'Khóa học của tôi'}))
     await userEvent.click(screen.getByRole('button',{name:'Xem khóa học'}))
-    const materials = await screen.findByRole('region',{name:'Học liệu kiểm thử'})
-    expect(materials).toHaveAttribute('data-course-id','course-1')
-    expect(materials).toHaveAttribute('data-manage','false')
+    await screen.findByRole('heading', {name: course.title})
+    expect(screen.queryByRole('region',{name:'Học liệu kiểm thử'})).not.toBeInTheDocument()
   })
 })

@@ -134,6 +134,11 @@ class AccessPolicy(models.Model):
         )]
 
 
+class ActiveClassroomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(removed_at__isnull=True)
+
+
 class Classroom(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="classrooms")
@@ -142,6 +147,9 @@ class Classroom(models.Model):
     is_join_enabled = models.BooleanField(default=True)
     visibility = models.CharField(max_length=7, choices=AccessPolicy.Visibility.choices, default=AccessPolicy.Visibility.PRIVATE)
     require_approval = models.BooleanField(default=False)
+    removed_at = models.DateTimeField(null=True, blank=True)
+    objects = ActiveClassroomManager()
+    all_objects = models.Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

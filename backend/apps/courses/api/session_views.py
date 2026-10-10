@@ -58,6 +58,7 @@ class ClassroomSessionsView(GenericAPIView):
         serializer = SessionInput(data=request.data); serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             locked_course(request.user, room.course)
+            room = self.room(request, course_id, classroom_id, manage=True)
             position = (room.sessions.aggregate(last=Max('position'))['last'] or 0) + 1
             session = ClassroomSession.objects.create(classroom=room, position=position, **serializer.validated_data)
         return Response(SessionSerializer(session, context={'request': request}).data, status=201)

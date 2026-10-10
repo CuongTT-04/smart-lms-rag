@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest import skipUnless
@@ -18,7 +19,7 @@ class EnrollmentConcurrencyTests(TransactionTestCase):
         self.student = User.objects.create_user("concurrent_student")
         self.course = create_course(actor=self.owner, title="Concurrent")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})
-        self.code = self.course.classrooms.get().class_code
+        self.code = Classroom.objects.create(course=self.course, name=self.course.title).class_code
 
     def concurrent(self, callback, second_callback=None):
         barrier = Barrier(2)

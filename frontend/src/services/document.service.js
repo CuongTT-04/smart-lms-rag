@@ -58,3 +58,20 @@ export function materialPdf(documentId,download=false,signal,versionId) {
     responseType:'blob',headers:{Accept:'application/pdf, application/json'},signal,
   })
 }
+
+// Serialize writes across viewer mounts so re-entering a lesson reads the last edit.
+const studyWrites = new Map()
+const studyKey = (id, version) => `${id}:${version}`
+export async function readStudyNotes(id, version, signal) {
+  await studyWrites.get(studyKey(id, version))?.catch(() => {})
+  return apiRequest(`/documents/${id}/study-notes/?version_id=${encodeURIComponent(version)}`, { signal })
+}
+export function writeStudyNotes(id, version, value) {
+  const key = studyKey(id, version)
+  const request = (studyWrites.get(key) || Promise.resolve()).catch(() => {}).then(() => apiRequest(`/documents/${id}/study-notes/?version_id=${encodeURIComponent(version)}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value),
+  }))
+  studyWrites.set(key, request)
+  request.finally(() => { if (studyWrites.get(key) === request) studyWrites.delete(key) }).catch(() => {})
+  return request
+}

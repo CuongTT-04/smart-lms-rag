@@ -7,8 +7,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-smart_lms}
       POSTGRES_USER: ${POSTGRES_USER:-smart_lms}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smart-lms-local-only}
-    ports:
-      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -20,6 +18,7 @@ services:
     restart: unless-stopped
 
   backend:
+    image: smart-lms-rag-backend:latest
     build:
       context: .
       dockerfile: docker/backend/Dockerfile
@@ -49,6 +48,7 @@ services:
       DB_HOST: database
       DB_PORT: "5432"
       DOCUMENTS_STORAGE_ROOT: /app/.private/documents
+      ANNOUNCEMENTS_STORAGE_ROOT: /app/.private/announcements
     ports:
       - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:
@@ -56,6 +56,7 @@ services:
       - ./data/backups:/bootstrap:ro
       - media_data:/app/media
       - documents_data:/app/.private/documents
+      - announcements_data:/app/.private/announcements
     depends_on:
       database:
         condition: service_healthy
@@ -66,12 +67,12 @@ services:
       timeout: 5s
       retries: 6
       start_period: 30s
+      start_interval: 2s
     restart: unless-stopped
 
   ingestion-worker:
-    build:
-      context: .
-      dockerfile: docker/backend/Dockerfile
+    image: smart-lms-rag-backend:latest
+    pull_policy: never
     environment: *backend-environment
     entrypoint: ["python", "manage.py", "run_ingestion_worker"]
     command: ["--poll-seconds", "2"]
@@ -84,8 +85,27 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+      start_interval: 2s
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   media_data:
   documents_data:
   docling_cache:
+  announcements_data:

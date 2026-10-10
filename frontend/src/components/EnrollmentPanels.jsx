@@ -19,6 +19,12 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [copiedCode, setCopiedCode] = useState('')
+  useEffect(() => {
+    if (!copiedCode) return
+    const timer = setTimeout(() => setCopiedCode(''), 2000)
+    return () => clearTimeout(timer)
+  }, [copiedCode])
   const [busy, setBusy] = useState('')
   const [name, setName] = useState('')
   const [filter, setFilter] = useState('PENDING')
@@ -51,7 +57,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
     finally { setBusy('') }
   }
   async function copy(code) {
-    try { await navigator.clipboard.writeText(code); setNotice('Đã sao chép mã lớp.'); setError('') }
+    try { await navigator.clipboard.writeText(code); setCopiedCode(code); setError('') }
     catch { setError('Không thể sao chép tự động. Bạn có thể chọn và sao chép mã lớp.') }
   }
 
@@ -77,16 +83,16 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
       <form className="enrollment-create" onSubmit={(e) => { e.preventDefault(); act('create', async () => { await createClassroom(course.id, { name: name.trim() }); setName('') }, 'Đã tạo lớp học mới.') }}>
         <label>Tên lớp mới<input required maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label><button className="solid-button" disabled={!!busy || !name.trim()}><Plus size={17} /> Tạo lớp</button>
       </form>
-      <div className="enrollment-records">{data.classrooms.map((room) => <ClassroomRow key={room.id} room={room} busy={!!busy} onCopy={copy} onRoster={() => setSelectedRoom(room)} onEdit={() => setEditingRoom(room)} onOpen={onOpenClassroom ? () => onOpenClassroom(room) : undefined} />)}</div>
+      <div className="enrollment-records">{data.classrooms.map((room) => <ClassroomRow key={room.id} room={room} busy={!!busy} copied={copiedCode === room.class_code} onCopy={copy} onRoster={() => setSelectedRoom(room)} onEdit={() => setEditingRoom(room)} onOpen={onOpenClassroom ? () => onOpenClassroom(room) : undefined} />)}</div>
     </>}
-    {editingRoom && <ClassroomEditDialog courseId={course.id} room={editingRoom} onClose={() => setEditingRoom(null)} onSaved={(room) => { setData((current) => ({ ...current, classrooms: current.classrooms.map((item) => item.id === room.id ? room : item) })); setNotice('Đã cập nhật lớp học.'); setError(''); setEditingRoom(null) }} />}
+    {editingRoom && <ClassroomEditDialog courseId={course.id} room={editingRoom} onDeleted={(id) => { setData((current) => ({ ...current, classrooms: current.classrooms.filter((item) => item.id !== id), requests: current.requests.filter((item) => item.classroom_id !== id) })); setEditingRoom(null); setNotice('Đã xóa lớp học.'); onMembersChanged?.() }} onClose={() => setEditingRoom(null)} onSaved={(room) => { setData((current) => ({ ...current, classrooms: current.classrooms.map((item) => item.id === room.id ? room : item) })); setNotice('Đã cập nhật lớp học.'); setError(''); setEditingRoom(null) }} />}
   </section>
 }
 
-function ClassroomRow({ room, busy, onCopy, onEdit, onRoster, onOpen }) {
-  return <article className="enrollment-row classroom-row">
+function ClassroomRow({ room, busy, copied, onCopy, onEdit, onRoster, onOpen }) {
+  return <article className={`enrollment-row classroom-row ${onOpen ? 'is-clickable' : ''}`}>
     <div className="classroom-name-field"><span>Tên lớp</span><div className="classroom-name-value">{onOpen ? <button type="button" className="classroom-name-link" onClick={onOpen} aria-label={`Mở lớp ${room.name}`}>{room.name}</button> : room.name}</div></div>
-    <div className="class-code"><code>{room.class_code}</code><button type="button" className="icon-button" title="Sao chép mã lớp" aria-label={`Sao chép mã ${room.class_code}`} onClick={() => onCopy(room.class_code)}><Copy size={17} /></button></div>
+    <div className="class-code"><code>{room.class_code}</code><button type="button" className="icon-button" title="Sao chép mã lớp" aria-label={`Sao chép mã ${room.class_code}`} onClick={() => onCopy(room.class_code)}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div>
     <button type="button" className="outline-button" disabled={busy} onClick={onEdit} aria-label={`Chỉnh sửa lớp ${room.name}`}><Pencil size={16} /> Chỉnh sửa</button>
     <button type="button" className="outline-button" disabled={busy} onClick={onRoster} aria-label={`Học viên lớp ${room.name}`}><UsersRound size={16} /> Học viên</button>
   </article>
