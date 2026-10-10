@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -181,7 +182,7 @@ class CourseAccessAPITests(TestCase):
         self.assertEqual(self.listed_ids(), set())
         self.assertEqual(self.client.get(self.detail_url(self.published)).status_code, 403)
         self.assertEqual(self.client.get(reverse("users:me")).status_code, 200)
-        classroom = self.published.classrooms.get()
+        classroom = Classroom.objects.create(course=self.published, name=self.published.title)
         pending = self.client.post(reverse("courses:join"), {"class_code": classroom.class_code}, format="json")
         request_id = pending.json()["join_request"]["id"]
         url = reverse("courses:request-review", args=[self.published.pk, request_id])

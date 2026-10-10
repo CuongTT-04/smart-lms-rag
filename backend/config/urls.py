@@ -9,12 +9,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from common.schema import HealthSerializer
+from apps.documents.api.urls import course_urlpatterns
 
 
 @extend_schema(
     operation_id="health_check", tags=["System"],
-    summary="Check backend health", responses={200: HealthSerializer}, auth=[],
-)
+    summary='Kiểm tra hoạt động máy chủ', responses={200: HealthSerializer}, auth=[], description='Kiểm tra máy chủ API đang hoạt động; trả trạng thái và tên dịch vụ. Không cần đăng nhập.')
 @api_view(["GET"])
 @authentication_classes([])
 @permission_classes([AllowAny])
@@ -35,6 +35,7 @@ urlpatterns = [
     ),
     path("api/health/", health_check, name="health-check"),
     path("api/users/", include("apps.users.api.urls")),
+    path("api/courses/<uuid:course_id>/documents/", include((course_urlpatterns, "course-documents"))),
     path("api/courses/", include("apps.courses.api.urls")),
     path("api/documents/", include("apps.documents.api.urls")),
     path("api/learning/", include("apps.learning.api.urls")),

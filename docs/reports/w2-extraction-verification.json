@@ -1,0 +1,80 @@
+[
+  {
+    "subject": "KTCTMLN",
+    "source": "data/corpus/KTCTMLN/ch01.pdf",
+    "output": "data/processed/w2-samples/KTCTMLN-ch01-extraction.json",
+    "identity_scope": "OFFLINE_FIXTURE_NOT_CREATED_IN_LMS",
+    "page_count": 29,
+    "seconds": 31.542,
+    "checksum": "a279ffb8a9c612f9e6cd2dfed148c87d3dd3d852cd4df8cc3779db7858cad8f3",
+    "parser_version": "2.135.0",
+    "all_pages_numbered": true,
+    "blank_pages": [],
+    "warning_pages": [],
+    "spot_checks": [
+      {
+        "page_number": 1,
+        "source_chars": 101,
+        "extracted_chars": 99,
+        "word_overlap_diagnostic": 1.0,
+        "source_preview": "GIÁO TRÌNH KINH TẾ CHÍNH TRỊ\nMÁC - LÊNIN\n(Dành cho bậc đại học \nhệ không chuyên lý luận chính trị) \n1",
+        "extracted_preview": "GIÁO TRÌNH KINH TẾ CHÍNH TRỊ MÁC - LÊNIN\n(Dành cho bậc đại học hệ không chuyên lý luận chính trị)\n1"
+      },
+      {
+        "page_number": 15,
+        "source_chars": 1426,
+        "extracted_chars": 1422,
+        "word_overlap_diagnostic": 1.0,
+        "source_preview": "nghĩa tư bản trong quá trình phát triển của nhân loại. \nNhư vậy, kinh tế chính trị Mác - Lênin là một trong những\ndòng lý thuyết kinh tế chính trị nằm trong dòng chảy tư tưởng kinh\ntế phát triển liên tục trên thế giới, được hình thành, xây dựng bởi\nC. Mác, Ph. Ăngghen và V.I. Lênin, dựa trên cơ sở kế thừa và phát\ntriển những giá trị khoa học kinh tế chính trị của nhân loại trước\nđó, trực tiếp là những giá trị khoa học của kinh tế chính trị tư sản\ncổ điển Anh. Kinh tế chính trị Mác - Lênin có quá trình phát triển\nkhông ngừng kể từ giữa thế kỷ XIX đến nay. Kinh tế chính trị Mác\n- Lênin là một môn khoa học trong hệ thống các môn khoa học\nkinh tế của nhân loại. \nII- ĐỐI TƯỢNG, MỤC ĐÍCH VÀ PHƯƠNG PHÁP NGHIÊN\nCỨU CỦA KINH TẾ CHÍNH TRỊ \nMÁC - LÊNIN\n1. Đối tượng nghiên cứu của kinh tế chính trị Má",
+        "extracted_preview": "nghĩa tư bản trong quá trình phát triển của nhân loại.\nNhư vậy, kinh tế chính trị Mác - Lênin là một trong những dòng lý thuyết kinh tế chính trị nằm trong dòng chảy tư tưởng kinh tế phát triển liên tục trên thế giới, được hình thành, xây dựng bởi C. Mác, Ph. Ăngghen và V.I. Lênin, dựa trên cơ sở kế thừa và phát triển những giá trị khoa học kinh tế chính trị của nhân loại trước đó, trực tiếp là những giá trị khoa học của kinh tế chính trị tư sản cổ điển Anh. Kinh tế chính trị Mác - Lênin có quá trình phát triển không ngừng kể từ giữa thế kỷ XIX đến nay. Kinh tế chính trị Mác - Lênin là một môn khoa học trong hệ thống các môn khoa học kinh tế của nhân loại.\nII- ĐỐI TƯỢNG, MỤC ĐÍCH VÀ PHƯƠNG PHÁP NGHIÊN CỨU CỦA KINH TẾ CHÍNH TRỊ MÁC - LÊNIN\n1. Đối tượng nghiên cứu của kinh tế chính trị Mác -"
+      },
+      {
+        "page_number": 29,
+        "source_chars": 731,
+        "extracted_chars": 720,
+        "word_overlap_diagnostic": 0.9694,
+        "source_preview": "xuất xã hội gắn với lực lượng sản xuất và kiến trúc thượng tầng tương\nứng của phương thức sản xuất xã hội đó. \nCÁC THUẬT NGỮ CẦN GHI NHỚ:\nKinh tế chính trị, chủ nghĩa trọng thương, chủ nghĩa trọng\nnông, kinh tế chính trị tư sản cổ điển, kinh tế chính trị Mác -\nLênin, quan hệ xã hội của sản xuất và trao đổi, trừu tượng hóa\nkhoa học, quy luật kinh tế.\nVẤN ĐỀ THẢO LUẬN:\nThảo luận trong nhóm để làm rõ sự liên hệ giữa kinh tế chính\ntrị Mác - Lênin với dòng chảy tư tưởng kinh tế của nhân loại?\nCÂU HỎI ÔN TẬP:\n1. Phân tích sự hình thành và phát triển của kinh tế chính trị\nMác - Lênin?\n2. Đối tượng nghiên cứu, mục đích và phương pháp nghiên\ncứu của kinh tế chính trị Mác - Lênin? \n3. Chức năng của kinh tế chính trị Mác - Lênin?\n29",
+        "extracted_preview": "xuất xã hội gắn với lực lượng sản xuất và kiến trúc thượng tầng tương ứng của phương thức sản xuất xã hội đó.\nCÁC THUẬT NGỮ CẦN GHI NHỚ:\nKinh tế chính trị, chủ nghĩa trọng thương, chủ nghĩa trọng nông, kinh tế chính trị tư sản cổ điển, kinh tế chính trị Mác - Lênin, quan hệ xã hội của sản xuất và trao đổi, trừu tượng hóa khoa học, quy luật kinh tế.\nVẤN ĐỀ THẢO LUẬN:\nThảo luận trong nhóm để làm rõ sự liên hệ giữa kinh tế chính trị Mác - Lênin với dòng chảy tư tưởng kinh tế của nhân loại?\nCÂU HỎI ÔN TẬP:\nPhân tích sự hình thành và phát triển của kinh tế chính trị\nMác - Lênin?\nĐối tượng nghiên cứu, mục đích và phương pháp nghiên\ncứu của kinh tế chính trị Mác - Lênin?\nChức năng của kinh tế chính trị Mác - Lênin?\n29"
+      }
+    ]
+  },
+  {
+    "subject": "CNXHKH",
+    "source": "data/corpus/CNXHKH/ch01.pdf",
+    "output": "data/processed/w2-samples/CNXHKH-ch01-extraction.json",
+    "identity_scope": "OFFLINE_FIXTURE_NOT_CREATED_IN_LMS",
+    "page_count": 24,
+    "seconds": 30.311,
+    "checksum": "6089d967204ea6619aaa3f61c73d7fcb9c5034b669bcb582e39c8ce32f5f0963",
+    "parser_version": "2.135.0",
+    "all_pages_numbered": true,
+    "blank_pages": [],
+    "warning_pages": [],
+    "spot_checks": [
+      {
+        "page_number": 1,
+        "source_chars": 267,
+        "extracted_chars": 192,
+        "word_overlap_diagnostic": 1.0,
+        "source_preview": "3 \nBỘ GIÁO DỤC VÀ ĐÀO TẠO \n \n \n \n \n \n \n \n \n \n \n \n \n \nGIÁO TRÌNH \nCHỦ NGHĨA XÃ HỘI KHOA HỌC \n(DÀNH CHO BẬC ĐẠI HỌC - KHÔNG CHUYÊN LÝ LUẬN CHÍNH TRỊ) \n(Đã sửa chữa, bổ sung sau khi dạy thí điểm) \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nHà Nội - 2019 ",
+        "extracted_preview": "BỘ GIÁO DỤC VÀ ĐÀO TẠO\nGIÁO TRÌNH CHỦ NGHĨA XÃ HỘI KHOA HỌC\n(DÀNH CHO BẬC ĐẠI HỌC - KHÔNG CHUYÊN LÝ LUẬN CHÍNH TRỊ)\n(Đã sửa chữa, bổ sung sau khi dạy thí điểm)\nHà Nội - 2019\n3"
+      },
+      {
+        "page_number": 12,
+        "source_chars": 3001,
+        "extracted_chars": 2900,
+        "word_overlap_diagnostic": 0.7744,
+        "source_preview": "14 \nsự nghiệp của chính h ọ - đó là nhiệm vụ của chủ nghĩa xã hội khoa h ọc, sự thể hiện \nvề lý luận của phong trào vô s ản”1. \nC.Mác và Ph.Ăngghen yêu cầu phải tiếp tục bổ sung và phát tri ển chủ nghĩa \nxã hội khoa học phù hợp với điều kiện lịch sử mới.  \n Mặc dù, v ới nh ững c ống hi ến tuy ệt v ời c ả về lý lu ận và th ực ti ễn, song c ả \nC.Mác và Ph.Ăngghen không bao giờ tự cho h ọc thuy ết c ủa mìn h là m ột h ệ thống \ngiáo điều, “nhất thành b ất biến”, trái l ại, nhiều lần hai ông đã chỉ rõ đó chỉ là những \n“gợi ý” cho mọi suy nghĩ và hành động. Trong L ời nói đầu viết cho tác ph ẩm Đấu \ntranh giai c ấp ở Pháp từ 1848 đến 1850 của C.Mác, Ph.Ăngghen đã thẳng thắn thừa \nnhận sai lầm về dự báo khả năng nổ ra của những cuộ",
+        "extracted_preview": "sự nghiệp của chính họ - đó là nhiệm vụ của chủ nghĩa xã hội khoa học, sự thể hiện về lý luận của phong trào vô sản\" 1 .\nC.Mác và Ph.Ăngghen yêu cầu phải tiếp tục bổ sung và phát triển chủ nghĩa xã hội khoa học phù hợp với điều kiện lịch sử mới.\nMặc dù, với những cống hiến tuyệt vời cả về lý luận và thực tiễn, song cả C.Mác và Ph.Ăngghen không bao giờ tự cho học thuyết của mình là một hệ thống giáo điều, \"nhất thành bất biến\", trái lại, nhiều lần hai ông đã chỉ rõ đó chỉ là những \"gợi ý\" cho mọi suy nghĩ và hành động. Trong Lời nói đầu viết cho tác phẩm Đấu tranh giai cấp ở Pháp từ 1848 đến 1850 của C.Mác, Ph.Ăngghen đã thẳng thắn thừa nhận sai lầm về dự báo khả năng nổ ra của những cuộc cách mạng vô sản ở châu Âu, vì lẽ \"Lị"
+      },
+      {
+        "page_number": 24,
+        "source_chars": 2933,
+        "extracted_chars": 2826,
+        "word_overlap_diagnostic": 0.8328,
+        "source_preview": "26 \nDo đó, việc nghiên cứu học tập chủ nghĩa Mác - Lênin, tư tưởng Hồ Chí Minh \nnói chung, lý lu ận chính tr ị - xã hội nói riêng và các khoa h ọc khác... càng là v ấn đề \nthực tiễn cơ bản và cấp thiết. Xây dựng, chỉnh đốn Đảng, chống mọi biểu hiện cơ hội \nchủ nghĩa, dao động, thoái hoá, bi ến chất trong đ ảng và c ả xã hội, giáo d ục lý luận \nchính trị - xã hội một cách cơ bản khoa học tức là ta tiến hành củng cố niềm tin thật sự \nđối với chủ nghĩa xã hội... cho cán b ộ, học sinh, sinh viên, thanh thi ếu niên và nhân \ndân. Tất nhiên đ ẩy mạnh công nghiệp hoá, hi ện đại hoá đất nước và mở rộng hợp tác \nquốc tế; tiến hành hội nhập quốc tế, xây dựng \"kinh tế tri thức\", xây dựng nền kinh tế \nthị trường định hướng xã h ội chủ nghĩa... đan",
+        "extracted_preview": "Do đó, việc nghiên cứu học tập chủ nghĩa Mác - Lênin, tư tưởng Hồ Chí Minh nói chung, lý luận chính trị - xã hội nói riêng và các khoa học khác... càng là vấn đề thực tiễn cơ bản và cấp thiết. Xây dựng, chỉnh đốn Đảng, chống mọi biểu hiện cơ hội chủ nghĩa, dao động, thoái hoá, biến chất trong đảng và cả xã hội, giáo dục lý luận chính trị - xã hội một cách cơ bản khoa học tức là ta tiến hành củng cố niềm tin thật sự đối với chủ nghĩa xã hội... cho cán bộ, học sinh, sinh viên, thanh thiếu niên và nhân dân. Tất nhiên đẩy mạnh công nghiệp hoá, hiện đại hoá đất nước và mở rộng hợp tác quốc tế; tiến hành hội nhập quốc tế, xây dựng \"kinh tế tri thức\", xây dựng nền kinh tế thị trường định hướng xã hội chủ nghĩa... đang là những vận hội lớ"
+      }
+    ]
+  }
+]

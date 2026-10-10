@@ -38,7 +38,7 @@ VALIDATION_ERROR_SCHEMA = {
 def validation_error_response(*examples):
     return OpenApiResponse(
         response=VALIDATION_ERROR_SCHEMA,
-        description="Validation errors keyed by field/non_field_errors; parse errors use detail.",
+        description="Dữ liệu không hợp lệ; lỗi theo tên trường hoặc non_field_errors, lỗi đọc yêu cầu dùng detail.",
         examples=list(examples),
     )
 
@@ -95,11 +95,11 @@ REVOKE_BAD_REQUEST = validation_error_response(
 )
 FORBIDDEN = OpenApiResponse(
     response=DetailSerializer,
-    description="Authenticated account lacks the required business permission.",
+    description="Tài khoản đã đăng nhập nhưng không có quyền thực hiện thao tác.",
 )
 UNAUTHORIZED = OpenApiResponse(
     response=DetailSerializer,
-    description="Bearer access token is missing, invalid, expired, or belongs to an unavailable account.",
+    description="Mã truy cập Bearer bị thiếu, không hợp lệ, hết hạn hoặc tài khoản không còn hoạt động.",
 )
 NOT_FOUND = OpenApiResponse(
     response=DetailSerializer,
@@ -107,11 +107,11 @@ NOT_FOUND = OpenApiResponse(
 )
 PAGE_NOT_FOUND = OpenApiResponse(
     response=DetailSerializer,
-    description="Page number is invalid or outside the available pages.",
+    description="Số trang không hợp lệ hoặc vượt quá số trang hiện có.",
 )
 COURSE_OR_PAGE_NOT_FOUND = OpenApiResponse(
     response=DetailSerializer,
-    description="Course not found, or page number is invalid/outside the available pages.",
+    description="Không tìm thấy khóa học hoặc số trang không hợp lệ.",
 )
 def align_request_constraints(result, generator, request, public):
     # These serializers reject unknown fields; PATCH also rejects an empty object.

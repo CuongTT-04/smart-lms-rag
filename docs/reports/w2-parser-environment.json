@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-07",
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "processing_device": "CPU",
+  "cuda_available": false,
+  "config": {
+    "do_ocr": false,
+    "do_table_structure": false,
+    "content_layers": [
+      "body",
+      "furniture"
+    ],
+    "max_pages": 100,
+    "max_bytes": 20971520
+  },
+  "packages": {
+    "docling": "2.135.0",
+    "docling-core": "2.100.0",
+    "docling-parse": "7.22.2",
+    "docling-ibm-models": "4.0.3",
+    "pypdf": "6.10.0",
+    "pypdfium2": "5.14.0",
+    "torch": "2.14.1",
+    "torchvision": "0.29.1",
+    "transformers": "5.19.0",
+    "reportlab": "4.4.9"
+  },
+  "notes": "Dependency directory isolated from the shared Python runtime; not a Colab/T4 benchmark."
+}

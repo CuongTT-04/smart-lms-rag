@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest import skipUnless
@@ -18,7 +19,7 @@ class EnrollmentConcurrencyTests(TransactionTestCase):
         self.student = User.objects.create_user("concurrent_student")
         self.course = create_course(actor=self.owner, title="Concurrent")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})
-        self.code = self.course.classrooms.get().class_code
+        self.code = Classroom.objects.create(course=self.course, name=self.course.title).class_code
 
     def concurrent(self, callback, second_callback=None):
         barrier = Barrier(2)
@@ -69,9 +70,7 @@ class EnrollmentConcurrencyTests(TransactionTestCase):
         self.assertEqual(CourseMember.objects.filter(user=self.student).count(), 1)
 
     def test_simultaneous_requests_and_approvals_are_idempotent(self):
-        policy = self.course.access_policy
-        policy.require_approval = True
-        policy.save()
+        Classroom.objects.filter(course=self.course).update(require_approval=True)
         self.concurrent(lambda: join_by_code(actor=self.student, class_code=self.code))
         request = JoinRequest.objects.get()
         self.concurrent(lambda: review_request(actor=self.owner, course=self.course, request_id=request.pk, decision="approve"))

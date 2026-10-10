@@ -67,18 +67,23 @@ class PolicySerializer(serializers.ModelSerializer):
 
 
 class ClassroomInputSerializer(PolicyUpdateSerializer):
-    require_approval = None
-    visibility = None
+    require_approval = serializers.BooleanField(required=False)
+    visibility = serializers.ChoiceField(choices=AccessPolicy.Visibility.choices, required=False)
     name = serializers.CharField(max_length=255)
     is_join_enabled = serializers.BooleanField(required=False)
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
+    enrolled_count = serializers.SerializerMethodField()
+
+    def get_enrolled_count(self, obj) -> int:
+        return obj.enrollments.exclude(status="WITHDRAWN").count()
+
     course_id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Classroom
-        fields = ("id", "course_id", "name", "class_code", "is_join_enabled", "created_at", "updated_at")
+        fields = ("id", "course_id", "name", "class_code", "is_join_enabled", "visibility", "require_approval", "enrolled_count", "created_at", "updated_at")
         read_only_fields = fields
 
 

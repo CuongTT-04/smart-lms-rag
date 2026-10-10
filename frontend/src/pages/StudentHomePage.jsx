@@ -10,6 +10,7 @@ import HeaderProfile from '../components/HeaderProfile'
 import { StudentEnrollmentPanel } from '../components/EnrollmentPanels'
 import StudentCourseClassrooms from '../components/StudentCourseClassrooms'
 import StudentCoursesView from '../components/StudentCoursesView'
+import ClassroomWorkspace from '../components/ClassroomWorkspace'
 import { courseErrorMessage, getCourse, listAllCourses } from '../services/course.service'
 
 function formatDate(value) {
@@ -30,6 +31,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
   const [view, setView] = useState('overview')
   const [courses, setCourses] = useState([])
   const [selectedCourse, setSelectedCourse] = useState(null)
+  const [joinedRoom, setJoinedRoom] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [detailLoading, setDetailLoading] = useState(false)
@@ -57,6 +59,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
 
   function navigate(nextView) {
     detailRequest.current += 1
+    setJoinedRoom(null)
     setView(nextView)
     setSelectedId(null)
     setSelectedCourse(null)
@@ -68,6 +71,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
   async function openCourse(course) {
     const request = ++detailRequest.current
     listScroll.current = view === 'courses' && !selectedId ? window.scrollY : 0
+    setJoinedRoom(null)
     setView('courses')
     setSelectedId(course.id)
     setSelectedCourse(null)
@@ -83,6 +87,23 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
     } finally {
       if (request === detailRequest.current) setDetailLoading(false)
     }
+  }
+
+  async function openJoinedClass(item) {
+    const request = ++detailRequest.current
+    setJoinedRoom(item); setSelectedCourse(null); setDetailLoading(true); setError('')
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    try {
+      const result = await getCourse(item.course_id)
+      if (request === detailRequest.current) setSelectedCourse(result)
+    } catch (err) {
+      if (request === detailRequest.current) { setJoinedRoom(null); setError(courseErrorMessage(err)) }
+    } finally { if (request === detailRequest.current) setDetailLoading(false) }
+  }
+
+  function backToJoinedClasses() {
+    detailRequest.current += 1
+    setJoinedRoom(null); setSelectedCourse(null); setDetailLoading(false); setError('')
   }
 
   function backToCourses() {
@@ -134,7 +155,11 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
                 setError(courseErrorMessage(err))
               }} />}
               {view === 'account' && <ProfileEditor user={user} onUserUpdated={onUserUpdated} onSessionExpired={onSessionExpired} logoutPending={pendingLogout} onLogout={handleLogout} />}
-              {view === 'join' && <StudentEnrollmentPanel onCoursesChanged={async () => setCourses(await listAllCourses())} onOpenCourse={(courseId) => openCourse({ id: courseId })} />}
+              {view === 'join' && <>
+                <div hidden={!!joinedRoom}><StudentEnrollmentPanel onCoursesChanged={async () => setCourses(await listAllCourses())} onOpenClass={openJoinedClass} /></div>
+                {joinedRoom && detailLoading && <p role="status">Đang mở lớp học...</p>}
+                {joinedRoom && selectedCourse && <ClassroomWorkspace key={joinedRoom.classroom_id} canManage={false} course={selectedCourse} initialRoom={{ id: joinedRoom.classroom_id, name: joinedRoom.classroom_name }} backLabel="Lớp đã tham gia" onBack={backToJoinedClasses} onCourse={() => openCourse({ id: joinedRoom.course_id })} />}
+              </>}
             </>
           )}
         </div>
@@ -164,12 +189,14 @@ function CourseCard({ course, onOpen }) {
 }
 
 function CourseDetail({ course, loading, onBack, onClassroomsUpdated, onUnavailable }) {
+  const [selectedRoom, setSelectedRoom] = useState(null)
+  if (selectedRoom && course) return <ClassroomWorkspace key={selectedRoom.classroom_id} canManage={false} course={course} initialRoom={{ id: selectedRoom.classroom_id, name: selectedRoom.classroom_name }} onBack={() => setSelectedRoom(null)} onCourse={() => setSelectedRoom(null)} />
   return <section className="student-detail student-course-detail" aria-labelledby={course ? 'student-course-detail-title' : undefined}>
     <button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button>
     {loading ? <div className="dashboard-loading"><LoaderCircle className="spin" size={24} /> Đang mở khóa học...</div> : course && <>
       <header className="student-detail-hero"><div className="student-detail-icon"><BookOpen size={27} /></div><div><PublishedBadge /><h1 id="student-course-detail-title">{course.title}</h1></div></header>
       {course.description && <details className="course-description-details" open><summary>Mô tả khóa học</summary><p>{course.description}</p></details>}
-      <StudentCourseClassrooms key={course.id} course={course} onUpdated={onClassroomsUpdated} onUnavailable={onUnavailable} />
+      <StudentCourseClassrooms key={course.id} course={course} onOpen={setSelectedRoom} onUpdated={onClassroomsUpdated} onUnavailable={onUnavailable} />
       <details className="course-metadata"><summary>Thông tin khóa học</summary><dl><div><dt>Trạng thái</dt><dd><PublishedBadge /></dd></div><div><dt>Ngày xuất bản</dt><dd>{formatDate(course.published_at)}</dd></div><div><dt>Cập nhật gần nhất</dt><dd>{formatDate(course.updated_at)}</dd></div></dl></details>
     </>}
   </section>

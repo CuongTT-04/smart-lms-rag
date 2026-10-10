@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import CustomSelect from './CustomSelect'
-import { Check, Copy, LoaderCircle, Plus, RefreshCw, UsersRound, X } from 'lucide-react'
+import { Check, Copy, LoaderCircle, Pencil, Plus, RefreshCw, UsersRound, X } from 'lucide-react'
 import ClassroomRoster from './ClassroomRoster'
+import ClassroomEditDialog from './ClassroomEditDialog'
 import {
-  courseErrorMessage, createClassroom, getAccessPolicy,
-  listClassrooms, listJoinRequests, reviewJoinRequest, updateAccessPolicy, updateClassroom,
+  courseErrorMessage, createClassroom,
+  listClassrooms, listJoinRequests, reviewJoinRequest,
 } from '../services/course.service'
 
 const REQUEST_STATUS = { PENDING: 'Chờ duyệt', APPROVED: 'Đã chấp nhận', REJECTED: 'Đã từ chối', CANCELED: 'Đã hủy' }
@@ -14,21 +15,28 @@ function Feedback({ error, notice }) {
   return <>{error && <div className="error-banner" role="alert">{error}</div>}{notice && <div className="success-banner" role="status"><Check size={18} />{notice}</div>}</>
 }
 
-export function TeacherEnrollmentPanel({ course, onMembersChanged, requestsOnly = false }) {
+export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassroom, requestsOnly = false }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [copiedCode, setCopiedCode] = useState('')
+  useEffect(() => {
+    if (!copiedCode) return
+    const timer = setTimeout(() => setCopiedCode(''), 2000)
+    return () => clearTimeout(timer)
+  }, [copiedCode])
   const [busy, setBusy] = useState('')
   const [name, setName] = useState('')
   const [filter, setFilter] = useState('PENDING')
   const [review, setReview] = useState(null)
   const [note, setNote] = useState('')
   const [selectedRoom, setSelectedRoom] = useState(null)
+  const [editingRoom, setEditingRoom] = useState(null)
   const load = useCallback(async (signal) => {
-    const [policy, classrooms, requests] = await Promise.all([
-      getAccessPolicy(course.id, signal), listClassrooms(course.id, signal), listJoinRequests(course.id, '', signal),
+    const [classrooms, requests] = await Promise.all([
+      listClassrooms(course.id, signal), listJoinRequests(course.id, '', signal),
     ])
-    return { policy, classrooms, requests }
+    return { classrooms, requests }
   }, [course.id])
   useEffect(() => {
     const controller = new AbortController()
@@ -49,7 +57,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, requestsOnly 
     finally { setBusy('') }
   }
   async function copy(code) {
-    try { await navigator.clipboard.writeText(code); setNotice('Đã sao chép mã lớp.'); setError('') }
+    try { await navigator.clipboard.writeText(code); setCopiedCode(code); setError('') }
     catch { setError('Không thể sao chép tự động. Bạn có thể chọn và sao chép mã lớp.') }
   }
 
@@ -71,29 +79,23 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, requestsOnly 
         <div className="enrollment-actions"><button type="button" className="outline-button" disabled={!!busy} onClick={() => setReview(null)}>Hủy</button><button className="solid-button" disabled={!!busy}>{busy ? <LoaderCircle size={17} className="spin" /> : <Check size={17} />} Xác nhận</button></div>
       </form>}
     </> : <>
-      <form className="enrollment-policy" onSubmit={(e) => { e.preventDefault(); act('policy', () => updateAccessPolicy(course.id, { require_approval: data.policy.require_approval, visibility: data.policy.visibility }), 'Đã lưu chính sách tham gia.') }}>
-        <label className="enrollment-check"><input type="checkbox" checked={data.policy.require_approval} onChange={(e) => setData({ ...data, policy: { ...data.policy, require_approval: e.target.checked } })} /> Yêu cầu giáo viên xét duyệt</label>
-        <label>Mức hiển thị<CustomSelect aria-label="Mức hiển thị" value={data.policy.visibility} onChange={(e) => setData({ ...data, policy: { ...data.policy, visibility: e.target.value } })}><option value="PRIVATE">Riêng tư</option><option value="PUBLIC">Công khai</option></CustomSelect></label>
-        <button className="solid-button" disabled={!!busy}><Check size={17} /> Lưu chính sách</button>
-      </form>
       {course.status !== 'PUBLISHED' && <p className="enrollment-warning">Khóa học chưa xuất bản, học viên chưa thể tham gia.</p>}
       <form className="enrollment-create" onSubmit={(e) => { e.preventDefault(); act('create', async () => { await createClassroom(course.id, { name: name.trim() }); setName('') }, 'Đã tạo lớp học mới.') }}>
         <label>Tên lớp mới<input required maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label><button className="solid-button" disabled={!!busy || !name.trim()}><Plus size={17} /> Tạo lớp</button>
       </form>
-      <div className="enrollment-records">{data.classrooms.map((room) => <ClassroomRow key={`${room.id}:${room.name}`} room={room} busy={!!busy} onCopy={copy} onRoster={() => setSelectedRoom(room)} onSave={(values) => act(room.id, () => updateClassroom(course.id, room.id, values), 'Đã cập nhật lớp học.')} />)}</div>
+      <div className="enrollment-records">{data.classrooms.map((room) => <ClassroomRow key={room.id} room={room} busy={!!busy} copied={copiedCode === room.class_code} onCopy={copy} onRoster={() => setSelectedRoom(room)} onEdit={() => setEditingRoom(room)} onOpen={onOpenClassroom ? () => onOpenClassroom(room) : undefined} />)}</div>
     </>}
+    {editingRoom && <ClassroomEditDialog courseId={course.id} room={editingRoom} onDeleted={(id) => { setData((current) => ({ ...current, classrooms: current.classrooms.filter((item) => item.id !== id), requests: current.requests.filter((item) => item.classroom_id !== id) })); setEditingRoom(null); setNotice('Đã xóa lớp học.'); onMembersChanged?.() }} onClose={() => setEditingRoom(null)} onSaved={(room) => { setData((current) => ({ ...current, classrooms: current.classrooms.map((item) => item.id === room.id ? room : item) })); setNotice('Đã cập nhật lớp học.'); setError(''); setEditingRoom(null) }} />}
   </section>
 }
 
-function ClassroomRow({ room, busy, onCopy, onSave, onRoster }) {
-  const [name, setName] = useState(room.name)
-  return <form className="enrollment-row classroom-row" onSubmit={(e) => { e.preventDefault(); onSave({ name: name.trim() }) }}>
-    <label>Tên lớp<input aria-label={`Tên lớp ${room.name}`} required maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label>
-    <div className="class-code"><code>{room.class_code}</code><button type="button" className="icon-button" title="Sao chép mã lớp" aria-label={`Sao chép mã ${room.class_code}`} onClick={() => onCopy(room.class_code)}><Copy size={17} /></button></div>
-    <label className="enrollment-check"><input type="checkbox" checked={room.is_join_enabled} disabled={busy} onChange={(e) => onSave({ is_join_enabled: e.target.checked })} /> Mở đăng ký</label>
-    <button className="outline-button" disabled={busy || !name.trim() || name.trim() === room.name}><Check size={16} /> Lưu tên</button>
+function ClassroomRow({ room, busy, copied, onCopy, onEdit, onRoster, onOpen }) {
+  return <article className={`enrollment-row classroom-row ${onOpen ? 'is-clickable' : ''}`}>
+    <div className="classroom-name-field"><span>Tên lớp</span><div className="classroom-name-value">{onOpen ? <button type="button" className="classroom-name-link" onClick={onOpen} aria-label={`Mở lớp ${room.name}`}>{room.name}</button> : room.name}</div></div>
+    <div className="class-code"><code>{room.class_code}</code><button type="button" className="icon-button" title="Sao chép mã lớp" aria-label={`Sao chép mã ${room.class_code}`} onClick={() => onCopy(room.class_code)}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div>
+    <button type="button" className="outline-button" disabled={busy} onClick={onEdit} aria-label={`Chỉnh sửa lớp ${room.name}`}><Pencil size={16} /> Chỉnh sửa</button>
     <button type="button" className="outline-button" disabled={busy} onClick={onRoster} aria-label={`Học viên lớp ${room.name}`}><UsersRound size={16} /> Học viên</button>
-  </form>
+  </article>
 }
 
 export { default as StudentEnrollmentPanel } from './StudentEnrollmentPanel'

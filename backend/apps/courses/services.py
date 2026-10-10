@@ -23,7 +23,6 @@ def create_course(*, actor, title, description=""):
     member.full_clean()
     member.save()
     AccessPolicy.objects.create(course=course)
-    Classroom.objects.create(course=course, name=course.title)
     return course
 
 

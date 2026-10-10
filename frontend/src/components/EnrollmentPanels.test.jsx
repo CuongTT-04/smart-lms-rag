@@ -98,16 +98,16 @@ describe('enrollment workflows', () => {
     expect(screen.queryByText('Lớp tối')).not.toBeInTheDocument()
     expect(screen.getByText('Lớp sáng')).toBeVisible()
   })
-  it('defaults to enrolled classes when none are pending and opens the course', async () => {
+  it('defaults to enrolled classes when none are pending and opens the classroom', async () => {
     service.listMyJoinRequests.mockResolvedValue([])
     service.listMyEnrollments.mockResolvedValue([{ id: 'e1', course_id: 'c1', course_title: 'Python', classroom_name: 'Lớp sáng', status: 'ACTIVE', progress_percent: 15, enrolled_at: request.created_at }])
     const open = vi.fn()
-    render(<StudentEnrollmentPanel onOpenCourse={open} />)
+    render(<StudentEnrollmentPanel onOpenClass={open} />)
     expect(await screen.findByText('Lớp sáng')).toBeVisible()
     expect(screen.getByRole('tab', { name: /Lớp đã tham gia/ })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByText('15%')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Mở khóa học' }))
-    expect(open).toHaveBeenCalledWith('c1')
+    expect(screen.queryByText('15%')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Mở lớp học' }))
+    expect(open).toHaveBeenCalledWith(expect.objectContaining({ course_id: 'c1', classroom_name: 'Lớp sáng' }))
   })
   it('paginates long lists and resets pagination when searching', async () => {
     service.listMyJoinRequests.mockResolvedValue(Array.from({ length: 12 }, (_, i) => ({ ...request, id: `r${i}`, classroom_name: `Lớp số ${i + 1}` })))
@@ -160,17 +160,13 @@ describe('enrollment workflows', () => {
     expect(service.reviewJoinRequest).toHaveBeenCalledWith('c1', 'r1', { decision, review_note: 'Đã kiểm tra' })
     await waitFor(() => expect(refresh).toHaveBeenCalled())
   })
-  it('updates approval policy, creates classes and closes registration', async () => {
+  it('creates a class without changing another class policy', async () => {
     render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)
-    await userEvent.click(await screen.findByLabelText('Yêu cầu giáo viên xét duyệt'))
-    await userEvent.click(screen.getByRole('button', { name: 'Lưu chính sách' }))
-    await waitFor(() => expect(service.updateAccessPolicy).toHaveBeenCalledWith('c1', { require_approval: true, visibility: 'PRIVATE' }))
+    await screen.findByText('Lớp tối')
     await userEvent.type(screen.getByLabelText('Tên lớp mới'), 'Lớp sáng')
     await userEvent.click(screen.getByRole('button', { name: 'Tạo lớp' }))
     await waitFor(() => expect(service.createClassroom).toHaveBeenCalledWith('c1', { name: 'Lớp sáng' }))
-    await waitFor(() => expect(screen.getByLabelText('Mở đăng ký')).toBeEnabled())
-    await userEvent.click(screen.getByLabelText('Mở đăng ký'))
-    expect(service.updateClassroom).toHaveBeenCalledWith('c1', 'room1', { is_join_enabled: false })
+    expect(service.updateAccessPolicy).not.toHaveBeenCalled()
   })
   it('opens the roster of a specific class and returns to classroom management', async () => {
     render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)

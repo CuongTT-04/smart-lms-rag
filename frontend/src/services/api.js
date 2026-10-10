@@ -54,7 +54,8 @@ async function refreshAccessToken() {
 }
 
 export async function apiRequest(path, options = {}) {
-  const response = await fetchJson(path, options)
+  const { responseType, ...fetchOptions } = options
+  const response = await fetchJson(path, fetchOptions)
   if (response.status === 401 && path !== '/users/login/' && path !== '/users/token/refresh/' && !options.skipRefresh) {
     try {
       await refreshAccessToken()
@@ -65,6 +66,11 @@ export async function apiRequest(path, options = {}) {
     }
   }
   if (response.status === 204) return null
+  if (response.ok && (responseType === 'blob' || responseType === 'image')) {
+    const mime = (response.headers.get('Content-Type') || '').split(';')[0]
+    if (responseType === 'image' ? !['image/png', 'image/jpeg', 'image/webp'].includes(mime) : mime !== 'application/pdf') throw new ApiError(502)
+    return response.blob()
+  }
   const data = await response.json().catch(() => null)
   if (!response.ok) throw new ApiError(response.status, data)
   if (!data) throw new ApiError(502)

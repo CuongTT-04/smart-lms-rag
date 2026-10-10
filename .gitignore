@@ -65,3 +65,12 @@ data/processed/*
 # data/corpus/*
 !data/corpus/.gitkeep
 
+
+# B private document storage and scratch database
+.private/
+frontend/dist-w2/
+backend/db-w2.sqlite3
+backend/db-w2.sqlite3-journal
+
+# Local implementation plans
+docs/superpowers/

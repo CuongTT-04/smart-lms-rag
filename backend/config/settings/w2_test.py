@@ -1,0 +1,3 @@
+from .w2 import *
+from .test import DATABASES, PASSWORD_HASHERS, EMAIL_BACKEND, ALLOWED_HOSTS
+DEBUG = False

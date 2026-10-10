@@ -9,11 +9,14 @@ const classroom = { id: 'e1', classroom_id: 'room1', classroom_name: 'Lớp Pyth
 const course = { id: 'c1', my_classrooms: [classroom] }
 describe('student course classrooms', () => {
   beforeEach(() => vi.resetAllMocks())
-  it('shows class names, status and progress from the course response', () => {
-    render(<StudentCourseClassrooms course={course} onUpdated={vi.fn()} onUnavailable={vi.fn()} />)
+  it('opens the classroom and omits progress', async () => {
+    const open = vi.fn()
+    render(<StudentCourseClassrooms course={course} onOpen={open} onUpdated={vi.fn()} onUnavailable={vi.fn()} />)
     expect(screen.getByText('Lớp Python buổi tối')).toBeVisible()
     expect(screen.getByText('Đang học')).toBeVisible()
-    expect(screen.getByRole('progressbar')).toHaveAttribute('value', '25')
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', {name:'Mở lớp học'}))
+    expect(open).toHaveBeenCalledWith(classroom)
   })
   it('refreshes own classrooms and synchronizes the course list', async () => {
     const updated = vi.fn()

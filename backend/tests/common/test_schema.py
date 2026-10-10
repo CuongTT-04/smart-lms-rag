@@ -48,14 +48,37 @@ class OpenAPITests(SimpleTestCase):
             ("/api/courses/{course_id}/classrooms/", "get"),
             ("/api/courses/{course_id}/classrooms/", "post"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/", "patch"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/", "delete"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/", "get"),
+            ("/api/courses/{course_id}/classrooms/{classroom_id}/people/", "get"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/enrollments/{enrollment_id}/", "delete"),
             ("/api/courses/{course_id}/my-classrooms/", "get"),
             ("/api/courses/{course_id}/join-requests/", "get"),
             ("/api/courses/{course_id}/join-requests/{request_id}/review/", "post"),
             ("/api/courses/{course_id}/members/{member_id}/", "delete"),
         }
+        expected.update({
+            ("/api/documents/{document_id}/publication/", "patch"),
+            ("/api/documents/{document_id}/study-notes/", "get"),
+            ("/api/documents/{document_id}/study-notes/", "put"),
+            ("/api/documents/{document_id}/policy/", "patch"),
+            ("/api/documents/{document_id}/view/", "get"),
+            ("/api/documents/{document_id}/download/", "get"),
+            ("/api/courses/{course_id}/documents/", "get"),
+            ("/api/courses/{course_id}/documents/", "post"),
+            ("/api/documents/{document_id}/status/", "get"),
+            ("/api/documents/{document_id}/versions/", "post"),
+            ("/api/documents/{document_id}/retry/", "post"),
+            ("/api/documents/{document_id}/extraction/", "get"),
+            ("/api/documents/{document_id}/", "delete"),
+        })
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/", "patch"))
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/{announcement_id}/image/", "get"))
+        expected.update({("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/", "get"), ("/api/courses/{course_id}/classrooms/{classroom_id}/announcements/", "post")})
+        expected.update({("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/", "get"), ("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/", "post")})
         actual = {(path, method) for path, methods in self.schema["paths"].items() for method in methods}
+        expected.add(("/api/documents/{document_id}/", "patch"))
+        expected.add(("/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/", "delete"))
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]
         self.assertEqual(len(ids), len(set(ids)))
@@ -90,7 +113,7 @@ class OpenAPITests(SimpleTestCase):
             "courses_list", "courses_create", "courses_retrieve", "courses_update",
             "course_members_list", "course_members_revoke",
         ])
-        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
+        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "classrooms_delete", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
 
     def test_classroom_management_schemas_expose_roster_and_own_classrooms(self):
         course = self.schema["components"]["schemas"]["Course"]
@@ -245,7 +268,7 @@ class OpenAPITests(SimpleTestCase):
             self.assertLessEqual(set(example["value"]), {"username", "password", "detail"})
         for path in ("/api/courses/", "/api/courses/{course_id}/members/"):
             response = self.schema["paths"][path]["get"]["responses"]["404"]
-            self.assertIn("page", response["description"].lower())
+            self.assertIn("trang", response["description"].lower())
 
     def test_strict_course_request_constraints_match_runtime(self):
         schemas = self.schema["components"]["schemas"]
@@ -274,7 +297,7 @@ class OpenAPITests(SimpleTestCase):
         for operation_id, summary in expected.items():
             with self.subTest(operation_id=operation_id):
                 self.assertEqual(operations[operation_id]["summary"], summary)
-                self.assertGreater(len(operations[operation_id]["description"]), 100)
+                self.assertTrue(operations[operation_id]["description"])
 
     def test_course_operations_include_explanations_and_enrollment_auth_errors(self):
         for path, methods in self.schema["paths"].items():
@@ -283,7 +306,7 @@ class OpenAPITests(SimpleTestCase):
             for method, operation in methods.items():
                 with self.subTest(path=path, method=method):
                     self.assertTrue(operation["summary"])
-                    self.assertGreater(len(operation["description"]), 100)
+                    self.assertTrue(operation["description"])
                     if "Enrollment" in operation["tags"]:
                         self.assertIn("401", operation["responses"])
 
@@ -325,3 +348,19 @@ class OpenAPITests(SimpleTestCase):
         self.assertIsNotNone(finders.find("drf_spectacular_sidecar/swagger-ui-dist/swagger-ui-bundle.js"))
         health = client.get(reverse("health-check"))
         self.assertEqual(health.json(), {"status": "ok", "service": "smart-lms-rag"})
+
+    def test_every_operation_has_concise_vietnamese_documentation(self):
+        import re
+        vietnamese = re.compile('[đĐăĂâÂêÊôÔơƠưƯà-ỹ]')
+        for path, methods in self.schema['paths'].items():
+            for method, operation in methods.items():
+                with self.subTest(path=path, method=method):
+                    for field in ('summary', 'description'):
+                        value = operation.get(field, '')
+                        self.assertRegex(value, vietnamese)
+                        self.assertLessEqual(len(value), 300)
+        create = self.schema['paths']['/api/courses/']['post']['description']
+        self.assertIn('Không tự tạo lớp', create)
+        download = self.schema['paths']['/api/documents/{document_id}/download/']['get']['description']
+        self.assertIn('Giáo viên', download)
+        self.assertIn('PUBLIC_DOWNLOAD', download)

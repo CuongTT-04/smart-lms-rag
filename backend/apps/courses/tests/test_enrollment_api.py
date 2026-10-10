@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 from unittest.mock import patch
 import uuid
 
@@ -22,7 +23,7 @@ class EnrollmentAPITests(TestCase):
         self.second_student = User.objects.create_user("second")
         self.course = create_course(actor=self.owner, title="Python")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})
-        self.classroom = self.course.classrooms.get()
+        self.classroom = Classroom.objects.create(course=self.course, name=self.course.title)
         self.client = authenticate_client(APIClient(), self.student)
         self.teacher = authenticate_client(APIClient(), self.owner)
 
@@ -30,9 +31,8 @@ class EnrollmentAPITests(TestCase):
         return self.client.post(reverse("courses:join"), {"class_code": self.classroom.class_code, **payload}, format="json")
 
     def approval(self):
-        policy = self.course.access_policy
-        policy.require_approval = True
-        policy.save()
+        self.classroom.require_approval = True
+        self.classroom.save()
 
     def review(self, request_id, decision="approve", **extra):
         return self.teacher.post(reverse("courses:request-review", args=[self.course.pk, request_id]), {"decision": decision, **extra}, format="json")
@@ -220,7 +220,7 @@ class EnrollmentAPITests(TestCase):
     def test_pending_requests_not_bypassed_when_policy_changes(self):
         self.approval()
         request_id = self.join().json()["join_request"]["id"]
-        AccessPolicy.objects.filter(course=self.course).update(require_approval=False)
+        Classroom.objects.filter(course=self.course).update(require_approval=False)
         self.assertEqual(self.join().json()["join_request"]["id"], request_id)
         self.assertFalse(Enrollment.objects.exists())
 

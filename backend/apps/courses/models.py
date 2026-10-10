@@ -134,12 +134,22 @@ class AccessPolicy(models.Model):
         )]
 
 
+class ActiveClassroomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(removed_at__isnull=True)
+
+
 class Classroom(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="classrooms")
     name = models.CharField(max_length=255)
     class_code = models.CharField(max_length=12, unique=True, default=generate_class_code, editable=False)
     is_join_enabled = models.BooleanField(default=True)
+    visibility = models.CharField(max_length=7, choices=AccessPolicy.Visibility.choices, default=AccessPolicy.Visibility.PRIVATE)
+    require_approval = models.BooleanField(default=False)
+    removed_at = models.DateTimeField(null=True, blank=True)
+    objects = ActiveClassroomManager()
+    all_objects = models.Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -194,3 +204,32 @@ class JoinRequest(models.Model):
             models.CheckConstraint(condition=models.Q(status__in=["PENDING", "APPROVED", "REJECTED", "CANCELED"]), name="courses_valid_join_status"),
             models.CheckConstraint(condition=(models.Q(status__in=["PENDING", "CANCELED"], reviewed_by__isnull=True, reviewed_at__isnull=True) | models.Q(status__in=["APPROVED", "REJECTED"], reviewed_by__isnull=False, reviewed_at__isnull=False)), name="courses_valid_join_review"),
         ]
+
+
+class ClassroomSession(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, related_name='sessions')
+    title = models.CharField(max_length=255, blank=True, default='')
+    position = models.PositiveIntegerField(default=1)
+    is_draft = models.BooleanField(default=True)
+    removed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['position', 'created_at', 'id']
+
+
+from .announcement_storage import announcement_storage
+
+
+class ClassroomAnnouncement(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, related_name='announcements')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='classroom_announcements')
+    content = models.TextField(max_length=5000)
+    link = models.URLField(max_length=2000, blank=True, default='')
+    image = models.FileField(storage=announcement_storage, upload_to='images/', blank=True, default='')
+    image_content_type = models.CharField(max_length=30, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']

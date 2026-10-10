@@ -1,3 +1,4 @@
+from apps.courses.models import Classroom
 import uuid
 
 from django.test import TestCase
@@ -17,7 +18,7 @@ class MemberAPITests(TestCase):
         self.student = User.objects.create_user("student")
         self.course = create_course(actor=self.teacher, title="Course")
         self.member = CourseMember.objects.create(course=self.course, user=self.student)
-        self.enrollment = Enrollment.objects.create(classroom=self.course.classrooms.get(), student=self.student.student_profile)
+        self.enrollment = Enrollment.objects.create(classroom=Classroom.objects.create(course=self.course, name=self.course.title), student=self.student.student_profile)
         self.client = authenticate_client(APIClient(), self.teacher)
         self.list_url = reverse("courses:members", args=[self.course.pk])
         self.url = reverse("courses:member-revoke", args=[self.course.pk, self.member.pk])

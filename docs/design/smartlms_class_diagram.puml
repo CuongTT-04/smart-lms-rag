@@ -1,0 +1,894 @@
+@startuml
+' Smart LMS: conceptual persistence-oriented class diagram, reviewed 2026-10-06.
+' W2_ONLY selects the W2 view; the full diagram is standalone.
+!pragma layout smetana
+hide methods
+hide circle
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam defaultFontName Arial
+skinparam classBackgroundColor<<W2>> #E8F3FF
+!ifdef W2_ONLY
+title Smart LMS - W2: LMS skeleton and ingestion
+!else
+title Smart LMS - Full product class diagram
+!endif
+legend left
+  Blue / <<W2>>: prioritize in W2; not evidence of implementation.
+  FK labels identify foreign keys; nullable relations use 0..1.
+  PK = id: UUID. Money = Decimal, never Float.
+  State fields are closed values listed in notes, not arbitrary strings.
+  Relations do not prescribe ON DELETE CASCADE.
+endlegend
+package "01 Accounts and permissions" {
+class User <<W2>> {
+  - id: UUID <<PK>>
+  - username: String <<unique>>
+  - email: String <<unique>>
+  - passwordHash: String
+  - fullName: String
+  - avatarKey: String?
+  - status: UserStatus
+  - createdAt: DateTime
+  - updatedAt: DateTime
+  - lastLoginAt: DateTime?
+}
+class UserRoleAssignment <<W2>> {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK>>
+  - role: UserRole
+  - grantedScopes: JSON
+  - grantedById: UUID? <<FK>>
+  - createdAt: DateTime
+}
+class StudentProfile <<W2>> {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK, unique>>
+  - learningGoal: Text?
+}
+class TeacherProfile <<W2>> {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK, unique>>
+  - bio: Text?
+  - specialization: String?
+}
+class AuditLog <<W2>> {
+  - id: UUID <<PK>>
+  - actorId: UUID? <<FK>>
+  - action: String
+  - entityType: String
+  - entityId: UUID
+  - metadata: JSON
+  - createdAt: DateTime
+}
+}
+package "02 Courses and learning materials" {
+class Course <<W2>> {
+  - id: UUID <<PK>>
+  - teacherId: UUID <<FK>>
+  - title: String
+  - description: Text
+  - thumbnailKey: String?
+  - status: CourseStatus
+  - createdAt: DateTime
+  - updatedAt: DateTime
+}
+class AccessPolicy <<W2>> {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK, unique>>
+  - visibility: Visibility
+  - accessType: AccessType
+  - price: Decimal
+  - currency: String
+  - joinCodeHash: String?
+  - joinPasswordHash: String?
+  - updatedAt: DateTime
+}
+class Enrollment <<W2>> {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK>>
+  - courseId: UUID <<FK>>
+  - status: EnrollmentStatus
+  - enrolledAt: DateTime
+  - revokedAt: DateTime?
+}
+class Lesson <<W2>> {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK>>
+  - title: String
+  - body: Text?
+  - orderIndex: Integer
+  - isPublished: Boolean
+  - createdAt: DateTime
+  - updatedAt: DateTime
+}
+class KnowledgeDocument <<W2>> {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK>>
+  - uploadedById: UUID <<FK>>
+  - title: String
+  - materialPolicy: MaterialPolicy = PROTECTED
+  - policyRevision: Integer
+  - isPublished: Boolean
+  - activeVersionId: UUID? <<FK>>
+  - removedAt: DateTime?
+  - createdAt: DateTime
+  - updatedAt: DateTime
+}
+class LessonDocument <<W2>> {
+  - id: UUID <<PK>>
+  - lessonId: UUID <<FK>>
+  - documentId: UUID <<FK>>
+  - orderIndex: Integer
+}
+class DocumentVersion <<W2>> {
+  - id: UUID <<PK>>
+  - documentId: UUID <<FK>>
+  - versionNumber: Integer
+  - fileName: String
+  - fileType: DocumentType
+  - originalStorageKey: String
+  - fileSizeBytes: Long
+  - checksumSha256: String
+  - extractedStorageKey: String?
+  - watermarkedViewKey: String?
+  - watermarkState: ProcessingStatus
+  - ocrUsed: Boolean
+  - extractedAt: DateTime?
+  - indexedAt: DateTime?
+  - status: DocumentVersionStatus
+  - createdAt: DateTime
+  - removedAt: DateTime?
+}
+class IngestionJob <<W2>> {
+  - id: UUID <<PK>>
+  - documentVersionId: UUID <<FK>>
+  - jobType: String
+  - idempotencyKey: String <<unique>>
+  - payloadDigest: String
+  - leaseExpiresAt: DateTime?
+  - status: JobStatus
+  - attemptCount: Integer
+  - workerToken: UUID?
+  - startedAt: DateTime?
+  - finishedAt: DateTime?
+  - errorCode: String?
+  - createdAt: DateTime
+}
+}
+package "Core enumerations" {
+  enum UserRole {
+    STUDENT
+    TEACHER
+    ADMIN
+  }
+  enum UserStatus {
+    ACTIVE
+    INACTIVE
+    BLOCKED
+  }
+  enum CourseStatus {
+    DRAFT
+    OPEN
+    ARCHIVED
+  }
+  enum EnrollmentStatus {
+    ACTIVE
+    REVOKED
+  }
+  enum AccessType {
+    FREE
+    PAID
+  }
+  enum Visibility {
+    PUBLIC
+    PRIVATE
+  }
+  enum DocumentType {
+    PDF
+    DOCX
+    PPTX
+    TXT
+  }
+  enum MaterialPolicy {
+    PROTECTED
+    PUBLIC_DOWNLOAD
+  }
+  enum DocumentVersionStatus {
+    QUEUED
+    PROCESSING
+    EXTRACTED
+    READY
+    FAILED
+    REMOVED
+  }
+  enum ProcessingStatus {
+    QUEUED
+    PROCESSING
+    READY
+    FAILED
+    REMOVED
+  }
+  enum JobStatus {
+    QUEUED
+    RUNNING
+    SUCCEEDED
+    FAILED
+    CANCELLED
+  }
+}
+!ifndef W2_ONLY
+package "03 Assessments and lesson completion" {
+class AssistantPolicy {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK>>
+  - quizVersionId: UUID? <<FK>>
+  - assignmentVersionId: UUID? <<FK>>
+  - hintLevel: String
+  - disableDuringQuiz: Boolean
+  - revision: Integer
+  - updatedAt: DateTime
+}
+class Quiz {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK>>
+  - lessonId: UUID? <<FK>>
+  - activeVersionId: UUID? <<FK>>
+  - createdAt: DateTime
+  - archivedAt: DateTime?
+}
+class QuizVersion {
+  - id: UUID <<PK>>
+  - quizId: UUID <<FK>>
+  - versionNumber: Integer
+  - title: String
+  - description: Text
+  - durationSeconds: Integer
+  - dueAt: DateTime
+  - passingScore: Decimal
+  - shuffleQuestions: Boolean
+  - isPublished: Boolean
+  - resultsPublishedAt: DateTime?
+  - createdAt: DateTime
+}
+class Question {
+  - id: UUID <<PK>>
+  - quizVersionId: UUID? <<FK>>
+  - checkpointId: UUID? <<FK>>
+  - content: Text
+  - points: Decimal
+  - orderIndex: Integer
+}
+class QuestionOption {
+  - id: UUID <<PK>>
+  - questionId: UUID <<FK>>
+  - content: Text
+  - isCorrect: Boolean <<server_only>>
+  - orderIndex: Integer
+}
+class QuizAttempt {
+  - id: UUID <<PK>>
+  - quizId: UUID <<FK>>
+  - quizVersionId: UUID <<FK>>
+  - userId: UUID <<FK>>
+  - startedAt: DateTime
+  - expiresAt: DateTime
+  - finalizedAt: DateTime?
+  - score: Decimal?
+  - status: QuizAttemptStatus
+}
+class Answer {
+  - id: UUID <<PK>>
+  - quizAttemptId: UUID <<FK>>
+  - questionId: UUID <<FK>>
+  - selectedOptionId: UUID? <<FK>>
+  - isCorrect: Boolean?
+  - awardedPoints: Decimal?
+  - answeredAt: DateTime?
+}
+class Assignment {
+  - id: UUID <<PK>>
+  - courseId: UUID <<FK>>
+  - lessonId: UUID? <<FK>>
+  - activeVersionId: UUID? <<FK>>
+  - createdAt: DateTime
+  - archivedAt: DateTime?
+}
+class AssignmentVersion {
+  - id: UUID <<PK>>
+  - assignmentId: UUID <<FK>>
+  - versionNumber: Integer
+  - title: String
+  - instructions: Text
+  - privateRubricKey: String? <<server_only>>
+  - dueAt: DateTime
+  - isPublished: Boolean
+  - createdAt: DateTime
+}
+class AssignmentSubmission {
+  - id: UUID <<PK>>
+  - assignmentId: UUID <<FK>>
+  - assignmentVersionId: UUID <<FK>>
+  - userId: UUID <<FK>>
+  - textAnswer: Text?
+  - fileStorageKey: String?
+  - fileMimeType: String?
+  - fileSizeBytes: Long?
+  - submittedAt: DateTime
+  - score: Decimal?
+  - feedback: Text?
+  - gradedById: UUID? <<FK>>
+  - gradedAt: DateTime?
+  - publishedAt: DateTime?
+  - status: SubmissionStatus
+}
+class LessonProgress {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK>>
+  - lessonId: UUID <<FK>>
+  - completed: Boolean
+  - completedAt: DateTime?
+  - updatedAt: DateTime
+}
+}
+!endif
+!ifndef W2_ONLY
+package "04 Interactive video" {
+class Video {
+  - id: UUID <<PK>>
+  - lessonId: UUID <<FK>>
+  - title: String
+  - activeVersionId: UUID? <<FK>>
+  - createdAt: DateTime
+}
+class VideoVersion {
+  - id: UUID <<PK>>
+  - videoId: UUID <<FK>>
+  - versionNumber: Integer
+  - mediaStorageKey: String
+  - durationSeconds: Decimal
+  - isPublished: Boolean
+  - createdAt: DateTime
+}
+class InteractiveCheckpoint {
+  - id: UUID <<PK>>
+  - videoVersionId: UUID <<FK>>
+  - checkpointSeconds: Decimal
+  - rewindSeconds: Decimal
+  - orderIndex: Integer
+}
+class VideoProgress {
+  - id: UUID <<PK>>
+  - userId: UUID <<FK>>
+  - videoVersionId: UUID <<FK>>
+  - lastPositionSeconds: Decimal
+  - completedAt: DateTime?
+  - updatedAt: DateTime
+}
+class CheckpointProgress {
+  - id: UUID <<PK>>
+  - videoProgressId: UUID <<FK>>
+  - checkpointId: UUID <<FK>>
+  - status: CheckpointStatus
+  - rewatchUntilSeconds: Decimal?
+  - lastValidatedPosition: Decimal?
+  - passedAt: DateTime?
+  - updatedAt: DateTime
+}
+class CheckpointAttempt {
+  - id: UUID <<PK>>
+  - checkpointProgressId: UUID <<FK>>
+  - selectedOptionId: UUID <<FK>>
+  - requestId: UUID <<unique>>
+  - isCorrect: Boolean
+  - answeredAt: DateTime
+}
+}
+!endif
+!ifndef W2_ONLY
+package "05 Orders, payments and refunds" {
+class Order {
+  - id: UUID <<PK>>
+  - buyerId: UUID <<FK>>
+  - totalAmount: Decimal
+  - currency: String
+  - status: OrderStatus
+  - createdAt: DateTime
+  - expiresAt: DateTime
+  - paidAt: DateTime?
+}
+class OrderItem {
+  - id: UUID <<PK>>
+  - orderId: UUID <<FK>>
+  - courseId: UUID <<FK>>
+  - courseTitleSnapshot: String
+  - sellerId: UUID <<FK>>
+  - unitPriceSnapshot: Decimal
+}
+class PaymentTransaction {
+  - id: UUID <<PK>>
+  - orderId: UUID <<FK>>
+  - provider: String
+  - providerTransactionId: String?
+  - idempotencyKey: String <<unique>>
+  - amount: Decimal
+  - currency: String
+  - status: PaymentStatus
+  - paidAt: DateTime?
+  - verifiedAt: DateTime?
+  - createdAt: DateTime
+}
+class PaymentEvent {
+  - id: UUID <<PK>>
+  - paymentTransactionId: UUID <<FK>>
+  - provider: String
+  - providerEventId: String
+  - payloadDigest: String
+  - verifiedAt: DateTime?
+  - processedAt: DateTime?
+  - status: String
+  - receivedAt: DateTime
+}
+class EnrollmentGrant {
+  - id: UUID <<PK>>
+  - enrollmentId: UUID <<FK>>
+  - orderItemId: UUID? <<FK>>
+  - grantedById: UUID? <<FK>>
+  - grantType: String
+  - grantedAt: DateTime
+  - revokedAt: DateTime?
+}
+class Refund {
+  - id: UUID <<PK>>
+  - paymentTransactionId: UUID <<FK>>
+  - orderItemId: UUID <<FK>>
+  - provider: String
+  - providerRefundId: String?
+  - idempotencyKey: String <<unique>>
+  - amount: Decimal
+  - status: RefundStatus
+  - requestedById: UUID <<FK>>
+  - requestedAt: DateTime
+  - confirmedAt: DateTime?
+}
+}
+!endif
+!ifndef W2_ONLY
+package "06 RAG and AI assistants (W3 onward)" {
+class DocumentChunk {
+  - id: UUID <<PK>>
+  - documentVersionId: UUID <<FK>>
+  - chunkIndex: Integer
+  - content: Text
+  - sourceLocator: JSON
+  - vectorId: String?
+  - indexRevision: String
+  - createdAt: DateTime
+}
+class RAGConfiguration {
+  - id: UUID <<PK>>
+  - name: String
+  - version: String
+  - embeddingModel: String
+  - embeddingRevision: String
+  - vectorBackend: String
+  - chunkSize: Integer
+  - chunkOverlap: Integer
+  - topK: Integer
+  - retrievalThreshold: Decimal?
+  - bm25Enabled: Boolean
+  - fusionMethod: String?
+  - rerankerModel: String?
+  - createdAt: DateTime
+}
+class AIModel {
+  - id: UUID <<PK>>
+  - name: String
+  - version: String
+  - modelType: String
+  - modelStorageKey: String?
+  - createdAt: DateTime
+}
+class LoRAAdapter {
+  - id: UUID <<PK>>
+  - baseModelId: UUID <<FK>>
+  - name: String
+  - version: String
+  - adapterStorageKey: String
+  - checksumSha256: String
+  - createdAt: DateTime
+}
+class AIConversation {
+  - id: UUID <<PK>>
+  - ownerId: UUID <<FK>>
+  - courseId: UUID <<FK>>
+  - title: String?
+  - deletedAt: DateTime?
+  - createdAt: DateTime
+  - updatedAt: DateTime
+}
+class AIMessage {
+  - id: UUID <<PK>>
+  - conversationId: UUID <<FK>>
+  - role: MessageRole
+  - mode: AssistantMode
+  - sourceMode: SourceMode
+  - quizAttemptId: UUID? <<FK>>
+  - assignmentId: UUID? <<FK>>
+  - documentVersionId: UUID? <<FK>>
+  - sourceScope: JSON?
+  - content: Text
+  - createdAt: DateTime
+}
+class AIResponse {
+  - id: UUID <<PK>>
+  - messageId: UUID <<FK, unique>>
+  - modelId: UUID <<FK>>
+  - adapterId: UUID? <<FK>>
+  - ragConfigId: UUID? <<FK>>
+  - assistantPolicyId: UUID? <<FK>>
+  - policyRevision: Integer
+  - generationConfigSnapshot: JSON
+  - requestId: UUID <<unique>>
+  - status: String
+  - isRefused: Boolean
+  - refusalReason: String?
+  - latencyMs: Integer?
+  - createdAt: DateTime
+}
+class SourceCitation {
+  - id: UUID <<PK>>
+  - responseId: UUID <<FK>>
+  - documentVersionId: UUID <<FK>>
+  - chunkId: UUID? <<FK>>
+  - sourceLocator: JSON
+  - answerStartOffset: Integer
+  - answerEndOffset: Integer
+  - retrievalScore: Decimal?
+}
+}
+!endif
+!ifndef W2_ONLY
+package "07 Offline research - not LMS actors" {
+class AIExperiment {
+  - id: UUID <<PK>>
+  - name: String
+  - method: ExperimentMethod
+  - modelId: UUID <<FK>>
+  - adapterId: UUID? <<FK>>
+  - ragConfigId: UUID? <<FK>>
+  - datasetVersion: String
+  - datasetChecksum: String
+  - splitManifestKey: String
+  - promptVersion: String
+  - generationConfig: JSON
+  - seed: Integer
+  - hardwareSnapshot: JSON
+  - environmentSnapshot: JSON
+  - codeCommit: String
+  - metrics: JSON
+  - perSampleResultsKey: String?
+  - status: String
+  - startedAt: DateTime?
+  - endedAt: DateTime?
+}
+}
+!endif
+!ifndef W2_ONLY
+package "Additional enumerations" {
+  enum SubmissionStatus {
+    SUBMITTED
+    GRADED
+    PUBLISHED
+  }
+  enum QuizAttemptStatus {
+    IN_PROGRESS
+    SUBMITTED
+    EXPIRED
+  }
+  enum CheckpointStatus {
+    UNANSWERED
+    REWATCH_REQUIRED
+    READY_TO_RETRY
+    PASSED
+  }
+  enum OrderStatus {
+    PENDING
+    PAID
+    FAILED
+    CANCELLED
+    EXPIRED
+    PARTIALLY_REFUNDED
+    REFUNDED
+  }
+  enum PaymentStatus {
+    PENDING
+    SUCCEEDED
+    FAILED
+    CANCELLED
+    EXPIRED
+    PARTIALLY_REFUNDED
+    REFUNDED
+  }
+  enum RefundStatus {
+    PENDING
+    CONFIRMED
+    FAILED
+  }
+  enum MessageRole {
+    USER
+    ASSISTANT
+    SYSTEM
+  }
+  enum AssistantMode {
+    QA
+    HINT
+    SUMMARY
+  }
+  enum SourceMode {
+    COURSE_MATERIAL
+    GENERAL
+  }
+  enum ExperimentMethod {
+    BASE_LLM
+    RAG
+    QLORA_RAG
+  }
+}
+!endif
+
+' Every association label names the FK on the many/owning side.
+User "1" -- "0..*" UserRoleAssignment : userId
+User "0..1" -- "0..*" UserRoleAssignment : grantedById
+User "1" -- "0..1" StudentProfile : userId
+User "1" -- "0..1" TeacherProfile : userId
+User "0..1" -- "0..*" AuditLog : actorId
+User "1" -- "0..*" Course : teacherId
+Course "1" -- "1" AccessPolicy : courseId
+User "1" -- "0..*" Enrollment : userId
+Course "1" -- "0..*" Enrollment : courseId
+Course "1" -- "0..*" Lesson : courseId
+Course "1" -- "0..*" KnowledgeDocument : courseId
+User "1" -- "0..*" KnowledgeDocument : uploadedById
+Lesson "1" -- "0..*" LessonDocument : lessonId
+KnowledgeDocument "1" -- "0..*" LessonDocument : documentId
+KnowledgeDocument "1" -- "0..*" DocumentVersion : documentId
+KnowledgeDocument "0..1" --> "0..1" DocumentVersion : activeVersionId
+DocumentVersion "1" -- "0..*" IngestionJob : documentVersionId
+
+note bottom of UserRoleAssignment
+  UNIQUE(userId, role). Role assignment is authorized server-side.
+  Profiles store optional personal fields, not authorization.
+  grantedScopes restricts delegated administration; role alone is insufficient.
+  Prevent disabling/removing the last active administrator.
+  Admin scope does not automatically grant access to private content.
+end note
+note bottom of AccessPolicy
+  Course is the course/class permission boundary used in SRS.
+  No separate Classroom/cohort is defined in the current requirements.
+  Course teacherId must identify an authorized teacher.
+  Visibility/accessType/price live here only; no duplicate Course price.
+  FREE implies price = 0; PAID implies price > 0.
+  W2: teacher grants enrollment; self-join/payment come later.
+  Join code/password are hashed; never sent in public course metadata.
+end note
+note bottom of Enrollment
+  UNIQUE(userId, courseId). Revoke does not delete scores/submissions.
+  Authorize every request against current status and course scope.
+  Course progress is derived from eligible lesson completions.
+end note
+note bottom of KnowledgeDocument
+  New material defaults to PROTECTED: watermarked view, no clean download.
+  PUBLIC_DOWNLOAD: clean view/download for users already allowed to read.
+  This does not make the course public or grant enrollment.
+  Replacing the file preserves materialPolicy.
+  A policy change increments policyRevision and invalidates cached access.
+  activeVersionId must refer to a READY version of this document.
+end note
+note bottom of DocumentVersion
+  UNIQUE(documentId, versionNumber). Original file remains private.
+  OCR/RAG reads the clean original, never the watermarked derivative.
+  Watermark failure must not fall back to a clean protected view.
+  W2 accepts text PDFs; other declared formats are for the final product.
+  W2: EXTRACTED != READY; indexedAt remains null until W3 indexing.
+  Activate a version for AI only after required extraction/index/view checks.
+  Old version stays active until replacement is ready; removed source is blocked.
+end note
+note bottom of IngestionJob
+  jobType: EXTRACT / INDEX / PREPARE_VIEW.
+  Idempotency prevents duplicate extraction/chunks on retry.
+  Late workers cannot reactivate removed documents/versions.
+  A successful EXTRACT job alone does not mean RAG is ready.
+end note
+note bottom of LessonDocument
+  UNIQUE(lessonId, documentId); both must belong to the same course.
+  Materials may be course-level without being linked to a lesson.
+end note
+
+!ifndef W2_ONLY
+Course "1" -- "0..*" AssistantPolicy : courseId
+QuizVersion "0..1" -- "0..*" AssistantPolicy : quizVersionId
+AssignmentVersion "0..1" -- "0..*" AssistantPolicy : assignmentVersionId
+Course "1" -- "0..*" Quiz : courseId
+Lesson "0..1" -- "0..*" Quiz : lessonId
+Quiz "1" -- "0..*" QuizVersion : quizId
+Quiz "0..1" --> "0..1" QuizVersion : activeVersionId
+QuizVersion "0..1" -- "0..*" Question : quizVersionId
+Question "1" -- "0..*" QuestionOption : questionId
+Quiz "1" -- "0..*" QuizAttempt : quizId
+QuizVersion "1" -- "0..*" QuizAttempt : quizVersionId
+User "1" -- "0..*" QuizAttempt : userId
+QuizAttempt "1" -- "0..*" Answer : quizAttemptId
+Question "1" -- "0..*" Answer : questionId
+QuestionOption "0..1" -- "0..*" Answer : selectedOptionId
+Course "1" -- "0..*" Assignment : courseId
+Lesson "0..1" -- "0..*" Assignment : lessonId
+Assignment "1" -- "0..*" AssignmentVersion : assignmentId
+Assignment "0..1" --> "0..1" AssignmentVersion : activeVersionId
+Assignment "1" -- "0..*" AssignmentSubmission : assignmentId
+AssignmentVersion "1" -- "0..*" AssignmentSubmission : assignmentVersionId
+User "1" -- "0..*" AssignmentSubmission : userId
+User "0..1" -- "0..*" AssignmentSubmission : gradedById
+User "1" -- "0..*" LessonProgress : userId
+Lesson "1" -- "0..*" LessonProgress : lessonId
+
+note bottom of AssistantPolicy
+  Scope: course default OR one quiz/assignment version in that course.
+  At most one active policy per scope; assessment overrides course default.
+  hintLevel: DISABLED / CONCEPT_ONLY / NEXT_STEP.
+  Private answer keys/rubrics are excluded from the learning corpus.
+  Missing policy/context never enables unrestricted answer disclosure.
+end note
+note bottom of Question
+  Exactly one owner: quizVersionId XOR checkpointId.
+  MVP/final agreed assessment uses single-choice questions.
+  Draft can have no options; published question needs >= 2 options
+  and exactly one correct option. Essay belongs to Assignment.
+end note
+note bottom of QuizAttempt
+  UNIQUE(userId, quizId): one attempt across versions.
+  quizVersion must belong to quiz; freeze used/published attempt version.
+  expiresAt = min(startedAt + durationSeconds, dueAt), server time.
+  Expiry finalization is idempotent; EXPIRED is a scored final state.
+  NULL score means not graded, never silently replaced with zero.
+end note
+note bottom of Answer
+  UNIQUE(quizAttemptId, questionId).
+  Question belongs to the attempt's QuizVersion;
+  selected option must belong to that question (null = unanswered).
+  Never expose isCorrect/answer keys before permitted publication.
+end note
+note bottom of AssignmentSubmission
+  UNIQUE(userId, assignmentId). Used version is immutable.
+  Text XOR one file; PDF/PNG/JPEG <= 20 MiB in the agreed MVP.
+  No late submission/resubmission in the current agreed rules.
+  Manual grade: 0 <= score <= 10; publishedAt controls student visibility.
+  Record grader and audit any change to a published grade.
+end note
+note bottom of LessonProgress
+  UNIQUE(userId, lessonId). No video is required for a text/PDF lesson.
+  Quiz/assignment lessonId is optional; if set, same course as assessment.
+end note
+
+Lesson "1" -- "0..*" Video : lessonId
+Video "1" -- "0..*" VideoVersion : videoId
+Video "0..1" --> "0..1" VideoVersion : activeVersionId
+VideoVersion "1" -- "0..*" InteractiveCheckpoint : videoVersionId
+InteractiveCheckpoint "0..1" -- "1" Question : checkpointId
+User "1" -- "0..*" VideoProgress : userId
+VideoVersion "1" -- "0..*" VideoProgress : videoVersionId
+VideoProgress "1" -- "0..*" CheckpointProgress : videoProgressId
+InteractiveCheckpoint "1" -- "0..*" CheckpointProgress : checkpointId
+CheckpointProgress "1" -- "0..*" CheckpointAttempt : checkpointProgressId
+QuestionOption "1" -- "0..*" CheckpointAttempt : selectedOptionId
+note bottom of InteractiveCheckpoint
+  0 <= rewindSeconds < checkpointSeconds < video duration.
+  At a checkpoint: pause. Correct -> pass and continue.
+  Wrong -> REWATCH_REQUIRED: watch the configured segment, then retry.
+  Server validates order/progress; seeking/reloading cannot bypass a gate.
+  Attempt option must belong to this checkpoint's question.
+  Progress video version must equal checkpoint video version.
+end note
+note bottom of VideoProgress
+  UNIQUE(userId, videoVersionId).
+  UNIQUE(videoProgressId, checkpointId) for CheckpointProgress.
+  Media access is authorized; progress persists after reload/restart.
+  A version with recorded activity is immutable; changes create a new version.
+  No automatic completion from client playback position alone.
+end note
+
+User "1" -- "0..*" Order : buyerId
+Order "1" -- "1..*" OrderItem : orderId
+Course "1" -- "0..*" OrderItem : courseId
+User "1" -- "0..*" OrderItem : sellerId
+Order "1" -- "0..*" PaymentTransaction : orderId
+PaymentTransaction "1" -- "0..*" PaymentEvent : paymentTransactionId
+Enrollment "1" -- "0..*" EnrollmentGrant : enrollmentId
+OrderItem "0..1" -- "0..*" EnrollmentGrant : orderItemId
+User "0..1" -- "0..*" EnrollmentGrant : grantedById
+PaymentTransaction "1" -- "0..*" Refund : paymentTransactionId
+OrderItem "1" -- "0..*" Refund : orderItemId
+User "1" -- "0..*" Refund : requestedById
+note bottom of PaymentTransaction
+  UNIQUE(provider, providerTransactionId) when non-null.
+  PaymentEvent: UNIQUE(provider, providerEventId).
+  Multiple retry transactions may exist; settle one order exactly once.
+  Verify signature, order, currency and expected amount server-side.
+  Redirect success/client data never grants paid access.
+  Order total = sum of server-side price snapshots; use Decimal.
+  sellerId freezes the payee for historical revenue even if ownership changes.
+end note
+note bottom of EnrollmentGrant
+  grantType: MANUAL / FREE_JOIN / PURCHASE.
+  PURCHASE requires verified payment and matching user/course order item.
+  UNIQUE(orderItemId) for non-null purchase grants.
+  Refund revokes the corresponding grant; other valid grants remain.
+  Enrollment is ACTIVE only while at least one eligible grant is valid.
+  W2 can store manual status first; migrate to grant tracking for payments.
+end note
+note bottom of Refund
+  OrderItem must belong to the payment's order.
+  Confirmed refunds cannot exceed the settled item/transaction amount.
+  UNIQUE(provider, providerRefundId) when non-null; provider matches payment.
+  Full item refund revokes its purchase grant; partial refund follows policy.
+  Preserve historical grades/submissions. Revenue = settled minus confirmed refunds.
+end note
+
+DocumentVersion "1" -- "0..*" DocumentChunk : documentVersionId
+User "1" -- "0..*" AIConversation : ownerId
+Course "1" -- "0..*" AIConversation : courseId
+AIConversation "1" -- "0..*" AIMessage : conversationId
+QuizAttempt "0..1" -- "0..*" AIMessage : quizAttemptId
+Assignment "0..1" -- "0..*" AIMessage : assignmentId
+DocumentVersion "0..1" -- "0..*" AIMessage : documentVersionId
+AssistantPolicy "0..1" -- "0..*" AIResponse : assistantPolicyId
+AIMessage "1" -- "0..1" AIResponse : messageId
+AIModel "1" -- "0..*" AIResponse : modelId
+LoRAAdapter "0..1" -- "0..*" AIResponse : adapterId
+RAGConfiguration "0..1" -- "0..*" AIResponse : ragConfigId
+AIResponse "1" -- "0..*" SourceCitation : responseId
+DocumentVersion "1" -- "0..*" SourceCitation : documentVersionId
+DocumentChunk "0..1" -- "0..*" SourceCitation : chunkId
+AIModel "1" -- "0..*" LoRAAdapter : baseModelId
+AIModel "1" -- "0..*" AIExperiment : modelId
+LoRAAdapter "0..1" -- "0..*" AIExperiment : adapterId
+RAGConfiguration "0..1" -- "0..*" AIExperiment : ragConfigId
+note bottom of DocumentChunk
+  UNIQUE(documentVersionId, indexRevision, chunkIndex).
+  Derive courseId/documentId through DocumentVersion; never mix scopes.
+  Vector metadata includes courseId, documentId, versionId, chunkId.
+  ANN/BM25 indexes are rebuildable derived data, not the authority for access.
+end note
+note bottom of SourceCitation
+  Bind to the exact document version, not mutable current document alone.
+  PDF: physical page 1-based; PPTX: real slide 1-based;
+  DOCX: section/paragraph ID; TXT: paragraph or line interval.
+  chunkId optional for summaries; if set, same cited document version.
+  Offsets bind a citation to a span of the assistant answer.
+  A citation never bypasses course/material policy; removed sources are blocked.
+  retrievalScore is not a calibrated probability of answer correctness.
+end note
+note bottom of AIResponse
+  Only ASSISTANT messages have AIResponse; empty conversations are valid.
+  Recheck course membership, source version and assistant policy before return.
+  GENERAL is an explicit QA choice; never implicit fallback for missing sources.
+  HINT/SUMMARY use authorized course materials.
+  Message assessment/source context must match the conversation course/user.
+  SUMMARY documentVersionId and sourceScope define the actual source range.
+  Policy ID/revision identify the course/assessment policy used for the hint.
+  Config/model/adapter versions are immutable for reproducible traces.
+  Adapter must match the selected base model.
+end note
+note bottom of AIExperiment
+  Offline comparison, no trafficPercent or student A/B routing.
+  BASE_LLM: no adapter, no RAG config.
+  RAG: no adapter, RAG config required.
+  QLORA_RAG: matching adapter and RAG config required.
+  Keep split, model/prompt/config and per-sample results for fair evaluation.
+end note
+!endif
+
+note "Persistence design notes:\nUse timezone-aware server timestamps.\nSoft-delete/retain audit history where required.\nConvert relations into FKs, UNIQUE and CHECK constraints in the ERD/migrations.\nCross-entity rules require transactional service checks as well as FKs.\nDashboard/revenue/course progress are queries, not duplicate stored totals." as PersistenceNotes
+@enduml

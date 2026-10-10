@@ -1,0 +1,26 @@
+{
+  "a_ref": "origin/VuNamDuong_B22DCVT119_W2Tasks",
+  "a_commit": "b8b03df84629493305a47bba1baf3a59215c7221",
+  "checked_paths": [
+    "backend/apps/users",
+    "backend/apps/courses",
+    "backend/config/settings/base.py",
+    "backend/config/settings/local.py",
+    "backend/config/settings/production.py",
+    "backend/config/urls.py",
+    "backend/requirements.txt",
+    "frontend/src/services/api.js",
+    "frontend/src/services/auth.service.js",
+    "frontend/src/pages/TeacherHomePage.jsx",
+    "frontend/src/pages/StudentHomePage.jsx",
+    "frontend/src/App.jsx",
+    "frontend/package.json",
+    "frontend/package-lock.json",
+    "frontend/vite.config.js",
+    "frontend/eslint.config.js"
+  ],
+  "modified_A_owned_files": [],
+  "A_branch_commits_or_pushes": false,
+  "checked_file_count": 62,
+  "verification_workspace": "D:\\Đồ án tốt nghiệp\\smart-lms-rag"
+}

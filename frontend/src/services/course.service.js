@@ -71,6 +71,7 @@ export const updateAccessPolicy = (id, values) => writeRequest(`/courses/${id}/a
 export const listClassrooms = (id, signal) => listAllEnrollmentRecords(`/courses/${id}/classrooms/`, signal)
 export const createClassroom = (id, values) => writeRequest(`/courses/${id}/classrooms/`, 'POST', values)
 export const updateClassroom = (id, classroomId, values) => writeRequest(`/courses/${id}/classrooms/${classroomId}/`, 'PATCH', values)
+export const deleteClassroom = (id, classroomId) => writeRequest(`/courses/${id}/classrooms/${classroomId}/`, 'DELETE')
 export const listJoinRequests = (id, status = '', signal) => listAllEnrollmentRecords(`/courses/${id}/join-requests/${status ? `?status=${encodeURIComponent(status)}` : ''}`, signal)
 export const reviewJoinRequest = (id, requestId, values) => writeRequest(`/courses/${id}/join-requests/${requestId}/review/`, 'POST', values)
 export const joinClassroom = (values) => writeRequest('/courses/join/', 'POST', values)
@@ -110,3 +111,23 @@ export function courseErrorMessage(error) {
   }
   return 'Không thể kết nối với hệ thống. Vui lòng thử lại.'
 }
+
+export const listClassroomSessions = (id, roomId, signal) => listAllEnrollmentRecords(`/courses/${id}/classrooms/${roomId}/sessions/`, signal)
+export const createClassroomSession = (id, roomId, values) => writeRequest(`/courses/${id}/classrooms/${roomId}/sessions/`, 'POST', values)
+
+export const listClassroomAnnouncements = (id, roomId, signal) => listAllEnrollmentRecords(`/courses/${id}/classrooms/${roomId}/announcements/`, signal)
+export function createClassroomAnnouncement(id, roomId, values) {
+  const path = `/courses/${id}/classrooms/${roomId}/announcements/`
+  if (!values.image) return writeRequest(path, 'POST', values)
+  const body = new FormData()
+  body.append('content', values.content)
+  body.append('link', values.link || '')
+  body.append('image', values.image)
+  return apiRequest(path, { method: 'POST', body })
+}
+export const getAnnouncementImage = (id, roomId, announcementId, signal) => apiRequest(`/courses/${id}/classrooms/${roomId}/announcements/${announcementId}/image/`, { signal, responseType: 'image' })
+
+export const updateClassroomSession = (id, roomId, sessionId, values) => writeRequest(`/courses/${id}/classrooms/${roomId}/sessions/${sessionId}/`, 'PATCH', values)
+export const deleteClassroomSession = (id, roomId, sessionId) => writeRequest(`/courses/${id}/classrooms/${roomId}/sessions/${sessionId}/`, 'DELETE')
+
+export const listClassroomPeople = (id, roomId, signal) => apiRequest(`/courses/${id}/classrooms/${roomId}/people/`, { signal })

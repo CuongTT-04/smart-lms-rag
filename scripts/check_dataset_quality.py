@@ -391,5 +391,105 @@ def main():
     print("- OK: đủ điều kiện để đưa vào ingestion và embedding.")
 
 
+
+def audit_corpus(corpus_root: Path, repo_root: Path):
+    """Read-only W2 audit; technical validity does not establish copyright permission."""
+    rows=[]
+    ids=defaultdict(list)
+    hashes=defaultdict(list)
+    for pdf in sorted(Path(corpus_root).rglob("*.pdf")):
+        issues=[]; meta={}; page_count=0
+        digest=sha256_of_file(pdf)
+        try:
+            meta=json.loads(pdf.with_suffix(".json").read_text(encoding="utf-8-sig"))
+            if not isinstance(meta,dict): raise ValueError("metadata must be an object")
+        except (OSError,ValueError) as exc:
+            issues.append("metadata_missing_or_invalid")
+            meta={}
+        missing=sorted(REQUIRED_METADATA_KEYS-set(meta))
+        if missing: issues.append("missing_fields:"+",".join(missing))
+        for key in ("document_id","source","license"):
+            if not isinstance(meta.get(key),str) or not meta[key].strip(): issues.append("empty_"+key)
+        if meta.get("course_id") != pdf.parent.name: issues.append("course_id_mismatch")
+        if meta.get("file_name") != pdf.name: issues.append("file_name_mismatch")
+        if meta.get("file_type") != "PDF": issues.append("file_type_mismatch")
+        if meta.get("checksum") != digest: issues.append("checksum_mismatch")
+        try:
+            reader=PdfReader(pdf)
+            if reader.is_encrypted: raise ValueError("encrypted")
+            page_count=len(reader.pages)
+            if not page_count: issues.append("empty_pdf")
+            if meta.get("page_count") != page_count: issues.append("page_count_mismatch")
+            if page_count>100: issues.append("w2_page_limit")
+            usable_text=False
+            for number,page in enumerate(reader.pages,1):
+                text=page.extract_text() or ""
+                usable_text=usable_text or bool(text.strip())
+                if not text.strip() and page.images: issues.append(f"ocr_required_page:{number}")
+                if has_bad_encoding(text): issues.append(f"encoding_review_page:{number}")
+            if not usable_text: issues.append("text_layer_required")
+        except Exception:
+            issues.append("unreadable_pdf")
+        size=pdf.stat().st_size
+        if size>20*1024*1024: issues.append("w2_size_limit")
+        row={"subject":pdf.parent.name,"document_id":meta.get("document_id",""),
+             "relative_path":pdf.relative_to(repo_root).as_posix(),"sha256":digest,
+             "page_count":page_count,"size_bytes":size,"source":meta.get("source",""),
+             "license":meta.get("license",""),"check_status":"FAIL" if issues else "PASS",
+             "rights_status":"DECLARED_NOT_VERIFIED","issues":" | ".join(issues)}
+        rows.append(row); hashes[digest].append(row)
+        if isinstance(row["document_id"],str) and row["document_id"].strip():
+            ids[row["document_id"]].append(row)
+    for groups,label in [(hashes,"duplicate_sha256"),(ids,"duplicate_document_id")]:
+        for group in groups.values():
+            if len(group)>1:
+                for row in group:
+                    row["check_status"]="FAIL"
+                    row["issues"]=(row["issues"]+" | "+label).strip(" |")
+    orphans=[p.relative_to(repo_root).as_posix() for p in sorted(Path(corpus_root).rglob("*.json")) if not p.with_suffix(".pdf").exists()]
+    return rows,orphans
+
+
+def export_w2_audit(corpus_root: Path, repo_root: Path, manifest_path: Path, report_path: Path):
+    rows,orphans=audit_corpus(corpus_root,repo_root)
+    manifest_path.parent.mkdir(parents=True,exist_ok=True)
+    fields=["subject","document_id","relative_path","sha256","page_count","size_bytes","source","license","check_status","rights_status","issues"]
+    with manifest_path.open("w",encoding="utf-8",newline="") as stream:
+        writer=csv.DictWriter(stream,fieldnames=fields); writer.writeheader(); writer.writerows(rows)
+    lines=["# Kiểm kê Corpus v1 — W2, ngày 07/10/2026", "",
+           "Kiểm tra tự động, chỉ đọc PDF/metadata gốc. PASS chỉ xác nhận tiêu chí kỹ thuật được kiểm tra, không xác nhận quyền sử dụng/phát hành tài liệu.", "",
+           f"- PDF: {len(rows)}; metadata JSON: {len(list(corpus_root.rglob('*.json')))}.",
+           f"- PASS: {sum(r['check_status']=='PASS' for r in rows)}; FAIL: {sum(r['check_status']=='FAIL' for r in rows)}; metadata không có PDF: {len(orphans)}.",
+           "- Kiểm tra checksum, số trang, cặp file/định danh, giới hạn 20 MiB/100 trang, dấu hiệu PDF cần OCR/lỗi ký tự và thông tin nguồn/license.",
+           "- Source/license hiện là khai báo trong metadata, chưa có bằng chứng độc lập xác nhận cấp phép. Cần nhóm/giảng viên xác nhận phạm vi nghiên cứu nội bộ trước khi chia sẻ công khai.","",
+           "| Môn | PDF | PASS | FAIL |", "|---|---:|---:|---:|"]
+    for subject in sorted({r['subject'] for r in rows}):
+        selected=[r for r in rows if r['subject']==subject]
+        lines.append(f"| {subject} | {len(selected)} | {sum(r['check_status']=='PASS' for r in selected)} | {sum(r['check_status']=='FAIL' for r in selected)} |")
+    lines += ["", "## Các vấn đề phát hiện", ""]
+    problems=[f"- `{r['relative_path']}`: {r['issues']}" for r in rows if r['check_status']!='PASS']
+    lines += problems or ["Không phát hiện lỗi theo các tiêu chí tự động trên. Vẫn cần đối chiếu extraction với PDF gốc; không coi đây là đánh giá chất lượng OCR/Docling hoặc kiểm chứng nội dung học thuật."]
+    lines += [f"- Metadata không có PDF: `{p}`" for p in orphans]
+    lines += ["", "## Bàn giao", "", "Manifest dùng đường dẫn tương đối repo, checksum SHA-256 tính lại. Nhãn môn trong corpus không phải khóa UUID runtime của LMS. Không sửa PDF/metadata để làm kết quả kiểm kê đạt.", ""]
+    report_path.parent.mkdir(parents=True,exist_ok=True)
+    report_path.write_text("\n".join(lines),encoding="utf-8")
+    return rows,orphans
+
+
+def run_cli():
+    import argparse
+    parser=argparse.ArgumentParser(description="Corpus quality checks; no flag preserves the W1 report.")
+    parser.add_argument("--w2-audit",action="store_true")
+    parser.add_argument("--corpus",type=Path,default=BASE_DIR)
+    args=parser.parse_args()
+    if not args.w2_audit:
+        main(); return
+    if not args.corpus.is_dir(): parser.error("Corpus directory does not exist")
+    rows,orphans=export_w2_audit(args.corpus.resolve(),REPO_ROOT,
+        REPO_ROOT/"data/data_manifest.csv",REPO_ROOT/"docs/reports/w2-corpus-check.md")
+    print(f"W2 audit: {len(rows)} PDF, {sum(r['check_status']=='PASS' for r in rows)} PASS, {len(orphans)} orphan metadata")
+    if not rows or orphans or any(r['check_status']=='FAIL' for r in rows): raise SystemExit(1)
+
+
 if __name__ == "__main__":
-    main()
+    run_cli()

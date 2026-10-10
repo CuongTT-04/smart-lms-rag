@@ -1,0 +1,16 @@
+
+> ohayo-frontend@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 D:/Đồ án tốt nghiệp/smart-lms-rag/frontend
+
+
+ Test Files  22 passed (22)
+      Tests  181 passed (181)
+   Start at  01:38:52
+   Duration  17.97s (environment 39%, tests 36%, setup 11%, transform 7%, import 6%)
+
+Environment  jsdom was created 22 times · 65.44s total, 39% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments

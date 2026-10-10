@@ -41,12 +41,9 @@ class CourseListCreateView(GenericAPIView):
         return CourseSerializer
 
     @extend_schema(
-        operation_id="courses_list", tags=["Courses"], summary="Danh sách khóa học được phép truy cập",
+        operation_id="courses_list", tags=["Courses"], summary='Danh sách khóa học được phép truy cập',
         description=(
-            "Yêu cầu Bearer JWT. Phân trang 20 bản ghi/trang, chuyển trang bằng query page. "
-            "Giáo viên xem khóa học mình là OWNER đang ACTIVE ở mọi trạng thái; học viên chỉ xem "
-            "khóa học PUBLISHED có thành viên STUDENT đang ACTIVE. ADMIN không tự có quyền truy cập. "
-            "Danh sách rỗng trả 200 với results=[]. Không trả mã lớp; đây không phải danh mục mọi khóa học công khai."
+            'Trả danh sách khóa học theo quyền tài khoản, phân trang 20 mục. Giáo viên xem khóa mình sở hữu; học viên xem khóa đã xuất bản còn quyền truy cập.'
         ),
         responses={200: CourseSerializer(many=True), 403: FORBIDDEN, 404: PAGE_NOT_FOUND},
     )
@@ -59,8 +56,8 @@ class CourseListCreateView(GenericAPIView):
         return Response(serializer.data)
 
     @extend_schema(
-        operation_id="courses_create", tags=["Courses"], summary="Giáo viên tạo khóa học nháp",
-        description="Chỉ giáo viên (TEACHER) đang hoạt động. title bắt buộc, tối đa 255 ký tự; description tùy chọn, cho phép rỗng. Tạo khóa học DRAFT, thành viên OWNER duy nhất, chính sách miễn phí mặc định và một lớp mặc định trong cùng giao dịch. Không gửi owner_id hay status. Sau khi tạo, dùng API lớp học để lấy mã lớp và PATCH khóa học sang PUBLISHED trước khi học viên tham gia.",
+        operation_id="courses_create", tags=["Courses"], summary='Giáo viên tạo khóa học nháp',
+        description='Giáo viên tạo khóa học nháp với tên và mô tả tùy chọn; được gán làm chủ khóa học. Không tự tạo lớp; tạo lớp riêng qua API lớp học.',
         request=CourseCreateSerializer,
         examples=[OpenApiExample("Khóa học mới", value={"title": "Nhập môn Python", "description": "Khóa học Python cơ bản."}, request_only=True)],
         responses={201: CourseSerializer, 400: CREATE_BAD_REQUEST, 403: FORBIDDEN},
@@ -99,8 +96,8 @@ class CourseDetailView(CourseManagementView):
         return CourseSerializer
 
     @extend_schema(
-        operation_id="courses_retrieve", tags=["Courses"], summary="Xem chi tiết khóa học",
-        description="Giáo viên là chủ khóa học hoặc học viên có thành viên STUDENT đang ACTIVE trong khóa học PUBLISHED. Dùng id từ danh sách khóa học làm course_id. Quyền tài khoản và thành viên được kiểm tra mỗi lần gọi; thu hồi quyền có hiệu lực ngay cả khi JWT còn hạn. Không đủ quyền trả 403, khóa học không tồn tại trả 404.",
+        operation_id="courses_retrieve", tags=["Courses"], summary='Xem chi tiết khóa học',
+        description='Trả thông tin khóa học cho chủ khóa học hoặc học viên còn quyền truy cập khóa đã xuất bản.',
         responses={200: CourseSerializer, 403: FORBIDDEN, 404: NOT_FOUND},
     )
     def get(self, request, course_id):
@@ -108,8 +105,8 @@ class CourseDetailView(CourseManagementView):
         return Response(self.get_serializer(course).data)
 
     @extend_schema(
-        operation_id="courses_update", tags=["Courses"], summary="Cập nhật hoặc xuất bản khóa học",
-        description="Chỉ giáo viên đang hoạt động và là OWNER đang ACTIVE. Gửi ít nhất một trường title, description hoặc status; trường không gửi được giữ nguyên. status nhận DRAFT (nháp), PUBLISHED (xuất bản), ARCHIVED (lưu trữ). Học viên chỉ truy cập/tham gia khi khóa học PUBLISHED. Không hỗ trợ chuyển chủ khóa học hay cập nhật chính sách tham gia qua endpoint này.",
+        operation_id="courses_update", tags=["Courses"], summary='Cập nhật hoặc xuất bản khóa học',
+        description='Chủ khóa học cập nhật tên, mô tả hoặc trạng thái DRAFT/PUBLISHED/ARCHIVED. Các trường không gửi được giữ nguyên.',
         request=CourseUpdateSerializer,
         examples=[OpenApiExample("Xuất bản khóa học", value={"status": "PUBLISHED"}, request_only=True)],
         responses={200: CourseSerializer, 400: UPDATE_BAD_REQUEST, 403: FORBIDDEN, 404: NOT_FOUND},
@@ -133,8 +130,8 @@ class CourseMembersView(CourseManagementView):
         return CourseMemberSerializer
 
     @extend_schema(
-        operation_id="course_members_list", tags=["Course Members"], summary="Danh sách thành viên khóa học",
-        description="Chỉ chủ khóa học. Phân trang 20 bản ghi/trang bằng query page; gồm cả thành viên ACTIVE, SUSPENDED và REMOVED. id là mã bản ghi thành viên (member_id), khác user.id. Dùng member_id để thu hồi quyền học viên. Không còn POST cấp quyền trực tiếp; học viên phải tham gia bằng mã lớp và được duyệt nếu chính sách yêu cầu.",
+        operation_id="course_members_list", tags=["Course Members"], summary='Danh sách thành viên khóa học',
+        description='Chủ khóa học xem thành viên và trạng thái quyền truy cập, phân trang 20 mục. Dùng member_id để thu hồi quyền học viên.',
         responses={200: CourseMemberSerializer(many=True), 403: FORBIDDEN, 404: COURSE_OR_PAGE_NOT_FOUND},
     )
     def get(self, request, course_id):
@@ -148,12 +145,9 @@ class CourseMembersView(CourseManagementView):
 
 class CourseMemberRevokeView(CourseManagementView):
     @extend_schema(
-        operation_id="course_members_revoke", tags=["Course Members"], summary="Thu hồi quyền truy cập của học viên",
+        operation_id="course_members_revoke", tags=["Course Members"], summary='Thu hồi quyền truy cập của học viên',
         description=(
-            "Chỉ chủ khóa học. member_id là UUID bản ghi thành viên trong khóa học, không phải UUID người dùng. "
-            "Không gửi body. Chuyển thành viên STUDENT sang REMOVED và các lượt ghi danh của học viên "
-            "trong khóa học sang WITHDRAWN; không xóa tài khoản hoặc lịch sử. Thành công trả 204 không có body; "
-            "gọi lại vẫn trả 204. Không thể thu hồi OWNER. Học viên muốn tham gia lại phải gửi mã lớp và chờ chủ khóa học duyệt."
+            'Chủ khóa học thu hồi quyền học viên và ghi danh trong toàn khóa; giữ lịch sử, không xóa tài khoản và không thu hồi chủ khóa học.'
         ),
         request=None,
         responses={204: None, 400: REVOKE_BAD_REQUEST, 403: FORBIDDEN, 404: NOT_FOUND},
