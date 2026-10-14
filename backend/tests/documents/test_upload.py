@@ -127,6 +127,10 @@ class UploadTests(TestCase):
         self.assertEqual(self.client.delete(f"/api/documents/{document_id}/").status_code,204)
         self.assertEqual(IngestionJob.objects.get().status,"CANCELLED")
         self.assertEqual(post().status_code,404)
-    def test_original_download_route_is_not_exposed(self):
+    def test_owner_downloads_original_but_protected_student_cannot(self):
         response=self.upload();document_id=response.json()["document_id"]
+        self.assertEqual(self.client.get(f"/api/documents/{document_id}/download/").status_code,200)
+        version=DocumentVersion.objects.get(document_id=document_id)
+        KnowledgeDocument.objects.filter(pk=document_id).update(is_published=True,published_version=version)
+        self.authenticate(self.student)
         self.assertEqual(self.client.get(f"/api/documents/{document_id}/download/").status_code,403)

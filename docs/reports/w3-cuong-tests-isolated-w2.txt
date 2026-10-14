@@ -1,0 +1,11 @@
+ Container smart-lms-rag-backend-run-1b981fe3769c Creating
+ Container smart-lms-rag-backend-run-1b981fe3769c Created
+Found 27 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+...........................
+----------------------------------------------------------------------
+Ran 27 tests in 1.900s
+
+OK
+Destroying test database for alias 'default'...

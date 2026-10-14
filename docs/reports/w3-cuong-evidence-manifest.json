@@ -1,0 +1,53 @@
+{
+  "branch": "TranTuanCuong_B22DCVT073_W3Tasks",
+  "verification_base_commit": "ebc3f80",
+  "date": "2026-10-14",
+  "status": "B implemented; real A retrieval and peer review pending",
+  "files": [
+    {
+      "path": "backend/config/w3/chunk_schema.json",
+      "sha256": "a848da585b691c1239d7fac25cfdd359ddfe59e9676900c1040413b47e5cca2a"
+    },
+    {
+      "path": "backend/config/w3/chunking_config.json",
+      "sha256": "4acf641898a1352407948489228ef64149fe712cf83a6fa378a4756a3305f6b4"
+    },
+    {
+      "path": "data/qa/qa_w3_cuong_v1.0.csv",
+      "sha256": "5a45a6b2f8d2b0dd0665a4fd4bcbcccb6858312cc95245a36e919789391b6aaa"
+    },
+    {
+      "path": "data/qa/qa_w3_review_log.csv",
+      "sha256": "ea0bfe6ea0bb99991e7dbbe55447a9ffa4fe088c531dbf07cf72844b30e1d032"
+    },
+    {
+      "path": "docs/reports/w3-cuong-corpus-chunk-verification.json",
+      "sha256": "15684629533a98ce2a1e7785ee06efbfc6122509311a6628fe3c0122e51248b9"
+    },
+    {
+      "path": "docs/reports/w3-cuong-docling-runtime-verification.json",
+      "sha256": "d5dcea9df1c15b08655e06271ede0d31cd8b968b9bae89b0cce4e1ea6da6a6b5"
+    },
+    {
+      "path": "docs/reports/w3-cuong-tests-runtime.txt",
+      "sha256": "2ba27465e34df6710a6dc8f17bb50bacf206fbc5bc01d53a18978ecc8c3cb4fb"
+    },
+    {
+      "path": "docs/reports/w3-cuong-tests-isolated-w2.txt",
+      "sha256": "a05874df614b2f76c9031f070088f57146636787c872eef87bf4afa11e878a23"
+    },
+    {
+      "path": "docs/reports/w3-cuong-tests-new.txt",
+      "sha256": "f4f879f82815cb586f16a842cc0f5d54f508643ed6555c42cb0dffc2f401c809"
+    }
+  ],
+  "not_claimed": [
+    "embeddings",
+    "FAISS",
+    "Recall",
+    "100 peer-approved QA",
+    "retrieval video",
+    "PostgreSQL concurrency"
+  ],
+  "hash_mode": "UTF-8 text with CRLF/CR normalized to LF"
+}

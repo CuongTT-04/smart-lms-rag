@@ -1,0 +1,8 @@
+{
+  "tokenizer_revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "tokenizer_model": "BAAI/bge-m3",
+  "max_tokens": 512,
+  "overlap_tokens": 64,
+  "normalization": "NFC-LF-v1",
+  "schema_version": "1.0"
+}
