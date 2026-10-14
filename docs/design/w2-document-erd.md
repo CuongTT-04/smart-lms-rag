@@ -103,13 +103,13 @@ erDiagram
 | IngestionJob | UNIQUE(idempotency_key), UUID hex do server cấp cho job. payload_digest là checksum nguồn; attempt_count >= 0; worker_token/lease kiểm soát worker muộn. |
 | DocumentOperation | UNIQUE(actor, course, action, client_key). payload_digest băm nội dung thao tác/file; key cũ với payload khác trả 409. Liên kết document/version/job dùng để trả lại cùng kết quả thao tác. |
 
-W2 upload chỉ PDF văn bản <=20 MiB và <=100 trang; enum định dạng của sản phẩm cuối có PDF/DOCX/PPTX/TXT, không có nghĩa API W2 nhận tất cả. Gốc sạch dùng extraction/RAG, derivative watermark dùng xem. Khi thay file giữ policy trên KnowledgeDocument.
+W2 upload chỉ PDF văn bản <=20 MiB và <=100 trang; enum định dạng của sản phẩm cuối có PDF/DOCX/PPTX/TXT, không có nghĩa API W2 nhận tất cả. Gốc sạch dùng extraction/RAG và tải về cho giáo viên; bản xem bảo vệ được tạo trong bộ nhớ với email người đang xem, không thêm bảng hoặc trường lưu bản cá nhân. Khi thay file giữ policy trên KnowledgeDocument.
 
 ## Trạng thái và điểm kích hoạt
 
 - Version: QUEUED → PROCESSING → EXTRACTED → READY, hoặc FAILED/REMOVED. EXTRACTED là chờ phần chỉ mục/bản xem theo pipeline; không gọi EXTRACTED là READY cho AI. READY chỉ sau kiểm tra đủ yêu cầu phục vụ. Gỡ không quay lại READY.
 - Job: QUEUED → RUNNING → SUCCEEDED/FAILED/CANCELLED; retry có token/lần thử và kiểm tra nguồn chưa gỡ. job_type: EXTRACT/INDEX/PREPARE_VIEW.
-- watermark_status: NOT_STARTED/PROCESSING/READY/FAILED; protected viewer chỉ trả derivative READY. Không fallback bản sạch.
+- watermark_status: NOT_STARTED/PROCESSING/READY/FAILED; protected viewer yêu cầu derivative READY và checksum hợp lệ trước khi tạo bản xem watermark email từ nguồn sạch. Không fallback bản sạch.
 - API extraction_status được suy ra từ extracted_at và job EXTRACT hiện hành: NOT_STARTED/QUEUED/PROCESSING/EXTRACTED/FAILED. Không cần một trạng thái text tự do thứ ba trong DB.
 - W2 kết quả standalone có extraction_status=EXTRACTED, indexed_at=null, rag_ready=false. Đã kiểm chứng DB runtime tạm với model A; chưa seed DB demo chung.
 - active_version_id phải trỏ phiên bản thuộc cùng document, READY và có các kết quả cần thiết. Khi chưa index xong giữ rỗng hoặc giữ bản đang phục vụ trước đó; viewer chọn version đã chuẩn bị theo quyền và không tự quảng bá thành bản AI đang phục vụ.
@@ -151,3 +151,6 @@ Nhánh A 0a0d63e thêm AccessPolicy/Classroom/Enrollment/JoinRequest; học viê
 Migration documents.0002 thêm published_version nullable và watermarked_sha256. published_version phải thuộc chính học liệu, còn hiệu lực, EXTRACTED/READY và có derivative watermark READY. Công bố không gán active_version/indexed_at hay rag_ready. Thay nguồn giữ published_version cũ; gỡ hoặc thu hồi công bố xóa tham chiếu này.
 
 Worker EXTRACT tạo extraction và derivative có watermark trước khi chốt EXTRACTED; gốc sạch không bị sửa. Policy ở cấp KnowledgeDocument mặc định PROTECTED, revision bắt đầu 1; PUBLIC_DOWNLOAD giữ nguyên quyền Course. Policy update khóa document và kiểm tra revision, view/download kiểm tra checksum và không fallback nguồn sạch khi derivative thiếu/hỏng.
+
+
+Watermark email và quyền tải không thay đổi ERD: `DocumentVersion` vẫn lưu nguồn sạch và derivative dùng kiểm tra trạng thái; bản xem cá nhân không được lưu lên ổ đĩa. Giáo viên phụ trách tải nguồn sạch ngay sau upload; học viên chỉ tải phiên bản đang công bố khi `PUBLIC_DOWNLOAD`. Tài khoản cũ chưa có email dùng tên tài khoản. Ghi chú/nét vẽ prototype nằm trong bộ nhớ backend, không phải thực thể database.
