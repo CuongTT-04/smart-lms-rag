@@ -1,0 +1,10 @@
+{
+  "sample_type": "synthetic_metric_fixture",
+  "cases": [
+    {"qa_id":"metric-full","course_id":"00000000-0000-4000-8000-000000000001","question":"Fixture: retrieve one gold page","gold_sources":[{"document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}]},
+    {"qa_id":"metric-partial","course_id":"00000000-0000-4000-8000-000000000001","question":"Fixture: retrieve two required pages","gold_sources":[{"document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1},{"document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":2}]},
+    {"qa_id":"metric-timeout","course_id":"00000000-0000-4000-8000-000000000001","question":"Fixture: retrieval fails","gold_sources":[{"document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}]},
+    {"qa_id":"metric-no-evidence","course_id":"00000000-0000-4000-8000-000000000001","question":"Fixture: explicit no-evidence QA","gold_sources":[]},
+    {"qa_id":"metric-invalid","question":"Fixture: missing labels","gold_sources":null}
+  ]
+}
