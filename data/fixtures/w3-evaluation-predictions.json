@@ -1,0 +1,14 @@
+{
+  "requested_top_k": 10,
+  "provenance": {"sample_type":"synthetic_metric_fixture","model_revision":null,"index_revision":null,"corpus_revision":null,"chunking_revision":null,"peer_review_complete":false,"note":"Handwritten ranked results to verify metric arithmetic, not model retrieval."},
+  "predictions": {
+    "metric-full": {"latency_seconds":0.1,"response":{"status":"OK","results":[{"rank":1,"chunk_id":"full-1","score":0.9,"source":{"course_id":"00000000-0000-4000-8000-000000000001","document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}}]}},
+    "metric-partial": {"latency_seconds":0.2,"response":{"status":"OK","results":[
+      {"rank":1,"chunk_id":"partial-1","score":0.9,"source":{"course_id":"00000000-0000-4000-8000-000000000001","document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}},
+      {"rank":2,"chunk_id":"partial-2","score":0.8,"source":{"course_id":"00000000-0000-4000-8000-000000000001","document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}},
+      {"rank":3,"chunk_id":"partial-3","score":0.7,"source":{"course_id":"00000000-0000-4000-8000-000000000001","document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":1}},
+      {"rank":4,"chunk_id":"partial-4","score":0.6,"source":{"course_id":"00000000-0000-4000-8000-000000000001","document_id":"00000000-0000-4000-8000-000000000101","version_id":"00000000-0000-4000-8000-000000001001","page_number":2}}
+    ]}},
+    "metric-timeout": {"latency_seconds":0.3,"error":"TIMEOUT","response":{"status":"ERROR","results":[]}}
+  }
+}

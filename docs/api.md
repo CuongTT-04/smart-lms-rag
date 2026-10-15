@@ -124,7 +124,7 @@ Giao diện giáo viên có mục Lớp học trên sidebar, tìm kiếm, lọc 
 
 ### Bộ xem PDF vừa trang và thu phóng (09/10/2026)
 
-Trình xem dùng PDF.js với worker đóng gói cùng frontend để hiển thị một trang mỗi lần. Mặc định tự khớp theo cả chiều rộng và chiều cao khung; nút Mặc định khôi phục cách khớp này. Hai nút thu nhỏ/phóng to có thanh trượt ở giữa, hỗ trợ điều khiển bằng bàn phím; có nút trang trước/sau. Khi phóng lớn, khung cuộn riêng. Nguồn vẫn là blob PDF từ API JWT và watermark/chính sách hiện có, kiểm tra quyền định kỳ giữ nguyên.
+Trình xem dùng PDF.js với worker đóng gói cùng frontend để hiển thị một trang mỗi lần. Mặc định tự khớp theo cả chiều rộng và chiều cao khung; nút Mặc định khôi phục cách khớp này. Hai nút thu nhỏ/phóng to có thanh trượt ở giữa, hỗ trợ điều khiển bằng bàn phím; có nút trang trước/sau. Cuộn chuột trong khung PDF để phóng to/thu nhỏ; khi phóng lớn, khung cuộn riêng. Công cụ Bàn tay kéo vùng tài liệu trong khung. Con trỏ chọn văn bản qua lớp chữ PDF.js; PUBLIC_DOWNLOAD cho sao chép, PROTECTED chỉ cho chọn chữ và chặn sao chép/cắt/kéo chữ trong giao diện. Nguồn vẫn là blob PDF từ API JWT và watermark/chính sách hiện có, kiểm tra quyền định kỳ giữ nguyên.
 
 
 ### Đổi tên học liệu (10/10/2026)
@@ -146,8 +146,8 @@ Session trả thêm `is_draft` (mặc định true). POST tạo buổi học m�
 
 ### Công cụ PDF trong phiên prototype (10/10/2026)
 
-Giáo viên và học viên có thanh công cụ theo thứ tự Con trỏ, Bút viết tay, Highlight, Tẩy, Text, Undo, Xóa toàn bộ, Toàn màn hình, Ghi chú. Nét vẽ/text gắn theo trang với tọa độ chuẩn hóa để giữ vị trí khi thu phóng. Xóa toàn bộ có xác nhận và chỉ xóa nét vẽ/text trên các trang, giữ sổ ghi chú riêng.
+Giáo viên và học viên có thanh công cụ theo thứ tự Con trỏ, Bàn tay, Bút viết tay, Highlight, Tẩy, Text, Undo, Xóa toàn bộ, Toàn màn hình, Ghi chú. Nét vẽ/text gắn theo trang với tọa độ chuẩn hóa để giữ vị trí khi thu phóng. Xóa toàn bộ có xác nhận và chỉ xóa nét vẽ/text trên các trang, giữ sổ ghi chú riêng.
 
-Dưới PDF có hàng “Nội dung này có hữu ích không?” với like/unlike (chọn một hoặc bỏ chọn) và báo cáo bài học. Báo cáo mở dialog Lý do (bắt buộc, tối đa 300 ký tự), Ý kiến của bạn (tùy chọn, tối đa 3000 ký tự), Gửi/Hủy. Dữ liệu `feedback` tùy chọn trong cùng payload gồm `vote` (`like/dislike/none`) và `report` (`reason/opinion`); chỉ lưu trong bộ nhớ prototype như ghi chú, chưa có luồng xử lý báo cáo cho quản trị viên. Undo nét vẽ không hoàn tác đánh giá hoặc báo cáo.
+Chỉ giao diện học viên, ngoài chế độ toàn màn hình, có hàng “Nội dung này có hữu ích không?” dưới PDF với like/unlike (chọn một hoặc bỏ chọn) và báo cáo bài học. Báo cáo mở dialog Lý do (bắt buộc, tối đa 300 ký tự), Ý kiến của bạn (tùy chọn, tối đa 3000 ký tự), Gửi/Hủy. Dữ liệu `feedback` tùy chọn trong cùng payload gồm `vote` (`like/dislike/none`) và `report` (`reason/opinion`); chỉ lưu trong bộ nhớ prototype như ghi chú, chưa có luồng xử lý báo cáo cho quản trị viên. Undo nét vẽ không hoàn tác đánh giá hoặc báo cáo.
 
 `GET/PUT /api/documents/{document_id}/study-notes/?version_id={version_id}` đọc/thay thế `{items, notes, scope}` riêng cho tài khoản đang đăng nhập và đúng phiên bản PDF được phép xem. `items` hỗ trợ `pen/highlight` với các điểm `[x,y]` trong khoảng 0–1, hoặc `text` với `x/y/text`; mỗi mục có `id` và `page`. Quyền truy cập tài liệu và lớp được kiểm tra lại mỗi yêu cầu. Dữ liệu chỉ nằm trong bộ nhớ backend, không có migration hay ghi database/tệp/localStorage. Thoát/vào lại bài học hoặc tải lại trang vẫn đọc lại được trong cùng phiên backend; tắt/khởi động lại backend Docker reset toàn bộ ghi chú prototype. Tải lại mã backend trong chế độ phát triển cũng reset bộ nhớ này. `scope` được cấp khi GET và gửi nguyên khi PUT; ghi từ phiên Docker cũ hoặc tài khoản khác trả 409, tránh khôi phục nhầm dữ liệu sau khi reset.

@@ -1,0 +1,47 @@
+{
+  "sample_type": "synthetic_fixture",
+  "description": "Twelve manually written Vietnamese chunks. UUIDs and pages are fixture labels, not database records or real PDF citations.",
+  "documents": [
+    {
+      "course_id": "00000000-0000-4000-8000-000000000001",
+      "document_id": "00000000-0000-4000-8000-000000000101",
+      "version_id": "00000000-0000-4000-8000-000000001001",
+      "document_title": "Mẫu triết học",
+      "chunks": [
+        {"chunk_id": "fixture-philosophy-1", "page_number": 1, "text": "Vật chất tồn tại khách quan, độc lập với ý thức. Ý thức là sự phản ánh thế giới khách quan vào bộ óc con người."},
+        {"chunk_id": "fixture-philosophy-2", "page_number": 2, "text": "Vật chất quyết định ý thức. Ý thức có tính độc lập tương đối và tác động trở lại vật chất thông qua hoạt động thực tiễn của con người."},
+        {"chunk_id": "fixture-philosophy-3", "page_number": 3, "text": "Mâu thuẫn là sự thống nhất và đấu tranh giữa các mặt đối lập. Sự đấu tranh giữa các mặt đối lập là nguồn gốc của sự vận động và phát triển."},
+        {"chunk_id": "fixture-philosophy-4", "page_number": 4, "text": "Thực tiễn là cơ sở, động lực và mục đích của nhận thức. Thực tiễn còn là tiêu chuẩn để kiểm tra tính đúng đắn của nhận thức."}
+      ]
+    },
+    {
+      "course_id": "00000000-0000-4000-8000-000000000002",
+      "document_id": "00000000-0000-4000-8000-000000000102",
+      "version_id": "00000000-0000-4000-8000-000000001002",
+      "document_title": "Mẫu kinh tế chính trị",
+      "chunks": [
+        {"chunk_id": "fixture-economics-1", "page_number": 1, "text": "Hàng hóa có hai thuộc tính là giá trị sử dụng và giá trị. Giá trị sử dụng thể hiện công dụng của hàng hóa nhằm thỏa mãn nhu cầu."},
+        {"chunk_id": "fixture-economics-2", "page_number": 2, "text": "Lượng giá trị hàng hóa được xác định bởi thời gian lao động xã hội cần thiết để sản xuất hàng hóa trong điều kiện sản xuất bình thường."},
+        {"chunk_id": "fixture-economics-3", "page_number": 3, "text": "Giá trị thặng dư là phần giá trị mới vượt quá giá trị sức lao động, do người lao động làm thuê tạo ra trong quá trình sản xuất."},
+        {"chunk_id": "fixture-economics-4", "page_number": 4, "text": "Tiền tệ thực hiện các chức năng như thước đo giá trị, phương tiện lưu thông, phương tiện cất trữ, phương tiện thanh toán và tiền tệ thế giới."}
+      ]
+    },
+    {
+      "course_id": "00000000-0000-4000-8000-000000000003",
+      "document_id": "00000000-0000-4000-8000-000000000103",
+      "version_id": "00000000-0000-4000-8000-000000001003",
+      "document_title": "Mẫu chủ nghĩa xã hội khoa học",
+      "chunks": [
+        {"chunk_id": "fixture-socialism-1", "page_number": 1, "text": "Giai cấp công nhân gắn với nền sản xuất công nghiệp hiện đại. Sứ mệnh lịch sử của giai cấp công nhân được xem xét trên các nội dung kinh tế, chính trị và văn hóa."},
+        {"chunk_id": "fixture-socialism-2", "page_number": 2, "text": "Liên minh giữa giai cấp công nhân, giai cấp nông dân và đội ngũ trí thức là một nội dung quan trọng trong thời kỳ quá độ lên chủ nghĩa xã hội."},
+        {"chunk_id": "fixture-socialism-3", "page_number": 3, "text": "Gia đình có các chức năng cơ bản như tái sản xuất con người, nuôi dưỡng và giáo dục, tổ chức đời sống kinh tế và thỏa mãn nhu cầu tình cảm."},
+        {"chunk_id": "fixture-socialism-4", "page_number": 4, "text": "Bình đẳng giữa các dân tộc là nguyên tắc quan trọng trong giải quyết vấn đề dân tộc. Các dân tộc có quyền và nghĩa vụ ngang nhau."}
+      ]
+    }
+  ],
+  "queries": [
+    {"query": "Vật chất tác động như thế nào đến ý thức và ý thức tác động trở lại ra sao?", "expected_top1_chunk_id": "fixture-philosophy-2"},
+    {"query": "Hai thuộc tính của hàng hóa là gì?", "expected_top1_chunk_id": "fixture-economics-1"},
+    {"query": "Gia đình có những chức năng cơ bản nào?", "expected_top1_chunk_id": "fixture-socialism-3"}
+  ]
+}

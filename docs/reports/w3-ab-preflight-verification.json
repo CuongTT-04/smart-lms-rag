@@ -1,0 +1,27 @@
+{
+  "document_count": 27,
+  "chunk_count": 1048,
+  "qa_count": 100,
+  "chunking_config_hash": "184dc29844666d63f6948ed4c4e191580cfb686a9d829dc84065cf072ad9f6d6",
+  "embedding_config": {
+    "model_id": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "device": "cpu",
+    "batch_size": 2,
+    "max_tokens": 514,
+    "dimension": 1024,
+    "dtype": "float32",
+    "normalize_embeddings": true,
+    "local_files_only": false
+  },
+  "embedding_config_hash": "cb64865324751eb5726329917a349887a33142e51f8114a4500d50e822902466",
+  "corpus_manifest_sha256": "15684629533a98ce2a1e7785ee06efbfc6122509311a6628fe3c0122e51248b9",
+  "dataset_sha256": "779f985ebcc6d659dde115fe3daeebf77ab57b1378da756949fc128aa3b9f7a7",
+  "parser": "pypdf",
+  "authorization_verified": false,
+  "rag_ready": false,
+  "review_status": "pending_human_peer",
+  "validation_only": true,
+  "real_tokenizer_verified": true,
+  "maximum_encoded_tokens": 514
+}

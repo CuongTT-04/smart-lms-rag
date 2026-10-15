@@ -1,0 +1,44 @@
+{
+  "verified_date": "2026-10-15",
+  "status": "PASSED_AGENT_AUDIT",
+  "a_rows": 75,
+  "b_rows": 50,
+  "shared_ids": 25,
+  "merged_qa": 100,
+  "source_checked_pending_peer": 100,
+  "source_review_required": [],
+  "human_peer_approved": 0,
+  "course_counts": {
+    "THMLN": 49,
+    "KTCTMLN": 31,
+    "CNXHKH": 20
+  },
+  "mode_counts": {
+    "qa": 93,
+    "hint": 7
+  },
+  "csv_json_parity": true,
+  "deterministic_regeneration": true,
+  "pilot_and_b_inputs_unchanged": true,
+  "editorially_changed_qa": [
+    "KTCTMLN_QA_005",
+    "CUONG_W3_QA_023"
+  ],
+  "special_qa": {
+    "qa_id": "KTCTMLN_QA_001",
+    "source_doc": "KTCTMLN/ch01.pdf",
+    "physical_page": 20,
+    "question_answer_and_page_unchanged": true,
+    "source_evidence_verified": true,
+    "human_peer_approved": false
+  },
+  "dataset_sha256": "2f7f9e0880630e39eb18e5ba30f2fde391be8deed87321a16402b3eb2044a45b",
+  "outputs_sha256": {
+    "qa_w3_v1.0.csv": "df080909e69cf8fa30d12d59ed7506d183f8a6486d7bb4858613d7ada26d8f39",
+    "qa_w3_v1.0.json": "2f7f9e0880630e39eb18e5ba30f2fde391be8deed87321a16402b3eb2044a45b",
+    "qa_review_log.csv": "7312fe88077b68eadc4e2e215eba64bf8c8a9fb6983cf641eafcdddde76a49a1",
+    "qa_w3_source_audit.csv": "80e6229a863a5d23c87f82b35305aac30ecf5462644ca5b2aa58e90572e07dfa",
+    "w3_source_map.json": "7a1891644cef31191170019f3af38f144f120bb1ab50c680897efa203ed8eea3"
+  },
+  "limitation": "Agent-assisted content/source audit, not human peer approval; no predictions used to modify gold. No claim of semantic independence or model quality."
+}

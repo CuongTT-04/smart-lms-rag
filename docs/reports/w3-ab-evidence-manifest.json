@@ -1,0 +1,67 @@
+{
+  "prepared_date": "2026-10-15",
+  "branch": "TranTuanCuong_B22DCVT073_W3Tasks",
+  "component_commits": {
+    "duong": "88d552068381df2ac4209cd120fbd2065d02c56e",
+    "cuong": "dae41c64897afb8fc1336a6252e17231bb874d35"
+  },
+  "hash_mode": "UTF-8 text without BOM, CRLF/CR normalized to LF",
+  "files": {
+    "data/qa/qa_w3_v1.0.csv": "821d2f051c4d463258ef8560bc5dde3dd3f9b48a1ea0ce9cff8598dc54966dd2",
+    "data/qa/qa_w3_v1.0.json": "779f985ebcc6d659dde115fe3daeebf77ab57b1378da756949fc128aa3b9f7a7",
+    "data/qa/qa_review_log.csv": "cd9e308e405961cb8128efe970e6e1d163b8d2652fef22151188606e4c1a6054",
+    "data/qa/w3_source_map.json": "a0d4c0c4318cf7dc2b9618468957fdaacb8560ebc7123beb2d50ca3173031483",
+    "backend/config/w3/chunking_config.json": "4acf641898a1352407948489228ef64149fe712cf83a6fa378a4756a3305f6b4",
+    "backend/config/w3/embedding_config.json": "d47cc6701d2bc445ac61f8d9400a3a389a4e06d52148bc7a07cf16f27fdb233a",
+    "notebooks/w3_retrieval_baseline.ipynb": "11c747dcffb5c96b3f7688debd266415aa0057c760ad49c6e9672ec05a575f09",
+    "scripts/run_w3_baseline.py": "9706e5f3cbf264eec5dee40aa1575a01acf3cfb110cb5eacb9eafd0e4a26f863",
+    "scripts/merge_w3_qa.py": "1e8820a1fa7dba63633ed45dcb171bb01a181f635f7a890b08d7b46f41a4fc77",
+    "backend/apps/documents/dense_retrieval.py": "fa003d660aa41d97ba6e1e9eb1dabcaa51e74f8d2789bc67791b5a52c0ac31a5",
+    "backend/apps/documents/corpus_catalog.py": "f5d90b479204412b791da5f6b6756b1702fc065dbd603fac820d937d67741eb1",
+    "docs/reports/w3-ab-tests-package.txt": "11d5b7effb965aeb5e5a567a9857a6e492a2a8e57c49138d68082392ece2247f",
+    "docs/reports/w3-ab-tests-runtime-final.txt": "e72cdc7e9be445d4b9225451ba375d5774410f94ea9b042666aaa5f6ffd9d91a",
+    "docs/reports/w3-ab-tests-isolated.txt": "71ec1d18b0daf5c87d09cddb90c1127463a1fc040bb50b96d7f9fc25379b5297",
+    "docs/reports/w3-ab-preflight-verification.json": "5aca0c357cea31d48265fc02b0071d041f164382abf543a4bce956c284ff3976",
+    "docs/reports/w3-ab-reproduce.md": "af6460918b7ccf1b4476415224336580be1d238d121483fb17b16213608b5b94",
+    "docs/reports/w3-ban-giao-duong.md": "e168d20c5ee2d978057fb982eb627e86bb381922302a322c40da848e20296cb8"
+  },
+  "attached_inputs_sha256_bytes": {
+    "D:\\ohayo-retrieval-baseline.ipynb": "9f84ff1c5b280a99cf05c3fa48b03c33711a76946383687544a32445e7bd82cb",
+    "D:\\w3-a-worklog.md": "2fde25cd9520fef2ee830342ba3255ff3b9b8303ebe354e07857ed8771e9a3b8"
+  },
+  "qa": {
+    "count": 100,
+    "unique_ids": 100,
+    "modes": {
+      "qa": 93,
+      "hint": 7
+    },
+    "source_review_status": {
+      "source_checked_pending_peer": 99,
+      "source_review_required": 1
+    },
+    "human_peer_approved": 0
+  },
+  "tests": {
+    "ai_packaged": {
+      "passed": 112,
+      "skipped": 0
+    },
+    "django_runtime": {
+      "passed": 273,
+      "skipped": 4
+    },
+    "isolated_w2": {
+      "passed": 27,
+      "skipped": 0
+    }
+  },
+  "not_verified": [
+    "full real model embedding/index for 1048 chunks",
+    "real corpus Recall",
+    "human semantic peer review",
+    "Kaggle notebook clean Run All",
+    "PostgreSQL concurrency 4 tests",
+    "runtime DB corpus index/demo"
+  ]
+}

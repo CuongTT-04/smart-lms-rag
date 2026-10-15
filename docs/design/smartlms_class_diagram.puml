@@ -680,8 +680,8 @@ note bottom of Enrollment
   Course progress is derived from eligible lesson completions.
 end note
 note bottom of KnowledgeDocument
-  New material defaults to PROTECTED: watermarked view, no clean download.
-  PUBLIC_DOWNLOAD: clean view/download for users already allowed to read.
+  PROTECTED: viewer email watermark; students cannot download clean PDF.
+  Teachers always download originals; students need PUBLIC_DOWNLOAD.
   This does not make the course public or grant enrollment.
   Replacing the file preserves materialPolicy.
   A policy change increments policyRevision and invalidates cached access.

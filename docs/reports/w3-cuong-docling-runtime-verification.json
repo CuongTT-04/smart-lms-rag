@@ -1,0 +1,27 @@
+{
+  "parser": "Docling",
+  "parser_version": "2.135.0",
+  "page_count": 29,
+  "chunk_count": 29,
+  "source_checksum": "a279ffb8a9c612f9e6cd2dfed148c87d3dd3d852cd4df8cc3779db7858cad8f3",
+  "checks": [
+    "in_memory_database",
+    "real_docling_extraction",
+    "real_management_command",
+    "verified_chunk_manifest",
+    "extracted_status_preserved",
+    "no_indexed_at_claim"
+  ],
+  "not_tested": [
+    "embeddings",
+    "FAISS",
+    "Recall"
+  ],
+  "artifact": {
+    "version_id": "0d583cd1-9285-4518-8941-fa066f15eeee",
+    "manifest_key": "chunks/0d583cd1-9285-4518-8941-fa066f15eeee/cc649e6ddd36a31075904e0e4216089722e37720dbd3b7ca294c8eb613f900c6/manifest.json",
+    "chunks_key": "chunks/0d583cd1-9285-4518-8941-fa066f15eeee/cc649e6ddd36a31075904e0e4216089722e37720dbd3b7ca294c8eb613f900c6/chunks.jsonl",
+    "chunk_count": 29,
+    "chunks_checksum": "971b5ec33b509c74e03937e7b028ee7b74356df6a25d92ffd5c3edcbcfff2cc5"
+  }
+}
