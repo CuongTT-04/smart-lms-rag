@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import unicodedata
 from uuid import NAMESPACE_URL, uuid5
 
 from pypdf import PdfReader
@@ -35,8 +36,63 @@ def merge_rows(a_rows, b_rows):
     return list(result.values())
 
 
+def compact(text):
+    return unicodedata.normalize('NFC', re.sub(r'\s+', '', unicodedata.normalize('NFC', text))).casefold()
+
+
+def audit_rows(rows, sources, qa, corpus):
+    """Apply explicit editorial corrections and verify source evidence, not human approval."""
+    specs = {}
+    for name in ('qa_pilot_v2.0_corrections.json', 'qa_pilot_v2.0_additions.json'):
+        for item in json.loads((qa/name).read_text(encoding='utf-8'))['rows']:
+            specs[item['qa_id']] = {'anchor': item['evidence_anchor'], 'terms': item['evidence_terms']}
+    for item in json.loads((qa/'qa_w3_source_checks.json').read_text(encoding='utf-8'))['checks']:
+        if item['qa_id'] in specs:
+            raise ValueError('Duplicate evidence specification: '+item['qa_id'])
+        specs[item['qa_id']] = item
+    if set(specs) != {row['qa_id'] for row in rows}:
+        raise ValueError('Evidence specifications must cover exactly the merged QA IDs.')
+    readers, evidence, revised = {}, [], []
+    for original in rows:
+        row = dict(original)
+        spec = specs[row['qa_id']]
+        changes = spec.get('changes', {})
+        if set(changes) - {'question', 'ground_truth', 'source_page', 'source_pages', 'notes', 'source_section'}:
+            raise ValueError('Unsupported editorial correction fields.')
+        row.update(changes)
+        key = (row['course_id'], row['source_doc'])
+        path = Path(corpus)/key[0]/key[1]
+        if key not in readers:
+            readers[key] = PdfReader(path)
+        reader = readers[key]
+        pages = json.loads(row.get('source_pages') or '['+row['source_page']+']')
+        if (not isinstance(pages, list) or not pages or any(type(p) is not int or not 1 <= p <= len(reader.pages) for p in pages)
+                or len(set(pages)) != len(pages) or int(row['source_page']) != pages[0]):
+            raise ValueError('Invalid gold pages: '+row['qa_id'])
+        texts = [unicodedata.normalize('NFC', re.sub(r'\s+', ' ', reader.pages[p-1].extract_text() or '').strip()) for p in pages]
+        joined = '\n'.join(texts)
+        missing = [term for term in [spec['anchor'], *spec['terms']] if compact(term) not in compact(joined)]
+        if missing:
+            raise ValueError(f"Missing source evidence for {row['qa_id']}: {missing}")
+        source = sources[key]
+        evidence.append({'qa_id': row['qa_id'], 'course_code': key[0], 'source_doc': key[1],
+                         'source_pages': json.dumps(pages), 'source_checksum': source['source_checksum'],
+                         'agent_reviewer': 'Codex', 'audit_status': 'agent_source_checked_pending_human_peer',
+                         'evidence_anchor': spec['anchor'], 'evidence_terms': json.dumps(spec['terms'], ensure_ascii=False),
+                         'evidence_excerpt': joined,
+                         'changes': json.dumps({k: {'before': original.get(k, ''), 'after': v} for k, v in changes.items() if original.get(k, '') != v}, ensure_ascii=False),
+                         'note': spec.get('note', 'Đối chiếu câu hỏi/đáp án và bằng chứng trang nguồn; không thay thế human peer review.')})
+        revised.append(row)
+    return revised, evidence
+
+
 def build(corpus, output):
     qa = ROOT / 'data/qa'
+    existing_log = Path(output)/'qa_review_log.csv'
+    if existing_log.exists():
+        previous_reviews = read_csv(existing_log)
+        if any(r.get('peer_review_status', 'pending') not in ('', 'pending') or r.get('peer_reviewer', '').strip() for r in previous_reviews):
+            raise ValueError('Existing human review must be reconciled explicitly; refusing to reset peer decisions.')
     a, b = read_csv(qa/'qa_pilot_v2.0.csv'), read_csv(qa/'qa_w3_cuong_v1.0.csv')
     rows = merge_rows(a, b)
     if len(rows) != 100:
@@ -56,6 +112,9 @@ def build(corpus, output):
             'source_checksum': checksum,
             'page_count': len(PdfReader(path).pages),
         }
+    rows, evidence = audit_rows(rows, sources, qa, corpus)
+    rows = merge_rows(rows, [])
+    audit_by_id = {item['qa_id']: item for item in evidence}
     cases, review_log, merged = [], [], []
     fields = list(a[0]) + ['mode', 'owner', 'source_checksum', 'document_id', 'version_id',
                            'source_pages', 'source_check', 'peer_review_status']
@@ -72,7 +131,7 @@ def build(corpus, output):
         for key in ('document_id', 'version_id'):
             if row.get(key) and row[key] != source[key]:
                 raise ValueError('QA UUID mapping differs from corpus: '+row['qa_id'])
-        checked = row['qa_id'] in b_ids or bool(review_a)
+        checked = row['qa_id'] in audit_by_id
         owner = 'Cường' if row['qa_id'] in b_ids else ('Dương' if review_a else 'Nhóm (pilot còn lại)')
         status = 'source_checked_pending_peer' if checked else 'source_review_required'
         values = {key: row.get(key, '') for key in fields}
@@ -84,14 +143,16 @@ def build(corpus, output):
                       'ground_truth': row['ground_truth'], 'course_id': source['course_id'],
                       'gold_sources': [{'document_id': source['document_id'], 'version_id': source['version_id'],
                                         'page_number': page} for page in pages],
-                      'evidence_reference': row.get('notes', '')})
+                      'evidence_reference': 'data/qa/qa_w3_source_audit.csv#'+row['qa_id']})
         review_log.append({'qa_id': row['qa_id'], 'owner': owner, 'source_doc': row['source_doc'],
                            'source_pages': json.dumps(pages), 'source_checksum': source['source_checksum'],
                            'source_check': status, 'peer_reviewer': '', 'peer_review_status': 'pending',
-                           'note': 'Kiểm tra lại ý nghĩa câu hỏi/đáp án và trang nguồn; không coi kiểm tra hash là duyệt nội dung.'})
+                           'agent_reviewer': 'Codex', 'agent_review_status': 'source_checked',
+                           'evidence_reference': 'data/qa/qa_w3_source_audit.csv#'+row['qa_id'],
+                           'note': audit_by_id[row['qa_id']]['note']})
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    for name, values in [('qa_w3_v1.0.csv', merged), ('qa_review_log.csv', review_log)]:
+    for name, values in [('qa_w3_v1.0.csv', merged), ('qa_review_log.csv', review_log), ('qa_w3_source_audit.csv', evidence)]:
         with (output/name).open('w', encoding='utf-8', newline='') as stream:
             writer = csv.DictWriter(stream, fieldnames=list(values[0]), lineterminator='\n')
             writer.writeheader()
