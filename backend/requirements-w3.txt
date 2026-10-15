@@ -1,0 +1,5 @@
+# Offline W3 corpus/notebook runtime; no Docling/Django server boot needed.
+-r requirements-embedding.txt
+Django>=5.1,<5.3
+pypdf==6.10.0
+requests>=2.32,<3

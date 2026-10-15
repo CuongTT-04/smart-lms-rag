@@ -1,0 +1,7 @@
+# Optional W3 runtime; install separately from the Django/Docling image.
+torch>=2.6,<3
+sentence-transformers>=3.4,<7
+huggingface-hub>=0.28,<2
+numpy>=1.26,<3
+psutil>=6,<8
+faiss-cpu>=1.12,<2

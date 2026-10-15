@@ -28,6 +28,8 @@ def retrieve_authorized(user,query,scope,retriever,top_k=5,*,catalog):
     current=live_scope(user,scope)
     if not current.allowed_version_ids:return []
     try:hits=retriever.search(query=query.strip(),allowed_version_ids=current.allowed_version_ids,top_k=top_k)
+    except DocumentError:
+        raise
     except Exception as exc:
         raise DocumentError('RETRIEVAL_UNAVAILABLE','Retrieval service/index unavailable.',503) from exc
     live_scope(user,current)

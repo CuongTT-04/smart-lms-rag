@@ -15,9 +15,11 @@ from types import SimpleNamespace
 from uuid import NAMESPACE_URL,uuid5
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE','config.settings.test')
-import django
-django.setup()
+os.environ.pop('DJANGO_SETTINGS_MODULE', None)
+from django.conf import settings
+if not settings.configured:
+    settings.configure(BASE_DIR=Path(__file__).resolve().parents[1],
+                       MEDIA_ROOT=Path(__file__).resolve().parents[1]/'media')
 from django.test import override_settings
 from pypdf import PdfReader
 import requests

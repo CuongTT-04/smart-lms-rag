@@ -1,0 +1,56 @@
+{
+  "verified_date": "2026-10-14",
+  "version": "2.0",
+  "output": "data/qa/qa_pilot_v2.0.csv",
+  "base_file_unchanged": true,
+  "base_ids_and_order_preserved": true,
+  "corrected_legacy_thmln_rows": 24,
+  "other_legacy_rows_preserved": 26,
+  "new_25_rows_preserved": true,
+  "all_thmln_sources_checked": 49,
+  "base_sha256": "30efc4826b64d4a5cfac663f4c78b89696a30fa5d60181ac911566d7aaf96ca6",
+  "v2_sha256": "5e8e4efe112dece116cbd4d3d0b13ebe3fa731a928408650acfc84ee258b6cca",
+  "added_rows": 25,
+  "total_rows": 75,
+  "course_counts": {
+    "THMLN": 49,
+    "KTCTMLN": 13,
+    "CNXHKH": 13
+  },
+  "new_id_range": [
+    "THMLN_QA_025",
+    "THMLN_QA_049"
+  ],
+  "page_unit": "physical_pdf_1based",
+  "new_sources_checked": 25,
+  "new_source_documents": [
+    "ch01.pdf",
+    "ch03.pdf",
+    "ch05.pdf",
+    "ch06.pdf",
+    "ch07.pdf",
+    "ch08.pdf",
+    "ch09.pdf",
+    "ch10.pdf",
+    "ch11.pdf",
+    "ch12.pdf",
+    "ch13.pdf",
+    "ch14.pdf"
+  ],
+  "new_question_types": {
+    "short_answer": 24,
+    "true_false": 1
+  },
+  "new_difficulty": {
+    "easy": 15,
+    "medium": 10
+  },
+  "legacy_thmln_reviewed": 24,
+  "legacy_review_status_counts": {
+    "SOURCE_CHECKED_PENDING_PEER": 24
+  },
+  "peer_review_complete": false,
+  "all_75_rows_certified_as_benchmark": false,
+  "review_file": "data/qa/qa_pilot_v2.0_review.csv",
+  "note": "v1 remains unchanged. Its 24 THMLN rows are repaired only in v2; the other 26 legacy rows and 25 additions are unchanged. All 49 THMLN rows are source-checked, not independently peer-reviewed. The other courses are not certified by this check."
+}
