@@ -9,10 +9,15 @@ from .session_views import ClassroomSessionsView, ClassroomSessionDetailView
 from .announcement_views import ClassroomAnnouncementsView, ClassroomAnnouncementImageView
 
 from .people_views import ClassroomPeopleView
+from .comment_views import AnnouncementCommentsView, AnnouncementCommentDetailView, AnnouncementCommentVoteView, ClassroomCommentMuteView
 
 app_name = "courses"
 
 urlpatterns = [
+    path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/', AnnouncementCommentsView.as_view(), name='announcement-comments'),
+    path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/<uuid:comment_id>/', AnnouncementCommentDetailView.as_view(), name='announcement-comment-delete'),
+    path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/<uuid:comment_id>/vote/', AnnouncementCommentVoteView.as_view(), name='announcement-comment-vote'),
+    path('<uuid:course_id>/classrooms/<uuid:classroom_id>/comment-mutes/<uuid:user_id>/', ClassroomCommentMuteView.as_view(), name='classroom-comment-mute'),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/people/", ClassroomPeopleView.as_view(), name="classroom-people"),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/<uuid:session_id>/", ClassroomSessionDetailView.as_view(), name="classroom-session-update"),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/image/", ClassroomAnnouncementImageView.as_view(), name="classroom-announcement-image"),

@@ -131,3 +131,22 @@ export const updateClassroomSession = (id, roomId, sessionId, values) => writeRe
 export const deleteClassroomSession = (id, roomId, sessionId) => writeRequest(`/courses/${id}/classrooms/${roomId}/sessions/${sessionId}/`, 'DELETE')
 
 export const listClassroomPeople = (id, roomId, signal) => apiRequest(`/courses/${id}/classrooms/${roomId}/people/`, { signal })
+
+const commentsPath = (id, roomId, announcementId) => `/courses/${id}/classrooms/${roomId}/announcements/${announcementId}/comments/`
+export async function listAnnouncementComments(id, roomId, announcementId, signal) {
+  const path = commentsPath(id, roomId, announcementId)
+  const first = await apiRequest(path, { signal })
+  const results = [...first.results]
+  let next = first.next
+  let page = 2
+  while (next) {
+    const data = await apiRequest(`${path}?page=${page++}`, { signal })
+    results.push(...data.results)
+    next = data.next
+  }
+  return { ...first, results }
+}
+export const createAnnouncementComment = (id, roomId, announcementId, values) => writeRequest(commentsPath(id, roomId, announcementId), 'POST', values)
+export const deleteAnnouncementComment = (id, roomId, announcementId, commentId) => writeRequest(`${commentsPath(id, roomId, announcementId)}${commentId}/`, 'DELETE')
+export const voteAnnouncementComment = (id, roomId, announcementId, commentId, value) => writeRequest(`${commentsPath(id, roomId, announcementId)}${commentId}/vote/`, 'PUT', { value })
+export const setClassroomCommentMute = (id, roomId, userId, isMuted) => writeRequest(`/courses/${id}/classrooms/${roomId}/comment-mutes/${userId}/`, 'PUT', { is_muted: isMuted })

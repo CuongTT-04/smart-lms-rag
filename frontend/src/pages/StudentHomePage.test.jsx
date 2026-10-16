@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import StudentHomePage from './StudentHomePage'
 import { getCourse, listAllCourses, listMyCourseClassrooms, listMyEnrollments, listMyJoinRequests, listClassroomSessions, listClassroomAnnouncements } from '../services/course.service'
@@ -12,6 +12,17 @@ const student = { id: 'student-1', username: 'student_a', full_name: 'Nguyễn M
 const course = { id: 'course-1', title: 'Lập trình Python căn bản', description: 'Nền tảng cho người mới bắt đầu', status: 'PUBLISHED', published_at: '2026-10-01T10:00:00Z', updated_at: '2026-10-07T10:00:00Z' }
 
 describe('student home', () => {
+  it('restores course navigation with browser Back and Forward', async () => {
+    render(<StudentHomePage user={student} onLogout={vi.fn()} />)
+    await screen.findByText(course.title)
+    await userEvent.click(screen.getByRole('button', { name: 'Khóa học của tôi', exact: true }))
+    await userEvent.click(screen.getByRole('button', { name: 'Xem khóa học', exact: true }))
+    expect(await screen.findByRole('heading', { name: course.title, level: 1 })).toBeVisible()
+    act(() => window.history.back())
+    expect(await screen.findByRole('heading', { name: 'Khóa học của tôi', level: 1 })).toBeVisible()
+    act(() => window.history.forward())
+    expect(await screen.findByRole('heading', { name: course.title, level: 1 })).toBeVisible()
+  })
   it('opens the selected joined classroom directly and returns to joined classes', async () => {
     listMyJoinRequests.mockResolvedValue([])
     listMyEnrollments.mockResolvedValue([{ id:'e1', course_id:'course-1', course_title:course.title, classroom_id:'room-2', classroom_name:'Lớp thứ hai', status:'ACTIVE', enrolled_at:'2026-10-10T10:00:00Z' }])
@@ -64,7 +75,7 @@ describe('student home', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Khóa học của tôi' }))
     await userEvent.click(screen.getByRole('button', { name: 'Xem khóa học' }))
     expect(await screen.findByRole('heading', { name: 'Lập trình Python căn bản' })).toBeVisible()
-    expect(getCourse).toHaveBeenCalledWith('course-1')
+    expect(getCourse).toHaveBeenCalledWith('course-1', expect.any(AbortSignal))
     await userEvent.click(screen.getByRole('button', { name: 'Quay lại danh sách' }))
     expect(await screen.findByRole('heading', { name: 'Khóa học của tôi' })).toBeVisible()
   })

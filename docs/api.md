@@ -151,3 +151,20 @@ Giáo viên và học viên có thanh công cụ theo thứ tự Con trỏ, Bàn
 Chỉ giao diện học viên, ngoài chế độ toàn màn hình, có hàng “Nội dung này có hữu ích không?” dưới PDF với like/unlike (chọn một hoặc bỏ chọn) và báo cáo bài học. Báo cáo mở dialog Lý do (bắt buộc, tối đa 300 ký tự), Ý kiến của bạn (tùy chọn, tối đa 3000 ký tự), Gửi/Hủy. Dữ liệu `feedback` tùy chọn trong cùng payload gồm `vote` (`like/dislike/none`) và `report` (`reason/opinion`); chỉ lưu trong bộ nhớ prototype như ghi chú, chưa có luồng xử lý báo cáo cho quản trị viên. Undo nét vẽ không hoàn tác đánh giá hoặc báo cáo.
 
 `GET/PUT /api/documents/{document_id}/study-notes/?version_id={version_id}` đọc/thay thế `{items, notes, scope}` riêng cho tài khoản đang đăng nhập và đúng phiên bản PDF được phép xem. `items` hỗ trợ `pen/highlight` với các điểm `[x,y]` trong khoảng 0–1, hoặc `text` với `x/y/text`; mỗi mục có `id` và `page`. Quyền truy cập tài liệu và lớp được kiểm tra lại mỗi yêu cầu. Dữ liệu chỉ nằm trong bộ nhớ backend, không có migration hay ghi database/tệp/localStorage. Thoát/vào lại bài học hoặc tải lại trang vẫn đọc lại được trong cùng phiên backend; tắt/khởi động lại backend Docker reset toàn bộ ghi chú prototype. Tải lại mã backend trong chế độ phát triển cũng reset bộ nhớ này. `scope` được cấp khi GET và gửi nguyên khi PUT; ghi từ phiên Docker cũ hoặc tài khoản khác trả 409, tránh khôi phục nhầm dữ liệu sau khi reset.
+
+### Bình luận, bình chọn và mute trong bảng tin (17/10/2026)
+
+Các đường dẫn bình luận có tiền tố `/api/courses/{course_id}/classrooms/{classroom_id}/announcements/{announcement_id}/comments/`:
+
+- `GET`: phân trang từ cũ đến mới; trả `results`, `count`, `next`, `previous`, `can_comment`, `can_manage`, `muted_students`. Mỗi bình luận gồm người viết, thời gian, `parent_id`, nội dung, quyền xóa, `upvotes`, `downvotes`, `my_vote` (-1/0/1). Chỉ chủ khóa học nhận danh sách học viên đang mute; không trả danh tính người bỏ phiếu.
+- `POST`: nhận `content` (1–2000 ký tự sau trim), `parent_id` tùy chọn để trả lời. Bình luận cha phải còn nội dung và thuộc đúng thông báo.
+- `DELETE {comment_id}/`: học viên chỉ xóa bình luận của mình; chủ khóa học được xóa bình luận trong lớp. Xóa nội dung và vote, giữ chỗ cùng các câu trả lời.
+- `PUT {comment_id}/vote/`: nhận `value` là 1 (upvote), -1 (downvote), 0 (bỏ vote). Mỗi tài khoản có một phiếu; gửi lặp cùng giá trị không tăng số lượng. UI hiển thị số riêng cạnh từng nút.
+
+`PUT /api/courses/{course_id}/classrooms/{classroom_id}/comment-mutes/{user_id}/` nhận `{"is_muted":true}` hoặc `false`. Chỉ chủ khóa học được mute học viên thuộc lớp. Mute chặn gửi bình luận/trả lời trên toàn bộ bảng tin lớp đến khi bỏ mute; không chặn đọc hoặc vote và không ảnh hưởng lớp khác. Giáo viên có danh sách bỏ mute kể cả khi học viên không còn bình luận.
+
+Quyền truy cập lớp được kiểm tra ở từng API; lớp đã xóa hoặc người ngoài lớp không được đọc/ghi. Migration `courses.0011` lưu bình luận, phiếu bầu và mute trong database, giữ dữ liệu khi tải lại trang hoặc khởi động lại Docker. Bình luận tự cập nhật khoảng 3 giây/lần, tạm dừng khi tab trình duyệt bị ẩn và tải ngay khi quay lại. Giữ nguyên bản nháp, hủy lượt đọc cũ khi ghi dữ liệu để tránh ghi đè kết quả mới; chưa dùng WebSocket.
+
+### Lịch sử điều hướng trong OHAYO (17/10/2026)
+
+Các màn hình chính của giáo viên/học viên, chi tiết khóa học, lớp học, tab trong lớp và buổi học được đồng bộ với History API của trình duyệt. Một lần điều hướng tạo một mục lịch sử, kể cả khi cập nhật nhiều lựa chọn cùng lúc. Back/Forward khôi phục màn hình trong cùng phiên đăng nhập; tải lại trang đọc lại lựa chọn và nạp dữ liệu từ API. Vị trí có bản dự phòng trong sessionStorage riêng từng tab và tài khoản để khôi phục khi history.state bị mất; Back/Forward cũng cập nhật bản dự phòng. Đăng xuất hoặc phiên đăng nhập hết hạn sẽ xóa vị trí đã lưu. Lịch sử được phân theo tài khoản và không lưu mật khẩu hay bản nháp biểu mẫu. Khi đã quay về mục đầu tiên của OHAYO, Back vẫn hoạt động theo lịch sử bên ngoài; không chặn người dùng rời trang.

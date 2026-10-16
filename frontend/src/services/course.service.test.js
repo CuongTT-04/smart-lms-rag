@@ -5,6 +5,7 @@ import {
   listJoinRequests, listMyJoinRequests, listMyEnrollments, cancelJoinRequest,
   reviewJoinRequest, createClassroom, updateClassroom, updateAccessPolicy,
   listClassroomEnrollments, revokeClassroomEnrollment, listMyCourseClassrooms,
+  listAnnouncementComments,
 } from './course.service'
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } })
@@ -12,6 +13,15 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), { status
 describe('course service', () => {
   beforeEach(() => vi.stubGlobal('fetch', vi.fn()))
   afterEach(() => vi.unstubAllGlobals())
+
+  it('loads all comment pages while retaining moderation permissions', async () => {
+    fetch.mockResolvedValueOnce(json({ results: [{ id: 'parent' }], next: 'page2', can_comment: false, can_manage: false, muted_students: [] }))
+      .mockResolvedValueOnce(json({ results: [{ id: 'reply', parent_id: 'parent' }], next: null }))
+    const data = await listAnnouncementComments('c', 'r', 'a')
+    expect(data.results).toEqual([{ id: 'parent' }, { id: 'reply', parent_id: 'parent' }])
+    expect(data.can_comment).toBe(false)
+    expect(fetch).toHaveBeenNthCalledWith(2, '/api/courses/c/classrooms/r/announcements/a/comments/?page=2', expect.anything())
+  })
 
   it('lists paginated courses using the bearer-capable API client', async () => {
     fetch.mockResolvedValueOnce(json({ count: 1, results: [{ id: 'course-1' }] }))

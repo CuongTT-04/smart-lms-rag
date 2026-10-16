@@ -9,6 +9,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import { currentUser, logout, authErrorMessage } from './services/auth.service'
 import { clearAccessToken } from './services/api'
+import { clearNavigation, NavigationProvider } from './hooks/useHistoryState'
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
@@ -47,6 +48,7 @@ export default function App() {
 
   function handleSessionExpired(notice) {
     sessionRequestId.current += 1
+    clearNavigation(session.user?.id)
     clearAccessToken()
     setSession({ checking: false, user: null, error: '', notice })
   }
@@ -64,11 +66,13 @@ export default function App() {
   async function handleLogout() {
     try {
       await logout()
+      clearNavigation(session.user?.id)
       setSession({ checking: false, user: null, error: '' })
     } catch (error) {
       if (error.status === 401) {
         try { await currentUser() } catch (sessionError) {
           if (sessionError.status === 401) {
+            clearNavigation(session.user?.id)
             setSession({ checking: false, user: null, error: '' })
             return
           }
@@ -84,7 +88,7 @@ export default function App() {
   if (path === '/reset-password') return <ResetPasswordPage />
   if (!session.user) return <LoginPage initialError={session.error} initialNotice={session.notice} onAuthenticated={handleAuthenticated} />
   const profileProps = { user: session.user, onLogout: handleLogout, onUserUpdated: handleUserUpdated, onSessionExpired: handleSessionExpired }
-  if (session.user.role === 'TEACHER') return <TeacherHomePage {...profileProps} />
-  if (session.user.role === 'STUDENT') return <StudentHomePage {...profileProps} />
+  if (session.user.role === 'TEACHER') return <NavigationProvider key={session.user.id} owner={session.user.id}><TeacherHomePage {...profileProps} /></NavigationProvider>
+  if (session.user.role === 'STUDENT') return <NavigationProvider key={session.user.id} owner={session.user.id}><StudentHomePage {...profileProps} /></NavigationProvider>
   return <DashboardPage {...profileProps} />
 }

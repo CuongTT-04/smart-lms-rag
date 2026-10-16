@@ -233,3 +233,38 @@ class ClassroomAnnouncement(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-id']
+
+
+class AnnouncementComment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    announcement = models.ForeignKey(ClassroomAnnouncement, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='announcement_comments')
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.PROTECT, related_name='replies')
+    content = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['created_at', 'id']
+
+
+class AnnouncementCommentVote(models.Model):
+    comment = models.ForeignKey(AnnouncementComment, on_delete=models.CASCADE, related_name='votes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    value = models.SmallIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['comment', 'user'], name='unique_announcement_comment_vote'),
+            models.CheckConstraint(condition=models.Q(value__in=[-1, 1]), name='valid_announcement_comment_vote'),
+        ]
+
+
+class ClassroomCommentMute(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='comment_mutes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    muted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='issued_comment_mutes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['classroom', 'user'], name='unique_classroom_comment_mute')]
