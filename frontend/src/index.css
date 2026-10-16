@@ -178,9 +178,16 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .section-heading h2, .member-list-head h2, .add-member h2 { margin: 0 0 5px; font-size: 20px; }
 .section-heading p, .add-member p, .form-section-heading p { margin: 0; color: #819087; font-size: 14px; line-height: 1.7; }
 .course-list { overflow: hidden; border: 1px solid #dae4de; border-radius: 7px; background: #fff; }
-.course-row { min-height: 115px; padding: 18px 20px; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 17px; border-bottom: 1px solid #e8edea; }
+.course-row { position: relative; min-height: 115px; padding: 18px 20px; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 17px; border-bottom: 1px solid #e8edea; cursor: pointer; transition: background-color .18s ease, box-shadow .18s ease; }
 .course-row:last-child { border-bottom: 0; }
-.course-row:hover { background: #fafcfb; }
+.course-row:hover { background: #edf5f0; box-shadow: inset 3px 0 #da815d; }
+.course-row:focus-within { background: #edf5f0; box-shadow: inset 0 0 0 2px #da815d; }
+.course-open-trigger { display: inline-flex; align-items: center; gap: 8px; padding: 10px 0 10px 10px; border: 0; background: transparent; color: #315e4a; font-weight: 600; white-space: nowrap; transition: color .18s ease; }
+.course-open-trigger::after { position: absolute; inset: 0; content: ''; }
+.course-open-trigger:focus-visible { outline: none; }
+.course-open-trigger svg { flex-shrink: 0; transition: transform .18s ease; }
+.course-row:hover .course-open-trigger, .course-row:focus-within .course-open-trigger { color: #c56344; }
+.course-row:hover .course-open-trigger svg, .course-row:focus-within .course-open-trigger svg { transform: translateX(3px); }
 .course-cover { width: 58px; height: 58px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #e7f0eb; color: #315e4a; }
 .course-summary { min-width: 0; }
 .course-summary > div { display: flex; align-items: center; gap: 10px; }

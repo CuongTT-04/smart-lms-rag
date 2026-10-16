@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ClassroomWorkspace from './ClassroomWorkspace'
 import { createClassroomSession, createClassroomAnnouncement, listClassroomSessions, deleteClassroomSession } from '../services/course.service'
@@ -7,6 +7,22 @@ vi.mock('../services/course.service', async (original) => ({ ...await original()
 vi.mock('./documents/CourseDocuments', () => ({ default: () => <div>Học liệu buổi học</div> }))
 beforeEach(() => vi.clearAllMocks())
 const open = () => render(<ClassroomWorkspace course={{ id: 'c1', title: 'Python' }} initialRoom={{ id: 'r1', name: 'Lớp sáng', class_code: 'ABC', enrolled_count: 0 }} />)
+it('restores classroom tabs and sessions with browser Back and Forward', async () => {
+  listClassroomSessions.mockResolvedValueOnce([{ id: 's1', title: 'Buổi thứ nhất', position: 1, material_count: 0 }])
+  open()
+  await userEvent.click(screen.getByRole('button', { name: 'Buổi học', exact: true }))
+  await userEvent.click(await screen.findByRole('button', { name: /^Buổi thứ nhất/ }))
+  expect(screen.getByText('Học liệu buổi học')).toBeVisible()
+  act(() => window.history.back())
+  await waitFor(() => expect(screen.queryByText('Học liệu buổi học')).not.toBeInTheDocument())
+  expect(screen.getByRole('button', { name: /^Buổi thứ nhất/ })).toBeVisible()
+  act(() => window.history.back())
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Bảng tin', exact: true })).toHaveAttribute('aria-current', 'page'))
+  act(() => window.history.forward())
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Buổi học', exact: true })).toHaveAttribute('aria-current', 'page'))
+  act(() => window.history.forward())
+  expect(await screen.findByText('Học liệu buổi học')).toBeVisible()
+})
 it('lets students read classrooms without teacher controls or draft sessions', async () => {
   listClassroomSessions.mockResolvedValueOnce([{id:'s1',title:'Buổi đã tạo',is_draft:false,material_count:1},{id:'s2',title:'Buổi nháp',is_draft:true,material_count:0}])
   render(<ClassroomWorkspace canManage={false} course={{id:'c1',title:'Python'}} initialRoom={{id:'r1',name:'Lớp sáng'}} />)

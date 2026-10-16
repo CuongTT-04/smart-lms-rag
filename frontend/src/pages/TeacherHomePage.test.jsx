@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import TeacherHomePage from './TeacherHomePage'
 import {
@@ -19,6 +19,18 @@ const owner = { id: 'owner-1', role: 'OWNER', status: 'ACTIVE', user: teacher }
 const student = { id: 'member-1', role: 'STUDENT', status: 'ACTIVE', user: { id: 'student-1', username: 'student_a', full_name: 'Nguyễn Minh Anh', email: 'student@example.com' } }
 
 describe('teacher home', () => {
+  it('restores the course list and detail with browser Back and Forward', async () => {
+    render(<TeacherHomePage user={teacher} onLogout={vi.fn()} />)
+    await screen.findByText('Lập trình Python')
+    await userEvent.click(within(screen.getByRole('navigation', { name: 'Điều hướng giáo viên' })).getByRole('button', { name: 'Khóa học', exact: true }))
+    await userEvent.click(screen.getByText('Lập trình Python'))
+    expect(await screen.findByLabelText('Tên khóa học')).toBeVisible()
+    act(() => window.history.back())
+    await waitFor(() => expect(screen.queryByLabelText('Tên khóa học')).not.toBeInTheDocument())
+    expect(screen.getByRole('heading', { name: 'Khóa học của tôi' })).toBeVisible()
+    act(() => window.history.forward())
+    expect(await screen.findByLabelText('Tên khóa học')).toHaveValue('Lập trình Python')
+  })
   beforeEach(() => {
     vi.clearAllMocks()
     listAllCourses.mockResolvedValue([course])
@@ -71,6 +83,33 @@ describe('teacher home', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Lưu thay đổi' }))
     expect(updateCourse).toHaveBeenCalledWith('course-1', expect.objectContaining({ title: 'Python nâng cao', status: 'ARCHIVED' }))
     expect(await screen.findByText('Đã cập nhật khóa học.')).toBeVisible()
+  })
+
+  it.each(['Lập trình Python', '1 học viên'])('opens course management by clicking the card content: %s', async (label) => {
+    render(<TeacherHomePage user={teacher} onLogout={vi.fn()} />)
+    await screen.findByText('Lập trình Python')
+    await userEvent.click(within(screen.getByRole('navigation', { name: 'Điều hướng giáo viên' })).getByRole('button', { name: 'Khóa học', exact: true }))
+    await userEvent.click(screen.getByText(label))
+    expect(await screen.findByLabelText('Tên khóa học')).toHaveValue('Lập trình Python')
+  })
+
+  it('opens a course card with the keyboard', async () => {
+    const user = userEvent.setup()
+    render(<TeacherHomePage user={teacher} onLogout={vi.fn()} />)
+    await screen.findByText('Lập trình Python')
+    const open = screen.getByRole('button', { name: /Quản lý/ })
+    open.focus()
+    await user.keyboard('{Enter}')
+    expect(await screen.findByLabelText('Tên khóa học')).toHaveValue('Lập trình Python')
+  })
+
+  it.each(['Tổng quan', 'Khóa học'])('opens a course from the empty card area in %s', async (page) => {
+    render(<TeacherHomePage user={teacher} onLogout={vi.fn()} />)
+    await screen.findByText('Lập trình Python')
+    await userEvent.click(within(screen.getByRole('navigation', { name: 'Điều hướng giáo viên' })).getByRole('button', { name: page, exact: true }))
+    const card = screen.getByRole('heading', { name: 'Lập trình Python' }).closest('article')
+    await userEvent.click(card)
+    expect(await screen.findByLabelText('Tên khóa học')).toHaveValue('Lập trình Python')
   })
 
   it('removes direct grants and retains student revocation', async () => {

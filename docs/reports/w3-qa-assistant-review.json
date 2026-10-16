@@ -1,0 +1,61 @@
+{
+  "reviewed_date": "2026-10-17",
+  "reviewed_main": "c981655eff3fa7e163d47ed3d0b731ceab7841b9",
+  "dataset_sha256_git_lf": "44037180cde5d328bdda98573e303bfee6cb5f89968cbce1df15f32d91327fe9",
+  "review_kind": "assistant_content_and_source_review",
+  "reviewer": "Codex",
+  "owner_counts": {
+    "Dương": 50,
+    "Cường": 50
+  },
+  "reviewed_qa": 100,
+  "source_supported": 100,
+  "mandatory_label_changes": [],
+  "note": "No QA gold/question/answer or baseline metric modified; peer confirmations are not supplied by this review.",
+  "related_knowledge_groups": [
+    [
+      "THMLN_QA_011",
+      "THMLN_QA_020"
+    ],
+    [
+      "THMLN_QA_006",
+      "THMLN_QA_007"
+    ],
+    [
+      "THMLN_QA_022",
+      "THMLN_QA_041"
+    ],
+    [
+      "THMLN_QA_023",
+      "THMLN_QA_038"
+    ],
+    [
+      "KTCTMLN_QA_004",
+      "KTCTMLN_QA_005"
+    ]
+  ],
+  "additional_source_note": {
+    "CUONG_W3_QA_008": "Page 10 supports opening hint; complete productivity definition is on page 9. No gold change required for current hint."
+  },
+  "visual_checks": [
+    {
+      "source": "KTCTMLN/ch03.pdf",
+      "physical_page": 13,
+      "checked": "n=CH/ch numerator/denominator and capital transfer definitions"
+    },
+    {
+      "source": "KTCTMLN/ch01.pdf",
+      "physical_page": 20,
+      "checked": "KTCTMLN_QA_001 full definition"
+    },
+    {
+      "source": "KTCTMLN/ch02.pdf",
+      "physical_page": 10,
+      "checked": "Inverse proportionality and intensity/productivity distinction"
+    }
+  ],
+  "csv_sha256": "6e50730756ef8b68c46672339e12b982f0c468c06b0ae5921ee7f146b3c63353",
+  "human_confirmations_added": 0,
+  "generated_answer_quality_verified": false,
+  "runtime_db_demo_verified": false
+}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useHistoryState } from '../hooks/useHistoryState'
 import CustomSelect from '../components/CustomSelect'
 import TeacherClassrooms from '../components/TeacherClassrooms'
 import ClassroomWorkspace from '../components/ClassroomWorkspace'
@@ -46,11 +47,11 @@ function EmptyState({ onCreate }) {
 }
 
 export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
-  const [view, setView] = useState('overview')
+  const [view, setView] = useHistoryState('teacher.view', 'overview')
   const [courses, setCourses] = useState([])
   const [members, setMembers] = useState({})
-  const [selectedId, setSelectedId] = useState(null)
-  const [selectedClass, setSelectedClass] = useState(null)
+  const [selectedId, setSelectedId] = useHistoryState('teacher.course', null)
+  const [selectedClass, setSelectedClass] = useHistoryState('teacher.classroom', null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -200,7 +201,22 @@ function CoursesView({ courses, members, search, setSearch, filter, setFilter, o
 
 function CourseRow({ course, members = [], onOpen }) {
   const activeStudents = members.filter((member) => member.role === 'STUDENT' && member.status === 'ACTIVE').length
-  return <article className="course-row"><div className="course-cover" aria-hidden="true"><BookOpen size={22} /></div><div className="course-summary"><div><StatusBadge status={course.status} /><span className="course-date">Cập nhật {formatDate(course.updated_at)}</span></div><h3>{course.title}</h3><p>{course.description || 'Chưa có mô tả cho khóa học này.'}</p></div><div className="course-meta"><span><UsersRound size={17} /> {activeStudents} học viên</span><button className="outline-button" type="button" onClick={onOpen}>Quản lý <ChevronRight size={17} /></button></div></article>
+  return (
+    <article className="course-row" onClick={onOpen}>
+      <div className="course-cover" aria-hidden="true"><BookOpen size={22} /></div>
+      <div className="course-summary">
+        <div><StatusBadge status={course.status} /><span className="course-date">Cập nhật {formatDate(course.updated_at)}</span></div>
+        <h3>{course.title}</h3>
+        <p>{course.description || 'Chưa có mô tả cho khóa học này.'}</p>
+      </div>
+      <div className="course-meta">
+        <span><UsersRound size={17} /> {activeStudents} học viên</span>
+        <button className="course-open-trigger" type="button" aria-label={`Quản lý khóa học ${course.title}`}>
+          Quản lý <ChevronRight size={17} aria-hidden="true" />
+        </button>
+      </div>
+    </article>
+  )
 }
 
 function CreateCourseModal({ onClose, onCreated }) {
@@ -218,7 +234,7 @@ function CreateCourseModal({ onClose, onCreated }) {
 }
 
 function CourseDetail({ course, members, onBack, onUpdated, onRefreshMembers, onError, onNotice, onOpenClassroom }) {
-  const [tab, setTab] = useState('info')
+  const [tab, setTab] = useHistoryState(`teacher.course.${course.id}.tab`, 'info')
   const [values, setValues] = useState({ title: course.title, description: course.description, status: course.status })
   const [pending, setPending] = useState(false)
   const [memberPending, setMemberPending] = useState('')

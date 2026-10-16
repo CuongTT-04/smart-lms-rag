@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useHistoryState } from '../hooks/useHistoryState'
 import {
   AlertCircle, ArrowLeft, BookOpen, Check, ChevronRight, CircleUserRound,
   DoorOpen, GraduationCap, Home, LayoutGrid, LoaderCircle, LogOut, Menu, Sun, X,
@@ -28,19 +29,34 @@ function EmptyCourses() {
 }
 
 export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
-  const [view, setView] = useState('overview')
+  const [view, setView] = useHistoryState('student.view', 'overview')
   const [courses, setCourses] = useState([])
   const [selectedCourse, setSelectedCourse] = useState(null)
-  const [joinedRoom, setJoinedRoom] = useState(null)
-  const [selectedId, setSelectedId] = useState(null)
+  const [joinedRoom, setJoinedRoom] = useHistoryState('student.classroom', null)
+  const [selectedId, setSelectedId] = useHistoryState('student.course', null)
   const [loading, setLoading] = useState(true)
-  const [detailLoading, setDetailLoading] = useState(false)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [mobileNav, setMobileNav] = useState(false)
   const [pendingLogout, setPendingLogout] = useState(false)
   const detailRequest = useRef(0)
   const listScroll = useRef(0)
+  const detailId = joinedRoom?.course_id || selectedId
+  const detailLoading = Boolean(detailId && selectedCourse?.id !== detailId && !error)
+
+  useEffect(() => {
+    if (!detailId) return
+    const controller = new AbortController()
+    const request = ++detailRequest.current
+    getCourse(detailId, controller.signal)
+      .then((result) => {
+        if (!controller.signal.aborted && request === detailRequest.current) setSelectedCourse(result)
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted && request === detailRequest.current) setError(courseErrorMessage(err))
+      })
+    return () => controller.abort()
+  }, [detailId])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -68,47 +84,31 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
-  async function openCourse(course) {
-    const request = ++detailRequest.current
+  function openCourse(course) {
     listScroll.current = view === 'courses' && !selectedId ? window.scrollY : 0
     setJoinedRoom(null)
     setView('courses')
     setSelectedId(course.id)
-    setSelectedCourse(null)
-    setDetailLoading(true)
+    if (selectedCourse?.id !== course.id) setSelectedCourse(null)
     setMobileNav(false)
     setError('')
     window.scrollTo({ top: 0, behavior: 'instant' })
-    try {
-      const result = await getCourse(course.id)
-      if (request === detailRequest.current) setSelectedCourse(result)
-    } catch (requestError) {
-      if (request === detailRequest.current) setError(courseErrorMessage(requestError))
-    } finally {
-      if (request === detailRequest.current) setDetailLoading(false)
-    }
   }
 
-  async function openJoinedClass(item) {
-    const request = ++detailRequest.current
-    setJoinedRoom(item); setSelectedCourse(null); setDetailLoading(true); setError('')
+  function openJoinedClass(item) {
+    setSelectedId(null)
+    setJoinedRoom(item); setSelectedCourse(null); setError('')
     window.scrollTo({ top: 0, behavior: 'instant' })
-    try {
-      const result = await getCourse(item.course_id)
-      if (request === detailRequest.current) setSelectedCourse(result)
-    } catch (err) {
-      if (request === detailRequest.current) { setJoinedRoom(null); setError(courseErrorMessage(err)) }
-    } finally { if (request === detailRequest.current) setDetailLoading(false) }
   }
 
   function backToJoinedClasses() {
     detailRequest.current += 1
-    setJoinedRoom(null); setSelectedCourse(null); setDetailLoading(false); setError('')
+    setJoinedRoom(null); setSelectedCourse(null); setError('')
   }
 
   function backToCourses() {
     detailRequest.current += 1
-    setSelectedId(null); setSelectedCourse(null); setDetailLoading(false); setError('')
+    setSelectedId(null); setSelectedCourse(null); setError('')
     requestAnimationFrame(() => window.scrollTo({ top: listScroll.current, behavior: 'instant' }))
   }
 
@@ -145,7 +145,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
             <>
               {view === 'overview' && <Overview user={user} courses={courses} onCourses={() => navigate('courses')} onOpen={openCourse} />}
               {view === 'courses' && <div hidden={!!selectedId}><StudentCoursesView courses={courses} search={search} setSearch={setSearch} onOpen={openCourse} onRefresh={async () => setCourses(await listAllCourses())} onJoin={() => navigate('join')} /></div>}
-              {view === 'courses' && selectedId && <CourseDetail course={selectedCourse} loading={detailLoading} onBack={backToCourses} onClassroomsUpdated={(items) => {
+              {view === 'courses' && selectedId && <CourseDetail key={selectedId} courseId={selectedId} course={selectedCourse?.id === selectedId ? selectedCourse : null} loading={detailLoading} onBack={backToCourses} onClassroomsUpdated={(items) => {
                 setSelectedCourse((current) => current?.id === selectedId ? { ...current, my_classrooms: items } : current)
                 setCourses((current) => current.map((item) => item.id === selectedId ? { ...item, my_classrooms: items } : item))
               }} onUnavailable={(err) => {
@@ -158,7 +158,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
               {view === 'join' && <>
                 <div hidden={!!joinedRoom}><StudentEnrollmentPanel onCoursesChanged={async () => setCourses(await listAllCourses())} onOpenClass={openJoinedClass} /></div>
                 {joinedRoom && detailLoading && <p role="status">Đang mở lớp học...</p>}
-                {joinedRoom && selectedCourse && <ClassroomWorkspace key={joinedRoom.classroom_id} canManage={false} course={selectedCourse} initialRoom={{ id: joinedRoom.classroom_id, name: joinedRoom.classroom_name }} backLabel="Lớp đã tham gia" onBack={backToJoinedClasses} onCourse={() => openCourse({ id: joinedRoom.course_id })} />}
+                {joinedRoom && selectedCourse?.id === joinedRoom.course_id && <ClassroomWorkspace key={joinedRoom.classroom_id} canManage={false} course={selectedCourse} initialRoom={{ id: joinedRoom.classroom_id, name: joinedRoom.classroom_name }} backLabel="Lớp đã tham gia" onBack={backToJoinedClasses} onCourse={() => openCourse({ id: joinedRoom.course_id })} />}
               </>}
             </>
           )}
@@ -188,8 +188,8 @@ function CourseCard({ course, onOpen }) {
   return <article className="student-course-card"><div className="student-course-icon"><BookOpen size={23} /></div><div className="student-course-card-content"><PublishedBadge /><h3>{course.title}</h3><p>{course.description || 'Giáo viên chưa thêm mô tả cho khóa học này.'}</p><ul className="course-class-tags" aria-label="Lớp đang tham gia">{(course.my_classrooms || []).map((item) => <li key={item.id}><GraduationCap size={14} aria-hidden="true" />{item.classroom_name}</li>)}</ul></div><div className="student-course-card-footer"><span>Cập nhật {formatDate(course.updated_at)}</span><button className="outline-button" type="button" onClick={onOpen}>Xem khóa học <ChevronRight size={17} /></button></div></article>
 }
 
-function CourseDetail({ course, loading, onBack, onClassroomsUpdated, onUnavailable }) {
-  const [selectedRoom, setSelectedRoom] = useState(null)
+function CourseDetail({ course, courseId, loading, onBack, onClassroomsUpdated, onUnavailable }) {
+  const [selectedRoom, setSelectedRoom] = useHistoryState(`student.course.${courseId}.classroom`, null)
   if (selectedRoom && course) return <ClassroomWorkspace key={selectedRoom.classroom_id} canManage={false} course={course} initialRoom={{ id: selectedRoom.classroom_id, name: selectedRoom.classroom_name }} onBack={() => setSelectedRoom(null)} onCourse={() => setSelectedRoom(null)} />
   return <section className="student-detail student-course-detail" aria-labelledby={course ? 'student-course-detail-title' : undefined}>
     <button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Quay lại danh sách</button>
