@@ -119,7 +119,7 @@ Giao diện giáo viên có mục Lớp học trên sidebar, tìm kiếm, lọc 
 
 - `PATCH /api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/` nhận `title`, tối đa 255 ký tự, chủ khóa học được sửa tên đúng buổi học trong lớp.
 - Bản xem PDF của giáo viên hỗ trợ `GET /api/documents/{document_id}/view/?version_id={version_id}` để xem chính xác phiên bản đang chuẩn bị công bố. Học viên vẫn chỉ xem bản đã công bố; tham số không mở quyền đọc bản nháp và tải xuống giữ nguyên chính sách cũ.
-- Trang buổi học là không gian riêng: sidebar xanh lá, chọn học liệu, xem PDF, đổi tên, AI và công bố học liệu đang chọn. Video/Bài tập hiện là khu vực chờ triển khai.
+- Trang buổi học là không gian riêng: sidebar xanh lá, chọn học liệu, xem PDF, đổi tên, AI và công bố học liệu đang chọn. Video tương tác đã được bổ sung ngày 17/10/2026; Bài tập Ôn tập/Kiểm tra đã được bổ sung ngày 17/10/2026.
 - Kết quả trích xuất có khung cuộn cao 360 px, gắn đúng học liệu đang chọn; trạng thái và nút kiểm tra cách nhau 24 px.
 
 ### Bộ xem PDF vừa trang và thu phóng (09/10/2026)
@@ -168,3 +168,70 @@ Quyền truy cập lớp được kiểm tra ở từng API; lớp đã xóa ho�
 ### Lịch sử điều hướng trong OHAYO (17/10/2026)
 
 Các màn hình chính của giáo viên/học viên, chi tiết khóa học, lớp học, tab trong lớp và buổi học được đồng bộ với History API của trình duyệt. Một lần điều hướng tạo một mục lịch sử, kể cả khi cập nhật nhiều lựa chọn cùng lúc. Back/Forward khôi phục màn hình trong cùng phiên đăng nhập; tải lại trang đọc lại lựa chọn và nạp dữ liệu từ API. Vị trí có bản dự phòng trong sessionStorage riêng từng tab và tài khoản để khôi phục khi history.state bị mất; Back/Forward cũng cập nhật bản dự phòng. Đăng xuất hoặc phiên đăng nhập hết hạn sẽ xóa vị trí đã lưu. Lịch sử được phân theo tài khoản và không lưu mật khẩu hay bản nháp biểu mẫu. Khi đã quay về mục đầu tiên của OHAYO, Back vẫn hoạt động theo lịch sử bên ngoài; không chặn người dùng rời trang.
+
+### Video tương tác trong buổi học (17/10/2026)
+
+Tiền tố: `/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/videos/`.
+
+| Phương thức và đuôi đường dẫn | Chức năng |
+| --- | --- |
+| GET / POST tiền tố | Danh sách phân trang / chủ khóa tải video multipart gồm title, description tùy chọn, file, duration |
+| GET / PATCH / DELETE `{video_id}/` | Chi tiết kèm questions, progress / sửa tên, mô tả, is_published / gỡ mềm |
+| GET `{video_id}/file/` | Tệp MP4/WebM riêng tư qua JWT, kiểm tra lại quyền lớp và công bố |
+| POST `{video_id}/questions/` | Tạo câu hỏi theo mốc |
+| PATCH / DELETE `{video_id}/questions/{question_id}/` | Sửa tạo revision mới / gỡ câu hỏi, giữ lịch sử trả lời |
+| PUT `{video_id}/progress/` | Lưu position của học viên, trả position, watched_until, seekable_until, passed_ids, completed |
+| POST `{video_id}/questions/{question_id}/answers/` | Gửi request_id UUID, revision và selected_ids hoặc text |
+| GET `{video_id}/answers/mine/` | Học viên xem lịch sử câu trả lời của chính mình, phân trang và không trả đáp án đúng |
+| GET `{video_id}/responses/` | Chủ khóa xem câu trả lời phân trang, bộ đếm từng câu và student_count; lọc bằng question_id |
+
+Video MP4/WebM tối đa 200 MiB và 4 giờ; thời lượng lấy từ metadata trình duyệt giáo viên, backend kiểm tra giới hạn và chữ ký định dạng, chưa phân tích codec. Tệp nằm trong volume announcements_data dưới videos/, không có URL công khai. Nginx nhận tối đa 201 MiB để bao gồm multipart; giới hạn tệp tài liệu khác vẫn do validator riêng kiểm soát. Bản nháp video và video thuộc buổi học nháp không được trả cho học viên. Gỡ video/buổi học hoặc thu hồi quyền lớp chặn API đọc và gửi bài; bản đã tải vào trình duyệt không có cơ chế DRM. Trình phát kiểm tra metadata/quyền khoảng 5 giây/lần khi tab đang mở.
+
+Câu hỏi gồm kind (MCQ/TEXT), prompt, hint tùy chọn, start_time, rewind_time tùy chọn, choices dạng [{id,text}], correct_ids. Mốc tính bằng giây, nằm trong thời lượng; không trùng mốc của câu còn hoạt động. Trắc nghiệm có 2–10 lựa chọn, một hoặc nhiều đáp án đúng; tập lựa chọn phải khớp toàn bộ đáp án đúng. rewind_time phải trước start_time và chỉ dành cho MCQ. Học viên không nhận correct_ids. Mỗi video tối đa 100 câu.
+
+Giáo viên được tua tự do trong preview. Học viên được tua trong đoạn đã xem; backend lưu riêng vị trí hiện tại (position), mốc đã xem xa nhất (watched_until) và giới hạn được tua (seekable_until). Mở phần chưa xem vẫn bị giới hạn theo thời gian thực với ngân sách hữu hạn dùng chung giữa các request. Sau khi xem hết và hoàn thành câu hỏi, trạng thái Đã xem được giữ khi tua lại và mở toàn bộ thanh tua. Mốc quay lại bắt buộc sau đáp án sai dùng replay_position riêng, không xóa mốc đã xem trong lịch sử. Đây là kiểm soát luồng học, không chứng minh học viên chú ý xem. Video dừng ở câu chưa hoàn thành sớm nhất; gửi bài trước mốc hoặc vượt mốc bị từ chối. Sai có mốc quay lại thì phải xem lại từ mốc đó; không có mốc quay lại thì được thử lại hoặc xem phần trước. Tự luận lưu nguyên văn và mở khóa ngay, chưa chấm tự động. Gợi ý nhập tay hoạt động; nút AI vô hiệu hóa cho đến khi cấu hình mô hình.
+
+Tiến trình, câu hỏi và câu trả lời lưu database bằng migration courses.0012, còn khi tải lại trang và khởi động lại Docker có volume. request_id giữ nguyên khi thử lại cùng bài gửi; cùng mã nhưng nội dung khác trả 400, revision cũ trả 409. Sửa câu hỏi làm mất hiệu lực hoàn thành của revision cũ; lịch sử vẫn giữ snapshot đề/lựa chọn. Thống kê answered_students/correct_students đếm người riêng, attempt_count đếm mọi lần thử của revision hiện tại; lịch sử revision cũ vẫn trong danh sách bài làm. Khu vực Bài tập riêng triển khai theo hợp đồng Assessments bên dưới.
+
+
+### Hoàn thiện video học viên (17/10/2026)
+
+Migration courses.0013 giữ vị trí cũ, khởi tạo watched_until từ vị trí đã lưu và đánh dấu hoàn thành cho bản ghi đã tới cuối, không còn câu hỏi chưa hoàn thành. Dữ liệu cũ không lưu mốc xem xa nhất nên không suy đoán phần đã xem trước vị trí đó. completed_at lưu trạng thái hoàn thành; câu hỏi mới hoặc revision mới vẫn phải trả lời trước khi hoàn thành lại.
+
+Câu hỏi tại mốc mở bằng dialog; đóng dialog chuyển về xem lại phần trước và không bỏ qua được câu chưa hoàn thành. Thông báo thao tác/lỗi trong trình phát tự ẩn sau 5 giây, nhãn Đã xem là trạng thái bền vững. Phần Câu hỏi đã trả lời nằm dưới trình phát, các thẻ tiêu đề một dòng có dấu ba chấm mở xuống để xem đề, lựa chọn/câu trả lời, gợi ý đã lưu và kết quả từng lượt. API lịch sử kiểm tra lại quyền lớp/video và chỉ truy vấn student=request.user; không trả correct_ids. Snapshot giữ đề theo revision đã làm, kể cả câu đã sửa hoặc gỡ. Chưa có chấm điểm tự luận tự động.
+
+
+## Bài tập Ôn tập / Kiểm tra — 17/10/2026
+
+Prefix `/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/assessments/`; JWT và quyền lớp kiểm tra trên từng endpoint. Migration `courses.0014_assessments` lưu bài, lượt làm, sự kiện và lịch sử chấm. Tệp nằm trong volume riêng announcements_data/assessment-submissions, không tự lập chỉ mục AI.
+
+| Endpoint | Chức năng |
+|---|---|
+| GET/POST prefix | Danh sách / tạo bài (giáo viên) |
+| GET/PATCH/DELETE `{id}/` | Đề + lịch sử cá nhân / sửa, công bố điểm/đáp án / gỡ mềm |
+| POST `{id}/start/` | `{request_id, fullscreen}`; bắt đầu hoặc tiếp tục bản nháp |
+| GET/PATCH `{id}/attempts/{attempt_id}/` | Bài làm cá nhân / lưu `{revision, answers}` hoặc `{revision, text, file, remove_file}` |
+| POST `.../submit/` | `{revision, confirmed}`; Kiểm tra cần confirmed=true; nộp lặp trả lượt đã nộp |
+| POST `.../events/` | `{event_id, kind:TAB_HIDDEN|FULLSCREEN_EXIT}`; idempotent theo mã sự kiện, không tự phạt |
+| PATCH `.../grade/` | Giáo viên lưu `{score,feedback,published,moderation_note}`; thay đổi có audit |
+| GET `.../file/` | Tải riêng tư PDF/PNG/JPEG của chính học viên hoặc giáo viên |
+| POST `{id}/assistance/` | Ôn tập: gợi ý nhập tay + AI chưa cấu hình; Kiểm tra: 403 |
+| GET `{id}/dashboard/?q=&status=` | Tổng hợp, biểu đồ, lịch sử mọi lượt; trạng thái NOT_SUBMITTED/PENDING/GRADED |
+| GET `{id}/export/?q=&status=` | XLSX cùng bộ lọc, không đưa chuỗi người dùng thành công thức |
+
+`kind=QUIZ|TEXT`, `mode=PRACTICE|TEST`, `due_at` bắt buộc, quiz 1–100 câu, mỗi câu chọn một hoặc nhiều đáp án đúng và duration_seconds 60–14400. Tự luận dùng văn bản <=50000 ký tự hoặc một tệp PDF/PNG/JPEG <=20 MiB. Ôn tập có thể sửa bản nháp/nộp lại trước hạn; Kiểm tra một lượt, xác nhận nộp, fullscreen trước khi bắt đầu/tiếp tục. Đề/chế độ/hạn đóng băng khi có lượt làm; chỉ đổi trạng thái công bố. API start khóa bài để serialize các lượt đồng thời; revision lưu nháp cũ trả 409.
+
+Quiz hết thời gian được chốt theo câu trả lời đã lưu khi API đọc/cập nhật hoặc dashboard được gọi; giao diện kiểm tra đồng hồ server mỗi giây. Không có worker tự chốt riêng; nếu không có truy cập thì bản ghi được chốt ở lần truy cập kế tiếp và submitted_at là hạn của lượt. Tự luận quá hạn giữ bản nháp nhưng từ chối nộp/chỉnh sửa. Điểm chỉ hiển thị sau công bố toàn bài hoặc công bố lượt; đáp án Kiểm tra chỉ mở sau hạn và cho lượt đã nộp.
+
+Dashboard dựa trên lượt đã nộp mới nhất; lịch sử còn tất cả lượt và người đã rời lớp có nhãn riêng. Log là tín hiệu từ trình duyệt, server ghi thời điểm nhận; không chứng minh tuyệt đối gian lận và không tự thay điểm. Giáo viên xử lý sau khi bài được nộp, có ghi chú nội bộ và audit điều chỉnh điểm.
+
+
+Cập nhật kiểu trắc nghiệm 17/10/2026: giáo viên chọn **Một đáp án / Nhiều đáp án** riêng cho từng câu trong video và quiz. Thuộc tính `multiple` là cấu hình tường minh, không suy ra từ số đáp án đúng. Một đáp án dùng radio tròn, cần đúng một đáp án đúng; Nhiều đáp án dùng checkbox vuông, cho cấu hình từ một đáp án đúng trở lên. Chấm theo tập lựa chọn khớp toàn bộ đáp án, không cho điểm một phần. Dashboard/Excel dùng cùng quy tắc và hiển thị đầy đủ các lựa chọn đã chọn.
+
+API quiz dùng `questions[].multiple: boolean` và `correct_ids: string[]`; dữ liệu cũ `correct_id` vẫn được đọc như câu một đáp án. `answers` có giá trị chuỗi cho single và mảng mã lựa chọn không trùng cho multiple. Các câu video lưu Boolean `multiple` bằng migration courses.0015; migration giữ nguyên loại cũ theo số đáp án trước nâng cấp. Câu video cũ có lịch sử vẫn giữ snapshot; thay cấu hình câu video tạo revision mới. Đề quiz đã có lượt làm tiếp tục được đóng băng theo quy tắc hiện có.
+
+Ở chế độ Kiểm tra, giao diện tự thoát fullscreen khi nhận trạng thái SUBMITTED từ server, gồm nộp thành công và quiz tự chốt khi hết giờ. Lượt làm được đánh dấu đã nộp trước khi thoát nên không ghi sự kiện vi phạm cho thao tác tự thoát này. Nộp thất bại vẫn giữ fullscreen và cho thử lại; không thoát fullscreen của thành phần khác.
+
+## Thông báo realtime
+
+API inbox, trạng thái đã đọc, vé WebSocket và điều hướng theo quyền: xem [docs/notifications.md](notifications.md). WebSocket qua Django Channels và Redis; PostgreSQL lưu lịch sử kể cả khi logout/offline.

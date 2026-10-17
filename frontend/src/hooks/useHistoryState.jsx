@@ -12,11 +12,11 @@ function saveNavigation(navigation) {
 
 function navigationFor(owner, restoreSaved = true) {
   const stored = window.history.state?.ohayoNavigation
-  if (stored?.owner === owner) return stored
+  if (stored && stored.owner === owner && stored.values) return stored
   if (restoreSaved) {
     try {
       const saved = JSON.parse(window.sessionStorage.getItem(storageKey(owner)))
-      if (saved?.owner === owner && saved.values && typeof saved.values === 'object' && !Array.isArray(saved.values)) return saved
+      if (saved && saved.owner === owner && saved.values && typeof saved.values === 'object' && !Array.isArray(saved.values)) return saved
     } catch { /* Ignore missing, invalid or unavailable session storage. */ }
   }
   return { owner, values: {} }

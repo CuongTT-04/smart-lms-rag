@@ -48,6 +48,7 @@ function EmptyState({ onCreate }) {
 
 export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
   const [view, setView] = useHistoryState('teacher.view', 'overview')
+  const [notificationNavigation] = useHistoryState('notifications.navigation', '')
   const [courses, setCourses] = useState([])
   const [members, setMembers] = useState({})
   const [selectedId, setSelectedId] = useHistoryState('teacher.course', null)
@@ -164,7 +165,7 @@ export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessi
               {view === 'courses' && !selectedCourse && <CoursesView courses={filteredCourses} members={members} search={search} setSearch={setSearch} filter={filter} setFilter={setFilter} onCreate={() => setCreateOpen(true)} onOpen={openCourse} />}
               {view === 'courses' && selectedCourse && <CourseDetail course={selectedCourse} members={members[selectedCourse.id] || []} onBack={() => setSelectedId(null)} onUpdated={(course, message) => { replaceCourse(course); setNotice(message) }} onRefreshMembers={() => refreshMembers(selectedCourse.id)} onError={(message) => setError(message)} onNotice={setNotice} onOpenClassroom={(room) => openClassroom(selectedCourse, room)} />}
               {view === 'classrooms' && !selectedClass && <TeacherClassrooms courses={courses} onOpen={openClassroom} />}
-              {view === 'classrooms' && selectedClass && <ClassroomWorkspace key={selectedClass.room.id} course={courses.find((item) => item.id === selectedClass.course.id) ?? selectedClass.course} initialRoom={selectedClass.room} onBack={() => setSelectedClass(null)} onCourse={() => openCourse(selectedClass.course.id)} onMembersChanged={() => refreshMembers(selectedClass.course.id)} />}
+              {view === 'classrooms' && selectedClass && <ClassroomWorkspace key={`${selectedClass.room.id}:${notificationNavigation}`} course={courses.find((item) => item.id === selectedClass.course.id) ?? selectedClass.course} initialRoom={selectedClass.room} onBack={() => setSelectedClass(null)} onCourse={() => openCourse(selectedClass.course.id)} onMembersChanged={() => refreshMembers(selectedClass.course.id)} />}
               {view === 'account' && <ProfileEditor user={user} onUserUpdated={onUserUpdated} onSessionExpired={onSessionExpired} logoutPending={pendingLogout} onLogout={handleLogout} />}
             </>
           )}

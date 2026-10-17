@@ -63,5 +63,20 @@ class StudyNotesView(DocumentAPIView):
             return Response({'detail': 'Study session changed. Reopen the PDF.'}, status=409)
         serializer = StudyNotesSerializer(data=request.data, context={'page_count': version.page_count})
         serializer.is_valid(raise_exception=True)
+        previous = study_cache.get(f'{request.user.pk}:{version.pk}', {})
+        report = serializer.validated_data.get('feedback', {}).get('report')
+        if report and report != previous.get('feedback', {}).get('report'):
+            from apps.notifications.events import owners, scope
+            from apps.notifications.services import notify
+            from apps.users.models import User
+            session = document.session
+            context = {**scope(document.course, session.classroom if session else None, session), 'document_id': str(document.pk)}
+            event = str(uuid.uuid4())
+            notify(event_id=event, recipients=owners(document.course), actor=request.user, kind='MATERIAL_REPORTED',
+                   title='Có báo cáo về học liệu', body=report['reason'], context=context)
+            notify(event_id=event, recipients=User.objects.filter(role='ADMIN', is_active=True).values_list('pk', flat=True),
+                   actor=request.user, kind='MATERIAL_REPORTED', title='Có báo cáo về học liệu', body=report['reason'], context={'admin': True, 'report': {
+                       'document_id': str(document.pk), 'document_title': document.title, 'course_title': document.course.title,
+                       'reporter': request.user.full_name or request.user.username, 'reason': report['reason'], 'opinion': report['opinion']}})
         study_cache.set(f'{request.user.pk}:{version.pk}', serializer.validated_data, timeout=None)
         return Response(serializer.validated_data, headers={'Cache-Control': 'private, no-store'})

@@ -6,7 +6,7 @@ import AnnouncementImage from './AnnouncementImage'
 import FilePicker from './FilePicker'
 import AnnouncementComments from './AnnouncementComments'
 
-export default function ClassroomAnnouncements({ courseId, roomId, canManage = true }) {
+export default function ClassroomAnnouncements({ courseId, roomId, canManage = true, notificationFocus }) {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [revision, setRevision] = useState(0)
@@ -21,6 +21,14 @@ export default function ClassroomAnnouncements({ courseId, roomId, canManage = t
   const [saving, setSaving] = useState(false)
   const lock = useRef(false)
   const trigger = useRef(null)
+  useEffect(() => {
+    if (!notificationFocus?.announcement_id || loading) return
+    const timer = setTimeout(() => {
+      const node = document.getElementById(`announcement-${notificationFocus.announcement_id}`)
+      node?.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [notificationFocus, loading])
   useEffect(() => {
     const controller = new AbortController()
     listClassroomAnnouncements(courseId, roomId, controller.signal)
@@ -77,6 +85,6 @@ export default function ClassroomAnnouncements({ courseId, roomId, canManage = t
       {image && <div className="class-attachment-preview">{preview && <img src={preview} alt="Xem trước ảnh đính kèm" />}<span>{image.name}</span><button type="button" className="outline-button" disabled={saving} onClick={clearAttachment}><X size={17} />Bỏ ảnh</button></div>}
       <div className="class-composer-actions"><button type="button" className="outline-button" disabled={saving} onClick={() => { setEditing(false); setContent(''); setLink(''); clearAttachment(); setError(''); trigger.current?.focus() }}>Hủy</button><button type="submit" className="solid-button" disabled={saving || !content.trim()}>{saving && <LoaderCircle size={18} className="spin" />}{saving ? 'Đang đăng...' : 'Đăng thông báo'}</button></div>
     </form>}
-    {loading ? <p className="class-loading">Đang tải bảng tin...</p> : rows.length ? <div className="class-announcements">{rows.map((item) => <article className="class-announcement-card" key={item.id}><header><strong>{item.author_name || 'Giáo viên'}</strong><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString('vi-VN')}</time></header><p>{item.content}</p>{item.has_image && <AnnouncementImage courseId={courseId} roomId={roomId} announcementId={item.id} />}{/^https?:\/\//i.test(item.link || '') && <a className="class-announcement-link" href={item.link} target="_blank" rel="noopener noreferrer"><Link size={18} />{item.link}</a>}<AnnouncementComments courseId={courseId} roomId={roomId} announcementId={item.id} moderationRevision={moderationRevision} onModerationChange={() => setModerationRevision((value) => value + 1)} /></article>)}</div> : !error && <div className="class-session-empty class-tab-placeholder"><span><MessageSquare size={32} /></span><h2>Bảng tin của lớp</h2><p>Thông báo và cập nhật dành cho lớp sẽ hiển thị tại đây.</p></div>}
+    {loading ? <p className="class-loading">Đang tải bảng tin...</p> : rows.length ? <div className="class-announcements">{rows.map((item) => <article id={`announcement-${item.id}`} className={`class-announcement-card${notificationFocus?.announcement_id === item.id && !notificationFocus?.comment_id ? " notification-focus" : ""}`} key={item.id}><header><strong>{item.author_name || 'Giáo viên'}</strong><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString('vi-VN')}</time></header><p>{item.content}</p>{item.has_image && <AnnouncementImage courseId={courseId} roomId={roomId} announcementId={item.id} />}{/^https?:\/\//i.test(item.link || '') && <a className="class-announcement-link" href={item.link} target="_blank" rel="noopener noreferrer"><Link size={18} />{item.link}</a>}<AnnouncementComments focusCommentId={notificationFocus?.announcement_id === item.id ? notificationFocus?.comment_id : null} courseId={courseId} roomId={roomId} announcementId={item.id} moderationRevision={moderationRevision} onModerationChange={() => setModerationRevision((value) => value + 1)} /></article>)}</div> : !error && <div className="class-session-empty class-tab-placeholder"><span><MessageSquare size={32} /></span><h2>Bảng tin của lớp</h2><p>Thông báo và cập nhật dành cho lớp sẽ hiển thị tại đây.</p></div>}
   </section>
 }

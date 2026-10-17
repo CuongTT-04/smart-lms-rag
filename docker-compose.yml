@@ -1,6 +1,15 @@
 name: smart-lms-rag
 
 services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
   database:
     image: postgres:16-alpine
     environment:
@@ -24,6 +33,7 @@ services:
       dockerfile: docker/backend/Dockerfile
     environment: &backend-environment
       DJANGO_SETTINGS_MODULE: config.settings.docker
+      NOTIFICATION_REDIS_URL: redis://redis:6379/0
       DJANGO_DEBUG: "true"
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-smart-lms-docker-local-only-change-before-production}
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
@@ -58,6 +68,8 @@ services:
       - documents_data:/app/.private/documents
       - announcements_data:/app/.private/announcements
     depends_on:
+      redis:
+        condition: service_healthy
       database:
         condition: service_healthy
         restart: true

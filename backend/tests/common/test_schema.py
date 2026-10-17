@@ -23,6 +23,11 @@ class OpenAPITests(SimpleTestCase):
     def test_schema_validates_and_documents_all_business_operations(self):
         validate_schema(self.schema)
         expected = {
+            ('/api/notifications/', 'get'),
+            ('/api/notifications/read-all/', 'post'),
+            ('/api/notifications/ws-ticket/', 'post'),
+            ('/api/notifications/{notice_id}/read/', 'post'),
+            ('/api/notifications/{notice_id}/target/', 'get'),
             ("/api/health/", "get"),
             ("/api/users/register/", "post"),
             ("/api/users/login/", "post"),
@@ -85,6 +90,31 @@ class OpenAPITests(SimpleTestCase):
             (comment_path + "{comment_id}/", "delete"),
             (comment_path + "{comment_id}/vote/", "put"),
             ("/api/courses/{course_id}/classrooms/{classroom_id}/comment-mutes/{user_id}/", "put"),
+        })
+        video_path = "/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/videos/"
+        video_detail = video_path + "{video_id}/"
+        expected.update({
+            (video_path, "get"), (video_path, "post"),
+            (video_detail, "get"), (video_detail, "patch"), (video_detail, "delete"),
+            (video_detail + "file/", "get"), (video_detail + "progress/", "put"),
+            (video_detail + "questions/", "post"),
+            (video_detail + "questions/{question_id}/", "patch"),
+            (video_detail + "questions/{question_id}/", "delete"),
+            (video_detail + "questions/{question_id}/answers/", "post"),
+            (video_detail + "responses/", "get"),
+            (video_detail + "answers/mine/", "get"),
+        })
+        assessment_path = "/api/courses/{course_id}/classrooms/{classroom_id}/sessions/{session_id}/assessments/"
+        assessment_detail = assessment_path + "{assessment_id}/"
+        assessment_attempt = assessment_detail + "attempts/{attempt_id}/"
+        expected.update({
+            (assessment_path, 'get'), (assessment_path, 'post'),
+            (assessment_detail, 'get'), (assessment_detail, 'patch'), (assessment_detail, 'delete'),
+            (assessment_detail+'start/', 'post'), (assessment_detail+'assistance/', 'post'),
+            (assessment_detail+'dashboard/', 'get'), (assessment_detail+'export/', 'get'),
+            (assessment_attempt, 'get'), (assessment_attempt, 'patch'),
+            (assessment_attempt+'submit/', 'post'), (assessment_attempt+'events/', 'post'),
+            (assessment_attempt+'grade/', 'patch'), (assessment_attempt+'file/', 'get'),
         })
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]

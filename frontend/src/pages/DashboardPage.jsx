@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AlertCircle, Check, LoaderCircle, LogOut, Sun } from 'lucide-react'
 import { authErrorMessage } from '../services/auth.service'
 import ProfileEditor from '../components/ProfileEditor'
+import NotificationBell from '../components/notifications/NotificationBell'
 
 
 export default function DashboardPage({ user, onLogout, onUserUpdated, onSessionExpired }) {
@@ -15,7 +16,7 @@ export default function DashboardPage({ user, onLogout, onUserUpdated, onSession
   }
   return (
     <main className="account-page">
-      <header className="account-header"><span className="wordmark"><Sun className="brand-sun" size={31} aria-hidden="true" /> OHAYO<span className="brand-period">.</span></span><button className="secondary-button" type="button" disabled={pending} onClick={handleLogout}>{pending ? <LoaderCircle className="spin" size={18} /> : <LogOut size={18} />} Đăng xuất</button></header>
+      <header className="account-header"><span className="wordmark"><Sun className="brand-sun" size={31} aria-hidden="true" /> OHAYO<span className="brand-period">.</span></span><NotificationBell /><button className="secondary-button" type="button" disabled={pending} onClick={handleLogout}>{pending ? <LoaderCircle className="spin" size={18} /> : <LogOut size={18} />} Đăng xuất</button></header>
       <section className="account-content" aria-labelledby="account-title">
         <span className="welcome-note"><Check size={16} aria-hidden="true" /> ĐĂNG NHẬP THÀNH CÔNG</span>
         <h1 id="account-title">Xin chào, {user.full_name || user.username}!</h1>

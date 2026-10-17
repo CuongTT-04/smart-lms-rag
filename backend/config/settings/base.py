@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "apps.ai",
     "apps.payments",
     "apps.operations",
+    "apps.notifications",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.notifications.context.NotificationActorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -91,6 +93,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+NOTIFICATION_REDIS_URL = os.getenv('NOTIFICATION_REDIS_URL', 'redis://redis:6379/0')
+CHANNEL_LAYERS = {'default': {'BACKEND': 'channels_redis.core.RedisChannelLayer', 'CONFIG': {'hosts': [NOTIFICATION_REDIS_URL]}}}
+
 
 DATABASES = {
     "default": {
@@ -98,6 +103,8 @@ DATABASES = {
         "NAME": os.getenv("DB_NAME") or str(PROJECT_DIR / "db.sqlite3"),
     }
 }
+
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 if os.getenv("DB_ENGINE") and os.getenv("DB_ENGINE") != "django.db.backends.sqlite3":
     DATABASES["default"].update(

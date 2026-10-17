@@ -205,7 +205,7 @@ UC-01–UC-25 và UC-X01–UC-X04 là use cases của sản phẩm cuối. Mã U
 | BR-05 | Câu hỏi mơ hồ được yêu cầu làm rõ; thiếu bằng chứng thì thông báo giới hạn; học viên có thể chủ động chọn nguồn tổng quát riêng, không được giả làm câu trả lời có căn cứ học liệu. |
 | BR-06 | Gợi ý tuân thủ chính sách và trạng thái bài tại server. Đáp án/rubric riêng không được đưa vào chỉ mục, context hoặc phản hồi của học viên. |
 | BR-07 | Tóm tắt phải kiểm tra toàn bộ phạm vi yêu cầu; nêu phạm vi thực tế và phần thiếu khi tác vụ không hoàn thành. Không dùng vài chunk top-k để thay cho nội dung toàn phạm vi. |
-| BR-08 | Server kiểm soát hạn, thời lượng và số lượt. Quiz một lượt/học viên; tự luận một lượt nộp, không nộp muộn/nộp lại. Điểm và đáp án hiển thị theo chính sách công bố. |
+| BR-08 | Server kiểm soát hạn, thời lượng và số lượt. Chế độ Kiểm tra: quiz một lượt/học viên, tự luận một lần nộp chính thức có xác nhận. Ôn tập: làm/nộp lại trước hạn, giữ lịch sử; không nhận nộp muộn. Điểm và đáp án hiển thị theo chính sách công bố. |
 | BR-09 | Học viên xem dữ liệu cá nhân trong lớp còn quyền; giáo viên xem lớp phụ trách. Thu hồi quyền không xóa điểm/bài nộp; học viên mất quyền truy cập lớp và kết quả qua giao diện lớp. |
 | BR-10 | Thêm/thay học liệu cập nhật chỉ mục; QLoRA được huấn luyện trong quy trình nghiên cứu riêng. Không dùng bài nộp hoặc hội thoại học viên để fine-tune mặc định. |
 | BR-11 | Corpus, split, model, adapter, prompt và cấu hình đánh giá có phiên bản để truy vết. Không dùng nhãn test để huấn luyện hoặc chọn cấu hình. |
@@ -231,8 +231,8 @@ Bài tự luận nhận văn bản hoặc một file PDF/PNG/JPEG trong hạn, t
 | Loại tình huống | Mức trợ giúp AI |
 |---|---|
 | Bài luyện tập | Gợi nhắc khái niệm, đặt câu hỏi dẫn dắt hoặc gợi ý bước tiếp theo; không mặc định giải toàn bộ. |
-| Quiz đang làm | Tắt trợ giúp AI theo bài; kiểm tra trạng thái từ backend. |
-| Tự luận có chấm điểm | Giáo viên chọn tắt trợ giúp hoặc chỉ gợi ý khái niệm; hết hạn không tự mở lời giải. |
+| Chế độ Kiểm tra | Tắt trợ giúp AI theo bài ở giao diện và backend, kể cả trước/sau lượt làm. Ôn tập mới có trợ giúp AI. |
+| Tự luận có chấm điểm | Kiểm tra tắt trợ giúp AI. Ôn tập cho gợi ý; hết hạn không tự mở lời giải hoặc cho sửa bài. |
 | Đề do học viên nhập, không xác định được chính sách | Yêu cầu làm rõ khi cần; chỉ hỗ trợ trong mức giới hạn, không tự coi là được cung cấp toàn bộ lời giải. |
 
 Kiểm soát không chỉ dựa vào prompt: backend quản lý quyền dữ liệu và chính sách, pipeline loại nguồn riêng, đầu ra được kiểm tra và chấm trên bộ tình huống. Nhóm đánh giá riêng lỗi truy cập đáp án bảo vệ và trường hợp mô hình tự suy luận ra lời giải. Khả năng nhận diện một đề bị sao chép sang câu hỏi độc lập được ghi nhận trong phân tích giới hạn của trợ lý.
@@ -301,10 +301,10 @@ Mỗi yêu cầu cần đạt trong bản cuối; cột giai đoạn xác địn
 | FR-23 | Giáo viên phải có thể thiết lập học liệu được sử dụng và chính sách trợ giúp của trợ lý trong khóa học. | Cấu hình phân biệt tài liệu học viên và tài liệu riêng/đáp án; lưu chính sách có phiên bản, áp dụng trong các yêu cầu tiếp theo; không cho phép cấu hình bỏ qua quyền nền tảng. | UC-17 | P1 | MVP |
 | FR-24 | Học viên phải có thể yêu cầu tóm tắt tài liệu hoặc phạm vi nội dung được chọn. | Tóm tắt một tài liệu hoặc phạm vi trang/slide/mục được chọn. MVP dùng PDF; bản cuối áp dụng các định dạng được hỗ trợ, tối đa 10.000 token nguồn và 20 trang/slide khi định dạng có đơn vị đó. Kiểm tra quyền/độ bao phủ, gắn nguồn; vượt giới hạn yêu cầu thu hẹp, ngắt thì báo phần thiếu. | UC-15 | P1 | MVP; hoàn thiện bản cuối |
 | FR-25 | Hệ thống phải cho học viên lưu, xem lại và tiếp tục hội thoại cá nhân. | Hội thoại/lượt trao đổi gắn học viên và khóa học, được giữ sau restart; học viên có thể xóa lịch sử của mình. Khi mở/tiếp tục phải kiểm tra quyền hiện tại; lớp mất quyền hoặc nguồn đã gỡ không được trả lại từ lịch sử/cache. Giáo viên/admin không mặc định đọc toàn bộ hội thoại. | UC-16 | P1 | Sau MVP — bắt buộc bản cuối |
-| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu quiz một lựa chọn đúng hoặc tự luận/nộp file, đề, hạn/thời lượng, chính sách trợ giúp và công bố. Đáp án/rubric riêng tách khỏi dữ liệu học viên; đề đã có lượt làm giữ nguyên phiên bản. | UC-18 | P1 | MVP |
-| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Mỗi học viên một lượt quiz, chỉ bắt đầu khi có quyền và còn thời gian. Lượt gắn phiên bản đề; server kiểm soát hạn/thời lượng và chốt câu trả lời đã lưu khi hết thời gian. | UC-19 | P1 | MVP |
+| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu quiz một hoặc nhiều đáp án theo từng câu hoặc tự luận/nộp file, đề, hạn/thời lượng, chính sách trợ giúp và công bố. Đáp án/rubric riêng tách khỏi dữ liệu học viên; đề đã có lượt làm giữ nguyên phiên bản. | UC-18 | P1 | MVP |
+| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Ôn tập cho làm lại trước hạn; Kiểm tra chỉ một lượt, yêu cầu fullscreen khi bắt đầu/tiếp tục. Chỉ bắt đầu khi có quyền và còn thời gian. Lượt gắn phiên bản đề; server kiểm soát hạn/thời lượng và chốt câu trả lời đã lưu khi hết thời gian. | UC-19 | P1 | MVP |
 | FR-28 | Hệ thống phải nhận bài quiz và tự chấm theo đáp án của phiên bản đề tương ứng. | Lưu câu trả lời/điểm nhất quán; yêu cầu nộp lặp không tạo điểm khác nhau cho cùng lượt; chỉ trả kết quả/đáp án theo thời điểm được công bố. | UC-19 | P1 | MVP |
-| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Nhận một lượt nộp bằng văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB trong hạn. Lưu người nộp, phiên bản bài và thời điểm server; không nhận nộp muộn/nộp lại, gửi lặp cùng thao tác không tạo bản ghi trùng. | UC-20 | P1 | MVP |
+| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Nhận văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB trong hạn. Ôn tập cho chỉnh sửa/nộp lại; Kiểm tra chỉ một lần nộp chính thức sau dialog xác nhận. Lưu người nộp, phiên bản bài và thời điểm server; không nhận nộp muộn; Kiểm tra không nộp lại, Ôn tập giữ lịch sử mọi lần nộp; gửi lặp cùng thao tác không tạo bản ghi trùng. | UC-20 | P1 | MVP |
 | FR-30 | Giáo viên phải có thể chấm và phản hồi bài nộp trong lớp phụ trách. | Giáo viên lớp phụ trách chấm tự luận thang 0–10, ghi nhận xét, lưu và công bố. Sửa điểm có dấu vết; AI không quyết định điểm chính thức. | UC-21 | P1 | MVP |
 | FR-31 | Học viên phải có thể xem điểm và phản hồi cá nhân đã được công bố. | Chỉ hiển thị kết quả của đúng học viên; chưa chấm/chưa công bố có trạng thái riêng; không dùng điểm 0 để thay cho kết quả còn thiếu. | UC-22 | P1 | MVP |
 | FR-32 | Giáo viên phải có thể xem thống kê tiến độ và kết quả trong khóa học phụ trách. | Có phạm vi và thời điểm tính; số liệu khớp dữ liệu học/lượt nộp/điểm; học viên chưa có điểm được phân biệt với điểm 0. | UC-23 | P1 | MVP |
@@ -405,7 +405,7 @@ Các use case còn lại thực hiện theo yêu cầu và tiêu chí chấp nh�
 - **Actor:** giáo viên tạo đề; học viên làm quiz.
 - **Tiền điều kiện:** giáo viên phụ trách lớp; học viên được giao bài, còn hạn và chưa sử dụng lượt làm.
 - **Kích hoạt:** giáo viên công bố quiz; học viên chọn bắt đầu.
-- **Luồng chính:** lưu phiên bản đề và đáp án riêng → tạo một lượt làm → trả câu hỏi không kèm đáp án → lưu lựa chọn của học viên → nhận nộp hoặc chốt khi hết thời gian → tự chấm trên server → lưu điểm và hiển thị phần được phép công bố.
+- **Luồng chính:** lưu phiên bản đề và đáp án riêng → tạo/tiếp tục lượt theo chế độ → trả câu hỏi không kèm đáp án → lưu lựa chọn của học viên → nhận nộp hoặc chốt khi hết thời gian → tự chấm trên server → lưu điểm và hiển thị phần được phép công bố.
 - **Ngoại lệ:** sai quyền, hết hạn hoặc đã có lượt làm thì không tạo lượt mới. Khi mất kết nối, chỉ câu trả lời đã được server xác nhận lưu có thể dùng để chấm. Nộp lặp trả kết quả nhất quán; sửa đề đã có lượt làm cần bài/phiên bản mới.
 - **Hậu điều kiện:** lượt làm, câu trả lời và điểm gắn đúng học viên/phiên bản; đáp án chỉ hiển thị khi được công bố.
 
@@ -414,8 +414,8 @@ Các use case còn lại thực hiện theo yêu cầu và tiêu chí chấp nh�
 - **Actor:** học viên nộp/xem kết quả; giáo viên chấm.
 - **Tiền điều kiện:** học viên có quyền bài và còn hạn; giáo viên có quyền lớp và bài nộp tồn tại.
 - **Kích hoạt:** nộp văn bản/file hoặc mở bài cần chấm.
-- **Luồng chính:** kiểm tra quyền, hạn và file → lưu một lượt nộp cùng thời điểm server → xác nhận đã nhận → giáo viên đọc bài, nhập điểm 0–10 và nhận xét → lưu/công bố → học viên xem kết quả cá nhân.
-- **Ngoại lệ:** file sai loại/vượt giới hạn, nộp muộn hoặc nộp lại bị từ chối; gửi lại cùng thao tác đã nhận không tạo lượt mới. Điểm ngoài thang và truy cập bài người khác bị chặn; sửa điểm được ghi dấu vết.
+- **Luồng chính:** kiểm tra quyền, hạn và file → lưu lượt nộp cùng thời điểm server và giữ lịch sử (Ôn tập cho nộp lại, Kiểm tra chỉ nộp một lần có xác nhận) → xác nhận đã nhận → giáo viên đọc bài, nhập điểm 0–10 và nhận xét → lưu/công bố → học viên xem kết quả cá nhân.
+- **Ngoại lệ:** file sai loại/vượt giới hạn, nộp muộn bị từ chối; nộp lại chỉ cho Ôn tập trước hạn; gửi lại cùng thao tác đã nhận không tạo lượt mới. Điểm ngoài thang và truy cập bài người khác bị chặn; sửa điểm được ghi dấu vết.
 - **Hậu điều kiện:** bài nộp được giữ để chấm; chưa chấm/chưa công bố có trạng thái riêng; file nộp không vào chỉ mục RAG.
 
 ### 7.9. UC-23, UC-25 — Thống kê lớp và vận hành
@@ -485,8 +485,8 @@ Bảng mô tả dữ liệu nghiệp vụ cần có. Tên bảng, kiểu cột v
 | Tác vụ xử lý | ID, loại, đối tượng/phiên bản, người yêu cầu, trạng thái, lần thử, thời gian, mã lỗi/cấu hình | Retry không nhân đôi kết quả; hoàn thành muộn không khôi phục đối tượng đã gỡ. |
 | Chính sách trợ lý | Khóa học/bài đánh giá, mức trợ giúp, học liệu được dùng, phiên bản, người sửa | Không mở rộng quyền nền tảng; áp dụng chính sách hiện hành trước trả kết quả. |
 | Bài đánh giá và câu hỏi | ID, lớp/bài học, kiểu bài, phiên bản đề, hạn/thời lượng, quy tắc công bố, đáp án/rubric riêng | Đề và đáp án tách quyền; phiên bản đã có lượt làm giữ nguyên. |
-| Lượt quiz và câu trả lời | Học viên, bài/phiên bản, thời điểm bắt đầu/kết thúc, trạng thái, lựa chọn đã lưu, điểm | Một lượt/bài/học viên; thời gian do server xác định; nộp/chấm lặp nhất quán. |
-| Bài nộp và kết quả tự luận | Học viên, bài/phiên bản, văn bản hoặc file, thời điểm nộp, điểm, nhận xét, người chấm, trạng thái công bố | Một lượt nộp; điểm 0–10; học viên chỉ đọc kết quả cá nhân đã công bố. |
+| Lượt quiz và câu trả lời | Học viên, bài/phiên bản, thời điểm bắt đầu/kết thúc, trạng thái, lựa chọn đã lưu, điểm | Kiểm tra một lượt/bài/học viên, Ôn tập nhiều lượt; thời gian do server xác định; nộp/chấm lặp nhất quán. |
+| Bài nộp và kết quả tự luận | Học viên, bài/phiên bản, văn bản hoặc file, thời điểm nộp, điểm, nhận xét, người chấm, trạng thái công bố | Kiểm tra một lần nộp chính thức, Ôn tập cho nộp lại trước hạn; điểm 0–10; học viên chỉ đọc kết quả cá nhân đã công bố. |
 | Dấu vết thay đổi | Người thao tác, hành động, đối tượng, thời điểm, thông tin thay đổi cần thiết | Chỉ người có quyền đọc; ghi cấp/thu hồi quyền, gỡ/thay nguồn, sửa chính sách và điểm. |
 | Hội thoại và lượt trao đổi AI | Học viên, khóa học, chế độ/nguồn trả lời, nội dung, citation/phiên bản nguồn, thời điểm, trạng thái xóa | MVP giữ trong phiên; bản cuối lưu lịch sử cá nhân, kiểm tra quyền khi xem/tiếp tục và hỗ trợ xóa. |
 | Đơn hàng và giao dịch | Học viên, khóa học, giá tại lúc tạo, đơn vị tiền, ID đơn/giao dịch ngoài, trạng thái, xác thực/đối soát, thời điểm | Giá phía server; callback lặp nhất quán; không tự cấp quyền từ client. |
@@ -536,8 +536,8 @@ erDiagram
 | Quyền thành viên | Được cấp ↔ đã thu hồi | Giáo viên phụ trách; giữ các dữ liệu học tập đã có. |
 | Phiên bản tài liệu | Chờ → đang xử lý → sẵn sàng hoặc lỗi; lỗi → chờ khi retry; bất kỳ bản chưa gỡ → đã gỡ | Đã gỡ không trở lại sẵn sàng do tác vụ cũ. Sẵn sàng chưa đủ nếu bản không còn là bản đang phục vụ. |
 | Tác vụ AI | Chờ → đang xử lý → thành công hoặc lỗi/hết hạn/hủy | Quyền, chính sách hoặc nguồn thay đổi có thể hủy; hết hạn không ghi thành công muộn. |
-| Quiz | Chưa bắt đầu → đang làm → đã chốt và chấm | Một lượt; hết thời gian chốt theo dữ liệu đã lưu; kết quả/đáp án theo công bố. |
-| Tự luận | Chưa nộp → đã nộp/chờ chấm → đã chấm/chưa công bố → đã công bố | Không nộp lại; sửa điểm sau công bố cần dấu vết; chưa có điểm không thay bằng 0. |
+| Quiz | Chưa bắt đầu → đang làm → đã chốt và chấm | Kiểm tra một lượt, Ôn tập nhiều lượt; hết thời gian chốt theo dữ liệu đã lưu; kết quả/đáp án theo công bố. |
+| Tự luận | Chưa nộp → đã nộp/chờ chấm → đã chấm/chưa công bố → đã công bố | Kiểm tra không nộp lại, Ôn tập cho nộp lại trước hạn; sửa điểm sau công bố cần dấu vết; chưa có điểm không thay bằng 0. |
 | Đơn/giao dịch | Chờ → thành công hoặc thất bại/hủy/hết hạn; thành công → hoàn một phần/toàn bộ khi xác nhận | Thông báo phải xác thực; lặp/đến muộn không ghi đè sai kết quả đã đối soát. |
 | Mốc video | Chưa trả lời → đã trả lời; trạng thái gắn phiên bản | Tua không tự chuyển trạng thái; thực hiện lặp không tăng tiến độ. |
 
@@ -679,7 +679,7 @@ Nhóm theo dõi thêm answer relevancy và context precision để phân tích m
 |---|---|
 | Học liệu | MVP: PDF văn bản. Bản cuối: PDF/DOCX/PPTX/TXT và OCR PDF quét, tối đa 20 MiB/file; PDF tối đa 100 trang, PPTX tối đa 100 slide. DOCX/TXT kiểm soát kích thước/timeout, không gán trang PDF giả. |
 | Bài nộp | Văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB; không vào chỉ mục AI. |
-| Số lượt bài đánh giá | Một lượt quiz và một lượt nộp tự luận/học viên/bài; không nộp muộn hoặc nộp lại. |
+| Số lượt bài đánh giá | Kiểm tra: một lượt quiz và một lần nộp tự luận; Ôn tập: làm/nộp lại trước hạn. Không nộp muộn. |
 | Generation đồng thời | Một lượt trên một model service. |
 | Hàng đợi AI | Tối đa 5 tác vụ chờ ngoài tác vụ đang chạy; quá giới hạn trả thông báo bận. |
 | Quota học viên | 20 yêu cầu AI/giờ/học viên, tổng ba chế độ, kiểm tra tại backend. |
@@ -897,3 +897,21 @@ Mỗi thay đổi cần ghi nội dung, lý do, người thực hiện/quyết �
 | 1.2 | 03/10/2026 | Bổ sung FR-37/FR-38: học liệu mới mặc định bảo vệ có watermark và không tải; công khai từng học liệu bỏ watermark và cho người có quyền tải. Bổ sung BR-17, MVP-11 và FIN-10; MVP có 34 FR, sản phẩm cuối có 42 FR. |
 
 Quyết định phạm vi 1.1 được ghi theo mục tiêu sản phẩm đầy đủ của nhóm. MVP giữ luồng cốt lõi đã chốt để triển khai trước; phạm vi đồ án không bị thu hẹp theo giới hạn MVP. Nguồn tổng quát được tách lựa chọn riêng để giữ minh bạch với câu trả lời có bằng chứng; không tự fallback và gắn citation học liệu giả.
+
+
+### Cập nhật phạm vi Bài tập ngày 17/10/2026
+
+Chế độ chính thức là **Ôn tập / Kiểm tra**. Ôn tập cho làm lại quiz và chỉnh sửa/nộp lại tự luận trước hạn, có phần gợi ý/AI. Kiểm tra chỉ một lượt quiz hoặc một lần nộp tự luận chính thức, có dialog xác nhận không thể chỉnh sửa/nộp lại. Mọi lượt giữ lịch sử; lượt mới không kế thừa điểm/nhận xét của lượt cũ. Đề đã có lượt làm giữ nguyên; cần thay đổi phải tạo bài mới.
+
+Kiểm tra yêu cầu fullscreen khi bắt đầu/tiếp tục và ghi sự kiện chuyển tab/ẩn trang/thoát fullscreen. Hệ thống chỉ cảnh báo và ghi log với thời điểm nhận ở server; giáo viên tự quyết định xử lý, ghi nhận xét nội bộ hoặc điều chỉnh điểm có audit. Không tự động nộp bài, khóa bài, trừ điểm hoặc kết luận gian lận do vi phạm. Fullscreen là yêu cầu của giao diện, không phải cơ chế chống gian lận tuyệt đối. Quiz hết thời lượng/hạn chung vẫn chốt theo dữ liệu đã lưu; đây là quy tắc thời gian, không phải hình phạt vi phạm.
+
+Dashboard và xuất Excel (.xlsx) có ở **cả hai chế độ**: tổng hợp học viên/trạng thái/điểm, lịch sử mọi lượt, tiến độ nộp, phân bố điểm, bài nộp theo ngày và tỷ lệ đúng từng câu quiz. Mặc định điểm/thống kê dùng lượt đã nộp mới nhất của mỗi học viên; bản nháp sửa tiếp không thay điểm lượt đã nộp cho đến khi nộp lượt mới. Excel theo đúng bộ lọc tìm kiếm/trạng thái, gồm Tổng hợp, Chi tiết lượt làm, Thống kê; Kiểm tra thêm Vi phạm và ghi nhận xử lý của giáo viên. Chỉ giáo viên quản lý được xem/xuất dữ liệu lớp.
+
+Trạng thái triển khai AI: chưa có provider sinh câu trả lời. Ôn tập cung cấp gợi ý nhập tay và thông báo AI chưa kết nối; API trợ giúp Kiểm tra trả 403. Không mô phỏng gợi ý nhập tay thành kết quả AI.
+
+
+Cập nhật kiểu trắc nghiệm 17/10/2026: giáo viên chọn **Một đáp án / Nhiều đáp án** riêng cho từng câu trong video và quiz. Thuộc tính `multiple` là cấu hình tường minh, không suy ra từ số đáp án đúng. Một đáp án dùng radio tròn, cần đúng một đáp án đúng; Nhiều đáp án dùng checkbox vuông, cho cấu hình từ một đáp án đúng trở lên. Chấm theo tập lựa chọn khớp toàn bộ đáp án, không cho điểm một phần. Dashboard/Excel dùng cùng quy tắc và hiển thị đầy đủ các lựa chọn đã chọn.
+
+## Thông báo theo tài khoản
+
+Hệ thống lưu thông báo cho học viên, giáo viên và quản trị viên, kể cả khi người nhận offline. Chuông hiển thị số chưa đọc, hỗ trợ đọc từng mục/đọc tất cả, phân trang và điều hướng theo quyền. WebSocket cập nhật realtime; đăng nhập lại tải bù và giữ trạng thái đã đọc. Phạm vi sự kiện và giới hạn: [Thông báo](notifications.md).

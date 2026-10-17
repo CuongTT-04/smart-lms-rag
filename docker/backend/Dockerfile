@@ -23,4 +23,4 @@ USER app
 EXPOSE 8000
 
 ENTRYPOINT ["smartlms-entrypoint"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "--access-log", "/dev/null", "config.asgi:application"]
