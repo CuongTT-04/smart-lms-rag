@@ -1,0 +1,2807 @@
+{
+  "schema_version": "1.0",
+  "dataset_kind": "development_additions",
+  "created_on": "2026-10-23",
+  "owner": "A - Vũ Nam Dương",
+  "prepared_by": "Codex hỗ trợ soạn và đối chiếu nguồn; chưa có xác nhận review chéo của người",
+  "review_status": "pending_human_peer",
+  "reference_baseline": "data/qa/qa_baseline.json",
+  "source_map": "data/qa/source_map.json",
+  "page_unit": "physical_pdf_1based",
+  "source_identity_scope": "offline_snapshot_not_live_database",
+  "notes": "50 câu bổ sung do A và Codex hỗ trợ: 25 THMLN trước đó, thêm 13 KTCTMLN và 12 CNXHKH theo yêu cầu hoàn thiện bộ 150. Không giả là 25 câu mới do B bàn giao; tất cả còn chờ human peer review. ground_truth, expected_points, evidence và hint_policy chỉ để chấm nội bộ, không đưa vào prompt. Hint là hướng dẫn đọc trong ôn tập offline, không giả lập quyền TEST hay DB.",
+  "cases": [
+    {
+      "qa_id": "THMLN_QA_050",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Hai mặt của vấn đề cơ bản của triết học",
+      "question": "Vấn đề cơ bản của triết học có hai mặt nào, và mỗi mặt cần trả lời câu hỏi gì?",
+      "ground_truth": "Mặt thứ nhất hỏi giữa vật chất và ý thức cái nào có trước, cái nào có sau và cái nào quyết định cái nào. Mặt thứ hai hỏi con người có khả năng nhận thức được thế giới hay không.",
+      "expected_points": [
+        "Quan hệ có trước, có sau và quyết định giữa vật chất với ý thức",
+        "Khả năng nhận thức thế giới của con người"
+      ],
+      "source_doc": "ch01.pdf",
+      "source_pages": [
+        6
+      ],
+      "evidence": [
+        {
+          "page_number": 6,
+          "anchor": "Vấn đề cơ bản của triết học có hai mặt",
+          "terms": [
+            "Mặt thứ nhất",
+            "Mặt thứ hai",
+            "khả năng nhận thức"
+          ],
+          "page_text_sha256": "b667b55844857610fd917a8591928d66b6d87f830b606af7500cc7ada8b5273a"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "95f6883e-684b-5b47-86d0-b42a4f36d7d0",
+          "version_id": "8b99ca87-7f80-5897-aab6-387740aa14f6",
+          "page_number": 6
+        }
+      ],
+      "source_checksum": "4544a1ece75d7f14e77cf2514ae156e7b2aa48bcd94321eaf43740808389aeb2",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_050",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_051",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Hai hình thức chủ nghĩa duy tâm",
+      "question": "Chủ nghĩa duy tâm chủ quan và chủ nghĩa duy tâm khách quan khác nhau ở cách hiểu yếu tố tinh thần có trước thế giới như thế nào?",
+      "ground_truth": "Duy tâm chủ quan coi ý thức của con người là cái có trước, xem sự vật là phức hợp cảm giác của cá nhân. Duy tâm khách quan cũng thừa nhận ý thức có trước nhưng coi đó là tinh thần khách quan tồn tại trước và độc lập với con người.",
+      "expected_points": [
+        "Duy tâm chủ quan gắn với ý thức và cảm giác của chủ thể",
+        "Duy tâm khách quan gắn với tinh thần khách quan có trước và độc lập với con người"
+      ],
+      "source_doc": "ch01.pdf",
+      "source_pages": [
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 8,
+          "anchor": "Chủ nghĩa duy tâm chia thành hai phái",
+          "terms": [
+            "phức hợp những cảm giác",
+            "tồn tại độc lập với con người"
+          ],
+          "page_text_sha256": "41d4c1ffd9620a0b37a4830406f5a95af9ef77c14a4cb7e8ba985b0f4d5ebb73"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "95f6883e-684b-5b47-86d0-b42a4f36d7d0",
+          "version_id": "8b99ca87-7f80-5897-aab6-387740aa14f6",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "4544a1ece75d7f14e77cf2514ae156e7b2aa48bcd94321eaf43740808389aeb2",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_051",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_052",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Thuyết không thể biết",
+      "question": "Thuyết không thể biết phủ nhận điều gì về năng lực nhận thức của con người, và giới hạn hiểu biết mà thuyết này đặt ra là gì?",
+      "ground_truth": "Thuyết không thể biết phủ nhận khả năng nhận thức của con người; cho rằng con người không thể hiểu được đối tượng, hoặc nếu hiểu thì chỉ hiểu hình thức bề ngoài, vì hình ảnh do giác quan cung cấp không bảo đảm tính chân thực.",
+      "expected_points": [
+        "Phủ nhận khả năng nhận thức của con người",
+        "Không hiểu đối tượng hoặc chỉ biết hình thức bề ngoài",
+        "Không bảo đảm tính chân thực của hình ảnh do giác quan cung cấp"
+      ],
+      "source_doc": "ch01.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "Học thuyết triết học phủ nhận khả năng nhận thức",
+          "terms": [
+            "hình thức bề ngoài",
+            "không bảo đảm tính chân thực"
+          ],
+          "page_text_sha256": "f58f4ab73b40167fbfbfd42556d14f9bcf9dcddcf2f95fe165da66241b1615a0"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "95f6883e-684b-5b47-86d0-b42a4f36d7d0",
+          "version_id": "8b99ca87-7f80-5897-aab6-387740aa14f6",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "4544a1ece75d7f14e77cf2514ae156e7b2aa48bcd94321eaf43740808389aeb2",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_052",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_053",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Phương pháp siêu hình và biện chứng",
+      "question": "Phương pháp siêu hình và phương pháp biện chứng khác nhau ở cách xem xét mối liên hệ và trạng thái vận động của đối tượng như thế nào?",
+      "ground_truth": "Siêu hình xem đối tượng cô lập, tách rời và tĩnh tại; nếu biến đổi thì chủ yếu là lượng, nguyên nhân bên ngoài. Biện chứng xem đối tượng trong quan hệ, tác động qua lại, vận động và phát triển, có biến đổi về chất từ giải quyết mâu thuẫn nội tại.",
+      "expected_points": [
+        "Siêu hình: cô lập, tách rời, tĩnh tại",
+        "Biện chứng: các mối liên hệ, vận động và phát triển",
+        "Khác nhau về biến đổi chất và nguồn gốc nội tại của biến đổi"
+      ],
+      "source_doc": "ch01.pdf",
+      "source_pages": [
+        10
+      ],
+      "evidence": [
+        {
+          "page_number": 10,
+          "anchor": "Nhận thức đối tượng ở trạng thái cô lập",
+          "terms": [
+            "Nhận thức đối tượng ở trong các mối liên hệ",
+            "mâu thuẫn nội tại"
+          ],
+          "page_text_sha256": "da0c533d95694f8e9275892dfe12e1aaaecc7ec38b5ec4e87d0e8576846474ff"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "95f6883e-684b-5b47-86d0-b42a4f36d7d0",
+          "version_id": "8b99ca87-7f80-5897-aab6-387740aa14f6",
+          "page_number": 10
+        }
+      ],
+      "source_checksum": "4544a1ece75d7f14e77cf2514ae156e7b2aa48bcd94321eaf43740808389aeb2",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_053",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_054",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Các cấp độ phương pháp luận",
+      "question": "Nếu phân chia theo phạm vi tác dụng, phương pháp luận có những cấp độ nào và triết học đảm nhiệm cấp độ nào?",
+      "ground_truth": "Có phương pháp luận ngành dùng cho một ngành khoa học cụ thể, phương pháp luận chung dùng cho một số ngành khoa học và phương pháp luận chung nhất làm điểm xuất phát cho các phương pháp luận và phương pháp hoạt động khác. Triết học thực hiện chức năng phương pháp luận chung nhất.",
+      "expected_points": [
+        "Phương pháp luận ngành",
+        "Phương pháp luận chung",
+        "Phương pháp luận chung nhất",
+        "Triết học thực hiện chức năng phương pháp luận chung nhất"
+      ],
+      "source_doc": "ch01.pdf",
+      "source_pages": [
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 11,
+          "anchor": "Phương pháp luận có thể chia thành ba cấp độ",
+          "terms": [
+            "Phương pháp luận ngành",
+            "Phương pháp luận chung",
+            "triết học thực hiện chức năng phương pháp luận chung nhất"
+          ],
+          "page_text_sha256": "ceeb0643a1c04235a693cc6abe5c541db177c3bea0a085c87536569daf4a651f"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "95f6883e-684b-5b47-86d0-b42a4f36d7d0",
+          "version_id": "8b99ca87-7f80-5897-aab6-387740aa14f6",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "4544a1ece75d7f14e77cf2514ae156e7b2aa48bcd94321eaf43740808389aeb2",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_054",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_055",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Không gian và thời gian",
+      "question": "Không gian và thời gian phản ánh những phương diện tồn tại nào của vật chất, và có thể tồn tại tách khỏi vật chất không?",
+      "ground_truth": "Không gian biểu hiện vị trí, kích thước và tương quan của khách thể vật chất. Thời gian biểu hiện độ lâu dài, nhanh chậm và sự kế tiếp các giai đoạn vận động. Không gian, thời gian gắn bó với nhau và với vật chất; không có vật chất ngoài không gian, thời gian hoặc không gian, thời gian ngoài vật chất.",
+      "expected_points": [
+        "Không gian: vị trí, kích thước, tương quan",
+        "Thời gian: lâu dài, nhanh chậm, kế tiếp",
+        "Không tách rời vật chất"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 8,
+          "anchor": "Các hình thức tồn tại như vậy của khách thể vật chất được gọi là không gian",
+          "terms": [
+            "Các hình thức tồn tại như vậy được gọi là thời gian",
+            "không gian nào ở ngoài vật chất"
+          ],
+          "page_text_sha256": "e79196c9c88de9acda3d72dfe6ec86381863721b8e617edaccfb912182719f72"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "4371ff86-4735-53db-a44c-878cbef45d9e",
+          "version_id": "bdfcc761-50c5-5f0f-9e92-dc14263d7728",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "40fb87d746eaba982821bd6b10e0b7e984b231ee98dfe7958c64a0c54cb532a7",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_055",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_056",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Ngôn ngữ đối với ý thức",
+      "question": "Vì sao ngôn ngữ vừa là phương tiện giao tiếp vừa là công cụ của tư duy trong quá trình hình thành và phát triển ý thức?",
+      "ground_truth": "Ngôn ngữ là hệ thống tín hiệu vật chất mang nội dung ý thức, đáp ứng nhu cầu trao đổi trong lao động. Nó vừa giúp giao tiếp, tổng kết thực tiễn và truyền tri thức giữa các thế hệ, vừa giúp tư duy khái quát hóa, trừu tượng hóa hiện thực. Không có ngôn ngữ thì ý thức không thể tồn tại và thể hiện được.",
+      "expected_points": [
+        "Hệ thống tín hiệu vật chất mang nội dung ý thức",
+        "Giao tiếp, trao đổi và truyền tri thức",
+        "Khái quát hóa, trừu tượng hóa hiện thực"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        12
+      ],
+      "evidence": [
+        {
+          "page_number": 12,
+          "anchor": "Ngôn ngữ là hệ thống tín hiệu vật chất mang nội dung ý thức",
+          "terms": [
+            "phương tiện giao tiếp",
+            "công cụ của tư duy",
+            "từ thế hệ này sang thế hệ khác"
+          ],
+          "page_text_sha256": "4f18b3e9bea90be75fd0d3a6aa9a7c5d5d606f05b50d8ff7569462c34783d1c6"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "4371ff86-4735-53db-a44c-878cbef45d9e",
+          "version_id": "bdfcc761-50c5-5f0f-9e92-dc14263d7728",
+          "page_number": 12
+        }
+      ],
+      "source_checksum": "40fb87d746eaba982821bd6b10e0b7e984b231ee98dfe7958c64a0c54cb532a7",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_056",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_057",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Yêu cầu của quan điểm toàn diện",
+      "question": "Quan điểm toàn diện có đòi hỏi xem mọi mối liên hệ là quan trọng như nhau không? Hãy giải thích theo giáo trình.",
+      "ground_truth": "Không. Phải xem xét các mối liên hệ giữa các mặt, bộ phận và với sự vật khác, cả trực tiếp lẫn gián tiếp; đồng thời phân biệt và chú ý mối liên hệ bên trong, bản chất, chủ yếu, tất nhiên cùng sự chuyển hóa của chúng để có cách tác động phù hợp.",
+      "expected_points": [
+        "Không đánh đồng mọi mối liên hệ",
+        "Xem xét nhiều mặt và quan hệ",
+        "Phân biệt, chú ý mối liên hệ bên trong, bản chất, chủ yếu, tất nhiên"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        3
+      ],
+      "evidence": [
+        {
+          "page_number": 3,
+          "anchor": "phải biết phân biệt từng mối liên hệ",
+          "terms": [
+            "mối liên hệ bên trong",
+            "mối liên hệ bản chất",
+            "mối liên hệ chủ yếu"
+          ],
+          "page_text_sha256": "1c9009ffd8ab3fdf60527fa696f50793c770d5cd85883fe4d70e6be87a56afaa"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "b74f4dbc-a541-5c55-8675-541062ab26fe",
+          "version_id": "c8eb7f61-b65c-5da8-8819-96dd55964976",
+          "page_number": 3
+        }
+      ],
+      "source_checksum": "09712a48a9da9fdb540d83659ba088c8ef29cd88a05b0c59cc534b1ccfedcf3d",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_057",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_058",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Quan điểm lịch sử - cụ thể",
+      "question": "Vì sao không thể áp dụng máy móc một luận điểm vào mọi hoàn cảnh theo quan điểm lịch sử - cụ thể?",
+      "ground_truth": "Nhận thức và tác động vào sự vật phải xét điều kiện, hoàn cảnh lịch sử cụ thể và môi trường nơi nó hình thành, tồn tại, phát triển. Một luận điểm khoa học trong điều kiện này có thể không còn phù hợp trong điều kiện khác, nên chủ trương cần được bổ sung và điều chỉnh theo hoàn cảnh.",
+      "expected_points": [
+        "Xét điều kiện, hoàn cảnh, môi trường cụ thể",
+        "Giá trị áp dụng phụ thuộc điều kiện",
+        "Bổ sung, điều chỉnh khi hoàn cảnh thay đổi"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        3
+      ],
+      "evidence": [
+        {
+          "page_number": 3,
+          "anchor": "Quan điểm lịch sử - cụ thể đòi hỏi",
+          "terms": [
+            "môi trường cụ thể",
+            "trong điều kiện khác",
+            "bổ sung và điều chỉnh"
+          ],
+          "page_text_sha256": "1c9009ffd8ab3fdf60527fa696f50793c770d5cd85883fe4d70e6be87a56afaa"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "b74f4dbc-a541-5c55-8675-541062ab26fe",
+          "version_id": "c8eb7f61-b65c-5da8-8819-96dd55964976",
+          "page_number": 3
+        }
+      ],
+      "source_checksum": "09712a48a9da9fdb540d83659ba088c8ef29cd88a05b0c59cc534b1ccfedcf3d",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_058",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_059",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Tất nhiên và ngẫu nhiên",
+      "question": "Tất nhiên và ngẫu nhiên khác nhau ở cơ sở quyết định và khả năng xảy ra như thế nào?",
+      "ground_truth": "Tất nhiên do những nguyên nhân cơ bản bên trong kết cấu vật chất quyết định và trong điều kiện nhất định phải xảy ra như thế chứ không thể khác. Ngẫu nhiên do nhân tố và sự kết hợp hoàn cảnh bên ngoài quyết định, có thể xảy ra hoặc không, có thể xảy ra cách này hoặc cách khác.",
+      "expected_points": [
+        "Tất nhiên: nguyên nhân cơ bản bên trong, phải xảy ra khi có điều kiện nhất định",
+        "Ngẫu nhiên: nhân tố và hoàn cảnh bên ngoài, có thể xảy ra hoặc không và theo các cách khác nhau"
+      ],
+      "source_doc": "ch07.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "Khái niệm tất nhiên và ngẫu nhiên",
+          "terms": [
+            "những nguyên nhân cơ bản bên trong",
+            "có thể không xuất hiện"
+          ],
+          "page_text_sha256": "3aa8a3cfc09d5241cc935a7bbe272c1c718c4c1e0014c9e439eefd934b8fbd9b"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "2800fb7f-7d62-584d-b547-f9fccdd775cb",
+          "version_id": "df48e21d-38e5-5950-ac59-4e5a9a100a91",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "8b279e7f7b95b771075c150bc3873859ba3d15484fb6ccd0af4ddb605f911fa0",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_059",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_060",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Quan hệ nhân quả và kế tiếp thời gian",
+      "question": "Có thể kết luận hai hiện tượng có quan hệ nhân quả chỉ vì hiện tượng này xảy ra trước hiện tượng kia không? Dấu hiệu phân biệt là gì?",
+      "ground_truth": "Không. Nguyên nhân có trước kết quả nhưng không phải mọi sự nối tiếp về thời gian đều là nhân quả. Quan hệ nhân quả có sự sản sinh: nguyên nhân sinh ra kết quả; quan hệ kế tiếp thời gian đơn thuần không đủ chứng minh điều đó.",
+      "expected_points": [
+        "Không suy nhân quả chỉ từ trước - sau",
+        "Nguyên nhân sinh ra kết quả",
+        "Phân biệt sản sinh với nối tiếp thời gian"
+      ],
+      "source_doc": "ch07.pdf",
+      "source_pages": [
+        7
+      ],
+      "evidence": [
+        {
+          "page_number": 7,
+          "anchor": "không phải hai hiện tượng nào nối tiếp nhau về mặt thời gian",
+          "terms": [
+            "quan hệ sản sinh ra nhau",
+            "Nguyên nhân sinh ra kết quả"
+          ],
+          "page_text_sha256": "8299754be765ea4e110bcdb1d926b91fcf4f067eced878d3f3c0c71745f24dc4"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "2800fb7f-7d62-584d-b547-f9fccdd775cb",
+          "version_id": "df48e21d-38e5-5950-ac59-4e5a9a100a91",
+          "page_number": 7
+        }
+      ],
+      "source_checksum": "8b279e7f7b95b771075c150bc3873859ba3d15484fb6ccd0af4ddb605f911fa0",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_060",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_061",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Mâu thuẫn cơ bản và không cơ bản",
+      "question": "Mâu thuẫn cơ bản và mâu thuẫn không cơ bản khác nhau thế nào về phạm vi chi phối và tác động khi được giải quyết?",
+      "ground_truth": "Mâu thuẫn cơ bản quy định bản chất, sự phát triển qua tất cả giai đoạn và tồn tại suốt quá trình tồn tại của sự vật; giải quyết nó làm sự vật thay đổi căn bản về chất. Mâu thuẫn không cơ bản chỉ đặc trưng một phương diện, không quy định bản chất; việc nảy sinh hay giải quyết không làm sự vật thay đổi căn bản về chất.",
+      "expected_points": [
+        "Cơ bản: quy định bản chất và toàn bộ quá trình",
+        "Giải quyết mâu thuẫn cơ bản làm thay đổi căn bản về chất",
+        "Không cơ bản: chỉ một phương diện, không có tác động căn bản như trên"
+      ],
+      "source_doc": "ch08.pdf",
+      "source_pages": [
+        10
+      ],
+      "evidence": [
+        {
+          "page_number": 10,
+          "anchor": "Mâu thuẫn cơ bản là mâu thuẫn",
+          "terms": [
+            "tất cả các giai đoạn",
+            "Mâu thuẫn không cơ bản",
+            "thay đổi căn bản về chất"
+          ],
+          "page_text_sha256": "95342fe4f5bb6a96cc1acc881d6bbbdeb7b7fa660d6d8e7696ea2b77dabfceeb"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "58efaf33-ef4c-53eb-9bae-bd107a1861d0",
+          "version_id": "ec79c4e6-76a3-5f9b-b0d8-727b8bebb51a",
+          "page_number": 10
+        }
+      ],
+      "source_checksum": "dc22df4983758b8581b547104818377d20683453e11769bba712e8116d3bbf76",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_061",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_062",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Mâu thuẫn chủ yếu và thứ yếu",
+      "question": "Trong một giai đoạn phát triển, mâu thuẫn chủ yếu và mâu thuẫn thứ yếu giữ vai trò khác nhau như thế nào?",
+      "ground_truth": "Mâu thuẫn chủ yếu nổi lên hàng đầu và chi phối các mâu thuẫn khác trong một giai đoạn; giải quyết nó tạo điều kiện chuyển sang giai đoạn mới. Mâu thuẫn thứ yếu tồn tại trong một giai đoạn nhưng không chi phối, bị mâu thuẫn chủ yếu chi phối; giải quyết nó góp phần giải quyết mâu thuẫn chủ yếu.",
+      "expected_points": [
+        "Chủ yếu: hàng đầu và chi phối trong giai đoạn",
+        "Thứ yếu: bị chi phối, không giữ vai trò chi phối",
+        "Giải quyết thứ yếu góp phần giải quyết chủ yếu"
+      ],
+      "source_doc": "ch08.pdf",
+      "source_pages": [
+        10,
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 10,
+          "anchor": "Mâu thuẫn chủ yếu là mâu thuẫn nổi lên hàng đầu",
+          "terms": [
+            "giai đoạn phát triển nhất định",
+            "chi phối"
+          ],
+          "page_text_sha256": "95342fe4f5bb6a96cc1acc881d6bbbdeb7b7fa660d6d8e7696ea2b77dabfceeb"
+        },
+        {
+          "page_number": 11,
+          "anchor": "Mâu thuẫn thứ yếu là những mâu thuẫn",
+          "terms": [
+            "bị mâu thuẫn chủ yếu chi phối",
+            "góp phần"
+          ],
+          "page_text_sha256": "c4970edfe0cd19fcc82c9fdae6310aa1bf18e64840f2385db0d0da9c8a60ee5a"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "58efaf33-ef4c-53eb-9bae-bd107a1861d0",
+          "version_id": "ec79c4e6-76a3-5f9b-b0d8-727b8bebb51a",
+          "page_number": 10
+        },
+        {
+          "document_id": "58efaf33-ef4c-53eb-9bae-bd107a1861d0",
+          "version_id": "ec79c4e6-76a3-5f9b-b0d8-727b8bebb51a",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "dc22df4983758b8581b547104818377d20683453e11769bba712e8116d3bbf76",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_062",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_063",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Thực tiễn thúc đẩy nhận thức",
+      "question": "Thực tiễn thúc đẩy nhận thức phát triển bằng cách đặt ra những yêu cầu nào cho con người?",
+      "ground_truth": "Thực tiễn đặt ra nhu cầu, nhiệm vụ, cách thức và khuynh hướng vận động, phát triển của nhận thức. Nhu cầu giải thích và cải tạo thế giới buộc con người tác động vào sự vật, làm bộc lộ thuộc tính và quan hệ, cung cấp tài liệu để nhận thức bản chất, quy luật và hình thành lý thuyết khoa học.",
+      "expected_points": [
+        "Đặt ra nhu cầu, nhiệm vụ, cách thức và khuynh hướng nhận thức",
+        "Nhu cầu giải thích và cải tạo thế giới",
+        "Hoạt động làm bộc lộ thuộc tính, quan hệ, cung cấp tài liệu nhận thức"
+      ],
+      "source_doc": "ch09.pdf",
+      "source_pages": [
+        4
+      ],
+      "evidence": [
+        {
+          "page_number": 4,
+          "anchor": "Nó đề ra nhu cầu, nhiệm vụ, cách thức",
+          "terms": [
+            "giải thích và cải tạo thế giới",
+            "đem lại những tài liệu cho nhận thức"
+          ],
+          "page_text_sha256": "500f087397c3bba665b33031c23db16148bc240445a3c6b37b7037bddbac4fff"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "d7978813-12e0-556f-b82b-d5341685570d",
+          "version_id": "91346dec-ac4b-5c21-8662-f51ca6a4b210",
+          "page_number": 4
+        }
+      ],
+      "source_checksum": "38521217c7197bcda27f8fb87e4aa43349022d336c74c43b3a016c1fc7c4b051",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_063",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_064",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Khái niệm hình thái kinh tế - xã hội",
+      "question": "Khái niệm hình thái kinh tế - xã hội dùng để chỉ điều gì và hệ thống đó có ba mặt cơ bản nào?",
+      "ground_truth": "Đó là phạm trù của chủ nghĩa duy vật lịch sử chỉ xã hội ở một giai đoạn lịch sử nhất định với kiểu quan hệ sản xuất đặc trưng, phù hợp trình độ lực lượng sản xuất và kiến trúc thượng tầng tương ứng xây trên các quan hệ ấy. Ba mặt cơ bản là lực lượng sản xuất, quan hệ sản xuất và kiến trúc thượng tầng.",
+      "expected_points": [
+        "Xã hội ở giai đoạn lịch sử nhất định",
+        "Quan hệ sản xuất đặc trưng phù hợp lực lượng sản xuất và kiến trúc thượng tầng tương ứng",
+        "Ba mặt: lực lượng sản xuất, quan hệ sản xuất, kiến trúc thượng tầng"
+      ],
+      "source_doc": "ch10.pdf",
+      "source_pages": [
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 11,
+          "anchor": "Hình thái kinh tế - xã hội là một phạm trù",
+          "terms": [
+            "từng giai đoạn lịch sử nhất định",
+            "các mặt cơ bản"
+          ],
+          "page_text_sha256": "36fa5222fdb15afd24d2118dce30d77319dc6bedac04d7880a51df4676c6d1c5"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "c5016d64-e4f8-5c1a-b7e2-8fae7a67d1d5",
+          "version_id": "db5adf00-0346-5a5e-913f-232954091ae4",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "1cdf18cf6d497dfe1be5ce7be549d0fad4bf79da8525dd1879ecc99ea81c4b88",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_064",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_065",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Sản xuất vật chất và đời sống xã hội",
+      "question": "Vì sao sản xuất vật chất được xem là cơ sở của sự tồn tại và phát triển xã hội, thay vì chỉ tạo ra đồ dùng sinh hoạt?",
+      "ground_truth": "Sản xuất vật chất tạo ra tư liệu sinh hoạt đáp ứng nhu cầu tồn tại, phát triển của con người. Đồng thời trong quá trình sản xuất, con người tạo ra các mặt của đời sống xã hội; những quan hệ như nhà nước, pháp quyền, đạo đức, nghệ thuật và tôn giáo hình thành, biến đổi trên cơ sở đó.",
+      "expected_points": [
+        "Tạo tư liệu sinh hoạt cho tồn tại, phát triển",
+        "Là cơ sở hình thành và biến đổi các mặt, các quan hệ xã hội"
+      ],
+      "source_doc": "ch10.pdf",
+      "source_pages": [
+        4
+      ],
+      "evidence": [
+        {
+          "page_number": 4,
+          "anchor": "sản xuất vật chất là cơ sở của sự tồn tại",
+          "terms": [
+            "tư liệu sinh hoạt",
+            "đều hình thành, biến đổi trên cơ sở sản xuất vật chất"
+          ],
+          "page_text_sha256": "065d8850c6996ea5474a39c5d87159bac72ee238a90406cb4c2f570317989341"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "c5016d64-e4f8-5c1a-b7e2-8fae7a67d1d5",
+          "version_id": "db5adf00-0346-5a5e-913f-232954091ae4",
+          "page_number": 4
+        }
+      ],
+      "source_checksum": "1cdf18cf6d497dfe1be5ce7be549d0fad4bf79da8525dd1879ecc99ea81c4b88",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_065",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_066",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Ba đặc trưng của nhà nước",
+      "question": "Giáo trình nêu ba đặc trưng cơ bản chung của nhà nước là những đặc trưng nào?",
+      "ground_truth": "Nhà nước quản lý dân cư trên một vùng lãnh thổ nhất định; có bộ máy quyền lực chuyên nghiệp mang tính cưỡng chế đối với các thành viên xã hội; hình thành hệ thống thuế khóa để duy trì bộ máy cai trị.",
+      "expected_points": [
+        "Quản lý dân cư theo lãnh thổ",
+        "Bộ máy quyền lực chuyên nghiệp, cưỡng chế",
+        "Hệ thống thuế khóa để duy trì bộ máy"
+      ],
+      "source_doc": "ch12.pdf",
+      "source_pages": [
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "page_number": 2,
+          "anchor": "Nhà nước quản lý dân cư trên một vùng lãnh thổ nhất định",
+          "terms": [
+            "ba đặc trưng cơ bản"
+          ],
+          "page_text_sha256": "80c223e183f9d5a7f05fe8e4a1990c00ada77e6b3810d2a64639d7c005a8ccd3"
+        },
+        {
+          "page_number": 3,
+          "anchor": "Nhà nước có một bộ máy quyền lực chuyên nghiệp mang tính cưỡng chế",
+          "terms": [
+            "quyền lực chuyên nghiệp",
+            "thuế khóa"
+          ],
+          "page_text_sha256": "0707c57900b68b94ad996fd35ce0bee0efc6e102cf88c91ffaa23306f6490335"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "2c44c9c6-6e91-5c08-89f1-efc1b78f8d7a",
+          "version_id": "6d4ca329-b755-5324-a389-4f71a778b56c",
+          "page_number": 2
+        },
+        {
+          "document_id": "2c44c9c6-6e91-5c08-89f1-efc1b78f8d7a",
+          "version_id": "6d4ca329-b755-5324-a389-4f71a778b56c",
+          "page_number": 3
+        }
+      ],
+      "source_checksum": "f96d77b807c9400f07485b3c49d1411565713203c91df0ba9a01aa1807b7514a",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_066",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_067",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Cách mạng xã hội và cải cách",
+      "question": "Theo nghĩa rộng, cách mạng xã hội khác cải cách xã hội về phạm vi biến đổi và quan hệ với chế độ đang tồn tại như thế nào?",
+      "ground_truth": "Cách mạng xã hội tạo bước ngoặt và biến đổi căn bản về chất trong mọi lĩnh vực đời sống, thay hình thái kinh tế - xã hội lỗi thời bằng hình thái cao hơn. Cải cách tạo các biến đổi riêng lẻ, bộ phận trong khuôn khổ chế độ đang tồn tại; có thể thúc đẩy tiến hóa và tạo tiền đề cho cách mạng.",
+      "expected_points": [
+        "Cách mạng: bước ngoặt căn bản, thay hình thái kinh tế - xã hội",
+        "Cải cách: thay đổi bộ phận trong khuôn khổ chế độ hiện có",
+        "Cải cách có thể tạo tiền đề cho cách mạng"
+      ],
+      "source_doc": "ch12.pdf",
+      "source_pages": [
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 8,
+          "anchor": "Theo nghĩa rộng, cách mạng xã hội",
+          "terms": [
+            "bước ngoặt",
+            "biến đổi riêng lẻ, bộ phận",
+            "tiền đề dẫn tới cách mạng xã hội"
+          ],
+          "page_text_sha256": "8ffa697f13b75fc075beddf22137d35015cb218eadb1f0bd620dc83e94e624c4"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "2c44c9c6-6e91-5c08-89f1-efc1b78f8d7a",
+          "version_id": "6d4ca329-b755-5324-a389-4f71a778b56c",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "f96d77b807c9400f07485b3c49d1411565713203c91df0ba9a01aa1807b7514a",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_067",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_068",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Nguyên nhân ý thức xã hội thường lạc hậu",
+      "question": "Vì sao ý thức xã hội thường lạc hậu so với tồn tại xã hội? Hãy nêu ba nhóm nguyên nhân theo giáo trình.",
+      "ground_truth": "Tồn tại xã hội biến đổi nhanh dưới tác động thực tiễn trong khi ý thức có thể phản ánh không kịp và thường biến đổi sau. Thói quen, truyền thống, tập quán cùng tính bảo thủ của một số hình thái ý thức tạo sức trì kéo. Tư tưởng cũ gắn với lợi ích của các nhóm và giai cấp nên có thể được những lực lượng phản tiến bộ giữ lại, truyền bá.",
+      "expected_points": [
+        "Tốc độ biến đổi của tồn tại nhanh hơn sự phản ánh",
+        "Sức mạnh thói quen, truyền thống, tập quán và bảo thủ",
+        "Sự duy trì tư tưởng cũ gắn lợi ích nhóm, giai cấp"
+      ],
+      "source_doc": "ch13.pdf",
+      "source_pages": [
+        7,
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 7,
+          "anchor": "ý thức xã hội thường lạc hậu hơn so với tồn tại xã hội",
+          "terms": [
+            "không phản ánh kịp",
+            "thói quen, truyền thống, tập quán"
+          ],
+          "page_text_sha256": "db2bde065dea0c0b8d7a46646fc7bbb31d045f8d6d80dc5a347d562aeb7a304f"
+        },
+        {
+          "page_number": 8,
+          "anchor": "Ba là, ý thức xã hội luôn gắn với lợi ích",
+          "terms": [
+            "lưu giữ và truyền bá"
+          ],
+          "page_text_sha256": "9eb79fe8d29aceb86d9e11de3b524cd96404cd739ddb68934e744bcc262e45e5"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 7
+        },
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_068",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_069",
+      "course_code": "THMLN",
+      "mode": "qa",
+      "topic": "Các bộ phận của quần chúng nhân dân",
+      "question": "Theo giáo trình, quần chúng nhân dân bao gồm ba bộ phận nào và bộ phận nào là hạt nhân cơ bản?",
+      "ground_truth": "Gồm những người lao động sản xuất của cải vật chất và giá trị tinh thần; các bộ phận dân cư chống giai cấp thống trị áp bức, bóc lột, đối kháng với nhân dân; các giai cấp và tầng lớp thúc đẩy tiến bộ xã hội bằng hoạt động của mình. Người lao động sản xuất của cải vật chất và giá trị tinh thần là hạt nhân cơ bản.",
+      "expected_points": [
+        "Người lao động tạo của cải vật chất và giá trị tinh thần là hạt nhân",
+        "Bộ phận dân cư chống lực lượng thống trị áp bức, bóc lột",
+        "Giai cấp, tầng lớp thúc đẩy tiến bộ xã hội"
+      ],
+      "source_doc": "ch14.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "những người lao động sản xuất ra của cải vật chất",
+          "terms": [
+            "hạt nhân cơ bản",
+            "Thứ hai",
+            "Thứ ba"
+          ],
+          "page_text_sha256": "59710cf3c9434c85756c177a2d51c6a6c1ad507559b99bdfeb50e3c3acb5d485"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "bc66dda9-c735-5ee4-8bef-56337b3ea7f9",
+          "version_id": "e6f49d3c-70cb-5ae0-848d-51f6d3b4ee9b",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "d45bf26885f9887596e7fb54e5707cbb99268ebabda9ddf79a0ed1c4cef88ded",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_069",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_070",
+      "course_code": "THMLN",
+      "mode": "hint",
+      "topic": "Ôn tập bệnh kinh nghiệm và giáo điều",
+      "question": "Tôi đang ôn cách phân biệt bệnh kinh nghiệm chủ nghĩa với bệnh giáo điều. Hãy gợi ý cách đọc đoạn liên quan để tôi tự phân biệt, không nêu kết luận thay tôi.",
+      "ground_truth": "Chỉ dùng để chấm nội bộ: tuyệt đối hóa kinh nghiệm và coi thường lý luận dẫn tới kinh nghiệm chủ nghĩa; tuyệt đối hóa lý luận và hạ thấp kinh nghiệm dẫn tới giáo điều.",
+      "expected_points": [
+        "Chỉ hướng dẫn thao tác đọc hoặc đối chiếu",
+        "Có citation tới nguồn",
+        "Không gán sẵn mỗi biểu hiện cho từng căn bệnh"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn đọc hai đoạn đối xứng, tự lập bảng đối chiếu rồi tự gán tên khái niệm.",
+        "must_not_reveal": [
+          "Gán tuyệt đối hóa kinh nghiệm cho kinh nghiệm chủ nghĩa",
+          "Gán tuyệt đối hóa lý luận cho giáo điều"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch09.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "bệnh kinh nghiệm chủ nghĩa và bệnh giáo điều",
+          "terms": [
+            "tuyệt đối hóa vai trò của nhận thức kinh nghiệm",
+            "tuyệt đối hóa vai trò của nhận thức lý luận"
+          ],
+          "page_text_sha256": "d51b5607be29cb88ccc89669c4947421fffec1749ab1ffe4918a67cb30c39c69"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "d7978813-12e0-556f-b82b-d5341685570d",
+          "version_id": "91346dec-ac4b-5c21-8662-f51ca6a4b210",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "38521217c7197bcda27f8fb87e4aa43349022d336c74c43b3a016c1fc7c4b051",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_070",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_071",
+      "course_code": "THMLN",
+      "mode": "hint",
+      "topic": "Ôn tập khoa học trong lực lượng sản xuất",
+      "question": "Tôi cần tự giải thích vai trò của khoa học đối với lực lượng sản xuất hiện đại. Chỉ gợi ý cách khai thác đoạn giáo trình liên quan, đừng viết sẵn lời giải.",
+      "ground_truth": "Chỉ dùng để chấm nội bộ: khoa học gắn với sản xuất, thúc đẩy biến đổi trực tiếp và trở thành lực lượng sản xuất trực tiếp; tri thức khoa học, công nghệ đặc trưng cho lao động và lực lượng sản xuất hiện đại.",
+      "expected_points": [
+        "Hướng dẫn tìm và sắp xếp ý từ đoạn nguồn",
+        "Không chép kết luận khoa học là lực lượng sản xuất trực tiếp",
+        "Có citation hợp lệ"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn đọc phần chuyển ý, tự lập dàn ý nguyên nhân - biểu hiện từ nguồn.",
+        "must_not_reveal": [
+          "Kết luận khoa học trở thành lực lượng sản xuất trực tiếp",
+          "Chép sẵn lời giải vai trò khoa học"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch10.pdf",
+      "source_pages": [
+        6
+      ],
+      "evidence": [
+        {
+          "page_number": 6,
+          "anchor": "Trong sự phát triển của lực lượng sản xuất",
+          "terms": [
+            "lực lượng sản xuất trực tiếp",
+            "tri thức khoa học"
+          ],
+          "page_text_sha256": "fe880d7535d6ac8b58d9ac2131355e93e80b04f359cd8ac792eb487b8456b4cb"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "c5016d64-e4f8-5c1a-b7e2-8fae7a67d1d5",
+          "version_id": "db5adf00-0346-5a5e-913f-232954091ae4",
+          "page_number": 6
+        }
+      ],
+      "source_checksum": "1cdf18cf6d497dfe1be5ce7be549d0fad4bf79da8525dd1879ecc99ea81c4b88",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_071",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_072",
+      "course_code": "THMLN",
+      "mode": "hint",
+      "topic": "Ôn tập tính kế thừa của ý thức xã hội",
+      "question": "Tôi muốn tự trình bày tính kế thừa trong sự phát triển của ý thức xã hội. Hãy chỉ cách đọc phần nguồn phù hợp và tự lập ý, không nêu sẵn nội dung kết luận.",
+      "ground_truth": "Chỉ dùng để chấm nội bộ: tư tưởng một thời đại hình thành trên cơ sở kế thừa tài liệu lý luận thời trước; cần xét lịch sử tư tưởng, không chỉ quan hệ kinh tế hiện tại; trong xã hội có giai cấp, sự kế thừa gắn tính giai cấp.",
+      "expected_points": [
+        "Chỉ hướng dẫn đọc và tự lập ý",
+        "Không liệt kê sẵn các luận điểm kế thừa",
+        "Có citation tới nguồn"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn tự tách câu nêu luận điểm, câu giải thích và ví dụ trong đoạn nguồn.",
+        "must_not_reveal": [
+          "Chép sẵn luận điểm tư tưởng kế thừa lý luận các thời đại trước",
+          "Liệt kê thay người học các kết luận về tính giai cấp"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch13.pdf",
+      "source_pages": [
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 8,
+          "anchor": "ý thức xã hội có tính kế thừa trong sự phát triển của mình",
+          "terms": [
+            "các thời đại trước",
+            "gắn với tính chất giai cấp"
+          ],
+          "page_text_sha256": "9eb79fe8d29aceb86d9e11de3b524cd96404cd739ddb68934e744bcc262e45e5"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_072",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_073",
+      "course_code": "THMLN",
+      "mode": "hint",
+      "topic": "Ôn tập quan hệ lợi ích cá nhân và xã hội",
+      "question": "Tôi đang ôn mối quan hệ giữa lợi ích cá nhân và lợi ích cộng đồng xã hội. Hãy hướng dẫn cách đọc để tôi tự lập luận, không đưa ra luận điểm đáp án.",
+      "ground_truth": "Chỉ dùng để chấm nội bộ: quan hệ lợi ích cá nhân - cộng đồng vừa thống nhất vừa mâu thuẫn và có tính lịch sử; xã hội giữ vai trò quyết định đối với cá nhân, phát triển cá nhân cũng thúc đẩy xã hội; thỏa mãn lợi ích chính đáng của cá nhân là mục tiêu, động lực phát triển.",
+      "expected_points": [
+        "Hướng dẫn đọc, chọn ý và tự lập luận",
+        "Không nói sẵn quan hệ vừa thống nhất vừa mâu thuẫn",
+        "Có citation hợp lệ"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn tự chia yêu cầu, đánh dấu câu có căn cứ rồi lập dàn ý.",
+        "must_not_reveal": [
+          "Kết luận quan hệ vừa thống nhất vừa mâu thuẫn",
+          "Chép lời giải vai trò quyết định và tác động trở lại"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch14.pdf",
+      "source_pages": [
+        7
+      ],
+      "evidence": [
+        {
+          "page_number": 7,
+          "anchor": "mối quan hệ giữa lợi ích cá nhân và lợi ích cộng đồng xã hội",
+          "terms": [
+            "vừa có sự thống nhất vừa có mâu thuẫn",
+            "xã hội giữ vai trò quyết định đối với cá nhân"
+          ],
+          "page_text_sha256": "6ee794ec15fc0d09ffefcb7e3858d2a5973ad61272ea0d6c1ae815bf34cbbe5a"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "bc66dda9-c735-5ee4-8bef-56337b3ea7f9",
+          "version_id": "e6f49d3c-70cb-5ae0-848d-51f6d3b4ee9b",
+          "page_number": 7
+        }
+      ],
+      "source_checksum": "d45bf26885f9887596e7fb54e5707cbb99268ebabda9ddf79a0ed1c4cef88ded",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_073",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "THMLN_QA_074",
+      "course_code": "THMLN",
+      "mode": "hint",
+      "topic": "Ôn tập phẩm chất của lãnh tụ",
+      "question": "Tôi cần tự nêu các phẩm chất để một lãnh tụ gắn bó với quần chúng và được tín nhiệm. Hãy gợi ý cách tìm và sắp xếp ý trong nguồn, không liệt kê sẵn các phẩm chất.",
+      "ground_truth": "Chỉ dùng để chấm nội bộ: có tri thức khoa học uyên bác và nắm xu thế; có năng lực tập hợp, thống nhất ý chí và hành động quần chúng; gắn bó mật thiết, hy sinh vì lợi ích dân tộc, quốc tế và thời đại.",
+      "expected_points": [
+        "Hướng dẫn tìm đoạn liệt kê và tự lập dàn ý",
+        "Không liệt kê thay người học ba phẩm chất",
+        "Có citation tới nguồn"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn nhận diện cấu trúc liệt kê và tự chọn câu hỗ trợ cho từng ý.",
+        "must_not_reveal": [
+          "Liệt kê sẵn tri thức khoa học, tập hợp quần chúng và hy sinh gắn bó",
+          "Viết sẵn đáp án hoàn chỉnh"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch14.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "lãnh tụ phải là người có những phẩm chất cơ bản",
+          "terms": [
+            "tri thức khoa học uyên bác",
+            "năng lực tập hợp quần chúng nhân dân",
+            "gắn bó mật thiết"
+          ],
+          "page_text_sha256": "59710cf3c9434c85756c177a2d51c6a6c1ad507559b99bdfeb50e3c3acb5d485"
+        }
+      ],
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "bc66dda9-c735-5ee4-8bef-56337b3ea7f9",
+          "version_id": "e6f49d3c-70cb-5ae0-848d-51f6d3b4ee9b",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "d45bf26885f9887596e7fb54e5707cbb99268ebabda9ddf79a0ed1c4cef88ded",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#THMLN_QA_074",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_032",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Vai trò các thành phần kinh tế",
+      "question": "Giáo trình xác định vai trò của kinh tế nhà nước và kinh tế tư nhân như thế nào trong nền kinh tế thị trường định hướng xã hội chủ nghĩa ở Việt Nam?",
+      "ground_truth": "Kinh tế nhà nước giữ vai trò chủ đạo; kinh tế tư nhân là một động lực quan trọng. Các chủ thể thuộc các thành phần kinh tế bình đẳng, hợp tác và cạnh tranh cùng phát triển theo pháp luật.",
+      "expected_points": [
+        "Kinh tế nhà nước giữ vai trò chủ đạo",
+        "Kinh tế tư nhân là một động lực quan trọng"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        12
+      ],
+      "evidence": [
+        {
+          "page_number": 12,
+          "anchor": "kinh tế nhà nước giữ vai trò chủ đạo",
+          "terms": [
+            "kinh tế tư nhân",
+            "một động lực quan trọng"
+          ],
+          "page_text_sha256": "9fc96940edf67424c1fa617bcdd7df6556163ae4d66dd86adc3d9725a63a5147"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 12
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_032",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_033",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Nội dung kinh tế và pháp lý của sở hữu",
+      "question": "Vì sao khi phát triển quan hệ sở hữu phải chú ý đồng thời nội dung kinh tế và nội dung pháp lý của sở hữu?",
+      "ground_truth": "Hai nội dung thống nhất biện chứng. Nội dung pháp lý là phương thức thực hiện lợi ích chính đáng; bỏ khía cạnh pháp lý thì lợi ích không được thực hiện hợp pháp, còn bỏ nội dung kinh tế thì nội dung pháp lý chỉ mang giá trị hình thức.",
+      "expected_points": [
+        "Hai nội dung thống nhất biện chứng",
+        "Pháp lý bảo đảm thực hiện lợi ích hợp pháp",
+        "Thiếu nội dung kinh tế thì pháp lý chỉ có giá trị hình thức"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        12
+      ],
+      "evidence": [
+        {
+          "page_number": 12,
+          "anchor": "Nội dung kinh tế và nội dung pháp lý của sở hữu thống nhất",
+          "terms": [
+            "mang giá trị về mặt hình thức",
+            "một cách hợp pháp"
+          ],
+          "page_text_sha256": "9fc96940edf67424c1fa617bcdd7df6556163ae4d66dd86adc3d9725a63a5147"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 12
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_033",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_034",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Công cụ quản lý kinh tế của Nhà nước",
+      "question": "Nhà nước quản lý nền kinh tế thị trường định hướng xã hội chủ nghĩa bằng những nhóm công cụ nào và trên cơ sở tôn trọng điều gì?",
+      "ground_truth": "Thông qua pháp luật, chiến lược, kế hoạch, quy hoạch, cơ chế, chính sách và các công cụ kinh tế; trên cơ sở tôn trọng những nguyên tắc của thị trường.",
+      "expected_points": [
+        "Pháp luật; chiến lược, kế hoạch, quy hoạch",
+        "Cơ chế, chính sách và các công cụ kinh tế",
+        "Tôn trọng các nguyên tắc của thị trường"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        14
+      ],
+      "evidence": [
+        {
+          "page_number": 14,
+          "anchor": "Nhà nước quản lý nền kinh tế thị trường",
+          "terms": [
+            "pháp luật",
+            "tôn trọng những nguyên tắc của thị trường"
+          ],
+          "page_text_sha256": "f156aa5a996f95a6781bcbf16c24aa2517fedb96823568771e7069294946370a"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 14
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_034",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_035",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Hoàn thiện thể chế kinh tế thị trường",
+      "question": "Theo giáo trình, hoàn thiện thể chế kinh tế thị trường nhằm xử lý những thất bại của thị trường và thực hiện mục tiêu xã hội nào?",
+      "ground_truth": "Nhằm giảm thiểu các thất bại của thị trường, phát huy mặt tích cực, khắc phục mặt tiêu cực và khuyết tật của thị trường, đồng thời thực hiện công bằng xã hội.",
+      "expected_points": [
+        "Giảm thiểu thất bại, khắc phục mặt tiêu cực và khuyết tật",
+        "Phát huy mặt tích cực của thị trường",
+        "Thực hiện công bằng xã hội"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        19
+      ],
+      "evidence": [
+        {
+          "page_number": 19,
+          "anchor": "giảm thiểu các thất bại của thị trường",
+          "terms": [
+            "công bằng xã hội",
+            "phát huy mặt tích cực"
+          ],
+          "page_text_sha256": "4e8d99aac383e764b5dda9eaa160b1d9f079f235daabc08d0873e060c9882be5"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 19
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_035",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_036",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Phương thức thực hiện lợi ích kinh tế",
+      "question": "Hai phương thức cơ bản để thực hiện lợi ích kinh tế được nêu trong giáo trình là gì, và vì sao không chỉ dựa vào nguyên tắc thị trường?",
+      "ground_truth": "Thực hiện theo nguyên tắc thị trường và thực hiện theo chính sách của Nhà nước cùng vai trò của các tổ chức xã hội. Chỉ dựa vào thị trường sẽ dẫn đến hạn chế về mặt xã hội; phương thức thứ hai góp phần tạo bình đẳng và thúc đẩy tiến bộ xã hội.",
+      "expected_points": [
+        "Theo nguyên tắc thị trường",
+        "Theo chính sách Nhà nước và vai trò các tổ chức xã hội",
+        "Khắc phục hạn chế xã hội, tạo bình đẳng và tiến bộ"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        41
+      ],
+      "evidence": [
+        {
+          "page_number": 41,
+          "anchor": "có hai phương thức cơ bản",
+          "terms": [
+            "nguyên tắc thị trường",
+            "vai trò của các tổ chức xã hội",
+            "hạn chế về mặt xã hội"
+          ],
+          "page_text_sha256": "06b9b7e3924ccf938d67ba2f37ac6ad3cc1e7818e7219bcaae509f15fac3a07b"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 41
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_036",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_037",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Cơ sở công nghệ của cách mạng công nghiệp lần thứ tư",
+      "question": "Giáo trình mô tả cách mạng công nghiệp lần thứ tư được hình thành trên cơ sở nào, gắn với kết nối gì và nêu những công nghệ đột phá nào?",
+      "ground_truth": "Trên cơ sở cuộc cách mạng số, gắn với sự phát triển và phổ biến của Internet kết nối vạn vật (IoT). Các ví dụ công nghệ đột phá được nêu gồm trí tuệ nhân tạo, big data và in 3D.",
+      "expected_points": [
+        "Cơ sở cuộc cách mạng số",
+        "Internet kết nối vạn vật (IoT)",
+        "Trí tuệ nhân tạo, big data, in 3D"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        5
+      ],
+      "evidence": [
+        {
+          "page_number": 5,
+          "anchor": "trên cơ sở cuộc cách mạng số",
+          "terms": [
+            "internet kết nối vạn vật",
+            "trí tuệ nhân tạo",
+            "in 3D"
+          ],
+          "page_text_sha256": "40b3279053c94c55e986e35284fea5a9095c42f2cd07fcd840596239370e1aa4"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "496aa5f2-ae86-58e2-9f0f-8d820eae4b48",
+          "version_id": "af1a3fa6-f46f-5513-8d14-71baad543eb7",
+          "page_number": 5
+        }
+      ],
+      "source_checksum": "9429d9483492e7e8c85bb12571d8e44cb128301ed16bd2f4310d2ff160afb85c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_037",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_038",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Kết hợp phát triển và tiếp nhận công nghệ",
+      "question": "Con đường phát triển khoa học - công nghệ nhiều tầng mà Nhật Bản và các nước NICs sử dụng kết hợp những hoạt động nào?",
+      "ground_truth": "Kết hợp công nghệ truyền thống với công nghệ hiện đại; vừa nghiên cứu chế tạo, vừa tiếp nhận chuyển giao công nghệ từ nước phát triển hơn. Con đường này vừa cơ bản, lâu dài, vững chắc, vừa tạo khả năng đi tắt và bám đuổi.",
+      "expected_points": [
+        "Kết hợp công nghệ truyền thống và hiện đại",
+        "Vừa nghiên cứu chế tạo vừa tiếp nhận chuyển giao công nghệ"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        20
+      ],
+      "evidence": [
+        {
+          "page_number": 20,
+          "anchor": "chiến lược phát triển khoa học - công nghệ nhiều tầng",
+          "terms": [
+            "vừa nghiên cứu chế tạo",
+            "vừa tiếp nhận chuyển giao",
+            "Nhật Bản"
+          ],
+          "page_text_sha256": "c56dd329cde2d5d20cd1629517d667a8d71bbfd789d367eb541a5bb0edb14c78"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "496aa5f2-ae86-58e2-9f0f-8d820eae4b48",
+          "version_id": "af1a3fa6-f46f-5513-8d14-71baad543eb7",
+          "page_number": 20
+        }
+      ],
+      "source_checksum": "9429d9483492e7e8c85bb12571d8e44cb128301ed16bd2f4310d2ff160afb85c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_038",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_039",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Các mức độ hội nhập kinh tế",
+      "question": "Các mức độ hội nhập kinh tế quốc tế cơ bản được giáo trình sắp xếp từ thấp đến cao như thế nào?",
+      "ground_truth": "Thỏa thuận thương mại ưu đãi (PTA), khu vực mậu dịch tự do (FTA), liên minh thuế quan (CU), thị trường chung, liên minh kinh tế - tiền tệ.",
+      "expected_points": [
+        "PTA rồi FTA",
+        "Liên minh thuế quan rồi thị trường chung",
+        "Liên minh kinh tế - tiền tệ"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        37
+      ],
+      "evidence": [
+        {
+          "page_number": 37,
+          "anchor": "các mức độ cơ bản từ thấp đến cao",
+          "terms": [
+            "Thỏa thuận thương mại ưu đãi",
+            "Thị trường chung",
+            "Liên minh kinh tế - tiền tệ"
+          ],
+          "page_text_sha256": "7941d79eff930f2c383063ce018490d9caab2c3b5b40d6685c88025233557e10"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "496aa5f2-ae86-58e2-9f0f-8d820eae4b48",
+          "version_id": "af1a3fa6-f46f-5513-8d14-71baad543eb7",
+          "page_number": 37
+        }
+      ],
+      "source_checksum": "9429d9483492e7e8c85bb12571d8e44cb128301ed16bd2f4310d2ff160afb85c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_039",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_040",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Nền kinh tế độc lập tự chủ",
+      "question": "Theo giáo trình, nền kinh tế độc lập, tự chủ phải tránh sự lệ thuộc nào về đường lối, chính sách và tránh việc bị áp đặt bằng những điều kiện gì?",
+      "ground_truth": "Không lệ thuộc nước khác, người khác hoặc tổ chức kinh tế về đường lối, chính sách phát triển; không bị dùng các điều kiện kinh tế, tài chính, thương mại, viện trợ để áp đặt, khống chế, làm tổn hại chủ quyền quốc gia và lợi ích cơ bản của dân tộc.",
+      "expected_points": [
+        "Không lệ thuộc về đường lối, chính sách phát triển",
+        "Không bị áp đặt bằng điều kiện kinh tế, tài chính, thương mại, viện trợ",
+        "Bảo vệ chủ quyền và lợi ích cơ bản của dân tộc"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        50
+      ],
+      "evidence": [
+        {
+          "page_number": 50,
+          "anchor": "Nền kinh tế độc lập, tự chủ là nền kinh tế",
+          "terms": [
+            "đường lối, chính sách phát triển",
+            "viện trợ",
+            "chủ quyền quốc gia"
+          ],
+          "page_text_sha256": "4d09ac67c5a0f884ec39228a80bca3243ccf4f552b8d80fbd8c1034db17efbbb"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "496aa5f2-ae86-58e2-9f0f-8d820eae4b48",
+          "version_id": "af1a3fa6-f46f-5513-8d14-71baad543eb7",
+          "page_number": 50
+        }
+      ],
+      "source_checksum": "9429d9483492e7e8c85bb12571d8e44cb128301ed16bd2f4310d2ff160afb85c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_040",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_041",
+      "course_code": "KTCTMLN",
+      "mode": "qa",
+      "topic": "Tích tụ và tập trung tư bản",
+      "question": "Tích tụ tư bản và tập trung tư bản khác nhau như thế nào về nguồn làm tăng tư bản cá biệt và tác động đến quy mô tư bản xã hội?",
+      "ground_truth": "Tích tụ tăng tư bản cá biệt bằng tư bản hóa giá trị thặng dư, đồng thời làm tăng tư bản xã hội. Tập trung tăng tư bản cá biệt bằng hợp nhất các tư bản cá biệt đã có, không làm tăng quy mô tư bản xã hội.",
+      "expected_points": [
+        "Tích tụ từ tư bản hóa giá trị thặng dư, làm tăng cả tư bản cá biệt và xã hội",
+        "Tập trung từ hợp nhất tư bản có sẵn, không tăng tư bản xã hội"
+      ],
+      "source_doc": "ch03.pdf",
+      "source_pages": [
+        23
+      ],
+      "evidence": [
+        {
+          "page_number": 23,
+          "anchor": "Tích tụ tư bản là sự tăng thêm",
+          "terms": [
+            "tư bản hóa giá trị thặng dư",
+            "không làm tăng quy mô tư bản xã hội",
+            "hợp nhất"
+          ],
+          "page_text_sha256": "7f0c3ebbd0a1b693a022031be2a0b7bba84a4f7bfdfb10c533d30ef8801d05e7"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "e20c9000-ca30-5ead-803b-2c9e55cf2159",
+          "version_id": "56ca83f0-7750-514b-b28a-72c0db96ea12",
+          "page_number": 23
+        }
+      ],
+      "source_checksum": "8e086b53a508b91fe55b68a90faf476526c821dd9688e46d8099a83929882751",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_041",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_042",
+      "course_code": "KTCTMLN",
+      "mode": "hint",
+      "topic": "Đọc về điều hòa lợi ích",
+      "question": "Tôi cần tự lý giải vì sao chỉ có thị trường chưa đủ để bảo đảm hài hòa lợi ích kinh tế. Hãy gợi ý cách đọc đoạn liên quan, không nêu kết luận thay tôi.",
+      "ground_truth": "Lợi ích kinh tế vừa thống nhất vừa mâu thuẫn; Nhà nước can thiệp bằng giáo dục, pháp luật, hành chính, kinh tế để hạn chế mâu thuẫn, tăng thống nhất và xử lý xung đột.",
+      "expected_points": [
+        "Hướng người học đọc đúng đoạn",
+        "Không tự nêu quan hệ thống nhất - mâu thuẫn hoặc các công cụ thay người học"
+      ],
+      "hint_policy": {
+        "allowed_support": "Chỉ chọn đoạn và thao tác đọc để người học tự rút ra lý do.",
+        "must_not_reveal": [
+          "vừa thống nhất, vừa mâu thuẫn",
+          "giáo dục, pháp luật, hành chính, kinh tế"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        42
+      ],
+      "evidence": [
+        {
+          "page_number": 42,
+          "anchor": "chỉ có kinh tế thị trường là không đủ",
+          "terms": [
+            "vừa thống nhất, vừa mâu thuẫn",
+            "sự can thiệp của nhà nước"
+          ],
+          "page_text_sha256": "ad4e65b4dd702eefa3cdfc11d215480c9112ba29d45a378d5fe1e9419b19729e"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "3b816971-a4b2-5bd1-8bda-dc338c4a1b9a",
+          "version_id": "e8fffb6c-90ce-5bcf-b379-e296488a46a4",
+          "page_number": 42
+        }
+      ],
+      "source_checksum": "a6036c70bc8b48911645a927b5bfbf0e77aa8838e007ba966aff453bf91b9701",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_042",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_043",
+      "course_code": "KTCTMLN",
+      "mode": "hint",
+      "topic": "Đọc về hình thức xuất khẩu tư bản",
+      "question": "Tôi muốn tự phân biệt đầu tư trực tiếp với đầu tư gián tiếp trong xuất khẩu tư bản. Hãy hướng dẫn cách đọc, không nêu sẵn đặc điểm phân biệt.",
+      "ground_truth": "Đầu tư trực tiếp xây dựng hoặc mua lại xí nghiệp để trực tiếp kinh doanh; đầu tư gián tiếp qua cho vay, mua cổ phần, cổ phiếu, trái phiếu và giấy tờ có giá.",
+      "expected_points": [
+        "Dẫn đến đoạn có hai hình thức",
+        "Không liệt kê đặc điểm hai hình thức thay người học"
+      ],
+      "hint_policy": {
+        "allowed_support": "Hướng dẫn tìm và đối chiếu các câu định nghĩa trong đoạn.",
+        "must_not_reveal": [
+          "xây dựng những xí nghiệp mới",
+          "cho vay để thu lợi tức",
+          "mua cổ phần"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch04.pdf",
+      "source_pages": [
+        16
+      ],
+      "evidence": [
+        {
+          "page_number": 16,
+          "anchor": "Xuất khẩu tư bản có thể được thực hiện",
+          "terms": [
+            "Đầu tư trực tiếp",
+            "Đầu tư gián tiếp",
+            "cho vay"
+          ],
+          "page_text_sha256": "d204c59709569518698445337acc683ba64b0d719491f0228a7ddd53f3adc3fd"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "21dd2368-7e71-581d-b007-9f34cab92a4a",
+          "version_id": "bd448289-fd87-500b-9c8d-eb8a64d05ef8",
+          "page_number": 16
+        }
+      ],
+      "source_checksum": "65ba5d8c1013c5a9333763ed8c05aa4fff3e06a2814581ad3090af05e1f5ab98",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_043",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "KTCTMLN_QA_044",
+      "course_code": "KTCTMLN",
+      "mode": "hint",
+      "topic": "Đọc về tự chủ và hội nhập",
+      "question": "Tôi đang cân nhắc nhận định rằng giữ độc lập, tự chủ thì nên đóng cửa với thế giới. Hãy gợi ý đoạn cần đọc để tôi tự đánh giá, không kết luận hộ.",
+      "ground_truth": "Độc lập, tự chủ không có nghĩa biệt lập hay đóng cửa; cần đi đôi với chủ động, tích cực hội nhập. Hai mặt tạo tiền đề và phát huy lẫn nhau.",
+      "expected_points": [
+        "Chỉ dẫn đọc đúng đoạn quan hệ giữa hai mặt",
+        "Không trực tiếp kết luận đúng/sai hoặc nêu lời giải"
+      ],
+      "hint_policy": {
+        "allowed_support": "Chỉ gợi thao tác đọc và đối chiếu nhận định với nguồn.",
+        "must_not_reveal": [
+          "không có nghĩa là biệt lập",
+          "đi đôi với chủ động, tích cực hội nhập"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        53
+      ],
+      "evidence": [
+        {
+          "page_number": 53,
+          "anchor": "Về mối quan hệ giữa độc lập, tự chủ và hội nhập quốc tế",
+          "terms": [
+            "không có nghĩa là biệt",
+            "đóng cửa",
+            "tạo tiền đề cho nhau"
+          ],
+          "page_text_sha256": "b391c87b4f827a6c34d12f37a8273d61511f2fd60a8154ce2a3402019acc9cd6"
+        }
+      ],
+      "course_id": "45a1fa64-e4ac-5115-a842-b4bf4344329f",
+      "gold_sources": [
+        {
+          "document_id": "496aa5f2-ae86-58e2-9f0f-8d820eae4b48",
+          "version_id": "af1a3fa6-f46f-5513-8d14-71baad543eb7",
+          "page_number": 53
+        }
+      ],
+      "source_checksum": "9429d9483492e7e8c85bb12571d8e44cb128301ed16bd2f4310d2ff160afb85c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#KTCTMLN_QA_044",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_021",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Bản chất kinh tế của dân chủ xã hội chủ nghĩa",
+      "question": "Theo giáo trình, bản chất kinh tế của nền dân chủ xã hội chủ nghĩa gắn với chế độ sở hữu tư liệu sản xuất và nguyên tắc phân phối chủ yếu nào?",
+      "ground_truth": "Thực hiện chế độ công hữu về tư liệu sản xuất chủ yếu và chế độ phân phối lợi ích theo kết quả lao động là chủ yếu.",
+      "expected_points": [
+        "Công hữu về tư liệu sản xuất chủ yếu",
+        "Phân phối lợi ích theo kết quả lao động là chủ yếu"
+      ],
+      "source_doc": "ch04.pdf",
+      "source_pages": [
+        8
+      ],
+      "evidence": [
+        {
+          "page_number": 8,
+          "anchor": "thực hiện chế độ công hữu",
+          "terms": [
+            "tư liệu sản xuất chủ yếu",
+            "theo kết quả lao động"
+          ],
+          "page_text_sha256": "3cd4f76f1e22d9717f6ca21f8f8ded306779862ca4713f41a25acffc543efc20"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "df26a753-bab5-53d1-b476-33c5f2b946c9",
+          "version_id": "7ee4f573-b1c5-5e80-98db-492e06f1a051",
+          "page_number": 8
+        }
+      ],
+      "source_checksum": "d3f1adf43029fb1a517b34fcd6a11b392307b598ca30f06ba1ff4e2c9986e859",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_021",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_022",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Các cách phân loại chức năng nhà nước",
+      "question": "Chức năng của nhà nước xã hội chủ nghĩa được phân loại như thế nào khi xét theo phạm vi tác động và theo tính chất của quyền lực nhà nước?",
+      "ground_truth": "Theo phạm vi tác động, chia thành đối nội và đối ngoại. Theo tính chất quyền lực, chia thành chức năng giai cấp (trấn áp) và chức năng xã hội (tổ chức và xây dựng).",
+      "expected_points": [
+        "Phạm vi: đối nội, đối ngoại",
+        "Tính chất: giai cấp/trấn áp và xã hội/tổ chức, xây dựng"
+      ],
+      "source_doc": "ch04.pdf",
+      "source_pages": [
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 11,
+          "anchor": "Căn cứ vào phạm vi tác động",
+          "terms": [
+            "chức năng đối nội",
+            "chức năng đối ngoại",
+            "chức năng giai cấp",
+            "chức năng xã hội"
+          ],
+          "page_text_sha256": "15acd3eaebeb4fb51e1a2c2dd1099abd38ac57b642f1761373137b678732e779"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "df26a753-bab5-53d1-b476-33c5f2b946c9",
+          "version_id": "7ee4f573-b1c5-5e80-98db-492e06f1a051",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "d3f1adf43029fb1a517b34fcd6a11b392307b598ca30f06ba1ff4e2c9986e859",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_022",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_023",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Tổ chức quyền lực trong nhà nước pháp quyền",
+      "question": "Trong mô tả về Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam, quyền lực nhà nước thống nhất đi cùng với quan hệ nào giữa các cơ quan thực hiện quyền lập pháp, hành pháp và tư pháp?",
+      "ground_truth": "Quyền lực nhà nước thống nhất nhưng có sự phân công, phối hợp và kiểm soát giữa các cơ quan nhà nước trong thực hiện các quyền lập pháp, hành pháp, tư pháp.",
+      "expected_points": [
+        "Quyền lực nhà nước thống nhất",
+        "Phân công, phối hợp, kiểm soát giữa các cơ quan",
+        "Áp dụng trong thực hiện quyền lập pháp, hành pháp, tư pháp"
+      ],
+      "source_doc": "ch04.pdf",
+      "source_pages": [
+        17
+      ],
+      "evidence": [
+        {
+          "page_number": 17,
+          "anchor": "Quyền lực nhà nước",
+          "terms": [
+            "phân công, phối hợp, kiểm soát",
+            "lập pháp, hành pháp, tư pháp"
+          ],
+          "page_text_sha256": "ad5eec22851f5cfb700c97caa0dce8e98286d386e595a5fc182b423ea662f94d"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "df26a753-bab5-53d1-b476-33c5f2b946c9",
+          "version_id": "7ee4f573-b1c5-5e80-98db-492e06f1a051",
+          "page_number": 17
+        }
+      ],
+      "source_checksum": "d3f1adf43029fb1a517b34fcd6a11b392307b598ca30f06ba1ff4e2c9986e859",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_023",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_024",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Khái niệm cơ cấu xã hội - giai cấp",
+      "question": "Cơ cấu xã hội - giai cấp là gì, và được thể hiện qua những quan hệ nào giữa các giai cấp, tầng lớp?",
+      "ground_truth": "Là hệ thống các giai cấp, tầng lớp xã hội tồn tại khách quan trong một chế độ xã hội nhất định, thông qua quan hệ sở hữu tư liệu sản xuất, tổ chức quản lý quá trình sản xuất, địa vị chính trị - xã hội giữa các giai cấp và tầng lớp.",
+      "expected_points": [
+        "Hệ thống giai cấp, tầng lớp tồn tại khách quan trong một chế độ xã hội",
+        "Quan hệ sở hữu tư liệu sản xuất, tổ chức quản lý sản xuất và địa vị chính trị - xã hội"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        1
+      ],
+      "evidence": [
+        {
+          "page_number": 1,
+          "anchor": "Cơ cấu xã hội - giai cấp là hệ thống",
+          "terms": [
+            "sở hữu tư liệu sản xuất",
+            "địa vị chính trị - xã hội"
+          ],
+          "page_text_sha256": "56927826f572a5ad41e575d32819cba14c340493f91e5fb63c0a656e331e27ab"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 1
+        }
+      ],
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_024",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_025",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Nội dung chính trị của liên minh",
+      "question": "Nội dung chính trị của liên minh công nhân, nông dân và trí thức ở Việt Nam đòi hỏi giữ vững lập trường và vai trò lãnh đạo nào?",
+      "ground_truth": "Giữ vững lập trường chính trị - tư tưởng của giai cấp công nhân và vai trò lãnh đạo của Đảng Cộng sản Việt Nam đối với khối liên minh và toàn xã hội, nhằm xây dựng, bảo vệ chế độ chính trị, độc lập dân tộc và định hướng xã hội chủ nghĩa.",
+      "expected_points": [
+        "Lập trường chính trị - tư tưởng của giai cấp công nhân",
+        "Vai trò lãnh đạo của Đảng Cộng sản Việt Nam"
+      ],
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 11,
+          "anchor": "Nội dung chính trị của liên minh",
+          "terms": [
+            "lập trường chính trị - tư tưởng",
+            "vai trò lãnh đạo",
+            "Đảng Cộng sản Việt Nam"
+          ],
+          "page_text_sha256": "3c0ddc406ebb6e2712491dbe53bd899a93960cd442f303b204095883496cd454"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_025",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_026",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Đặc trưng của dân tộc - tộc người",
+      "question": "Theo nghĩa dân tộc - tộc người, giáo trình nêu ba đặc trưng cơ bản nào và xem tiêu chí nào là quan trọng nhất để phân định một tộc người?",
+      "ground_truth": "Cộng đồng về ngôn ngữ, cộng đồng về văn hóa và ý thức tự giác tộc người. Ý thức tự giác tộc người là tiêu chí quan trọng nhất để phân định một tộc người.",
+      "expected_points": [
+        "Ngôn ngữ",
+        "Văn hóa",
+        "Ý thức tự giác tộc người là tiêu chí quan trọng nhất"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        2
+      ],
+      "evidence": [
+        {
+          "page_number": 2,
+          "anchor": "Ý thức tự giác tộc người",
+          "terms": [
+            "Cộng đồng về ngôn ngữ",
+            "Cộng đồng về văn hóa",
+            "tiêu chí quan trọng nhất"
+          ],
+          "page_text_sha256": "85cf8aba9c35ec77e6f6c9a5d5e236eb75502ba83be0f74407e3a5d470c37a31"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "aff0ff7d-7db8-51f4-8be5-d25b75b50424",
+          "version_id": "8346a68d-96c6-57b2-a46d-e2fec64ca6d4",
+          "page_number": 2
+        }
+      ],
+      "source_checksum": "1039f56a1fd60fe02473c1f18193b514554dad3e9465de42680251025c94c840",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_026",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_027",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Nguồn gốc nhận thức của tôn giáo",
+      "question": "Giới hạn nhận thức và khoảng cách giữa biết với chưa biết góp phần giải thích nguồn gốc nhận thức của tôn giáo như thế nào theo giáo trình?",
+      "ground_truth": "Ở mỗi giai đoạn lịch sử nhận thức có giới hạn; những điều khoa học chưa giải thích được thường được giải thích qua lăng kính tôn giáo. Ngay khi khoa học đã chứng minh, trình độ nhận thức chưa đầy đủ cũng có thể tạo điều kiện cho tôn giáo tồn tại và phát triển.",
+      "expected_points": [
+        "Nhận thức có giới hạn trong từng giai đoạn",
+        "Điều chưa được giải thích được lý giải qua lăng kính tôn giáo",
+        "Trình độ nhận thức chưa đầy đủ vẫn tạo điều kiện tồn tại"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        11
+      ],
+      "evidence": [
+        {
+          "page_number": 11,
+          "anchor": "Nguồn gốc nhận thức",
+          "terms": [
+            "có giới hạn",
+            "khoa học chưa giải thích được",
+            "lăng kính các tôn giáo"
+          ],
+          "page_text_sha256": "da6f002d13383d29c1044d7552e8313e6661cc5be185cec34bf34a42a30077b3"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "aff0ff7d-7db8-51f4-8be5-d25b75b50424",
+          "version_id": "8346a68d-96c6-57b2-a46d-e2fec64ca6d4",
+          "page_number": 11
+        }
+      ],
+      "source_checksum": "1039f56a1fd60fe02473c1f18193b514554dad3e9465de42680251025c94c840",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_027",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_028",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Phân biệt tín ngưỡng với mê tín",
+      "question": "Trong đoạn phân biệt tín ngưỡng và mê tín, cơ sở của niềm tin được mô tả khác nhau như thế nào?",
+      "ground_truth": "Tín ngưỡng là hệ thống niềm tin, sự ngưỡng mộ và cách thể hiện niềm tin trước sự vật, hiện tượng, lực lượng linh thiêng để cầu mong che chở. Mê tín là niềm tin mê muội, viển vông, không dựa trên cơ sở khoa học, gán quan hệ nhân quả khi thực tế không có liên hệ khách quan, tất yếu rõ ràng.",
+      "expected_points": [
+        "Tín ngưỡng: niềm tin và sự thể hiện trước cái linh thiêng",
+        "Mê tín: niềm tin mê muội, không dựa cơ sở khoa học và gán liên hệ nhân quả không có căn cứ"
+      ],
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        10
+      ],
+      "evidence": [
+        {
+          "page_number": 10,
+          "anchor": "Mê tín là niềm tin mê muội",
+          "terms": [
+            "Tín ngưỡng là hệ thống",
+            "không dựa trên một cơ sở khoa học"
+          ],
+          "page_text_sha256": "4c90a52e679855180550447aac2ea1c472c537286123dc4abce76612fe484102"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "aff0ff7d-7db8-51f4-8be5-d25b75b50424",
+          "version_id": "8346a68d-96c6-57b2-a46d-e2fec64ca6d4",
+          "page_number": 10
+        }
+      ],
+      "source_checksum": "1039f56a1fd60fe02473c1f18193b514554dad3e9465de42680251025c94c840",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_028",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_029",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Cơ sở kinh tế của giải phóng phụ nữ trong gia đình",
+      "question": "Theo giáo trình, vì sao xóa bỏ chế độ tư hữu về tư liệu sản xuất được xem là cơ sở kinh tế để khắc phục sự bất bình đẳng giữa vợ và chồng?",
+      "ground_truth": "Vì xóa bỏ nguồn gốc thống trị kinh tế của đàn ông trong gia đình, qua đó xóa bỏ nguồn gốc nô dịch và bất bình đẳng đối với phụ nữ; đồng thời tạo cơ sở biến lao động tư nhân trong gia đình thành lao động xã hội trực tiếp.",
+      "expected_points": [
+        "Khắc phục nguồn gốc thống trị về kinh tế của đàn ông",
+        "Cơ sở khắc phục nô dịch, bất bình đẳng đối với phụ nữ",
+        "Biến lao động gia đình thành lao động xã hội trực tiếp"
+      ],
+      "source_doc": "ch07.pdf",
+      "source_pages": [
+        7
+      ],
+      "evidence": [
+        {
+          "page_number": 7,
+          "anchor": "Xóa bỏ chế độ tư hữu về tư liệu sản xuất",
+          "terms": [
+            "sự thống trị về kinh tế",
+            "lao động xã hội trực tiếp"
+          ],
+          "page_text_sha256": "ed94afa0b533b1fe0aa3f2df1e5e9bdeb140403bea32ae0313375b21fddfd766"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "e246462f-3b1d-5a87-9727-eaa37205170a",
+          "version_id": "32bb8f69-a6b5-5860-8524-b6ab49f00465",
+          "page_number": 7
+        }
+      ],
+      "source_checksum": "ccb83ac8c14f03eb984b3e6786757afeedbdbd7d15726bf7f03f70892d1ab359",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_029",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_030",
+      "course_code": "CNXHKH",
+      "mode": "qa",
+      "topic": "Nội dung bình đẳng vợ chồng",
+      "question": "Bình đẳng giữa vợ và chồng trong chế độ hôn nhân tiến bộ được thể hiện thế nào về quyền, nghĩa vụ, lựa chọn riêng và giải quyết việc chung của gia đình?",
+      "ground_truth": "Vợ chồng có quyền lợi, nghĩa vụ ngang nhau; được tự do lựa chọn những vấn đề riêng chính đáng như nghề nghiệp, học tập, công tác xã hội; đồng thời thống nhất giải quyết việc chung như ăn ở và nuôi dạy con.",
+      "expected_points": [
+        "Quyền lợi và nghĩa vụ ngang nhau",
+        "Tự do lựa chọn việc riêng chính đáng",
+        "Thống nhất giải quyết vấn đề chung của gia đình"
+      ],
+      "source_doc": "ch07.pdf",
+      "source_pages": [
+        9
+      ],
+      "evidence": [
+        {
+          "page_number": 9,
+          "anchor": "vợ và chồng đều có quyền lợi và nghĩa vụ ngang nhau",
+          "terms": [
+            "tự do lựa chọn",
+            "nuôi dạy con cái"
+          ],
+          "page_text_sha256": "82b85f66b151bb1b4d4e9f8e1f98b90762458c14e65ff5d28b6b1ebfd842ac4e"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "e246462f-3b1d-5a87-9727-eaa37205170a",
+          "version_id": "32bb8f69-a6b5-5860-8524-b6ab49f00465",
+          "page_number": 9
+        }
+      ],
+      "source_checksum": "ccb83ac8c14f03eb984b3e6786757afeedbdbd7d15726bf7f03f70892d1ab359",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_030",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_031",
+      "course_code": "CNXHKH",
+      "mode": "hint",
+      "topic": "Đọc nội dung văn hóa xã hội của liên minh",
+      "question": "Tôi cần lập dàn ý về nội dung văn hóa - xã hội của liên minh giai cấp, tầng lớp. Hãy gợi ý cách đọc đoạn liên quan để tự chọn ý, không liệt kê hộ các nội dung.",
+      "ground_truth": "Xây dựng văn hóa tiên tiến, đậm bản sắc; gắn tăng trưởng với phát triển con người, tiến bộ và công bằng; nâng cao nguồn nhân lực, giảm nghèo, chăm sóc sức khỏe và an sinh xã hội.",
+      "expected_points": [
+        "Hướng dẫn tự đọc và lập dàn ý",
+        "Không liệt kê các mục nội dung thay người học"
+      ],
+      "hint_policy": {
+        "allowed_support": "Chỉ chỉ ra nguồn và thao tác đọc/lập dàn ý.",
+        "must_not_reveal": [
+          "nâng cao chất lượng nguồn nhân lực",
+          "xoá đói giảm nghèo",
+          "an sinh xã hội"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch05.pdf",
+      "source_pages": [
+        12
+      ],
+      "evidence": [
+        {
+          "page_number": 12,
+          "anchor": "Nội dung văn hóa xã hội của liên minh",
+          "terms": [
+            "nâng cao dân trí",
+            "an sinh xã hội"
+          ],
+          "page_text_sha256": "7aff91a344391f4503b733bd3f3e9991e3bcfeb646177ac1aad0c1c2ccef6e10"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 12
+        }
+      ],
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_031",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    },
+    {
+      "qa_id": "CNXHKH_QA_032",
+      "course_code": "CNXHKH",
+      "mode": "hint",
+      "topic": "Đọc quyền bình đẳng và tự quyết dân tộc",
+      "question": "Tôi muốn tự phân biệt quyền bình đẳng dân tộc với quyền tự quyết dân tộc. Hãy hướng dẫn cách đối chiếu đoạn giáo trình, không nêu định nghĩa thay tôi.",
+      "ground_truth": "Bình đẳng là quyền và nghĩa vụ ngang nhau, không đặc quyền hay áp bức dân tộc khác. Tự quyết là tự quyết định vận mệnh, chế độ chính trị và con đường phát triển, có điều kiện thực hiện cụ thể.",
+      "expected_points": [
+        "Hướng dẫn đối chiếu phần trình bày hai quyền",
+        "Không tự đưa định nghĩa hoặc kết luận so sánh"
+      ],
+      "hint_policy": {
+        "allowed_support": "Chọn đoạn và gợi thao tác đối chiếu để người học tự diễn đạt.",
+        "must_not_reveal": [
+          "nghĩa vụ và quyền lợi ngang nhau",
+          "tự quyết định lấy vận mệnh"
+        ],
+        "expected_response_kind": "authored_reading_guide",
+        "usage_context": "offline_practice_not_test"
+      },
+      "source_doc": "ch06.pdf",
+      "source_pages": [
+        4
+      ],
+      "evidence": [
+        {
+          "page_number": 4,
+          "anchor": "Các dân tộc hoàn toàn bình đẳng",
+          "terms": [
+            "Các dân tộc được quyền tự quyết",
+            "quyền lợi ngang nhau",
+            "quyết định lấy vận mệnh"
+          ],
+          "page_text_sha256": "476d46713815b736ba1190434b031ed3cf09964a250a08c33d45ff4b2678d1e8"
+        }
+      ],
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "aff0ff7d-7db8-51f4-8be5-d25b75b50424",
+          "version_id": "8346a68d-96c6-57b2-a46d-e2fec64ca6d4",
+          "page_number": 4
+        }
+      ],
+      "source_checksum": "1039f56a1fd60fe02473c1f18193b514554dad3e9465de42680251025c94c840",
+      "expected_status": "ANSWERED",
+      "evidence_reference": "data/qa/qa_additions.json#CNXHKH_QA_032",
+      "scope": {
+        "classroom_id": null,
+        "session_id": null,
+        "assessment_id": null,
+        "question_id": null
+      },
+      "review": {
+        "author_member": "A",
+        "drafting_assistance": "Codex",
+        "status": "pending_human_peer",
+        "reviewer": null,
+        "reviewed_at": null,
+        "source_check": "anchors_verified_not_semantic_or_human_approval"
+      }
+    }
+  ]
+}

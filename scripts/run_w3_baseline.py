@@ -132,7 +132,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--corpus-manifest', type=Path, required=True)
     parser.add_argument('--storage-root', type=Path, required=True)
-    parser.add_argument('--qa', type=Path, default=ROOT/'data/qa/qa_w3_v1.0.json')
+    parser.add_argument('--qa', type=Path, default=ROOT/'data/qa/qa_baseline.json')
     parser.add_argument('--config', type=Path, default=ROOT/'backend/config/w3/embedding_config.json')
     parser.add_argument('--output-dir', type=Path, required=True)
     parser.add_argument('--allow-download', action='store_true')

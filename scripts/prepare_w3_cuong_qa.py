@@ -61,19 +61,22 @@ def main():
             'source_pages':json.dumps([page]),'evidence_text':text,'evidence_scope':'physical_page',
             'source_check':'agent_checked','peer_review_status':'pending_duong'}
     for row in selected:rows.append(enrich(row,'pilot','qa'))
-    for i,(subject,file,page,mode,question,answer) in enumerate(NEW,1):
+    next_ids = {subject: max(int(row['qa_id'].rsplit('_', 1)[1]) for row in pilot
+                            if row['course_id'] == subject) + 1 for subject in ('KTCTMLN', 'CNXHKH')}
+    for subject,file,page,mode,question,answer in NEW:
         row={k:'' for k in pilot[0]}
-        row.update(qa_id=f'CUONG_W3_QA_{i:03}',course_id=subject,question=question,
+        row.update(qa_id=f'{subject}_QA_{next_ids[subject]:03}',course_id=subject,question=question,
             question_type='hint' if mode=='hint' else 'short_answer',ground_truth=answer,
             source_doc=file,source_page=str(page),source_section='Đối chiếu trang PDF vật lý',difficulty='medium',
             notes='Agent-assisted draft; evidence is the whole source page. Pending peer review; not a held-out test.')
         rows.append(enrich(row,'new_w3',mode))
+        next_ids[subject] += 1
     assert len({r['qa_id'] for r in rows})==50
     assert len({r['question'].strip().casefold() for r in rows})==50
-    output=ROOT/'data/qa/qa_w3_cuong_v1.0.csv'
+    output=ROOT/'data/qa/qa_contributions.csv'
     with output.open('w',encoding='utf-8',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader();writer.writerows(rows)
-    review=ROOT/'data/qa/qa_w3_review_log.csv'
+    review=ROOT/'data/qa/qa_contribution_reviews.csv'
     with review.open('w',encoding='utf-8',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=['qa_id','reviewer','source_check','peer_review_status','comment'])
         writer.writeheader()

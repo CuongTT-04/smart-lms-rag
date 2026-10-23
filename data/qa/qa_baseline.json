@@ -13,7 +13,7 @@
           "page_number": 2
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_001"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_001"
     },
     {
       "qa_id": "THMLN_QA_002",
@@ -28,7 +28,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_002"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_002"
     },
     {
       "qa_id": "THMLN_QA_003",
@@ -43,7 +43,7 @@
           "page_number": 12
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_003"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_003"
     },
     {
       "qa_id": "THMLN_QA_004",
@@ -58,7 +58,7 @@
           "page_number": 16
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_004"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_004"
     },
     {
       "qa_id": "THMLN_QA_005",
@@ -73,7 +73,7 @@
           "page_number": 15
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_005"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_005"
     },
     {
       "qa_id": "THMLN_QA_006",
@@ -88,7 +88,7 @@
           "page_number": 2
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_006"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_006"
     },
     {
       "qa_id": "THMLN_QA_007",
@@ -103,7 +103,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_007"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_007"
     },
     {
       "qa_id": "THMLN_QA_008",
@@ -118,7 +118,7 @@
           "page_number": 7
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_008"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_008"
     },
     {
       "qa_id": "THMLN_QA_009",
@@ -133,7 +133,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_009"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_009"
     },
     {
       "qa_id": "THMLN_QA_010",
@@ -148,7 +148,7 @@
           "page_number": 2
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_010"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_010"
     },
     {
       "qa_id": "THMLN_QA_011",
@@ -163,7 +163,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_011"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_011"
     },
     {
       "qa_id": "THMLN_QA_012",
@@ -178,7 +178,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_012"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_012"
     },
     {
       "qa_id": "THMLN_QA_013",
@@ -193,7 +193,7 @@
           "page_number": 7
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_013"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_013"
     },
     {
       "qa_id": "THMLN_QA_014",
@@ -208,7 +208,7 @@
           "page_number": 1
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_014"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_014"
     },
     {
       "qa_id": "THMLN_QA_015",
@@ -223,7 +223,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_015"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_015"
     },
     {
       "qa_id": "THMLN_QA_016",
@@ -238,7 +238,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_016"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_016"
     },
     {
       "qa_id": "THMLN_QA_017",
@@ -253,7 +253,7 @@
           "page_number": 14
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_017"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_017"
     },
     {
       "qa_id": "THMLN_QA_018",
@@ -268,7 +268,7 @@
           "page_number": 11
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_018"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_018"
     },
     {
       "qa_id": "THMLN_QA_019",
@@ -283,7 +283,7 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_019"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_019"
     },
     {
       "qa_id": "THMLN_QA_020",
@@ -298,7 +298,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_020"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_020"
     },
     {
       "qa_id": "THMLN_QA_021",
@@ -313,7 +313,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_021"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_021"
     },
     {
       "qa_id": "THMLN_QA_022",
@@ -328,7 +328,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_022"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_022"
     },
     {
       "qa_id": "THMLN_QA_023",
@@ -343,7 +343,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_023"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_023"
     },
     {
       "qa_id": "THMLN_QA_024",
@@ -358,7 +358,7 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_024"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_024"
     },
     {
       "qa_id": "KTCTMLN_QA_001",
@@ -373,7 +373,7 @@
           "page_number": 20
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_001"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_001"
     },
     {
       "qa_id": "KTCTMLN_QA_002",
@@ -388,7 +388,7 @@
           "page_number": 24
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_002"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_002"
     },
     {
       "qa_id": "KTCTMLN_QA_003",
@@ -403,7 +403,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_003"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_003"
     },
     {
       "qa_id": "KTCTMLN_QA_004",
@@ -418,7 +418,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_004"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_004"
     },
     {
       "qa_id": "KTCTMLN_QA_005",
@@ -433,7 +433,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_005"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_005"
     },
     {
       "qa_id": "KTCTMLN_QA_006",
@@ -448,7 +448,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_006"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_006"
     },
     {
       "qa_id": "KTCTMLN_QA_007",
@@ -463,7 +463,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_007"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_007"
     },
     {
       "qa_id": "KTCTMLN_QA_008",
@@ -478,7 +478,7 @@
           "page_number": 11
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_008"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_008"
     },
     {
       "qa_id": "KTCTMLN_QA_009",
@@ -493,7 +493,7 @@
           "page_number": 11
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_009"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_009"
     },
     {
       "qa_id": "KTCTMLN_QA_010",
@@ -508,7 +508,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_010"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_010"
     },
     {
       "qa_id": "KTCTMLN_QA_011",
@@ -523,7 +523,7 @@
           "page_number": 27
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_011"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_011"
     },
     {
       "qa_id": "KTCTMLN_QA_012",
@@ -538,7 +538,7 @@
           "page_number": 17
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_012"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_012"
     },
     {
       "qa_id": "KTCTMLN_QA_013",
@@ -553,7 +553,7 @@
           "page_number": 33
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#KTCTMLN_QA_013"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_013"
     },
     {
       "qa_id": "CNXHKH_QA_001",
@@ -568,7 +568,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_001"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_001"
     },
     {
       "qa_id": "CNXHKH_QA_002",
@@ -583,7 +583,7 @@
           "page_number": 19
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_002"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_002"
     },
     {
       "qa_id": "CNXHKH_QA_003",
@@ -598,7 +598,7 @@
           "page_number": 2
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_003"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_003"
     },
     {
       "qa_id": "CNXHKH_QA_004",
@@ -613,7 +613,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_004"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_004"
     },
     {
       "qa_id": "CNXHKH_QA_005",
@@ -628,7 +628,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_005"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_005"
     },
     {
       "qa_id": "CNXHKH_QA_006",
@@ -643,7 +643,7 @@
           "page_number": 14
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_006"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_006"
     },
     {
       "qa_id": "CNXHKH_QA_007",
@@ -658,7 +658,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_007"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_007"
     },
     {
       "qa_id": "CNXHKH_QA_008",
@@ -673,7 +673,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_008"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_008"
     },
     {
       "qa_id": "CNXHKH_QA_009",
@@ -688,7 +688,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_009"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_009"
     },
     {
       "qa_id": "CNXHKH_QA_010",
@@ -703,7 +703,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_010"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_010"
     },
     {
       "qa_id": "CNXHKH_QA_011",
@@ -718,7 +718,7 @@
           "page_number": 12
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_011"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_011"
     },
     {
       "qa_id": "CNXHKH_QA_012",
@@ -733,7 +733,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_012"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_012"
     },
     {
       "qa_id": "CNXHKH_QA_013",
@@ -748,7 +748,7 @@
           "page_number": 8
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CNXHKH_QA_013"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_013"
     },
     {
       "qa_id": "THMLN_QA_025",
@@ -763,7 +763,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_025"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_025"
     },
     {
       "qa_id": "THMLN_QA_026",
@@ -778,7 +778,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_026"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_026"
     },
     {
       "qa_id": "THMLN_QA_027",
@@ -793,7 +793,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_027"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_027"
     },
     {
       "qa_id": "THMLN_QA_028",
@@ -808,7 +808,7 @@
           "page_number": 7
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_028"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_028"
     },
     {
       "qa_id": "THMLN_QA_029",
@@ -823,7 +823,7 @@
           "page_number": 8
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_029"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_029"
     },
     {
       "qa_id": "THMLN_QA_030",
@@ -838,7 +838,7 @@
           "page_number": 11
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_030"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_030"
     },
     {
       "qa_id": "THMLN_QA_031",
@@ -853,7 +853,7 @@
           "page_number": 2
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_031"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_031"
     },
     {
       "qa_id": "THMLN_QA_032",
@@ -868,7 +868,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_032"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_032"
     },
     {
       "qa_id": "THMLN_QA_033",
@@ -883,7 +883,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_033"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_033"
     },
     {
       "qa_id": "THMLN_QA_034",
@@ -898,7 +898,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_034"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_034"
     },
     {
       "qa_id": "THMLN_QA_035",
@@ -913,7 +913,7 @@
           "page_number": 11
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_035"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_035"
     },
     {
       "qa_id": "THMLN_QA_036",
@@ -928,7 +928,7 @@
           "page_number": 14
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_036"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_036"
     },
     {
       "qa_id": "THMLN_QA_037",
@@ -943,7 +943,7 @@
           "page_number": 17
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_037"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_037"
     },
     {
       "qa_id": "THMLN_QA_038",
@@ -958,7 +958,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_038"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_038"
     },
     {
       "qa_id": "THMLN_QA_039",
@@ -973,7 +973,7 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_039"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_039"
     },
     {
       "qa_id": "THMLN_QA_040",
@@ -988,7 +988,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_040"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_040"
     },
     {
       "qa_id": "THMLN_QA_041",
@@ -1003,7 +1003,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_041"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_041"
     },
     {
       "qa_id": "THMLN_QA_042",
@@ -1018,7 +1018,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_042"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_042"
     },
     {
       "qa_id": "THMLN_QA_043",
@@ -1033,7 +1033,7 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_043"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_043"
     },
     {
       "qa_id": "THMLN_QA_044",
@@ -1048,7 +1048,7 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_044"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_044"
     },
     {
       "qa_id": "THMLN_QA_045",
@@ -1063,7 +1063,7 @@
           "page_number": 9
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_045"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_045"
     },
     {
       "qa_id": "THMLN_QA_046",
@@ -1078,7 +1078,7 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_046"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_046"
     },
     {
       "qa_id": "THMLN_QA_047",
@@ -1093,7 +1093,7 @@
           "page_number": 1
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_047"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_047"
     },
     {
       "qa_id": "THMLN_QA_048",
@@ -1108,7 +1108,7 @@
           "page_number": 3
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_048"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_048"
     },
     {
       "qa_id": "THMLN_QA_049",
@@ -1123,10 +1123,10 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#THMLN_QA_049"
+      "evidence_reference": "data/qa/qa_source_audit.csv#THMLN_QA_049"
     },
     {
-      "qa_id": "CUONG_W3_QA_001",
+      "qa_id": "KTCTMLN_QA_014",
       "question": "Gợi ý cách phân biệt yếu tố có thể gạt bỏ và yếu tố không được gạt bỏ khi trừu tượng hóa quan hệ lợi ích kinh tế.",
       "mode": "hint",
       "ground_truth": "Bắt đầu bằng mục tiêu nghiên cứu; phân biệt tình cảm cá nhân với lợi ích kinh tế. Có thể gạt yếu tố tình cảm, nhưng không loại lợi ích kinh tế vì làm sai bản chất quan hệ.",
@@ -1138,10 +1138,10 @@
           "page_number": 25
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_001"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_014"
     },
     {
-      "qa_id": "CUONG_W3_QA_002",
+      "qa_id": "KTCTMLN_QA_015",
       "question": "Chức năng nhận thức của kinh tế chính trị Mác - Lênin giúp nhìn các hiện tượng kinh tế ở mức độ nào?",
       "mode": "qa",
       "ground_truth": "Cung cấp tri thức về quy luật sản xuất và trao đổi, khái quát phạm trù từ hiện tượng bề mặt để nhận thức bản chất và quy luật ở tầng sâu hơn.",
@@ -1153,10 +1153,10 @@
           "page_number": 26
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_002"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_015"
     },
     {
-      "qa_id": "CUONG_W3_QA_003",
+      "qa_id": "KTCTMLN_QA_016",
       "question": "Chức năng thực tiễn của kinh tế chính trị có liên hệ thế nào với điều chỉnh hành vi và giải quyết quan hệ lợi ích?",
       "mode": "qa",
       "ground_truth": "Làm cơ sở khoa học cho điều chỉnh hành vi, chính sách và giải quyết hài hòa quan hệ lợi ích; thúc đẩy sáng tạo và cải thiện đời sống.",
@@ -1168,10 +1168,10 @@
           "page_number": 27
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_003"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_016"
     },
     {
-      "qa_id": "CUONG_W3_QA_004",
+      "qa_id": "KTCTMLN_QA_017",
       "question": "Cơ sở chung để các hàng hóa có giá trị sử dụng khác nhau trao đổi theo tỷ lệ nhất định là gì?",
       "mode": "qa",
       "ground_truth": "Lao động xã hội đã hao phí để sản xuất hàng hóa là thực thể chung. Giá trị là lao động xã hội của người sản xuất kết tinh trong hàng hóa.",
@@ -1183,10 +1183,10 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_004"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_017"
     },
     {
-      "qa_id": "CUONG_W3_QA_005",
+      "qa_id": "KTCTMLN_QA_018",
       "question": "Hàng hóa công cộng được phân biệt với hàng hóa cá nhân như thế nào trong hộp kiến thức của giáo trình?",
       "mode": "qa",
       "ground_truth": "Hàng hóa cá nhân đã được một người tiêu dùng thì người khác không thể đồng thời dùng nữa; hàng hóa công cộng một người dùng vẫn không cản người khác dùng, như không khí sạch hay quốc phòng.",
@@ -1198,10 +1198,10 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_005"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_018"
     },
     {
-      "qa_id": "CUONG_W3_QA_006",
+      "qa_id": "KTCTMLN_QA_019",
       "question": "Gợi ý cách giải thích vì sao mâu thuẫn giữa lao động cụ thể và lao động trừu tượng có thể dẫn đến hàng hóa không bán được.",
       "mode": "hint",
       "ground_truth": "Đối chiếu sản phẩm với nhu cầu xã hội và hao phí cá biệt với mức xã hội chấp nhận. Khi không phù hợp, hao phí cá biệt không được xã hội thừa nhận, tạo nguy cơ khủng hoảng.",
@@ -1213,10 +1213,10 @@
           "page_number": 8
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_006"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_019"
     },
     {
-      "qa_id": "CUONG_W3_QA_007",
+      "qa_id": "KTCTMLN_QA_020",
       "question": "Giáo trình liệt kê những nhóm nhân tố nào ảnh hưởng đến năng suất lao động?",
       "mode": "qa",
       "ground_truth": "Trình độ khéo léo của người lao động; khoa học và ứng dụng công nghệ; sự kết hợp xã hội của sản xuất; quy mô, hiệu suất tư liệu sản xuất; điều kiện tự nhiên.",
@@ -1228,10 +1228,10 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_007"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_020"
     },
     {
-      "qa_id": "CUONG_W3_QA_008",
+      "qa_id": "KTCTMLN_QA_021",
       "question": "Gợi ý cách mở đầu khi cần phân biệt cường độ lao động với năng suất lao động.",
       "mode": "hint",
       "ground_truth": "Xác định cường độ là mức khẩn trương, tích cực lao động; tách nó khỏi năng lực tạo sản phẩm trong một đơn vị thời gian. Dùng các định nghĩa và quan hệ giá trị trong giáo trình, không chỉ nhìn số sản phẩm tăng.",
@@ -1243,10 +1243,10 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_008"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_021"
     },
     {
-      "qa_id": "CUONG_W3_QA_009",
+      "qa_id": "KTCTMLN_QA_022",
       "question": "Trao đổi ở hình thái giá trị giản đơn hay ngẫu nhiên có đặc điểm gì?",
       "mode": "qa",
       "ground_truth": "Là hình thái ban đầu ở thời kỳ sơ khai; các hàng hóa được trao đổi trực tiếp với nhau và việc trao đổi mang tính ngẫu nhiên.",
@@ -1258,10 +1258,10 @@
           "page_number": 12
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_009"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_022"
     },
     {
-      "qa_id": "CUONG_W3_QA_010",
+      "qa_id": "KTCTMLN_QA_023",
       "question": "Vì sao khi thị trường mở rộng cần một vật ngang giá chung thống nhất?",
       "mode": "qa",
       "ground_truth": "Nhiều vật ngang giá khác nhau giữa các địa phương gây trở ngại trao đổi; sản xuất, phân công lao động và thị trường phát triển đòi hỏi vật ngang giá chung thống nhất, dẫn đến hình thái tiền.",
@@ -1273,10 +1273,10 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_010"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_023"
     },
     {
-      "qa_id": "CUONG_W3_QA_011",
+      "qa_id": "KTCTMLN_QA_024",
       "question": "Khi dùng tiền để trả nợ hay trả tiền mua chịu, tiền đang thực hiện chức năng nào?",
       "mode": "qa",
       "ground_truth": "Phương tiện thanh toán, gắn với tín dụng thương mại và việc mua bán qua chế độ tín dụng.",
@@ -1288,10 +1288,10 @@
           "page_number": 16
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_011"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_024"
     },
     {
-      "qa_id": "CUONG_W3_QA_012",
+      "qa_id": "KTCTMLN_QA_025",
       "question": "Dịch vụ khác hàng hóa thông thường ở khả năng cất trữ và thời điểm sản xuất, tiêu dùng như thế nào?",
       "mode": "qa",
       "ground_truth": "Dịch vụ là hàng hóa vô hình, không thể cất trữ; sản xuất và tiêu dùng diễn ra đồng thời.",
@@ -1303,10 +1303,10 @@
           "page_number": 17
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_012"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_025"
     },
     {
-      "qa_id": "CUONG_W3_QA_013",
+      "qa_id": "KTCTMLN_QA_026",
       "question": "Gợi ý dàn ý để trình bày các bộ phận tạo nên giá trị hàng hóa sức lao động.",
       "mode": "hint",
       "ground_truth": "Tổ chức dàn ý theo ba nhóm: tư liệu sinh hoạt tái sản xuất sức lao động, phí đào tạo người lao động và tư liệu sinh hoạt nuôi con; nêu đây là cách đo gián tiếp qua tư liệu sinh hoạt.",
@@ -1318,10 +1318,10 @@
           "page_number": 4
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_013"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_026"
     },
     {
-      "qa_id": "CUONG_W3_QA_014",
+      "qa_id": "KTCTMLN_QA_027",
       "question": "Theo giáo trình, tiền công là giá cả của hàng hóa nào và có nguồn gốc từ đâu?",
       "mode": "qa",
       "ground_truth": "Là giá cả của hàng hóa sức lao động, một bộ phận giá trị mới do lao động của người lao động làm thuê tạo ra.",
@@ -1333,10 +1333,10 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_014"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_027"
     },
     {
-      "qa_id": "CUONG_W3_QA_015",
+      "qa_id": "KTCTMLN_QA_028",
       "question": "Tốc độ chu chuyển tư bản được xác định từ thời gian một năm và thời gian một vòng như thế nào?",
       "mode": "qa",
       "ground_truth": "Số vòng chu chuyển n bằng thời gian một năm CH chia thời gian một vòng ch: n=CH/ch.",
@@ -1348,10 +1348,10 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_015"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_028"
     },
     {
-      "qa_id": "CUONG_W3_QA_016",
+      "qa_id": "KTCTMLN_QA_029",
       "question": "Giá trị tư bản cố định và tư bản lưu động được chuyển vào sản phẩm khác nhau như thế nào?",
       "mode": "qa",
       "ground_truth": "Tư bản cố định chuyển dần từng phần theo hao mòn; tư bản lưu động chuyển một lần, toàn phần khi kết thúc quá trình sản xuất.",
@@ -1363,10 +1363,10 @@
           "page_number": 13
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_016"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_029"
     },
     {
-      "qa_id": "CUONG_W3_QA_017",
+      "qa_id": "KTCTMLN_QA_030",
       "question": "Giá trị thặng dư siêu ngạch hình thành khi doanh nghiệp có quan hệ nào giữa giá trị cá biệt và giá trị xã hội?",
       "mode": "qa",
       "ground_truth": "Khi cải tiến kỹ thuật, tăng năng suất làm giá trị cá biệt thấp hơn giá trị xã hội, doanh nghiệp thu phần giá trị thặng dư trội hơn các doanh nghiệp khác.",
@@ -1378,10 +1378,10 @@
           "page_number": 18
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_017"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_030"
     },
     {
-      "qa_id": "CUONG_W3_QA_018",
+      "qa_id": "KTCTMLN_QA_031",
       "question": "Gợi ý cách lý giải tác động của năng suất lao động xã hội tới quy mô tích lũy tư bản.",
       "mode": "hint",
       "ground_truth": "Trình bày chuỗi quan hệ: năng suất tăng, giá trị tư liệu sinh hoạt giảm, giá trị sức lao động giảm, tăng khả năng thu giá trị thặng dư và quy mô tích lũy.",
@@ -1393,10 +1393,10 @@
           "page_number": 21
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_018"
+      "evidence_reference": "data/qa/qa_source_audit.csv#KTCTMLN_QA_031"
     },
     {
-      "qa_id": "CUONG_W3_QA_019",
+      "qa_id": "CNXHKH_QA_014",
       "question": "Phương pháp luận chung nhất được sử dụng khi nghiên cứu chủ nghĩa xã hội khoa học là gì?",
       "mode": "qa",
       "ground_truth": "Chủ nghĩa duy vật biện chứng và chủ nghĩa duy vật lịch sử của triết học Mác - Lênin.",
@@ -1408,10 +1408,10 @@
           "page_number": 21
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_019"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_014"
     },
     {
-      "qa_id": "CUONG_W3_QA_020",
+      "qa_id": "CNXHKH_QA_015",
       "question": "Ba trụ cột được nêu cho phát triển nhanh và bền vững ở Việt Nam gồm những nội dung nào?",
       "mode": "qa",
       "ground_truth": "Phát triển kinh tế là nhiệm vụ trung tâm; xây dựng Đảng là khâu then chốt; phát triển văn hóa là nền tảng tinh thần của xã hội.",
@@ -1423,10 +1423,10 @@
           "page_number": 18
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_020"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_015"
     },
     {
-      "qa_id": "CUONG_W3_QA_021",
+      "qa_id": "CNXHKH_QA_016",
       "question": "Địa vị kinh tế của giai cấp công nhân gắn với nền đại công nghiệp như thế nào?",
       "mode": "qa",
       "ground_truth": "Là sản phẩm của nền đại công nghiệp, chủ thể sản xuất vật chất hiện đại, đại diện phương thức sản xuất tiên tiến và lực lượng sản xuất hiện đại.",
@@ -1438,10 +1438,10 @@
           "page_number": 8
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_021"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_016"
     },
     {
-      "qa_id": "CUONG_W3_QA_022",
+      "qa_id": "CNXHKH_QA_017",
       "question": "Gợi ý cách xác định hai mặt của mâu thuẫn kinh tế cơ bản trong chủ nghĩa tư bản khi bàn về sứ mệnh giai cấp công nhân.",
       "mode": "hint",
       "ground_truth": "Bắt đầu từ tính xã hội hóa của sản xuất; đối chiếu lực lượng sản xuất mang tính xã hội với sự chiếm hữu tư nhân tư bản về tư liệu sản xuất; liên hệ mâu thuẫn lợi ích giai cấp.",
@@ -1453,10 +1453,10 @@
           "page_number": 6
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_022"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_017"
     },
     {
-      "qa_id": "CUONG_W3_QA_023",
+      "qa_id": "CNXHKH_QA_018",
       "question": "Sứ mệnh lịch sử của giai cấp công nhân có phải thay một hình thức sở hữu tư nhân bằng hình thức sở hữu tư nhân khác không?",
       "mode": "qa",
       "ground_truth": "Không. Theo giáo trình, sứ mệnh này không phải thay chế độ sở hữu tư nhân này bằng chế độ sở hữu tư nhân khác mà là xóa bỏ chế độ tư hữu tư bản chủ nghĩa về tư liệu sản xuất, nguồn gốc của áp bức, bóc lột và bất công trong xã hội hiện đại.",
@@ -1468,10 +1468,10 @@
           "page_number": 7
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_023"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_018"
     },
     {
-      "qa_id": "CUONG_W3_QA_024",
+      "qa_id": "CNXHKH_QA_019",
       "question": "Vì sao giáo dục gia đình cần gắn với giáo dục xã hội?",
       "mode": "qa",
       "ground_truth": "Gia đình góp phần đào tạo thế hệ trẻ và xã hội hóa cá nhân; thiếu gắn kết sẽ làm cá nhân khó hòa nhập và giáo dục xã hội kém hiệu quả.",
@@ -1483,10 +1483,10 @@
           "page_number": 5
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_024"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_019"
     },
     {
-      "qa_id": "CUONG_W3_QA_025",
+      "qa_id": "CNXHKH_QA_020",
       "question": "Gợi ý cách giải thích vì sao thủ tục pháp lý trong hôn nhân không phủ nhận quyền tự do kết hôn.",
       "mode": "hint",
       "ground_truth": "Phân biệt tình yêu riêng với quan hệ hôn nhân được xã hội thừa nhận; liên hệ trách nhiệm, bảo vệ hạnh phúc và cơ sở thực hiện đầy đủ quyền kết hôn, ly hôn chính đáng.",
@@ -1498,7 +1498,7 @@
           "page_number": 10
         }
       ],
-      "evidence_reference": "data/qa/qa_w3_source_audit.csv#CUONG_W3_QA_025"
+      "evidence_reference": "data/qa/qa_source_audit.csv#CNXHKH_QA_020"
     }
   ],
   "review_status": "pending_human_peer"

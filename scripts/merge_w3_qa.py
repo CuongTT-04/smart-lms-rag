@@ -42,11 +42,13 @@ def compact(text):
 
 def audit_rows(rows, sources, qa, corpus):
     """Apply explicit editorial corrections and verify source evidence, not human approval."""
+    saved_path = Path(qa) / 'qa_source_audit.csv'
+    saved = {item['qa_id']: item for item in read_csv(saved_path)} if saved_path.exists() else {}
     specs = {}
     for name in ('qa_pilot_v2.0_corrections.json', 'qa_pilot_v2.0_additions.json'):
         for item in json.loads((qa/name).read_text(encoding='utf-8'))['rows']:
             specs[item['qa_id']] = {'anchor': item['evidence_anchor'], 'terms': item['evidence_terms']}
-    for item in json.loads((qa/'qa_w3_source_checks.json').read_text(encoding='utf-8'))['checks']:
+    for item in json.loads((qa/'qa_source_checks.json').read_text(encoding='utf-8'))['checks']:
         if item['qa_id'] in specs:
             raise ValueError('Duplicate evidence specification: '+item['qa_id'])
         specs[item['qa_id']] = item
@@ -75,6 +77,11 @@ def audit_rows(rows, sources, qa, corpus):
         if missing:
             raise ValueError(f"Missing source evidence for {row['qa_id']}: {missing}")
         source = sources[key]
+        previous = saved.get(row['qa_id'], {})
+        # Preserve layout whitespace only after verifying identical source text and PDF identity.
+        if (previous.get('source_checksum') == source['source_checksum']
+                and compact(previous.get('evidence_excerpt', '')) == compact(joined)):
+            joined = previous['evidence_excerpt']
         evidence.append({'qa_id': row['qa_id'], 'course_code': key[0], 'source_doc': key[1],
                          'source_pages': json.dumps(pages), 'source_checksum': source['source_checksum'],
                          'agent_reviewer': 'Codex', 'audit_status': 'agent_source_checked_pending_human_peer',
@@ -93,7 +100,7 @@ def build(corpus, output):
         previous_reviews = read_csv(existing_log)
         if any(r.get('peer_review_status', 'pending') not in ('', 'pending') or r.get('peer_reviewer', '').strip() for r in previous_reviews):
             raise ValueError('Existing human review must be reconciled explicitly; refusing to reset peer decisions.')
-    a, b = read_csv(qa/'qa_pilot_v2.0.csv'), read_csv(qa/'qa_w3_cuong_v1.0.csv')
+    a, b = read_csv(qa/'qa_pilot_v2.0.csv'), read_csv(qa/'qa_contributions.csv')
     rows = merge_rows(a, b)
     if len(rows) != 100:
         raise ValueError('Expected 100 distinct development QA.')
@@ -143,23 +150,23 @@ def build(corpus, output):
                       'ground_truth': row['ground_truth'], 'course_id': source['course_id'],
                       'gold_sources': [{'document_id': source['document_id'], 'version_id': source['version_id'],
                                         'page_number': page} for page in pages],
-                      'evidence_reference': 'data/qa/qa_w3_source_audit.csv#'+row['qa_id']})
+                      'evidence_reference': 'data/qa/qa_source_audit.csv#'+row['qa_id']})
         review_log.append({'qa_id': row['qa_id'], 'owner': owner, 'source_doc': row['source_doc'],
                            'source_pages': json.dumps(pages), 'source_checksum': source['source_checksum'],
                            'source_check': status, 'peer_reviewer': '', 'peer_review_status': 'pending',
                            'agent_reviewer': 'Codex', 'agent_review_status': 'source_checked',
-                           'evidence_reference': 'data/qa/qa_w3_source_audit.csv#'+row['qa_id'],
+                           'evidence_reference': 'data/qa/qa_source_audit.csv#'+row['qa_id'],
                            'note': audit_by_id[row['qa_id']]['note']})
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    for name, values in [('qa_w3_v1.0.csv', merged), ('qa_review_log.csv', review_log), ('qa_w3_source_audit.csv', evidence)]:
+    for name, values in [('qa_baseline.csv', merged), ('qa_review_log.csv', review_log), ('qa_source_audit.csv', evidence)]:
         with (output/name).open('w', encoding='utf-8', newline='') as stream:
             writer = csv.DictWriter(stream, fieldnames=list(values[0]), lineterminator='\n')
             writer.writeheader()
             writer.writerows(values)
-    for name, data in [('qa_w3_v1.0.json', {'cases': cases, 'review_status': 'pending_human_peer'}),
-                       ('w3_source_map.json', {'page_unit': 'physical_pdf_1based', 'sources': list(sources.values())})]:
-        (output/name).write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+    for name, data in [('qa_baseline.json', {'cases': cases, 'review_status': 'pending_human_peer'}),
+                       ('source_map.json', {'page_unit': 'physical_pdf_1based', 'sources': list(sources.values())})]:
+        (output/name).write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
     return {'a_rows': len(a), 'b_rows': len(b), 'shared_ids': len(a)+len(b)-len(rows),
             'merged_qa': len(rows), 'source_checked_pending_peer': sum(r['source_check'].startswith('source_checked') for r in merged),
             'source_review_required': [r['qa_id'] for r in merged if r['source_check']=='source_review_required'],
