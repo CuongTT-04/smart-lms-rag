@@ -1,0 +1,555 @@
+{
+  "schema_version": "w4-draft-1.0",
+  "page_unit": "physical_pdf_1based",
+  "dataset_split": "development",
+  "status": "draft_source_checked_by_ai_pending_human_peer",
+  "runtime_ready": false,
+  "note": "Source UUIDs come from W3 offline map. Before API hint evaluation, bind runtime assessment/question IDs and verified DB sources; never send ground_truth to the model.",
+  "cases": [
+    {
+      "qa_id": "CUONG_W4_QA_001",
+      "question": "Tồn tại xã hội gồm những yếu tố cơ bản nào và yếu tố nào giữ vai trò cơ bản nhất?",
+      "mode": "qa",
+      "ground_truth": "Phương thức sản xuất vật chất, điều kiện tự nhiên và hoàn cảnh địa lý, dân số và mật độ dân số; phương thức sản xuất vật chất là yếu tố cơ bản nhất.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 2
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=2"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_002",
+      "question": "Vì sao ý thức cá nhân mang tính xã hội nhưng không phải lúc nào cũng thể hiện quan điểm phổ biến của cộng đồng?",
+      "mode": "qa",
+      "ground_truth": "Ý thức cá nhân phản ánh tồn tại xã hội với mức độ khác nhau; không phải mọi ý thức cá nhân đều biểu hiện tư tưởng, tình cảm chung của cộng đồng trong thời đại đó.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 2
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=2"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_003",
+      "question": "Nếu phân loại theo nội dung và lĩnh vực phản ánh, giáo trình nêu những hình thái ý thức xã hội nào?",
+      "mode": "qa",
+      "ground_truth": "Ý thức chính trị, pháp quyền, đạo đức, tôn giáo, thẩm mỹ và triết học là các hình thái được nêu trong phần phân loại.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 2
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=2"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_004",
+      "question": "Gợi ý cách nhận biết một hệ thống quan điểm đã được khái quát thành học thuyết thuộc trình độ phản ánh nào của ý thức xã hội.",
+      "mode": "hint",
+      "ground_truth": "Hướng người học kiểm tra mức độ hệ thống hóa, khái quát hóa và khả năng chỉ ra quan hệ bản chất; yêu cầu tự đối chiếu với hai trình độ phản ánh, không kết luận thay.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 3
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=3",
+      "hint_rubric": {
+        "require": "Hướng dẫn cách suy luận và tự đọc nguồn.",
+        "forbid": "Đưa đáp án cuối hoặc viết thay toàn bộ bài làm."
+      }
+    },
+    {
+      "qa_id": "CUONG_W4_QA_005",
+      "question": "Có thể coi hệ tư tưởng chỉ là sự cô đặc trực tiếp của tâm lý xã hội không? Vì sao?",
+      "mode": "qa",
+      "ground_truth": "Không. Hệ tư tưởng liên hệ và chịu tác động của tâm lý xã hội nhưng còn kế thừa học thuyết, tư tưởng trước đó và khái quát tri thức, kinh nghiệm xã hội.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 4
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=4"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_006",
+      "question": "Sự gắn bó với thực tiễn và tâm lý xã hội có thể giúp lý luận tránh hạn chế nào, và lý luận tác động lại ra sao?",
+      "mode": "qa",
+      "ground_truth": "Sự gắn bó giúp lý luận bớt xơ cứng và sai lầm; lý luận gia tăng yếu tố trí tuệ cho tâm lý xã hội, còn hệ tư tưởng khoa học định hướng phát triển tiến bộ.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 4
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=4"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_007",
+      "question": "Sự ảnh hưởng tư tưởng giữa giai cấp thống trị và giai cấp bị trị có phải chỉ diễn ra một chiều không?",
+      "mode": "qa",
+      "ground_truth": "Không. Giai cấp bị trị chịu ảnh hưởng tư tưởng của giai cấp thống trị nhưng chiều ngược lại cũng có; khi cách mạng phát triển, một số người thuộc giai cấp thống trị có thể theo giai cấp cách mạng.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 5
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=5"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_008",
+      "question": "Tâm lý và truyền thống dân tộc hình thành, được duy trì qua các thế hệ trên những điều kiện nào?",
+      "mode": "qa",
+      "ground_truth": "Chúng phản ánh điều kiện sinh hoạt chung và lịch sử lâu dài của dân tộc, gồm kinh tế, chính trị, văn hóa, xã hội và tự nhiên; thấm vào đời sống tinh thần và truyền qua các thế hệ.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 6
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=6"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_009",
+      "question": "Gợi ý cách phản biện nhận xét rằng mọi tư tưởng đều trực tiếp phản ánh rõ một quan hệ kinh tế cụ thể.",
+      "mode": "hint",
+      "ground_truth": "Đề nghị kiểm tra giáo trình nói về các khâu trung gian và phân biệt phản ánh trực tiếp với quan hệ xét đến cùng; yêu cầu người học tự xây dựng lập luận thay vì đưa kết luận sẵn.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 7
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=7",
+      "hint_rubric": {
+        "require": "Hướng dẫn cách suy luận và tự đọc nguồn.",
+        "forbid": "Đưa đáp án cuối hoặc viết thay toàn bộ bài làm."
+      }
+    },
+    {
+      "qa_id": "CUONG_W4_QA_010",
+      "question": "Lợi ích của các nhóm xã hội góp phần làm tư tưởng cũ tồn tại dai dẳng như thế nào?",
+      "mode": "qa",
+      "ground_truth": "Ý thức gắn với lợi ích các nhóm và giai cấp; những lực lượng bảo vệ lợi ích cũ có thể lưu giữ, truyền bá tư tưởng lạc hậu để chống lực lượng tiến bộ.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 8
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=8"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_011",
+      "question": "Trong điều kiện nhất định, tư tưởng khoa học tiên tiến có thể làm gì đối với tương lai và hoạt động thực tiễn?",
+      "mode": "qa",
+      "ground_truth": "Có thể dự báo tương lai, tổ chức và chỉ đạo thực tiễn để giải quyết nhiệm vụ mới do sự phát triển của đời sống vật chất đặt ra.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 8
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=8"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_012",
+      "question": "Giáo trình minh họa tính lựa chọn trong kế thừa tư tưởng của các giai cấp bằng những trường hợp nào?",
+      "mode": "qa",
+      "ground_truth": "Giai cấp tư sản tiến bộ khi chống phong kiến khôi phục tư tưởng duy vật, nhân bản cổ đại; các giai cấp lỗi thời có thể phục hồi học thuyết phản tiến bộ để bảo vệ lợi ích của mình.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 9
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=9"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_013",
+      "question": "Trong sự tác động giữa các hình thái ý thức xã hội, ý thức chính trị của giai cấp cách mạng giữ vai trò gì?",
+      "mode": "qa",
+      "ground_truth": "Giữ vai trò đặc biệt quan trọng, định hướng sự phát triển theo chiều hướng tiến bộ của các hình thái ý thức khác.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 10
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=10"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_014",
+      "question": "Vì sao quan điểm duy vật lịch sử không đồng nghĩa với phủ nhận tác dụng của tư tưởng đối với kinh tế?",
+      "mode": "qa",
+      "ground_truth": "Quan điểm này thừa nhận các hình thái ý thức dựa trên kinh tế nhưng có ảnh hưởng lẫn nhau và tác động trở lại kinh tế; bác bỏ cách hiểu duy vật kinh tế phủ nhận tác dụng tích cực của ý thức.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 10
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=10"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_015",
+      "question": "Ý thức chính trị xuất hiện trong điều kiện xã hội nào và phản ánh những quan hệ nào?",
+      "mode": "qa",
+      "ground_truth": "Xuất hiện và tồn tại trong xã hội có giai cấp và nhà nước; phản ánh quan hệ chính trị, kinh tế, xã hội giữa các giai cấp, dân tộc, quốc gia và thái độ với quyền lực nhà nước.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 11
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=11"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_016",
+      "question": "Cơ cấu xã hội - giai cấp có vị trí thế nào trong hệ thống cơ cấu xã hội, xét theo quan hệ sở hữu và tổ chức sản xuất?",
+      "mode": "qa",
+      "ground_truth": "Có vị trí quan trọng hàng đầu và chi phối các loại cơ cấu khác; liên quan các đảng phái, nhà nước, sở hữu tư liệu sản xuất, tổ chức lao động và phân phối thu nhập.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 2
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=2"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_017",
+      "question": "Ở nước có xuất phát điểm thấp, chuyển dịch tỷ trọng nông nghiệp sang công nghiệp và dịch vụ là biểu hiện của biến đổi nào trong thời kỳ quá độ?",
+      "mode": "qa",
+      "ground_truth": "Là biến đổi cơ cấu kinh tế; những thay đổi kinh tế đó tất yếu dẫn đến biến đổi cơ cấu xã hội - giai cấp.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 3
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=3"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_018",
+      "question": "Gợi ý xây dựng chuỗi giải thích vì sao cơ cấu giai cấp trong thời kỳ quá độ còn đa dạng, phức tạp.",
+      "mode": "hint",
+      "ground_truth": "Hướng người học bắt đầu từ sự đan xen yếu tố cũ và mới, kiểm tra kết cấu kinh tế rồi tự nối với các nhóm xã hội; không viết sẵn toàn bộ chuỗi kết luận.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 4
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=4",
+      "hint_rubric": {
+        "require": "Hướng dẫn cách suy luận và tự đọc nguồn.",
+        "forbid": "Đưa đáp án cuối hoặc viết thay toàn bộ bài làm."
+      }
+    },
+    {
+      "qa_id": "CUONG_W4_QA_019",
+      "question": "Theo phân tích của Mác và Ăngghen trong giáo trình, sự đơn độc của công nhân có liên quan gì đến thất bại của một số cuộc đấu tranh ở châu Âu?",
+      "mode": "qa",
+      "ground_truth": "Nhiều cuộc đấu tranh thất bại vì công nhân không tổ chức liên minh với nông dân, người đồng minh tự nhiên; từ đó rút ra yêu cầu liên minh các lực lượng lao động.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 5
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=5"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_020",
+      "question": "Liên minh công nhân, nông dân và trí thức được thực hiện tốt sẽ củng cố những cơ sở nào của xã hội mới?",
+      "mode": "qa",
+      "ground_truth": "Góp phần xây dựng cơ sở kinh tế vững mạnh và củng cố chế độ chính trị xã hội chủ nghĩa; trí thức có vai trò quan trọng trong khối liên minh.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 6
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=6"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_021",
+      "question": "Liên minh giai cấp, tầng lớp trong thời kỳ quá độ được hiểu theo quan hệ giữa các chủ thể như thế nào?",
+      "mode": "qa",
+      "ground_truth": "Là sự liên kết, hợp tác, hỗ trợ giữa các giai cấp và tầng lớp để thực hiện nhu cầu, lợi ích của các chủ thể và tạo động lực đạt mục tiêu chủ nghĩa xã hội.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 7
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=7"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_022",
+      "question": "Gợi ý lập dàn ý phân tích cơ cấu xã hội - giai cấp ở Việt Nam theo cả quy luật chung và đặc điểm riêng.",
+      "mode": "hint",
+      "ground_truth": "Hướng người học tách hai phần: quan hệ giữa biến đổi kinh tế và giai cấp; bối cảnh lịch sử, đổi mới cơ chế kinh tế ở Việt Nam. Yêu cầu tự tìm dẫn chứng ở trang nguồn.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 7
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=7",
+      "hint_rubric": {
+        "require": "Hướng dẫn cách suy luận và tự đọc nguồn.",
+        "forbid": "Đưa đáp án cuối hoặc viết thay toàn bộ bài làm."
+      }
+    },
+    {
+      "qa_id": "CUONG_W4_QA_023",
+      "question": "Giáo trình dự báo giai cấp công nhân thay đổi ra sao về cơ cấu ngành nghề và trình độ trong quá trình công nghiệp hóa?",
+      "mode": "qa",
+      "ground_truth": "Cơ cấu đa dạng theo thành phần kinh tế và ngành nghề; công nhân hiện đại, công nhân tri thức lớn mạnh; chuyên môn, kỹ năng, kỷ luật và tác phong công nghiệp được nâng lên.",
+      "course_id": "e6ee70ab-952f-5763-bc83-1fc2f75de489",
+      "gold_sources": [
+        {
+          "document_id": "0be30d7b-539f-5847-a4e4-ece801dde782",
+          "version_id": "313bbbcf-b337-5f31-a28a-39aed9d3eeb1",
+          "page_number": 8
+        }
+      ],
+      "source_path": "data/corpus/CNXHKH/ch05.pdf",
+      "source_checksum": "2b1b2c21118393861eb61a2001e1ca1de83c5d76c25997c89af20567e0ca190c",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/CNXHKH/ch05.pdf#physical-page=8"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_024",
+      "question": "Quan hệ giữa ý thức cá nhân và ý thức xã hội được giáo trình mô tả ra sao, ngoài sự khác biệt tương đối giữa chúng?",
+      "mode": "qa",
+      "ground_truth": "Chúng có mối liên hệ hữu cơ, biện chứng, thâm nhập và làm phong phú lẫn nhau.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 2
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=2"
+    },
+    {
+      "qa_id": "CUONG_W4_QA_025",
+      "question": "Gợi ý cách đọc ví dụ về văn hóa xã hội chủ nghĩa để giải thích vì sao xây dựng văn hóa mới cần kế thừa văn hóa nhân loại.",
+      "mode": "hint",
+      "ground_truth": "Hướng người học tìm đoạn nói về thành tựu, truyền thống tốt đẹp của nhân loại và cơ sở thế giới quan khi tiếp thu; đề nghị tự chọn dẫn chứng, không viết thay câu trả lời hoàn chỉnh.",
+      "course_id": "e8f06213-198c-5bbb-9d4a-e22714e0c3a5",
+      "gold_sources": [
+        {
+          "document_id": "99d4367e-3e97-59f8-b426-29b59b5dec66",
+          "version_id": "612203cc-1331-5008-989f-ac89373ef84a",
+          "page_number": 9
+        }
+      ],
+      "source_path": "data/corpus/THMLN/ch13.pdf",
+      "source_checksum": "f217acb646391a88c00268dcc63c781ca3ff62a5325211744a0257a39f5c4d63",
+      "source_identity": "w3_offline_snapshot_not_runtime_db",
+      "author": "Tran Tuan Cuong (AI-assisted draft)",
+      "reviewer": null,
+      "review_status": "pending_human_peer",
+      "evidence_reference": "data/corpus/THMLN/ch13.pdf#physical-page=9",
+      "hint_rubric": {
+        "require": "Hướng dẫn cách suy luận và tự đọc nguồn.",
+        "forbid": "Đưa đáp án cuối hoặc viết thay toàn bộ bài làm."
+      }
+    }
+  ]
+}

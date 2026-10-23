@@ -10,6 +10,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import { currentUser, logout, authErrorMessage } from './services/auth.service'
 import { clearAccessToken } from './services/api'
 import { clearNavigation, NavigationProvider } from './hooks/useHistoryState'
+import NotificationProvider from './components/notifications/NotificationProvider'
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
@@ -46,12 +47,23 @@ export default function App() {
     setSession((previous) => previous.user?.id === user.id ? { ...previous, user } : previous)
   }
 
-  function handleSessionExpired(notice) {
+  function handleSessionExpired(notice, noticeVariant = 'warning') {
     sessionRequestId.current += 1
     clearNavigation(session.user?.id)
     clearAccessToken()
-    setSession({ checking: false, user: null, error: '', notice })
+    setSession({ checking: false, user: null, error: '', notice, noticeVariant })
   }
+
+  useEffect(() => {
+    function changedAccount() {
+      sessionRequestId.current += 1
+      clearNavigation(session.user?.id)
+      clearAccessToken()
+      setSession({ checking: false, user: null, error: '', notice: 'Tài khoản đã thay đổi ở cửa sổ khác. Vui lòng đăng nhập lại.', noticeVariant: 'warning' })
+    }
+    window.addEventListener('ohayo:session-expired', changedAccount)
+    return () => window.removeEventListener('ohayo:session-expired', changedAccount)
+  }, [session.user?.id])
 
   useEffect(() => {
     document.title = publicPage
@@ -86,9 +98,7 @@ export default function App() {
   if (path === '/register') return <RegisterPage />
   if (path === '/forgot-password') return <ForgotPasswordPage />
   if (path === '/reset-password') return <ResetPasswordPage />
-  if (!session.user) return <LoginPage initialError={session.error} initialNotice={session.notice} onAuthenticated={handleAuthenticated} />
+  if (!session.user) return <LoginPage initialError={session.error} initialNotice={session.notice} initialNoticeVariant={session.noticeVariant} onAuthenticated={handleAuthenticated} />
   const profileProps = { user: session.user, onLogout: handleLogout, onUserUpdated: handleUserUpdated, onSessionExpired: handleSessionExpired }
-  if (session.user.role === 'TEACHER') return <NavigationProvider key={session.user.id} owner={session.user.id}><TeacherHomePage {...profileProps} /></NavigationProvider>
-  if (session.user.role === 'STUDENT') return <NavigationProvider key={session.user.id} owner={session.user.id}><StudentHomePage {...profileProps} /></NavigationProvider>
-  return <DashboardPage {...profileProps} />
+  return <NavigationProvider key={session.user.id} owner={session.user.id}><NotificationProvider user={session.user}>{session.user.role === 'TEACHER' ? <TeacherHomePage {...profileProps} /> : session.user.role === 'STUDENT' ? <StudentHomePage {...profileProps} /> : <DashboardPage {...profileProps} />}</NotificationProvider></NavigationProvider>
 }

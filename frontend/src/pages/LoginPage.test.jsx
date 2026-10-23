@@ -9,6 +9,11 @@ vi.mock('../services/auth.service', async (importOriginal) => ({ ...await import
 describe('Vietnamese login form', () => {
   beforeEach(() => vi.mocked(login).mockReset())
 
+  it.each(['success', 'warning', 'info'])('preserves the explicit %s status type', (variant) => {
+    render(<LoginPage initialNotice="Thông báo về phiên đăng nhập" initialNoticeVariant={variant} />)
+    expect(screen.getByRole('status')).toHaveClass(`${variant}-banner`)
+  })
+
   it('links to registration and password recovery instead of support', () => {
     render(<LoginPage onAuthenticated={vi.fn()} />)
     expect(screen.getByText('Chưa có tài khoản?')).toBeVisible()

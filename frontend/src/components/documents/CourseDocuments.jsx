@@ -51,7 +51,9 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
   const previewClosed = closedPreviewKey === previewKey
   const unavailablePreview = useCallback((text) => { setClosedPreviewKey(previewKey); setError(text) }, [previewKey])
   const visibleInspection = !workspace || inspection?.documentId === currentDocument?.document_id ? inspection : null
-  const active = documents.filter((d) => ['QUEUED', 'PROCESSING'].includes(d.extraction_status)).map((d) => `${d.document_id}:${d.version_id}`).join(',')
+  const active = documents.filter((d) => ['QUEUED', 'PROCESSING'].includes(d.extraction_status)
+    || (d.extraction_status === 'EXTRACTED' && (['NOT_STARTED', 'QUEUED', 'RUNNING'].includes(d.indexing_status) || d.indexing_retry_pending)))
+    .map((d) => `${d.document_id}:${d.version_id}`).join(',')
   useEffect(() => {
     if (!active) return
     const controller = new AbortController()
@@ -166,11 +168,16 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
     </form>}
     {error && <p className="error-banner" role="alert">{error}</p>}
     {loading ? <p role="status">Đang tải học liệu…</p> : !canManage && documents.length === 0 && <p>Chưa có học liệu.</p>}
+    {workspace && !canManage && !loading && currentDocument && <h2 className="session-student-material-title" title={currentDocument.title}>{currentDocument.title}</h2>}
     {workspace && !draftId && <div className="session-pdf-preview" aria-label="Bản xem trước tài liệu">{previewAvailable && !previewClosed ? <PdfViewer key={previewKey} document={currentDocument} preferCurrent={canManage} annotatable showFeedback={!canManage} hideHeader={!canManage} onRename={canManage ? rename : undefined} onClose={() => setClosedPreviewKey(previewKey)} onUnavailable={unavailablePreview} /> : <div className="session-pdf-empty"><FileText size={44} /><h3>{canManage ? 'Bản xem trước tài liệu' : 'Học liệu chưa sẵn sàng'}</h3><p>{!canManage ? 'Vui lòng tải lại hoặc liên hệ với giáo viên' : currentDocument ? 'Nhấn Xem PDF khi bản xem đã sẵn sàng.' : 'Tải PDF lên để xem tài liệu tại đây.'}</p></div>}</div>}
     {workspace && !canManage && !loading && currentDocument && <MaterialActions key={previewKey} document={currentDocument} downloadOnly />}
     {!(workspace && !canManage) && <div className="materials-list">{(workspace ? documents.filter((document) => document.document_id === currentDocument?.document_id) : documents).map((document) => <article key={document.document_id} className="material-row">
       <h3>{document.title}</h3><p>{document.file_name || ''}{document.page_count ? ` · ${document.page_count} trang` : ''}</p>
       <div className="material-status-line"><strong role="status">{LABELS[document.extraction_status] || 'Chưa xử lý'}</strong>{canManage && ['EXTRACTED','READY'].includes(document.extraction_status) && <button className="outline-button" type="button" disabled={pending || loading} onClick={() => inspect(document)}>Kiểm tra trích xuất</button>}</div>
+      {document.rag_ready && <p role="status">Sẵn sàng cho trợ lý AI</p>}
+      {document.extraction_status === 'EXTRACTED' && ['NOT_STARTED', 'QUEUED', 'RUNNING'].includes(document.indexing_status) && <p role="status">Đang chuẩn bị học liệu cho trợ lý AI…</p>}
+      {document.indexing_status === 'FAILED' && <p role="status">Chưa thể chuẩn bị học liệu cho trợ lý AI. Bản xem PDF vẫn sử dụng được.</p>}
+      {canManage && document.indexing_status === 'FAILED' && <button className="outline-button" type="button" disabled={pending || loading} onClick={() => retry(document)}>Chuẩn bị lại cho AI</button>}
       {document.error_code && <p>{ERRORS[document.error_code] || 'Không thể trích xuất tài liệu.'}</p>}
       {canManage && document.extraction_status === 'FAILED' && <button className="outline-button" type="button" disabled={pending || loading} onClick={() => retry(document)}>Thử xử lý lại</button>}
       {canManage && ['EXTRACTED','READY'].includes(document.extraction_status) && document.watermark_status!=='READY' && <button className="outline-button" type="button" disabled={pending || loading} onClick={()=>retry(document)}>Tạo lại bản xem</button>}

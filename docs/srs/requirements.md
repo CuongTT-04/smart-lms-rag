@@ -98,10 +98,10 @@ Kiểm tra tham chiếu nguồn tồn tại trong FR-21 là kiểm tra cấu tr�
 
 | Mã | Yêu cầu | Tiêu chí chấp nhận | Use case | Ưu tiên |
 |---|---|---|---|---|
-| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu quiz một lựa chọn đúng hoặc tự luận/nộp file, đề, hạn/thời lượng, chính sách trợ giúp và công bố. Đáp án/rubric riêng tách khỏi dữ liệu học viên; đề đã có lượt làm giữ nguyên phiên bản. | UC-18 | P1 |
-| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Mỗi học viên một lượt quiz, chỉ bắt đầu khi có quyền và còn thời gian. Lượt gắn phiên bản đề; server kiểm soát hạn/thời lượng và chốt câu trả lời đã lưu khi hết thời gian. | UC-19 | P1 |
+| FR-26 | Giáo viên phải có thể tạo và quản lý quiz/bài tập trong khóa học phụ trách. | Lưu quiz một hoặc nhiều đáp án theo từng câu hoặc tự luận/nộp file, đề, hạn/thời lượng, chính sách trợ giúp và công bố. Đáp án/rubric riêng tách khỏi dữ liệu học viên; đề đã có lượt làm giữ nguyên phiên bản. | UC-18 | P1 |
+| FR-27 | Hệ thống phải kiểm tra điều kiện và quản lý lượt làm quiz. | Ôn tập cho làm lại trước hạn; Kiểm tra chỉ một lượt, yêu cầu fullscreen khi bắt đầu/tiếp tục. Chỉ bắt đầu khi có quyền và còn thời gian. Lượt gắn phiên bản đề; server kiểm soát hạn/thời lượng và chốt câu trả lời đã lưu khi hết thời gian. | UC-19 | P1 |
 | FR-28 | Hệ thống phải nhận bài quiz và tự chấm theo đáp án của phiên bản đề tương ứng. | Lưu câu trả lời/điểm nhất quán; yêu cầu nộp lặp không tạo điểm khác nhau cho cùng lượt; chỉ trả kết quả/đáp án theo thời điểm được công bố. | UC-19 | P1 |
-| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Nhận một lượt nộp bằng văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB trong hạn. Lưu người nộp, phiên bản bài và thời điểm server; không nhận nộp muộn/nộp lại, gửi lặp cùng thao tác không tạo bản ghi trùng. | UC-20 | P1 |
+| FR-29 | Học viên phải có thể nộp bài tự luận hoặc file cho bài tập được giao. | Nhận văn bản hoặc một file PDF/PNG/JPEG tối đa 20 MiB trong hạn. Ôn tập cho chỉnh sửa/nộp lại; Kiểm tra chỉ một lần nộp chính thức sau dialog xác nhận. Lưu người nộp, phiên bản bài và thời điểm server; không nhận nộp muộn; Kiểm tra không nộp lại, Ôn tập giữ lịch sử mọi lần nộp; gửi lặp cùng thao tác không tạo bản ghi trùng. | UC-20 | P1 |
 | FR-30 | Giáo viên phải có thể chấm và phản hồi bài nộp trong lớp phụ trách. | Giáo viên lớp phụ trách chấm tự luận thang 0–10, ghi nhận xét, lưu và công bố. Sửa điểm có dấu vết; AI không quyết định điểm chính thức. | UC-21 | P1 |
 | FR-31 | Học viên phải có thể xem điểm và phản hồi cá nhân đã được công bố. | Chỉ hiển thị kết quả của đúng học viên; chưa chấm/chưa công bố có trạng thái riêng; không dùng điểm 0 để thay cho kết quả còn thiếu. | UC-22 | P1 |
 
@@ -332,3 +332,17 @@ Phần phân tích xác định 42 yêu cầu chức năng sản phẩm (FR-01�
 Danh mục và ma trận truy vết đã được sử dụng để hoàn thiện phạm vi MVP và SRS phiên bản 1.2. Ở bước tiếp theo, nhóm thiết kế và triển khai theo các yêu cầu được chọn, kiểm chứng mục tiêu định lượng trên development và đánh giá bằng test độc lập. Quyền truy cập, dữ liệu học tập và khả năng xử lý lỗi là những điều kiện phải được kiểm tra trong các luồng đã chọn.
 
 Kiểm chứng chính sách học liệu/watermark bằng AC-10, MVP-11 và FIN-10. Hai yêu cầu FR-37–FR-38 thuộc MVP với PDF văn bản; bản cuối mở rộng cho các định dạng đã cam kết. Các kiểm soát NFR-01/NFR-16 áp dụng cả file gốc, bản trình bày, link và cache.
+
+
+### Cập nhật phạm vi Bài tập ngày 17/10/2026
+
+Chế độ chính thức là **Ôn tập / Kiểm tra**. Ôn tập cho làm lại quiz và chỉnh sửa/nộp lại tự luận trước hạn, có phần gợi ý/AI. Kiểm tra chỉ một lượt quiz hoặc một lần nộp tự luận chính thức, có dialog xác nhận không thể chỉnh sửa/nộp lại. Mọi lượt giữ lịch sử; lượt mới không kế thừa điểm/nhận xét của lượt cũ. Đề đã có lượt làm giữ nguyên; cần thay đổi phải tạo bài mới.
+
+Kiểm tra yêu cầu fullscreen khi bắt đầu/tiếp tục và ghi sự kiện chuyển tab/ẩn trang/thoát fullscreen. Hệ thống chỉ cảnh báo và ghi log với thời điểm nhận ở server; giáo viên tự quyết định xử lý, ghi nhận xét nội bộ hoặc điều chỉnh điểm có audit. Không tự động nộp bài, khóa bài, trừ điểm hoặc kết luận gian lận do vi phạm. Fullscreen là yêu cầu của giao diện, không phải cơ chế chống gian lận tuyệt đối. Quiz hết thời lượng/hạn chung vẫn chốt theo dữ liệu đã lưu; đây là quy tắc thời gian, không phải hình phạt vi phạm.
+
+Dashboard và xuất Excel (.xlsx) có ở **cả hai chế độ**: tổng hợp học viên/trạng thái/điểm, lịch sử mọi lượt, tiến độ nộp, phân bố điểm, bài nộp theo ngày và tỷ lệ đúng từng câu quiz. Mặc định điểm/thống kê dùng lượt đã nộp mới nhất của mỗi học viên; bản nháp sửa tiếp không thay điểm lượt đã nộp cho đến khi nộp lượt mới. Excel theo đúng bộ lọc tìm kiếm/trạng thái, gồm Tổng hợp, Chi tiết lượt làm, Thống kê; Kiểm tra thêm Vi phạm và ghi nhận xử lý của giáo viên. Chỉ giáo viên quản lý được xem/xuất dữ liệu lớp.
+
+Trạng thái triển khai AI: chưa có provider sinh câu trả lời. Ôn tập cung cấp gợi ý nhập tay và thông báo AI chưa kết nối; API trợ giúp Kiểm tra trả 403. Không mô phỏng gợi ý nhập tay thành kết quả AI.
+
+
+Cập nhật kiểu trắc nghiệm 17/10/2026: giáo viên chọn **Một đáp án / Nhiều đáp án** riêng cho từng câu trong video và quiz. Thuộc tính `multiple` là cấu hình tường minh, không suy ra từ số đáp án đúng. Một đáp án dùng radio tròn, cần đúng một đáp án đúng; Nhiều đáp án dùng checkbox vuông, cho cấu hình từ một đáp án đúng trở lên. Chấm theo tập lựa chọn khớp toàn bộ đáp án, không cho điểm một phần. Dashboard/Excel dùng cùng quy tắc và hiển thị đầy đủ các lựa chọn đã chọn.

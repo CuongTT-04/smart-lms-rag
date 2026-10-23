@@ -20,6 +20,7 @@ function RosterRecords({ course, room, status, onMembersChanged }) {
   const [search, setSearch] = useState('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [warning, setWarning] = useState('')
   const [pending, setPending] = useState(false)
   const [confirm, setConfirm] = useState(null)
   const load = useCallback((signal) => listClassroomEnrollments(course.id, room.id, status, signal), [course.id, room.id, status])
@@ -32,19 +33,19 @@ function RosterRecords({ course, room, status, onMembersChanged }) {
   }, [load])
   async function refresh() {
     setPending(true); setError('')
-    try { setRecords(await load()) } catch (err) { setError(courseErrorMessage(err)) }
+    try { setRecords(await load()); setWarning('') } catch (err) { setError(courseErrorMessage(err)) }
     finally { setPending(false) }
   }
   async function withdraw() {
     const target = confirm
-    setPending(true); setError(''); setNotice('')
+    setPending(true); setError(''); setNotice(''); setWarning('')
     try {
       await revokeClassroomEnrollment(course.id, room.id, target.id)
       setConfirm(null)
       setRecords((current) => current.flatMap((item) => item.id !== target.id ? [item] : status && status !== 'WITHDRAWN' ? [] : [{ ...item, status: 'WITHDRAWN' }]))
       setNotice(`Đã thu hồi ghi danh của ${target.student.full_name || target.student.username} tại lớp ${room.name}.`)
-      try { setRecords(await load()); await onMembersChanged() }
-      catch { setError('Đã thu hồi thành công nhưng chưa tải lại được dữ liệu. Vui lòng làm mới.') }
+      try { setRecords(await load()); await onMembersChanged?.() }
+      catch { setWarning('Chưa tải lại được dữ liệu. Vui lòng làm mới.') }
     } catch (err) { setError(courseErrorMessage(err)); setConfirm(null) }
     finally { setPending(false) }
   }
@@ -53,6 +54,7 @@ function RosterRecords({ course, room, status, onMembersChanged }) {
   return <>
     <div className="roster-toolbar"><label className="search-field"><Search size={18} /><span className="sr-only">Tìm học viên trong lớp</span><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tên, tài khoản hoặc email..." /></label><span>{records === null ? '' : `${filtered.length} học viên`}</span><button type="button" className="icon-button" title="Làm mới học viên" aria-label="Làm mới học viên của lớp" disabled={pending} onClick={refresh}>{pending ? <LoaderCircle className="spin" size={18} /> : <RefreshCw size={18} />}</button></div>
     {error && <div className="error-banner" role="alert">{error}</div>}
+    {warning && <div className="warning-banner" role="status">{warning}</div>}
     {notice && <div className="success-banner" role="status"><Check size={18} />{notice}</div>}
     {records === null ? <p className="enrollment-empty">{error ? 'Chưa tải được danh sách học viên.' : 'Đang tải học viên...'}</p> : <div className="enrollment-records">
       {filtered.map((item) => <article className="enrollment-row roster-row" key={item.id}>

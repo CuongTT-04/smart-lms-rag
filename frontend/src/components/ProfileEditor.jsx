@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AlertCircle, Check, CircleUserRound, LoaderCircle, LogOut, Save, ShieldCheck, Trash2, Upload, X } from 'lucide-react'
+import { AlertCircle, Check, Info, CircleUserRound, LoaderCircle, LogOut, Save, ShieldCheck, Trash2, Upload, X } from 'lucide-react'
 import AuthField from './AuthField'
 import UserAvatar from './UserAvatar'
 import { updateProfile, uploadAvatar, profileErrors } from '../services/profile.service'
@@ -21,6 +21,7 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
   const [fields, setFields] = useState({})
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [noticeVariant, setNoticeVariant] = useState('success')
   const [pending, setPending] = useState('')
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState('')
@@ -82,7 +83,7 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
     } else {
       const original = draftOf(user)
       const changed = Object.fromEntries(names.filter((name) => draft[name] !== original[name]).map((name) => [name, draft[name]]))
-      if (!Object.keys(changed).length) { setNotice('Chưa có thay đổi để lưu.'); return }
+      if (!Object.keys(changed).length) { setNoticeVariant('info'); setNotice('Chưa có thay đổi để lưu.'); return }
       if (tab === 'identity') {
         if ('username' in changed && !draft.username.trim()) errors.username = 'Vui lòng nhập tên đăng nhập.'
         if ('full_name' in changed && !draft.full_name.trim()) errors.full_name = 'Vui lòng nhập họ và tên.'
@@ -99,12 +100,12 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
     try {
       const result = await updateProfile(changes)
       setPasswords(emptyPasswords())
-      if (result.requires_login) onSessionExpired?.('Đổi mật khẩu thành công. Vui lòng đăng nhập lại.')
+      if (result.requires_login) onSessionExpired?.('Đổi mật khẩu thành công. Vui lòng đăng nhập lại.', 'success')
       else {
         onUserUpdated?.(result.user)
         const updated = draftOf(result.user)
         setDraft((previous) => ({ ...previous, ...Object.fromEntries(names.map((name) => [name, updated[name]])) }))
-        setNotice('Đã lưu thay đổi.')
+        setNoticeVariant('success'); setNotice('Đã lưu thay đổi.')
       }
     } catch (failure) { failed(failure) }
     finally { busy.current = false; setPending('') }
@@ -132,7 +133,7 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
       const updated = remove ? (await updateProfile({ avatar_url: '' })).user : await uploadAvatar(file)
       onUserUpdated?.(updated)
       setDraft((previous) => ({ ...previous, avatar_url: updated.avatar_url || '' }))
-      cancelFile(); setNotice(remove ? 'Đã xóa ảnh đại diện.' : 'Đã cập nhật ảnh đại diện.')
+      cancelFile(); setNoticeVariant('success'); setNotice(remove ? 'Đã xóa ảnh đại diện.' : 'Đã cập nhật ảnh đại diện.')
     } catch (failure) { failed(failure) }
     finally { busy.current = false; setPending('') }
   }
@@ -166,7 +167,7 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
     {file && <p className="avatar-filename">{file.name}</p>}
     {fields.avatar && <p className="field-error" role="alert">{fields.avatar}</p>}
     {error && <div className="error-banner" role="alert"><AlertCircle size={18} />{error}</div>}
-    {notice && <div className="success-banner profile-notice" role="status"><Check size={18} />{notice}</div>}
+    {notice && <div className={`${noticeVariant}-banner profile-notice`} role="status">{noticeVariant === 'success' ? <Check size={18} /> : <Info size={18} />}{notice}</div>}
     <div className="profile-tabs" role="tablist" aria-label="Quản lý tài khoản">
       {[['identity', 'Thông tin chung'], ...(roleFields.length ? [['profile', 'Hồ sơ']] : []), ['security', 'Bảo mật']].map(([key, label]) => <button key={key} type="button" role="tab" id={`tab-${key}`} aria-selected={tab === key} aria-controls="profile-panel" disabled={disabled} onClick={() => switchTab(key)}>{label}</button>)}
     </div>

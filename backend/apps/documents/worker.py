@@ -39,7 +39,7 @@ def lock_document_for_job(job_id):
 
 def recover_expired_jobs():
     count = 0
-    candidates = list(IngestionJob.objects.filter(status="RUNNING", lease_expires_at__lt=timezone.now()).values_list("pk",flat=True))
+    candidates = list(IngestionJob.objects.filter(job_type="EXTRACT", status="RUNNING", lease_expires_at__lt=timezone.now()).values_list("pk",flat=True))
     for job_id in candidates:
         with transaction.atomic():
             lock_document_for_job(job_id)
@@ -55,7 +55,7 @@ def recover_expired_jobs():
 
 def claim_job():
     recover_expired_jobs()
-    for job_id in IngestionJob.objects.filter(status="QUEUED").order_by("created_at").values_list("pk", flat=True)[:20]:
+    for job_id in IngestionJob.objects.filter(job_type="EXTRACT", status="QUEUED").order_by("created_at").values_list("pk", flat=True)[:20]:
         with transaction.atomic():
             lock_document_for_job(job_id)
             now = timezone.now(); token = uuid.uuid4()

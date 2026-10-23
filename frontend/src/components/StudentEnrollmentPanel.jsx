@@ -27,6 +27,7 @@ export default function StudentEnrollmentPanel({ onCoursesChanged, onOpenClass }
   const [codeError, setCodeError] = useState('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [warning, setWarning] = useState('')
   const [busy, setBusy] = useState('')
   const [tab, setTab] = useState('pending')
   const [search, setSearch] = useState('')
@@ -55,7 +56,7 @@ export default function StudentEnrollmentPanel({ onCoursesChanged, onOpenClass }
   async function act(key, action) {
     if (busyRef.current) return
     busyRef.current = true
-    setBusy(key); setError(''); setNotice(''); setCodeError('')
+    setBusy(key); setError(''); setNotice(''); setWarning(''); setCodeError('')
     try {
       if (action) await action()
       try {
@@ -63,7 +64,7 @@ export default function StudentEnrollmentPanel({ onCoursesChanged, onOpenClass }
         await onCoursesChanged?.()
         if (!action) setNotice('Đã cập nhật danh sách.')
       } catch (err) {
-        setError(action ? 'Thao tác đã thành công nhưng chưa tải lại được dữ liệu. Vui lòng làm mới.' : courseErrorMessage(err))
+        if (action) setWarning('Chưa tải lại được dữ liệu. Vui lòng làm mới.'); else setError(courseErrorMessage(err))
       }
     } catch (err) {
       if (key === 'join' && err.data?.class_code) setCodeError(courseErrorMessage(err))
@@ -98,6 +99,7 @@ export default function StudentEnrollmentPanel({ onCoursesChanged, onOpenClass }
       <details className="join-message"><summary><MessageSquare size={16} /> Lời nhắn cho giáo viên (Tùy chọn) <ChevronDown size={16} /></summary><label className="sr-only" htmlFor="join-message">Lời nhắn cho giáo viên</label><textarea id="join-message" rows={3} maxLength={2000} disabled={!!busy} value={message} onChange={(e) => setMessage(e.target.value)} /><span className="join-character-count">{message.length}/2000</span></details>
     </form>
     {error && <div className="error-banner join-feedback" role="alert">{error}</div>}
+    {warning && <div className="warning-banner" role="status">{warning}</div>}
     {notice && <div className="success-banner join-feedback" role="status"><Check size={18} />{notice}</div>}
     <div className="join-tabs" role="tablist" aria-label="Theo dõi tham gia lớp">{TABS.map(({ id, label, icon: Icon }, index) => <button key={id} ref={(node) => { tabRefs.current[index] = node }} id={`join-tab-${id}`} type="button" role="tab" aria-selected={tab === id} aria-controls="join-tab-panel" tabIndex={tab === id ? 0 : -1} onClick={() => selectTab(id)} onKeyDown={(event) => {
       const target = event.key === 'ArrowRight' ? (index + 1) % TABS.length : event.key === 'ArrowLeft' ? (index + TABS.length - 1) % TABS.length : event.key === 'Home' ? 0 : event.key === 'End' ? TABS.length - 1 : null

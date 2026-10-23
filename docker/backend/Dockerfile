@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libglib2.0-0 li
     && pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
     && useradd --create-home --uid 1000 app \
-    && mkdir -p /app/media /app/staticfiles /app/.private/documents /app/.private/announcements /home/app/.cache \
+    && mkdir -p /app/media /app/staticfiles /app/.private/documents /app/.private/announcements /home/app/.cache/huggingface \
     && chown -R app:app /app /home/app/.cache
 
 COPY --chown=app:app backend/ /app/backend/
@@ -23,4 +23,4 @@ USER app
 EXPOSE 8000
 
 ENTRYPOINT ["smartlms-entrypoint"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "--access-log", "/dev/null", "config.asgi:application"]

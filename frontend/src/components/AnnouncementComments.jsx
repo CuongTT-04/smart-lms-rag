@@ -20,7 +20,7 @@ function threadOrder(rows) {
   return ordered
 }
 
-export default function AnnouncementComments({ courseId, roomId, announcementId, moderationRevision = 0, onModerationChange }) {
+export default function AnnouncementComments({ courseId, roomId, announcementId, moderationRevision = 0, onModerationChange, focusCommentId }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [revision, setRevision] = useState(0)
@@ -35,6 +35,15 @@ export default function AnnouncementComments({ courseId, roomId, announcementId,
   const menuBox = useRef(null)
   const menuTrigger = useRef(null)
   const fieldId = useId()
+  const focusedComment = useRef(null)
+  useEffect(() => {
+    if (!focusCommentId || !data || focusedComment.current === focusCommentId) return
+    const timer = setTimeout(() => {
+      const node = document.getElementById(`comment-${focusCommentId}`)
+      if (node) { focusedComment.current = focusCommentId; node.scrollIntoView?.({ block: 'center', behavior: 'smooth' }) }
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [focusCommentId, data])
 
   useEffect(() => {
     let controller
@@ -147,7 +156,7 @@ export default function AnnouncementComments({ courseId, roomId, announcementId,
       {data.can_manage && data.muted_students.length > 0 && <details className="comment-muted-list"><summary>Học viên đang mute ({data.muted_students.length})</summary>
         {data.muted_students.map((person) => <div key={person.id}><span>{person.name}</span><button type="button" className="comment-text-button" aria-label={`Bỏ mute ${person.name}`} disabled={busy} onClick={() => mute(person.id, person.name, false)}><Volume2 size={16} />Bỏ mute</button></div>)}
       </details>}
-      <div className="comment-list">{threadOrder(data.results).map(({ item, nested }) => <article key={item.id} className={`comment-row${nested ? ' comment-reply' : ''}`} aria-label={`Bình luận của ${item.author_name}`}>
+      <div className="comment-list">{threadOrder(data.results).map(({ item, nested }) => <article id={`comment-${item.id}`} key={item.id} className={`comment-row${focusCommentId === item.id ? " notification-focus" : ""}${nested ? ' comment-reply' : ''}`} aria-label={`Bình luận của ${item.author_name}`}>
         <span className="comment-avatar" aria-hidden="true">{item.author_name.split(/\s+/).filter(Boolean).slice(-2).map((word) => word[0]).join('').toUpperCase()}</span>
         <div className="comment-body"><div className="comment-byline"><strong>{item.author_name}</strong>{item.author_role === 'TEACHER' && <span className="comment-teacher">Giáo viên</span>}<time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' })}</time>{data.can_manage && item.author_muted && <span className="comment-mute-badge"><VolumeX size={12} />Đang mute</span>}</div>
           {nested && <span className="comment-reply-label">Trả lời {data.results.find((parent) => parent.id === item.parent_id)?.author_name}</span>}

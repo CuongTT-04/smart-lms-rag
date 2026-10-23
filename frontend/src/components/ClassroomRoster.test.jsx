@@ -69,7 +69,7 @@ describe('classroom roster', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Thu hồi ghi danh/ }))
     listClassroomEnrollments.mockRejectedValue({ status: 0 })
     await userEvent.click(screen.getByRole('button', { name: 'Xác nhận thu hồi' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Đã thu hồi thành công')
+    expect(await screen.findByText('Chưa tải lại được dữ liệu. Vui lòng làm mới.')).toHaveClass('warning-banner')
     expect(screen.queryByRole('button', { name: /Thu hồi ghi danh/ })).not.toBeInTheDocument()
   })
   it('supports retry after an initial loading error', async () => {

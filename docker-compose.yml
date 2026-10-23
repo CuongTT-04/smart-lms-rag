@@ -1,12 +1,23 @@
 name: smart-lms-rag
 
 services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
   database:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-smart_lms}
       POSTGRES_USER: ${POSTGRES_USER:-smart_lms}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smart-lms-local-only}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,6 +35,7 @@ services:
       dockerfile: docker/backend/Dockerfile
     environment: &backend-environment
       DJANGO_SETTINGS_MODULE: config.settings.docker
+      NOTIFICATION_REDIS_URL: redis://redis:6379/0
       DJANGO_DEBUG: "true"
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-smart-lms-docker-local-only-change-before-production}
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
@@ -49,6 +61,14 @@ services:
       DB_PORT: "5432"
       DOCUMENTS_STORAGE_ROOT: /app/.private/documents
       ANNOUNCEMENTS_STORAGE_ROOT: /app/.private/announcements
+      AI_GENERATOR: ${AI_GENERATOR:-}
+      AI_GENERATION_CONFIG: ${AI_GENERATION_CONFIG:-}
+      AI_EMBEDDING_CONFIG: ${AI_EMBEDDING_CONFIG:-}
+      AI_INDEX_DIRECTORY: ${AI_INDEX_DIRECTORY:-}
+      AI_CATALOG_MANIFESTS: ${AI_CATALOG_MANIFESTS:-}
+      AI_INFERENCE_URL: ${AI_INFERENCE_URL:-}
+      AI_INFERENCE_TOKEN: ${AI_INFERENCE_TOKEN:-}
+      HF_HOME: /home/app/.cache/huggingface
     ports:
       - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:
@@ -57,7 +77,10 @@ services:
       - media_data:/app/media
       - documents_data:/app/.private/documents
       - announcements_data:/app/.private/announcements
+      - embedding_cache:/home/app/.cache/huggingface
     depends_on:
+      redis:
+        condition: service_healthy
       database:
         condition: service_healthy
         restart: true
@@ -80,6 +103,22 @@ services:
       - ./backend:/app/backend
       - documents_data:/app/.private/documents
       - docling_cache:/home/app/.cache
+      - embedding_cache:/home/app/.cache/huggingface
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  indexing-worker:
+    image: smart-lms-rag-backend:latest
+    pull_policy: never
+    environment: *backend-environment
+    entrypoint: ["python", "manage.py", "run_indexing_worker"]
+    command: ["--poll-seconds", "5"]
+    volumes:
+      - ./backend:/app/backend
+      - documents_data:/app/.private/documents
+      - embedding_cache:/home/app/.cache/huggingface
     depends_on:
       backend:
         condition: service_healthy
@@ -109,3 +148,4 @@ volumes:
   documents_data:
   docling_cache:
   announcements_data:
+  embedding_cache:

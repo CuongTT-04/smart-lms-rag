@@ -1,0 +1,58 @@
+import io
+import json
+import os
+from unittest.mock import patch
+from urllib.error import HTTPError
+from django.test import SimpleTestCase
+from apps.ai.remote import generate_answer, NoRedirect
+from apps.documents.exceptions import DocumentError
+
+
+class RemoteTests(SimpleTestCase):
+    def call(self):
+        return generate_answer(question='Q', mode='qa', contexts=[{'source_id': 'S1'}],
+                               exercise=None, config={'timeout_seconds': 30})
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_https_authenticated_request_and_source_validation(self, build):
+        def output(used):
+            return io.BytesIO(json.dumps({'output': {'references': [{'source_id': 'S1'}]},
+                                         'used_source_ids': used}).encode())
+        build.return_value.open.return_value = output(['S1'])
+        self.assertEqual(self.call()['references'][0]['source_id'], 'S1')
+        request = build.return_value.open.call_args.args[0]
+        self.assertEqual(request.get_header('Authorization'), 'Bearer ' + 'x'*40)
+        build.return_value.open.return_value = output([])
+        with self.assertRaises(DocumentError):
+            self.call()
+        self.assertIsNone(NoRedirect().redirect_request(None, None, None, None, None, None))
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'http://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_plaintext_rejected_without_network(self, build):
+        with self.assertRaises(DocumentError):
+            self.call()
+        build.assert_not_called()
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_network_failure_is_sanitized(self, build):
+        build.return_value.open.side_effect = RuntimeError('private token/prompt')
+        with self.assertRaises(DocumentError) as error:
+            self.call()
+        self.assertEqual(error.exception.code, 'GENERATION_UNAVAILABLE')
+        self.assertNotIn('private', str(error.exception))
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL':'https://example.test','AI_INFERENCE_TOKEN':'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_allowlisted_model_errors_survive_transport_without_private_details(self, build):
+        for status,code,expected in [(503,'OUTPUT_LIMIT_REACHED','OUTPUT_LIMIT_REACHED'),
+                (503,'GENERATION_TIMEOUT','GENERATION_TIMEOUT'),(503,'OUT_OF_MEMORY','OUT_OF_MEMORY'),
+                (429,'GENERATION_BUSY','GENERATION_BUSY'),(409,'CONFIG_MISMATCH','GENERATION_CONFIG_MISMATCH'),
+                (503,'PRIVATE_unknown','GENERATION_UNAVAILABLE'),(503,[], 'GENERATION_UNAVAILABLE')]:
+            body=io.BytesIO(json.dumps({'code':code,'detail':'PRIVATE TOKEN'}).encode())
+            build.return_value.open.side_effect=HTTPError('https://example.test/generate',status,'error',{},body)
+            with self.assertRaises(DocumentError) as caught:self.call()
+            self.assertEqual(caught.exception.code,expected)
+            self.assertNotIn('PRIVATE',str(caught.exception))

@@ -7,6 +7,24 @@ import CourseDocuments from './CourseDocuments'
 
 describe('course materials', () => {
   beforeEach(() => { vi.clearAllMocks();listDocuments.mockResolvedValue([]) })
+  it('keeps polling a retryable indexing failure until AI is ready', async () => {
+    vi.useFakeTimers()
+    try {
+      listDocuments.mockResolvedValue([{document_id:'d1',version_id:'v1',title:'Lesson',
+        extraction_status:'EXTRACTED',indexing_status:'FAILED',indexing_retry_pending:true}])
+      documentStatus.mockResolvedValueOnce({document_id:'d1',version_id:'v1',extraction_status:'EXTRACTED',
+        indexing_status:'QUEUED',indexing_retry_pending:false}).mockResolvedValue({document_id:'d1',version_id:'v1',
+        extraction_status:'READY',indexing_status:'SUCCEEDED',rag_ready:true})
+      const view=render(<CourseDocuments courseId="course" canManage />)
+      await act(async () => { await Promise.resolve() })
+      await act(async () => { await vi.advanceTimersByTimeAsync(4000) })
+      expect(screen.getByText('Sẵn sàng cho trợ lý AI')).toBeVisible()
+      const calls=documentStatus.mock.calls.length
+      await act(async () => { await vi.advanceTimersByTimeAsync(6000) })
+      expect(documentStatus).toHaveBeenCalledTimes(calls)
+      view.unmount()
+    } finally { vi.useRealTimers() }
+  })
   it('ignores a status response carrying a different version identity', async () => {
     vi.useFakeTimers()
     try {

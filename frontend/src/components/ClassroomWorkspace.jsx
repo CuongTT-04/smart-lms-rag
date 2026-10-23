@@ -25,6 +25,7 @@ export default function ClassroomWorkspace({ course, initialRoom, onBack, onCour
   }, [copiedCode])
   const [tab, setTab] = useHistoryState(`classroom.${initialRoom.id}.tab`, 'news')
   const [selectedId, setSelected] = useHistoryState(`classroom.${initialRoom.id}.session`, null)
+  const [notificationFocus] = useHistoryState(`classroom.${initialRoom.id}.focus`, null)
   const selected = sessions.find((item) => item.id === selectedId)
   const [editing, setEditing] = useState(false)
   const [removeTarget, setRemoveTarget] = useState(null)
@@ -86,7 +87,7 @@ export default function ClassroomWorkspace({ course, initialRoom, onBack, onCour
       <div className="class-content-toolbar">{canManage && <button type="button" className="solid-button" disabled={loading || creating} onClick={addSession}>{creating ? <LoaderCircle size={18} className="spin" /> : <Plus size={18} />}{creating ? 'Đang tạo...' : 'Thêm mới'}</button>}<button type="button" className="icon-button" aria-label="Tải lại buổi học" disabled={loading || creating} onClick={() => { setLoading(true); setError(''); setRevision((value) => value + 1) }}><RefreshCw size={18} /></button></div>
       {loading ? <p className="class-loading"><LoaderCircle className="spin" size={20} />Đang tải buổi học...</p> : sessions.length ? <div className="class-session-rows">{sessions.map((session, index) => <article className="class-session-item" key={session.id}><button type="button" className="class-session-row" onClick={() => setSelected(session.id)}><span className={`class-session-icon tone-${index % 3}`}><BookOpen size={25} /></span><span className="class-session-summary"><strong>{session.title || 'Buổi học chưa đặt tên'}{session.is_draft && <em className="class-session-draft-tag"> · Bản nháp</em>}</strong><span>Buổi {String(index + 1).padStart(2, '0')}<span>·</span>{session.material_count} học liệu</span></span><ChevronRight size={20} /></button>{canManage && <button type="button" className="class-session-delete" aria-label={`Xóa buổi học ${session.title || 'Buổi học chưa đặt tên'}`} title="Xóa buổi học" disabled={creating || deleting} onClick={() => {setRemoveTarget(session);setDeleteError('')}}><Trash2 size={20} /></button>}</article>)}</div> : !error && <div className="class-session-empty"><span><BookOpen size={34} /></span><h3>Buổi học đầu tiên bắt đầu từ đây</h3><p>Các buổi học và học liệu của lớp sẽ hiển thị tại đây.</p></div>}
     </section>}
-    {tab === 'news' && <ClassroomAnnouncements courseId={course.id} roomId={room.id} canManage={canManage} />}
+    {tab === 'news' && <ClassroomAnnouncements courseId={course.id} roomId={room.id} canManage={canManage} notificationFocus={notificationFocus} />}
     {tab === 'results' && <section className="class-session-empty class-tab-placeholder" aria-labelledby="class-results-title"><span><BarChart3 size={32} /></span><h2 id="class-results-title">Kết quả học tập</h2><p>Kết quả các bài làm trong buổi học sẽ hiển thị tại đây. Chức năng sẽ được triển khai sau.</p></section>}
     {tab === 'people' && !canManage && <StudentClassroomPeople key={room.id} courseId={course.id} roomId={room.id} />}
     {tab === 'people' && canManage && <ClassroomRoster course={course} room={room} onBack={() => setTab('sessions')} onMembersChanged={refreshRoster} />}

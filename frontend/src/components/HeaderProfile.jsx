@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ArrowRight, CircleUserRound, Mail, Phone } from 'lucide-react'
 import UserAvatar from './UserAvatar'
+import NotificationBell from './notifications/NotificationBell'
 
 export default function HeaderProfile({ user, onAccount }) {
   const [open, setOpen] = useState(false)
@@ -54,7 +55,7 @@ export default function HeaderProfile({ user, onAccount }) {
     onAccount()
   }
 
-  return <div ref={root} className="header-profile" onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }}
+  return <div className="header-profile-actions"><NotificationBell /><div ref={root} className="header-profile" onPointerEnter={(event) => { if (event.pointerType === 'mouse') show() }}
     onPointerLeave={(event) => { if (event.pointerType === 'mouse') leave() }} onKeyDown={keyboard}
     onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}>
     <button ref={trigger} className="header-avatar-button" type="button" aria-label="Xem hồ sơ của bạn" title="Hồ sơ của bạn"
@@ -73,5 +74,5 @@ export default function HeaderProfile({ user, onAccount }) {
       </div>
       <button ref={accountButton} className="header-profile-manage" type="button" onClick={manage}><CircleUserRound size={18} aria-hidden="true" /><span>Quản lý tài khoản</span><ArrowRight size={16} aria-hidden="true" /></button>
     </section>}
-  </div>
+  </div></div>
 }
