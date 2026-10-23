@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2, Maximize, Pause, Play, RotateCcw, Volume2 } from 'lucide-react'
 import { answerVideoQuestion, getSessionVideo, saveVideoProgress } from '../../services/video.service'
 import { courseErrorMessage } from '../../services/course.service'
@@ -17,6 +17,8 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState('')
+  const [noticeVariant, setNoticeVariant] = useState('info')
+  const showNotice = useCallback((text, variant = 'info') => { setNotice(text); setNoticeVariant(variant) }, [])
   const [error, setError] = useState('')
   const [completed, setCompleted] = useState(info.progress?.completed || false)
   const frontier = useRef(info.progress?.seekable_until ?? info.progress?.watched_until ?? info.progress?.position ?? 0)
@@ -95,7 +97,7 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
     gate.current = true
     video.current?.pause()
     move(item.start_time)
-    setError(''); setNotice('')
+    setError(''); showNotice('')
     try {
       await persist(item.start_time, true)
       if (alive.current) { setChoices([]); setText(''); attempt.current = null; setQuestion(item) }
@@ -116,7 +118,7 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
     const pending = firstCheckpoint(latest.current.questions, passed.current)
     const naturalLimit = clock.current.position + Math.max(1, (performance.now() - clock.current.time) / 1000 + 0.5)
     if (!canManage && !watched.current && time > Math.max(seekLimit(), naturalLimit)) {
-      move(clock.current.position); setNotice('Chỉ được tua trong phần đã xem. Hãy tiếp tục xem video để mở phần tiếp theo.'); return
+      move(clock.current.position); showNotice('Chỉ được tua trong phần đã xem. Hãy tiếp tục xem video để mở phần tiếp theo.', 'warning'); return
     }
     const observed = !canManage && pending ? Math.min(time, pending.start_time) : time
     frontier.current = Math.max(frontier.current, observed)
@@ -131,7 +133,7 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
     programmatic.current = false
     if (video.current.currentTime > seekLimit() + 0.05) {
       move(clock.current.position)
-      setNotice('Chỉ được tua trong phần đã xem, không được tua tiến đến phần chưa xem.')
+      showNotice('Chỉ được tua trong phần đã xem, không được tua tiến đến phần chưa xem.', 'warning')
     } else {
       clock.current = { position: video.current.currentTime, time: performance.now() }
       setPosition(video.current.currentTime); onCurrentTime?.(video.current.currentTime)
@@ -139,7 +141,7 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
   }
   function seek(target) {
     const limit = seekLimit()
-    if (Number(target) > limit + 0.05) { setNotice('Chỉ được tua trong phần đã xem, không được tua tiến đến phần chưa xem.'); return }
+    if (Number(target) > limit + 0.05) { showNotice('Chỉ được tua trong phần đã xem, không được tua tiến đến phần chưa xem.', 'warning'); return }
     const allowed = seekTarget(target, limit, info.duration, canManage || watched.current)
     video.current?.pause(); move(allowed)
     if (!canManage) persist(allowed, true).catch(recover)
@@ -148,7 +150,7 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
     if (answerLock.current || !question) return
     const target = Math.max(0, question.start_time - 10)
     setQuestion(null); gate.current = false
-    setNotice('Xem lại kiến thức rồi tiếp tục đến mốc câu hỏi.')
+    showNotice('Xem lại kiến thức rồi tiếp tục đến mốc câu hỏi.')
     seek(target)
   }
   function paused() {
@@ -180,13 +182,13 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
         attempt.current = null
         if (result.rewind_to != null) {
           setQuestion(null); gate.current = false; frontier.current = result.progress?.seekable_until ?? result.rewind_to; move(result.rewind_to)
-          setNotice(`Câu trả lời chưa đúng. Video quay lại ${formatVideoTime(result.rewind_to)} để bạn xem lại kiến thức.`)
+          showNotice(`Câu trả lời chưa đúng. Video quay lại ${formatVideoTime(result.rewind_to)} để bạn xem lại kiến thức.`, 'warning')
           await video.current.play().catch(() => {})
-        } else setNotice('Câu trả lời chưa đúng. Bạn có thể thử lại hoặc xem lại kiến thức trước mốc này.')
+        } else showNotice('Câu trả lời chưa đúng. Bạn có thể thử lại hoặc xem lại kiến thức trước mốc này.', 'warning')
       } else {
         passed.current.add(question.id)
         setQuestion(null); gate.current = false
-        setNotice(question.kind === 'TEXT' ? 'Đã gửi câu trả lời tự luận. Giáo viên có thể xem lại; bạn được tiếp tục video.' : 'Chính xác! Bạn có thể tiếp tục video.')
+        showNotice(question.kind === 'TEXT' ? 'Đã gửi câu trả lời tự luận. Giáo viên có thể xem lại; bạn được tiếp tục video.' : 'Chính xác! Bạn có thể tiếp tục video.', 'success')
         if (!watched.current) await video.current.play().catch(() => {})
       }
     } catch (err) { if (alive.current) setError(typeof err.data?.detail === 'string' ? err.data.detail : courseErrorMessage(err)) }
@@ -194,9 +196,9 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
   }
   useEffect(() => {
     if (!notice) return
-    const timer = setTimeout(() => setNotice(''), 5000)
+    const timer = setTimeout(() => showNotice(''), 5000)
     return () => clearTimeout(timer)
-  }, [notice])
+  }, [notice, showNotice])
   useEffect(() => {
     if (!error) return
     const timer = setTimeout(() => setError(''), 5000)
@@ -232,9 +234,9 @@ export default function InteractiveVideoPlayer({ path, info, src, canManage, onC
     </div>
     <div className="video-controls"><button type="button" className="icon-button" aria-label={playing ? 'Tạm dừng video' : 'Phát video'} disabled={!!question} onClick={togglePlay}>{playing ? <Pause size={19} /> : <Play size={19} />}</button><button type="button" className="icon-button" aria-label="Tua lùi 5 giây" disabled={busy} onClick={() => { if (question) { setQuestion(null); gate.current = false } seek(clock.current.position - 5) }}><RotateCcw size={18} /></button><span className="video-time">{formatVideoTime(position)} / {formatVideoTime(info.duration)}</span><input type="range" aria-label="Tiến trình video" min={0} max={info.duration} step={0.1} value={position} onChange={(event) => { const target = Number(event.target.value); seek(target); if (target > seekLimit()) event.target.value = clock.current.position }} /><Volume2 size={17} aria-hidden="true" /><input className="video-volume" aria-label="Âm lượng video" type="range" min={0} max={1} step={0.05} value={volume} onChange={(event) => { const value = Number(event.target.value); setVolume(value); if (video.current) video.current.volume = value }} /><button type="button" className="icon-button" aria-label="Toàn màn hình video" onClick={async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else await wrapper.current.requestFullscreen() } catch { setError('Trình duyệt chưa cho phép mở toàn màn hình.') } }}><Maximize size={18} /></button></div>
     {completed && !canManage && <div className="video-completed"><CheckCircle2 size={18} />Đã xem</div>}
-    {notice && !question && <p className="video-notice" role="status">{notice}</p>}
+    {notice && !question && <p className="video-notice" data-variant={noticeVariant} role="status">{notice}</p>}
     {error && !question && <p className="error-banner" role="alert">{error}</p>}
-    {question && <VideoCheckpointDialog question={question} choices={choices} setChoices={setChoices} text={text} setText={setText} busy={busy} notice={notice} error={error} onSubmit={submit} onReview={reviewKnowledge} />}
+    {question && <VideoCheckpointDialog question={question} choices={choices} setChoices={setChoices} text={text} setText={setText} busy={busy} notice={notice} noticeVariant={noticeVariant} error={error} onSubmit={submit} onReview={reviewKnowledge} />}
   </div>
     {!canManage && <VideoAnswersReview path={path} videoId={info.id} questions={info.questions} refreshToken={answerRevision} />}
   </>

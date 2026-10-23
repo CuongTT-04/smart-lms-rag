@@ -63,8 +63,8 @@ describe('enrollment workflows', () => {
     render(<StudentEnrollmentPanel onCoursesChanged={vi.fn().mockRejectedValue({ status: 0 })} />)
     await userEvent.type(screen.getByLabelText('Mã lớp học'), 'A1B2C3D4E5F6')
     await userEvent.click(screen.getByRole('button', { name: 'Tham gia lớp' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Thao tác đã thành công')
-    expect(screen.getByRole('status')).toHaveTextContent('tham gia lớp học thành công')
+    expect(await screen.findByText('Chưa tải lại được dữ liệu. Vui lòng làm mới.')).toHaveClass('warning-banner')
+    expect(screen.getByText('Bạn đã tham gia lớp học thành công.')).toHaveClass('success-banner')
     expect(service.joinClassroom).toHaveBeenCalledTimes(1)
   })
   it('lets the student retry loading history after a connection failure', async () => {
@@ -159,6 +159,14 @@ describe('enrollment workflows', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Xác nhận' }))
     expect(service.reviewJoinRequest).toHaveBeenCalledWith('c1', 'r1', { decision, review_note: 'Đã kiểm tra' })
     await waitFor(() => expect(refresh).toHaveBeenCalled())
+  })
+  it('does not claim a successful teacher refresh before loading succeeds', async () => {
+    render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)
+    await screen.findByText('Lớp tối')
+    service.listClassrooms.mockRejectedValue({status:0})
+    await userEvent.click(screen.getByRole('button',{name:'Làm mới lớp và yêu cầu'}))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không thể kết nối')
+    expect(screen.queryByText('Đã làm mới dữ liệu.')).not.toBeInTheDocument()
   })
   it('creates a class without changing another class policy', async () => {
     render(<TeacherEnrollmentPanel course={course} onMembersChanged={vi.fn()} />)

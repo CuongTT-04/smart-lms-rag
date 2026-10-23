@@ -875,3 +875,7 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 }
 
 .form-modal label > .form-field-caption { display: inline-flex; align-items: baseline; gap: 5px; color: #294f3f; }
+
+.warning-banner, .info-banner { display:flex; align-items:center; gap:10px; padding:13px; border:1px solid #d2e1da; border-radius:6px; font-size:14px; line-height:1.8; overflow-wrap:anywhere; }
+.warning-banner { color:#8b512b; border-color:#efcfaf; background:#fff4e8; }
+.info-banner { color:#4e6e60; background:#f0f5f2; }

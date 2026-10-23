@@ -10,7 +10,30 @@ docker compose up --build -d
 
 Mở http://localhost:5173. Lệnh này chạy frontend, Django backend, PostgreSQL và worker trích xuất PDF; migration tự chạy trước khi backend khởi động. Không cần chạy npm, Python hoặc worker riêng trên máy. Lần đầu build cần tải thư viện xử lý PDF và có thể mất vài phút; model Docling được tải khi trích xuất lần đầu và được giữ trong cache volume.
 
-Nếu frontend/backend cũ đang chạy trên cổng 5173/8000, dừng các tiến trình đó trước. Có thể đổi `FRONTEND_PORT`, `BACKEND_PORT` trong file `.env`; các giá trị mặc định hoạt động cả khi chưa có `.env`. PostgreSQL chỉ dùng mạng nội bộ Docker, không chiếm cổng 5432 của máy.
+Nếu frontend/backend cũ đang chạy trên cổng 5173/8000, dừng các tiến trình đó trước. Có thể đổi `FRONTEND_PORT`, `BACKEND_PORT` trong file `.env`. PostgreSQL là DB chính thức, lưu trong volume `postgres_data`. Container kết nối `database:5432`; chạy backend trực tiếp kết nối cùng DB qua `127.0.0.1:5433` (chỉ mở cổng loopback, đổi bằng `POSTGRES_PORT` và `DB_PORT`). Không chạy lại SQLite cũ.
+
+## Chạy riêng backend trên máy
+
+Docker PostgreSQL phải đang chạy. Copy `.env.example` thành `.env` nếu chưa có, điền đúng `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`; các biến `DB_NAME/USER/PASSWORD` để trống sẽ dùng chung giá trị `POSTGRES_*`. `config.settings.local` tự đọc `.env`, biến môi trường hiện có có độ ưu tiên cao hơn.
+
+```powershell
+docker compose up -d database redis
+./.venv/Scripts/python.exe backend/manage.py check
+# Dùng cổng 8001 nếu backend Docker đang giữ cổng 8000.
+./.venv/Scripts/python.exe backend/manage.py runserver 127.0.0.1:8001
+```
+
+Chạy trực tiếp và Docker đều dùng cùng PostgreSQL; không được chạy hai worker trích xuất ngoài ý muốn. File học liệu vẫn ở storage/volume riêng của môi trường chạy, không nằm trong DB. Dùng Docker cho luồng học liệu đầy đủ; không giả định đường dẫn storage trong container tự tồn tại trên host.
+
+## Kiểm thử không dùng SQLite
+
+Unit test dùng `SimpleTestCase`/mock; cấu hình `unit` dùng dummy DB để chặn mọi truy vấn SQL ngoài ý muốn:
+
+```powershell
+./.venv/Scripts/python.exe backend/manage.py test tests.common.test_database_config tests.ai.test_w4_contract tests.ai.test_w4_harness --settings=config.settings.unit
+```
+
+Test tích hợp quyền/transaction vẫn kiểm tra PostgreSQL thật, trong DB `test_<DB_NAME>` riêng do Django tạo/xóa; không dùng DB nghiệp vụ làm DB test. Ví dụ `docker compose exec backend python manage.py test tests.ai --noinput`. Các bộ test tài liệu độc lập dùng `--settings=tests.documents_settings`, cũng chạy PostgreSQL test riêng.
 
 ```powershell
 # Xem trạng thái và log

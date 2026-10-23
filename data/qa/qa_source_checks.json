@@ -1,0 +1,486 @@
+{
+  "reviewer": "Codex",
+  "review_type": "agent_source_audit_not_human_peer_approval",
+  "page_unit": "physical_pdf_1based",
+  "checks": [
+    {
+      "qa_id": "KTCTMLN_QA_001",
+      "anchor": "Khái quát lại, đối tượng nghiên cứu",
+      "terms": [
+        "các quan hệ xã hội của sản xuất và trao đổi",
+        "lực lượng sản xuất",
+        "kiến trúc thượng tầng"
+      ],
+      "note": "Đã đọc trang PDF 19-21 và kiểm tra trực quan trang 20: câu hỏi, đáp án và nhãn trang 20 hiện có đúng. Bổ sung bằng chứng và đóng thiếu sót source_review_required; không đổi gold, không phê duyệt peer thay A/B."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_002",
+      "anchor": "phát triển, trong những điều kiện lịch sử nhất định",
+      "terms": [
+        "không thể được tiến hành trong các phòng thí nghiệm",
+        "gạt bỏ",
+        "bền vững, ổn định",
+        "phát hiện được tính quy luật"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_003",
+      "anchor": "Thuộc tính của hàng hóa",
+      "terms": [
+        "hai thuộc tính là giá trị sử dụng và giá trị",
+        "công dụng của sản phẩm",
+        "sử dụng hay tiêu dùng"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_004",
+      "anchor": "Năng suất lao động là năng lực sản xuất",
+      "terms": [
+        "giảm lượng thời gian",
+        "giá trị trong một đơn vị hàng hóa giảm xuống"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_005",
+      "anchor": "hàng hóa đó và tỷ lệ nghịch",
+      "terms": [
+        "tỷ lệ nghịch với sức sản xuất của lao động",
+        "lượng giá trị của một đơn vị hàng hóa"
+      ],
+      "changes": {
+        "source_page": "10",
+        "source_pages": "[10]",
+        "notes": "Trang PDF tính từ 1; trang in 39. Tình huống vận dụng: 10 và tăng gấp đôi là giả định của đề, không phải số liệu trích từ PDF. Quan hệ tỷ lệ nghịch ở đầu trang 10 hỗ trợ phép tính 10 / 2 = 5; trang 9 là phần dẫn nhập."
+      },
+      "note": "Chuyển gold từ trang 9 sang trang 10 có quan hệ tỷ lệ nghịch, hỗ trợ kết quả giảm một nửa; không thêm cả hai trang làm bằng chứng bắt buộc khi một trang đủ hỗ trợ nguyên lý áp dụng."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_006",
+      "anchor": "Hai điều kiện để sức lao động trở thành hàng hóa",
+      "terms": [
+        "tự do về thân thể",
+        "không có đủ các tư liệu sản xuất",
+        "phải bán sức lao động"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_007",
+      "anchor": "Tư bản khả biến",
+      "terms": [
+        "mua hàng hóa sức lao động",
+        "tạo ra giá trị mới",
+        "ký hiệu là v"
+      ],
+      "note": "Đáp án C khớp lựa chọn tư bản khả biến; không dùng ký tự C làm thuật ngữ chứng minh."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_008",
+      "anchor": "độc quyền không thủ tiêu cạnh tranh",
+      "terms": [
+        "đa dạng, gay gắt hơn"
+      ],
+      "note": "Đáp án False được chứng minh bằng phát biểu phủ định trực tiếp trong giáo trình."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_009",
+      "anchor": "độc quyền không thủ tiêu cạnh tranh",
+      "terms": [
+        "các doanh nghiệp ngoài độc quyền",
+        "với nhau",
+        "trong nội bộ các tổ chức độc quyền"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_010",
+      "anchor": "Kinh tế thị trường định hướng xã hội chủ nghĩa là nền kinh tế",
+      "terms": [
+        "quy luật của thị trường",
+        "dân giàu, nước mạnh",
+        "điều tiết của Nhà nước",
+        "Đảng Cộng sản Việt Nam lãnh đạo"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_011",
+      "anchor": "Lợi ích kinh tế là lợi ích vật chất",
+      "terms": [
+        "hoạt động kinh tế",
+        "chủ doanh nghiệp trước hết là lợi nhuận",
+        "người lao động là thu nhập"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_012",
+      "anchor": "Công nghiệp hóa là quá trình chuyển đổi",
+      "terms": [
+        "lao động thủ công",
+        "lao động bằng máy móc",
+        "năng suất lao động xã hội cao"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_013",
+      "anchor": "Hội nhập kinh tế quốc tế của một quốc gia",
+      "terms": [
+        "gắn kết nền kinh tế",
+        "chia sẻ lợi ích",
+        "chuẩn mực quốc tế chung"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_001",
+      "anchor": "Ba phát kiến vĩ đại",
+      "terms": [
+        "duy vật lịch sử",
+        "giá trị thặng dư",
+        "sứ mệnh lịch sử toàn thế giới"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_002",
+      "anchor": "Với tư cách là một trong ba bộ phận",
+      "terms": [
+        "trực tiếp nghiên cứu",
+        "sứ mệnh lịch sử",
+        "những điều kiện, những con đường"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_003",
+      "anchor": "Giai cấp công nhân trên phương diện kinh tế",
+      "terms": [
+        "trực tiếp hay gián tiếp",
+        "không sở hữu tư liệu sản xuất chủ yếu",
+        "bóc lột giá trị thặng dư"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_004",
+      "anchor": "Đảng Cộng sản là nhân tố chủ quan",
+      "terms": [
+        "quan trọng nhất",
+        "thực hiện thắng lợi sứ mệnh lịch sử"
+      ],
+      "note": "Đáp án C tương ứng Đảng Cộng sản, phù hợp đoạn nguồn."
+    },
+    {
+      "qa_id": "CNXHKH_QA_005",
+      "anchor": "Khẳng định tính tất yếu của thời kỳ quá độ",
+      "terms": [
+        "Quá độ trực tiếp",
+        "đã trải qua chủ nghĩa tư bản phát triển",
+        "Quá độ gián tiếp",
+        "chưa trải qua chủ nghĩa tư bản phát triển"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_006",
+      "anchor": "Thứ ba, quá độ lên chủ nghĩa xã hội bỏ qua",
+      "terms": [
+        "tiếp thu, kế thừa",
+        "khoa học và công nghệ",
+        "quản lý"
+      ],
+      "note": "False: bỏ qua chế độ không phải phủ nhận thành tựu khoa học/công nghệ/quản lý."
+    },
+    {
+      "qa_id": "CNXHKH_QA_007",
+      "anchor": "Từ những cách tiếp cận trên",
+      "terms": [
+        "giá trị xã hội",
+        "phạm trù chính trị",
+        "phạm trù lịch sử"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_008",
+      "anchor": "Từ những phân tích trên đây",
+      "terms": [
+        "dân chủ và pháp luật",
+        "thống nhất biện chứng",
+        "nhà nước pháp quyền xã hội chủ nghĩa"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_009",
+      "anchor": "Nội dung kinh tế của liên minh",
+      "terms": [
+        "cơ bản quyết định nhất",
+        "lợi ích kinh tế thiết thân",
+        "cơ sở vật chất"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_010",
+      "anchor": "Cương lĩnh dân tộc của chủ nghĩa Mác",
+      "terms": [
+        "hoàn toàn bình đẳng",
+        "được quyền tự quyết",
+        "liên hiệp công nhân tất cả các dân tộc"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_011",
+      "anchor": "Tôn trọng, bảo đảm quyền tự do tín ngưỡng",
+      "terms": [
+        "không tín ngưỡng",
+        "quyền tự do tư tưởng"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_012",
+      "anchor": "Chức năng tái sản xuất ra con người",
+      "terms": [
+        "duy trì nòi giống",
+        "nhu cầu về sức lao động",
+        "mật độ dân cư",
+        "chất lượng nguồn lực lao động"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_013",
+      "anchor": "Hôn nhân tự nguyện",
+      "terms": [
+        "xuất phát từ tình yêu",
+        "tự do trong việc lựa chọn",
+        "không chấp nhận sự áp đặt",
+        "không bác bỏ việc cha mẹ quan tâm"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_014",
+      "anchor": "Giới hạn của sự trừu tượng hóa phụ thuộc",
+      "terms": [
+        "tình cảm cá nhân",
+        "không thể gạt bỏ lợi ích kinh tế",
+        "thay đổi bản chất"
+      ],
+      "note": "Hint chỉ gợi cách phân biệt, không yêu cầu phép tính hoặc nội dung ngoài trang nguồn."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_015",
+      "anchor": "Kinh tế chính trị Mác - Lênin cung cấp hệ thống tri thức mở",
+      "terms": [
+        "quy luật chi phối",
+        "phạm trù kinh tế cơ bản",
+        "tầng sâu hơn"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_016",
+      "anchor": "điều chỉnh hành vi cá nhân",
+      "terms": [
+        "chính sách kinh tế",
+        "giải quyết hài hòa các quan hệ lợi ích",
+        "cải thiện đời sống"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_017",
+      "anchor": "Nếu gạt giá trị sử dụng",
+      "terms": [
+        "lao động xã hội đã hao phí",
+        "kết tinh trong hàng hóa"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_018",
+      "anchor": "Hộp 2.1.",
+      "terms": [
+        "Hàng hóa cá nhân",
+        "Hàng hóa công cộng",
+        "cản trở những người khác"
+      ],
+      "note": "Phân biệt theo hộp kiến thức của giáo trình; không tuyên bố đây là định nghĩa đầy đủ mọi thuộc tính hàng hóa công cộng trong kinh tế học."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_019",
+      "anchor": "Mâu thuẫn giữa lao động cụ thể",
+      "terms": [
+        "không phù hợp với nhu cầu xã hội",
+        "không được xã hội thừa nhận",
+        "nguy cơ khủng hoảng"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_020",
+      "anchor": "Các nhân tố ảnh hưởng đến năng suất lao động gồm",
+      "terms": [
+        "khéo léo",
+        "khoa học",
+        "kết hợp xã hội",
+        "hiệu suất của tư liệu sản xuất",
+        "điều kiện tự nhiên"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_021",
+      "anchor": "Khi xem xét mối quan hệ giữa tăng năng suất",
+      "terms": [
+        "Cường độ lao động là mức độ khẩn trương",
+        "lượng thời gian lao động xã hội cần thiết",
+        "không thay đổi"
+      ],
+      "note": "Hint hướng dẫn phân biệt khái niệm; định nghĩa năng suất ở trang 9 là ngữ cảnh bổ sung, không gán mọi trang tham khảo thành gold bắt buộc."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_022",
+      "anchor": "Hình thái giá trị giản đơn hay ngẫu nhiên",
+      "terms": [
+        "thời kỳ sơ khai",
+        "mang tính ngẫu nhiên",
+        "trao đổi trực tiếp"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_023",
+      "anchor": "Hình thái tiền",
+      "terms": [
+        "thị trường ngày càng mở rộng",
+        "gây trở ngại cho trao đổi",
+        "vật ngang giá chung thống nhất"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_024",
+      "anchor": "Phương tiện thanh toán",
+      "terms": [
+        "trả nợ",
+        "trả tiền mua chịu",
+        "tín dụng thương mại"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_025",
+      "anchor": "Dịch vụ là một loại hàng hóa",
+      "terms": [
+        "hàng hóa vô hình",
+        "không thể cất trữ",
+        "diễn ra đồng thời"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_026",
+      "anchor": "Giá trị của hàng hóa sức lao động do các bộ phận",
+      "terms": [
+        "tư liệu sinh hoạt cần thiết",
+        "phí tổn đào tạo",
+        "nuôi con"
+      ],
+      "note": "Gợi ý dàn ý ba nhóm; các tư liệu sinh hoạt có cả vật chất và tinh thần."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_027",
+      "anchor": "Tiền công là giá cả",
+      "terms": [
+        "hàng hóa sức lao động",
+        "giá trị mới",
+        "người lao động làm thuê tạo ra"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_028",
+      "anchor": "Nếu ký hiệu số vòng chu chuyển",
+      "terms": [
+        "thời gian của một năm là CH",
+        "thời gian một vòng chu chuyển là ch",
+        "n="
+      ],
+      "note": "Đã đọc công thức n=CH/ch; PDF tách tử/mẫu khi trích text, cần kiểm tra trực quan công thức."
+    },
+    {
+      "qa_id": "KTCTMLN_QA_029",
+      "anchor": "Tư bản cố định là bộ phận",
+      "terms": [
+        "chuyển dần từng phần",
+        "Tư bản lưu động",
+        "chuyển một lần, toàn phần"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_030",
+      "anchor": "Trong thực tế, việc cải tiến kỹ thuật",
+      "terms": [
+        "giá trị cá biệt thấp hơn giá trị xã hội",
+        "giá trị thặng dư siêu ngạch"
+      ]
+    },
+    {
+      "qa_id": "KTCTMLN_QA_031",
+      "anchor": "Thứ hai, năng suất lao động xã hội",
+      "terms": [
+        "giá trị tư liệu sinh hoạt giảm",
+        "giá trị sức lao động giảm",
+        "tăng quy mô tích lũy"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_014",
+      "anchor": "Chủ nghĩa xã hội khoa học sử dụng phương pháp luận chung nhất",
+      "terms": [
+        "duy vật biện chứng",
+        "duy vật lịch sử"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_015",
+      "anchor": "thực hiện gắn phát triển kinh tế",
+      "terms": [
+        "nhiệm vụ trung tâm",
+        "khâu then chốt",
+        "nền tảng tinh thần",
+        "ba trụ cột"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_016",
+      "anchor": "Thứ nhất, do địa vị kinh tế",
+      "terms": [
+        "sản phẩm của nền đại công nghiệp",
+        "chủ thể của quá trình sản xuất vật chất hiện đại",
+        "phương thức sản xuất tiên tiến"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_017",
+      "anchor": "Sự xung đột giữa tính chất xã hội hóa",
+      "terms": [
+        "lực lượng sản xuất",
+        "chiếm hữu tư nhân tư bản chủ nghĩa",
+        "mâu thuẫn về lợi ích"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_018",
+      "anchor": "Sứ mệnh lịch sử của giai cấp công nhân không phải",
+      "terms": [
+        "xóa bỏ triệt để chế độ tư hữu",
+        "sở hữu tư nhân tư bản chủ nghĩa"
+      ],
+      "changes": {
+        "ground_truth": "Không. Theo giáo trình, sứ mệnh này không phải thay chế độ sở hữu tư nhân này bằng chế độ sở hữu tư nhân khác mà là xóa bỏ chế độ tư hữu tư bản chủ nghĩa về tư liệu sản xuất, nguồn gốc của áp bức, bóc lột và bất công trong xã hội hiện đại."
+      },
+      "note": "Làm rõ đối tượng xóa bỏ là sở hữu tư nhân tư bản chủ nghĩa về tư liệu sản xuất, theo câu giải thích ngay sau trong nguồn; tránh diễn giải thành phủ nhận mọi sở hữu cá nhân."
+    },
+    {
+      "qa_id": "CNXHKH_QA_019",
+      "anchor": "Với chức năng này, gia đình góp phần",
+      "terms": [
+        "đào tạo thế hệ trẻ",
+        "xã hội hóa",
+        "khó khăn khi hòa nhập",
+        "không đạt được hiệu quả cao"
+      ]
+    },
+    {
+      "qa_id": "CNXHKH_QA_020",
+      "anchor": "Tình yêu giữa nam và nữ là vấn đề riêng",
+      "terms": [
+        "thủ tục pháp lý",
+        "trách nhiệm",
+        "không ngăn cản quyền tự do kết hôn",
+        "cơ sở để thực hiện những quyền đó"
+      ]
+    }
+  ]
+}

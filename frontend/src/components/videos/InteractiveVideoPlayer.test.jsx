@@ -46,7 +46,7 @@ it('submits multiple selections to the server and remains blocked after a wrong 
   await userEvent.click(screen.getByLabelText('Lựa chọn B'))
   await userEvent.click(screen.getByRole('button', { name: 'Gửi câu trả lời' }))
   expect(answerVideoQuestion).toHaveBeenCalledWith('/videos/', 'v1', 'q1', expect.objectContaining({ selected_ids: ['a', 'b'], revision: 1 }))
-  expect(await screen.findByText(/Câu trả lời chưa đúng/)).toBeVisible()
+  expect(await screen.findByText(/Câu trả lời chưa đúng/)).toHaveAttribute('data-variant', 'warning')
   expect(screen.getByRole('button', { name: 'Phát video' })).toBeDisabled()
 })
 it('unlocks after an essay submission', async () => {
@@ -56,7 +56,7 @@ it('unlocks after an essay submission', async () => {
   await userEvent.click(screen.getByRole('button', { name: 'Gửi câu trả lời' }))
   await waitFor(() => expect(screen.queryByLabelText('Câu trả lời của bạn')).not.toBeInTheDocument())
   expect(screen.getByRole('button', { name: 'Phát video' })).toBeEnabled()
-  expect(await screen.findByText(/Đã gửi câu trả lời tự luận/)).toBeVisible()
+  expect(await screen.findByText(/Đã gửi câu trả lời tự luận/)).toHaveAttribute('data-variant', 'success')
 })
 it('persists the current position when paused and explains blocked timeline jumps', async () => {
   const media = open({ ...info, progress: { position: 20, passed_ids: [] } })

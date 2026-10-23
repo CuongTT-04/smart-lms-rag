@@ -26,7 +26,8 @@ from ..processors.watermark import watermarked_pdf_bytes
 def operation_payload(op):
     return {"document_id": str(op.document_id), "version_id": str(op.version_id),
             "job_id": str(op.job_id), "extraction_status": op.version.status,
-            "rag_ready": False}
+            "indexing_status":"NOT_STARTED",
+            "rag_ready": op.version.status=="READY" and op.version.indexed_at is not None}
 
 
 def material_payload(document):
@@ -124,7 +125,8 @@ class CourseDocumentsView(DocumentAPIView):
         for document in page:
             version = (document.versions.filter(removed_at__isnull=True).order_by("-version_number").first()
                        if is_manager(request.user,course) else document.published_version)
-            job = version.jobs.order_by("-created_at").first() if version else None
+            job = version.jobs.filter(job_type='EXTRACT').order_by("-created_at").first() if version else None
+            index_job = version.jobs.filter(job_type='INDEX').order_by("-created_at").first() if version else None
             rows.append({"document_id": str(document.pk), "title": document.title,"session_id":str(document.session_id) if document.session_id else None,
                 **material_payload(document),
                 "watermark_status":view_status(version),
@@ -132,7 +134,11 @@ class CourseDocumentsView(DocumentAPIView):
                 "file_name": version.file_name if version else None,
                 "page_count": version.page_count if version else None,
                 "extraction_status": version.status if version else "NOT_STARTED",
-                "error_code": job.error_code if job else "", "rag_ready": False})
+                "error_code": job.error_code if job else "",
+                "indexing_status":index_job.status if index_job else "NOT_STARTED",
+                "indexing_error_code":index_job.error_code if index_job else "",
+                "indexing_retry_pending":bool(index_job and index_job.status=='FAILED' and index_job.attempt_count<3),
+                "rag_ready": bool(version and version.status=="READY" and version.indexed_at is not None)})
         return paginator.get_paginated_response(rows)
 
 
@@ -143,7 +149,8 @@ class DocumentStatusView(DocumentAPIView):
     def get(self, request, document_id):
         document = self.document(request, document_id)
         version = self.version(request, document)
-        job = version.jobs.order_by("-created_at").first()
+        job = version.jobs.filter(job_type='EXTRACT').order_by("-created_at").first()
+        index_job = version.jobs.filter(job_type='INDEX').order_by("-created_at").first()
         return Response({"document_id": str(document.pk), "version_id": str(version.pk),
             "extraction_status": version.status, "pipeline_status": version.status,
             "page_count": version.page_count, "file_name": version.file_name,
@@ -151,7 +158,10 @@ class DocumentStatusView(DocumentAPIView):
             "extracted_at": version.extracted_at, "indexed_at": version.indexed_at,
             "watermark_status":view_status(version),
             **material_payload(document),
-            "rag_ready": False})
+            "indexing_status":index_job.status if index_job else "NOT_STARTED",
+            "indexing_error_code":index_job.error_code if index_job else "",
+            "indexing_retry_pending":bool(index_job and index_job.status=='FAILED' and index_job.attempt_count<3),
+            "rag_ready": version.status=="READY" and version.indexed_at is not None})
 
 
 class DocumentVersionsView(DocumentAPIView):
@@ -237,7 +247,9 @@ class DocumentPolicyView(DocumentAPIView):
 class DocumentViewView(DocumentAPIView):
     download=False
 
-    @extend_schema(tags=["Documents"],responses={(200,"application/pdf"):OpenApiTypes.BINARY}, summary='Xem tài liệu PDF', description='Trả PDF để xem theo quyền truy cập: watermark email của người xem khi bảo vệ, bản sạch khi cho phép tải. Học viên chỉ xem bản đang công bố.')
+    @extend_schema(tags=["Documents"],responses={(200,"application/pdf"):OpenApiTypes.BINARY},
+                   parameters=[OpenApiParameter('expected_version_id', OpenApiTypes.UUID, description='Phiên bản nguồn trích dẫn cần khớp; trả 409 nếu bản được phép xem đã thay đổi.')],
+                   summary='Xem tài liệu PDF', description='Trả PDF để xem theo quyền truy cập: watermark email của người xem khi bảo vệ, bản sạch khi cho phép tải. Học viên chỉ xem bản đang công bố.')
     def get(self,request,document_id):
         # Read under the same document lock used by policy/publication/removal.
         with transaction.atomic():
@@ -251,6 +263,13 @@ class DocumentViewView(DocumentAPIView):
             if manager and (self.download or request.query_params.get("version_id")):
                 version=self.version(request,document)
             if version is None and manager:version=self.version(request,document)
+            expected=request.query_params.get('expected_version_id')
+            if expected:
+                try: expected=str(uuid.UUID(expected))
+                except (ValueError,TypeError,AttributeError) as exc:
+                    raise DocumentError('INVALID_REQUEST','Mã phiên bản không hợp lệ.',400) from exc
+                if not version or str(version.pk)!=expected:
+                    raise DocumentError('SCOPE_CHANGED','Phiên bản nguồn trích dẫn đã thay đổi.',409)
             if not version or version.removed_at:raise DocumentError("VIEW_NOT_READY","No view version available.",409)
             if self.download and not manager and document.material_policy!="PUBLIC_DOWNLOAD":raise DocumentError("DOWNLOAD_DISABLED","Clean download is disabled.",403)
             protected=not self.download and document.material_policy=="PROTECTED"

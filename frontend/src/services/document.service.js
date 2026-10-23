@@ -53,8 +53,12 @@ export function removeDocument(documentId) { return apiRequest(`/documents/${doc
 export function renameDocument(documentId, title) {
   return apiRequest(`/documents/${documentId}/`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title }) })
 }
-export function materialPdf(documentId,download=false,signal,versionId) {
-  return apiRequest(`/documents/${documentId}/${download ? 'download' : 'view'}/${versionId ? `?version_id=${encodeURIComponent(versionId)}` : ''}`,{
+export function materialPdf(documentId,download=false,signal,versionId,expectedVersionId) {
+  const params = new URLSearchParams()
+  if (versionId) params.set('version_id',versionId)
+  if (expectedVersionId) params.set('expected_version_id',expectedVersionId)
+  const query = params.size ? `?${params}` : ''
+  return apiRequest(`/documents/${documentId}/${download ? 'download' : 'view'}/${query}`,{
     responseType:'blob',headers:{Accept:'application/pdf, application/json'},signal,
   })
 }

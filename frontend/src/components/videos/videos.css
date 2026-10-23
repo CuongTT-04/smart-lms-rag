@@ -106,3 +106,7 @@
 .interactive-video:fullscreen { overflow: auto; border-radius: 0; background: #122a20; }
 .interactive-video:fullscreen video { max-height: calc(100dvh - 75px); }
 @media (max-width: 650px) { .video-panel-heading h2 { font-size: 21px; } .video-controls { gap: 5px; padding: 8px; flex-wrap: wrap; } .video-controls > input[type="range"]:not(.video-volume) { order: 2; flex-basis: 100%; } .video-controls > input.video-volume { margin-left: auto; } .video-checkpoint, .video-dialog { padding: 18px; } .video-time-fields { grid-template-columns: 1fr; } .video-dialog-layer { padding: 10px; } .video-meta-toolbar > .video-toolbar { margin-left: 0; } .video-question-list > article { flex-wrap: wrap; } }
+
+.video-notice[data-variant="warning"] { color:#8b512b; background:#fff4e8; }
+.video-notice[data-variant="info"] { color:#4e6e60; background:#f0f5f2; }
+.video-notice[data-variant="success"] { color:#2c674c; background:#edf7f1; }

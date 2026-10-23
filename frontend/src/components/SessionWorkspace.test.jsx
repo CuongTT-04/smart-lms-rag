@@ -7,6 +7,12 @@ vi.mock('../services/course.service', async (original) => ({ ...await original()
 vi.mock('./documents/CourseDocuments', () => ({ default: () => <div>Học liệu buổi học</div> }))
 vi.mock('./videos/SessionVideos', () => ({ default: ({ uploading, onUploadingChange }) => <div>Trình phát video buổi học{uploading && <div role="dialog" aria-label="Tải video"><button onClick={() => onUploadingChange(false)}>Hủy tải video</button></div>}</div> }))
 vi.mock('../services/video.service', () => ({ videoPath: () => '/videos/', listSessionVideos: vi.fn(async () => []) }))
+it('connects the AI panel to a usable question form', async () => {
+  render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'w4-chat',title:'Buổi 1'}} />)
+  await userEvent.click(screen.getByRole('button',{name:'Trợ lý AI'}))
+  expect(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'})).toBeEnabled()
+  expect(screen.queryByText('Trợ lý AI chưa được kết nối.')).not.toBeInTheDocument()
+})
 it('highlights only the material in the active section and restores selection on returning', async () => {
   render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'exclusive-selection',title:'Buổi 1'}} />)
   await userEvent.click(screen.getByRole('button', {name:'Thêm học liệu'}))

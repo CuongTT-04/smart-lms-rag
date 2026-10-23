@@ -36,6 +36,16 @@ it('exits fullscreen when the server returns an automatically finalized TEST att
   await waitFor(()=>expect(document.exitFullscreen).toHaveBeenCalledTimes(1))
   expect(screen.getByText(/Hệ thống đã chốt câu trả lời được lưu/)).toBeVisible()
 })
+it('keeps successful submission and shows a warning if automatic fullscreen exit fails', async () => {
+  document.exitFullscreen.mockRejectedValueOnce(new Error('denied'))
+  render(<AssessmentRunner path="/assessments/a1/" info={{...info,mode:'TEST'}} />)
+  await userEvent.click(screen.getByRole('button',{name:'Bắt đầu làm bài'}))
+  await userEvent.click(screen.getByRole('button',{name:'Nộp bài',exact:true}))
+  await userEvent.click(screen.getByRole('button',{name:'Xác nhận nộp',exact:true}))
+  expect(await screen.findByText(/Không thể tự thoát toàn màn hình/)).toHaveAttribute('data-variant','warning')
+  expect(screen.getByText('Điểm: 10/10')).toBeVisible()
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+})
 it('keeps fullscreen and the confirmation dialog when TEST submission fails', async () => {
   assessmentWrite.mockImplementation(async (path)=>{
     if (path.endsWith('submit/')) throw {status:503}
@@ -57,6 +67,7 @@ it('practice allows submit without a one-shot dialog and exposes assistance', as
   await userEvent.click(screen.getByRole('radio',{name:'Lựa chọn A'}))
   await userEvent.click(screen.getByRole('button',{name:'Nộp bài',exact:true}))
   expect(await screen.findByText('Điểm: 10/10')).toBeVisible()
+  expect(screen.getByText('Đã nộp bài thành công.')).toHaveAttribute('data-variant', 'success')
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   expect(HTMLElement.prototype.requestFullscreen).not.toHaveBeenCalled()
   expect(saveAssessmentDraft).toHaveBeenCalledWith('/assessments/a1/attempts/at1/',{revision:0,answers:{q1:'a'}})
@@ -71,6 +82,7 @@ it('test requests fullscreen, logs a warning without submitting and requires con
   Object.defineProperty(document, 'fullscreenElement', {configurable:true,value:null})
   act(() => fireEvent(document,new Event('fullscreenchange')))
   expect(await screen.findByText(/Bạn đã thoát toàn màn hình/)).toBeVisible()
+  expect(screen.getByText(/Bạn đã thoát toàn màn hình/)).toHaveAttribute('data-variant', 'warning')
   expect(assessmentWrite).toHaveBeenCalledWith('/assessments/a1/attempts/at1/events/','POST',expect.objectContaining({kind:'FULLSCREEN_EXIT'}))
   expect(assessmentWrite.mock.calls.some(([p])=>p.endsWith('submit/'))).toBe(false)
   await userEvent.click(screen.getByRole('button',{name:'Nộp bài',exact:true}))

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowLeft, BookOpen, Bot, Check, ChevronRight, ClipboardList, FileText, LoaderCircle, Menu, Pencil, Plus, Sparkles, Video, X } from 'lucide-react'
 import CourseDocuments from './documents/CourseDocuments'
+import SessionAssistant from './ai/SessionAssistant'
+import CitationViewer from './ai/CitationViewer'
 import { courseErrorMessage, updateClassroomSession } from '../services/course.service'
 import '../session-workspace.css'
 import { useHistoryState } from '../hooks/useHistoryState'
@@ -59,6 +61,10 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
     return () => controller.abort()
   }, [section, refreshVideos])
   const [assistant, setAssistant] = useState(false)
+  const [citation, setCitation] = useState(null)
+  const [exercise, setExercise] = useState(null)
+  const currentAssessment = assessments.find((item) => item.id === assessmentId) || assessments[0]
+  const currentExercise = section === 'assignments' && currentAssessment?.mode === 'PRACTICE' && currentAssessment.id === exercise?.assessment_id ? exercise : null
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const [isDraft, setIsDraft] = useState(session.is_draft !== false)
@@ -146,9 +152,11 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
         {error && <div className="error-banner" role="alert">{error}</div>}
         <div hidden={section !== 'materials'}><CourseDocuments courseId={course.id} sessionId={session.id} canManage={canManage} workspace selectedDocumentId={active?.document_id} draftId={draftId} onDraftUploaded={uploaded} onDocumentsChanged={receiveDocuments} /></div>
         {section === 'videos' && <SessionVideos path={videosPath} rows={videos} selectedId={videoId} canManage={canManage} listError={videosError} onRefresh={refreshVideos} onSelect={setVideoId} uploading={uploadingVideo} onUploadingChange={setUploadingVideo} />}
-        {section === 'assignments' && <SessionAssessments path={assessmentsPath} rows={assessments} selectedId={assessmentId} canManage={canManage} onSelect={setAssessmentId} onRefresh={refreshAssessments} listError={assessmentError} creating={creatingAssessment} onCreatingChange={setCreatingAssessment} onTestActive={setActiveTest} />}
+        {section === 'assignments' && <SessionAssessments path={assessmentsPath} rows={assessments} selectedId={assessmentId} canManage={canManage} onSelect={setAssessmentId} onRefresh={refreshAssessments} listError={assessmentError} creating={creatingAssessment} onCreatingChange={setCreatingAssessment} onTestActive={setActiveTest} onRequestAssistance={(value) => { setExercise(value); setAssistant(true) }} />}
       </div>
     </div>
-    <aside id="session-assistant" className={`class-assistant-panel session-assistant-panel ${assistant && !testSelected ? 'is-open' : 'is-closed'}`} aria-hidden={!assistant || testSelected} inert={!assistant || testSelected} aria-label="Trợ lý AI của buổi học"><div className="class-assistant-heading"><span><Bot size={24} /><strong>Trợ lý học tập</strong></span><button type="button" className="icon-button" aria-label="Đóng trợ lý AI" onClick={() => { setAssistant(false); aiTrigger.current?.focus() }}><X size={20} /></button></div><div className="class-assistant-scope"><BookOpen size={17} />{title || 'Buổi học chưa đặt tên'}</div><div className="class-assistant-empty"><Sparkles size={36} /><h3>Học cùng trợ lý của buổi học</h3><p>Hỏi đáp học liệu, nhận gợi ý và tóm tắt nội dung.</p><div className="class-assistant-state">Trợ lý AI chưa được kết nối.</div></div><div className="class-assistant-compose"><input aria-label="Câu hỏi cho trợ lý" placeholder="Trợ lý chưa sẵn sàng" disabled /><button type="button" className="solid-button" disabled>Gửi</button></div></aside>
+    <aside id="session-assistant" className={`class-assistant-panel session-assistant-panel ${assistant && !testSelected ? 'is-open' : 'is-closed'}`} aria-hidden={!assistant || testSelected} inert={!assistant || testSelected} aria-label="Trợ lý AI của buổi học"><div className="class-assistant-heading"><span><Bot size={24} /><strong>Trợ lý học tập</strong></span><button type="button" className="icon-button" aria-label="Đóng trợ lý AI" onClick={() => { setAssistant(false); aiTrigger.current?.focus() }}><X size={20} /></button></div><div className="class-assistant-scope"><BookOpen size={17} /><span title={active?.title || 'Chưa chọn học liệu'}>{active?.title || 'Chưa chọn học liệu'}</span></div>{!testSelected && <SessionAssistant visible={assistant} scope={{course_id:course.id,classroom_id:room.id,session_id:session.id}} exercise={currentExercise} onOpenCitation={setCitation} />}
+    </aside>
+    {citation && <CitationViewer key={`${citation.document_id}:${citation.version_id}:${citation.page_number}`} citation={citation} onClose={() => setCitation(null)} />}
   </section>, document.body)
 }

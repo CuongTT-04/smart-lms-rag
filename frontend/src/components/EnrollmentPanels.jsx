@@ -11,14 +11,15 @@ import {
 const REQUEST_STATUS = { PENDING: 'Chờ duyệt', APPROVED: 'Đã chấp nhận', REJECTED: 'Đã từ chối', CANCELED: 'Đã hủy' }
 const date = (value) => new Date(value).toLocaleString('vi-VN')
 
-function Feedback({ error, notice }) {
-  return <>{error && <div className="error-banner" role="alert">{error}</div>}{notice && <div className="success-banner" role="status"><Check size={18} />{notice}</div>}</>
+function Feedback({ error, notice, warning }) {
+  return <>{warning && <div className="warning-banner" role="status">{warning}</div>}{error && <div className="error-banner" role="alert">{error}</div>}{notice && <div className="success-banner" role="status"><Check size={18} />{notice}</div>}</>
 }
 
 export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassroom, requestsOnly = false }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [warning, setWarning] = useState('')
   const [copiedCode, setCopiedCode] = useState('')
   useEffect(() => {
     if (!copiedCode) return
@@ -47,12 +48,12 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
   }, [load])
 
   async function act(key, action, message) {
-    setBusy(key); setError(''); setNotice('')
+    setBusy(key); setError(''); setNotice(''); setWarning('')
     try {
       await action()
-      setNotice(message)
-      try { setData(await load()); await onMembersChanged() }
-      catch { setError('Thao tác đã thành công nhưng chưa tải lại được dữ liệu. Vui lòng làm mới.') }
+      if (key !== 'refresh') setNotice(message)
+      try { setData(await load()); await onMembersChanged?.(); if (key === 'refresh') setNotice(message) }
+      catch (err) { if (key === 'refresh') setError(courseErrorMessage(err)); else setWarning('Chưa tải lại được dữ liệu. Vui lòng làm mới.') }
     } catch (err) { setError(courseErrorMessage(err)) }
     finally { setBusy('') }
   }
@@ -65,7 +66,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
 
   return <section className="enrollment-panel" aria-label={requestsOnly ? 'Yêu cầu tham gia' : 'Quản lý lớp học'}>
     <div className="section-heading"><h2>{requestsOnly ? 'Yêu cầu tham gia' : 'Lớp học và quyền tham gia'}</h2><button type="button" className="icon-button" title="Làm mới" aria-label="Làm mới lớp và yêu cầu" disabled={!!busy} onClick={() => act('refresh', async () => {}, 'Đã làm mới dữ liệu.')}><RefreshCw size={18} /></button></div>
-    <Feedback error={error} notice={notice} />
+    <Feedback error={error} notice={notice} warning={warning} />
     {!data ? <p>{error ? 'Chưa tải được dữ liệu.' : 'Đang tải dữ liệu...'}</p> : requestsOnly ? <>
       <label className="enrollment-filter">Trạng thái yêu cầu<CustomSelect aria-label="Trạng thái yêu cầu" value={filter} onChange={(e) => setFilter(e.target.value)}><option value="">Tất cả</option>{Object.entries(REQUEST_STATUS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</CustomSelect></label>
       <div className="enrollment-records">{data.requests.filter((item) => !filter || item.status === filter).map((item) => <article className="enrollment-row" key={item.id}>

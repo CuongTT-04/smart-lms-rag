@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libglib2.0-0 li
     && pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
     && useradd --create-home --uid 1000 app \
-    && mkdir -p /app/media /app/staticfiles /app/.private/documents /app/.private/announcements /home/app/.cache \
+    && mkdir -p /app/media /app/staticfiles /app/.private/documents /app/.private/announcements /home/app/.cache/huggingface \
     && chown -R app:app /app /home/app/.cache
 
 COPY --chown=app:app backend/ /app/backend/

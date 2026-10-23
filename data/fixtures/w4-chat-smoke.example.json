@@ -1,0 +1,23 @@
+[
+  {
+    "case_id": "qa-published-material",
+    "payload": {
+      "question": "Nội dung chính của học liệu này là gì?",
+      "mode": "qa",
+      "course_id": "<runtime-course-uuid>",
+      "session_id": "<runtime-session-uuid>"
+    },
+    "expected": {"http_status": 200, "status": "ANSWERED"}
+  },
+  {
+    "case_id": "empty-selection",
+    "payload": {
+      "question": "Nội dung chính là gì?",
+      "mode": "qa",
+      "course_id": "<runtime-course-uuid>",
+      "session_id": "<runtime-session-uuid>",
+      "document_ids": []
+    },
+    "expected": {"http_status": 200, "status": "INSUFFICIENT_EVIDENCE"}
+  }
+]

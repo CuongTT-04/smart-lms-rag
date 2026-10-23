@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import { AlertCircle, ArrowRight, Check, Eye, EyeOff, LockKeyhole, LoaderCircle, Sun, UserRound } from 'lucide-react'
+import { AlertCircle, ArrowRight, Check, Info, Eye, EyeOff, LockKeyhole, LoaderCircle, Sun, UserRound } from 'lucide-react'
 import { login, authErrorMessage } from '../services/auth.service'
 
-export default function LoginPage({ onAuthenticated, initialError = '', initialNotice = '' }) {
+export default function LoginPage({ onAuthenticated, initialError = '', initialNotice = '', initialNoticeVariant = 'info' }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [visible, setVisible] = useState(false)
@@ -50,7 +50,7 @@ export default function LoginPage({ onAuthenticated, initialError = '', initialN
           <h1 id="login-title">Một khởi đầu mới.<br /><span>Chào bạn trở lại!</span></h1>
           <p className="login-intro">Đăng nhập để tiếp tục hành trình học tập của bạn.</p>
           <form className="login-form" onSubmit={handleSubmit} noValidate aria-busy={pending}>
-            {notice && <div className="success-banner" role="status"><Check size={18} aria-hidden="true" />{notice}</div>}
+            {notice && <div className={`${initialNoticeVariant}-banner`} role="status">{initialNoticeVariant === 'success' ? <Check size={18} aria-hidden="true" /> : initialNoticeVariant === 'warning' ? <AlertCircle size={18} aria-hidden="true" /> : <Info size={18} aria-hidden="true" />}{notice}</div>}
             <div className="form-field">
               <label htmlFor="username">Tên đăng nhập</label>
               <div className={`input-wrap ${fields.username ? 'input-invalid' : ''}`}>

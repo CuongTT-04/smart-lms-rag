@@ -7,9 +7,9 @@ import PdfStudyTools from './PdfStudyTools'
 // Use a fresh cache key after correcting the module MIME type in Docker.
 GlobalWorkerOptions.workerSrc = `${workerUrl}?module=2`
 
-export default function PdfCanvas({ url, title, annotatable = false, documentId, versionId, showFeedback = true, allowCopy = false }) {
+export default function PdfCanvas({ url, title, annotatable = false, documentId, versionId, showFeedback = true, allowCopy = false, initialPage = 1 }) {
   const [pdf, setPdf] = useState(null)
-  const [pageNumber, setPageNumber] = useState(1)
+  const [pageNumber, setPageNumber] = useState(initialPage)
   const [zoom, setZoom] = useState(null)
   const [scale, setScale] = useState(1)
   const [size, setSize] = useState({ width: 0, height: 0 })
@@ -25,10 +25,16 @@ export default function PdfCanvas({ url, title, annotatable = false, documentId,
   useEffect(() => {
     let live = true
     const task = getDocument({ url, isEvalSupported: false })
-    task.promise.then((document) => { if (live) setPdf(document) })
+    task.promise.then((document) => {
+      if (!live) return
+      if (!Number.isInteger(initialPage) || initialPage < 1 || initialPage > document.numPages) {
+        setError('Trang trích dẫn không hợp lệ trong phiên bản tài liệu này.');return
+      }
+      setPdf(document)
+    })
       .catch(() => { if (live) setError('Không thể hiển thị tài liệu PDF. Hãy đóng và mở lại bản xem.') })
     return () => { live = false; void task.destroy() }
-  }, [url])
+  }, [url, initialPage])
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect

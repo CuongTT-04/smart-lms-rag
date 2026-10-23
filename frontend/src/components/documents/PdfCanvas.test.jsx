@@ -12,6 +12,16 @@ beforeEach(() => {
   vi.stubGlobal('ResizeObserver', class { constructor(callback) { this.callback = callback } observe() { this.callback([{ contentRect: { width: 800, height: 600 } }]) } disconnect() {} })
   getDocument.mockReturnValue({ promise: Promise.resolve({ numPages: 2, getPage: vi.fn(async () => page) }), destroy: vi.fn() })
 })
+it('opens the citation page instead of page one', async () => {
+  render(<PdfCanvas url="blob:citation" title="Citation" initialPage={2} />)
+  await waitFor(() => expect(screen.getByLabelText('Trang PDF hiện tại')).toHaveTextContent('2 / 2'))
+  const doc=await getDocument.mock.results[0].value.promise
+  expect(doc.getPage).toHaveBeenCalledWith(2)
+})
+it('rejects citation pages outside the PDF instead of clamping them', async () => {
+  render(<PdfCanvas url="blob:citation" title="Citation" initialPage={3} />)
+  expect(await screen.findByRole('alert')).toHaveTextContent('Trang trích dẫn không hợp lệ')
+})
 it('fits a portrait page inside the viewport and provides zoom, fit and page controls', async () => {
   render(<PdfCanvas url="blob:test" title="Lesson" />)
   await waitFor(() => expect(page.render).toHaveBeenCalled())
