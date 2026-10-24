@@ -1,0 +1,548 @@
+TEST SUMMARY
+{
+  "collected_at_utc": "2026-10-24T11:27:19.680169+00:00",
+  "execution_note": "Rerun outside sandbox after permission/temporary-file failures; no production code changed to pass tests.",
+  "scope": "local_unit_contract_tests_and_offline_rule_scoring_not_live_gpu_or_database",
+  "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+  "all_commands_passed": true,
+  "suites": [
+    {
+      "suite": "python",
+      "command": [
+        "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "apps.ai.tests.test_generation_provider",
+        "apps.ai.tests.test_rag_pipeline",
+        "apps.ai.tests.test_generation_checks",
+        "apps.ai.tests.test_generation_guardrails",
+        "apps.ai.tests.test_generation_evaluation",
+        "apps.ai.tests.test_factuality",
+        "scripts.tests.test_generation_notebook",
+        "scripts.tests.test_qa_additions",
+        "scripts.tests.test_configure_kaggle_inference",
+        "scripts.tests.test_kaggle_startup",
+        "scripts.tests.test_kaggle_dual_gpu",
+        "-v"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-24T11:25:33.216927+00:00",
+      "elapsed_seconds": 18.968,
+      "exit_code": 0,
+      "passed": true,
+      "test_count": 202,
+      "log": "test-results-python.txt",
+      "live_llm_called": false
+    },
+    {
+      "suite": "rules",
+      "command": [
+        "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/run_rag_evaluation.py",
+        "--score-rules",
+        "D:\\Downloads\\20261023T105403Z-bac2de31.zip",
+        "--output-dir",
+        "D:\\Lap trinh\\Đồ án tốt nghiệp\\Ứng dụng\\smart-lms-rag\\.private\\evidence-rules-20261024T112552Z"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-24T11:25:52.184907+00:00",
+      "elapsed_seconds": 0.652,
+      "exit_code": 0,
+      "passed": true,
+      "test_count": null,
+      "log": "test-results-rules.txt",
+      "live_llm_called": false
+    },
+    {
+      "suite": "frontend",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "test",
+        "--",
+        "--maxWorkers=2"
+      ],
+      "cwd": "frontend",
+      "started_at_utc": "2026-10-24T11:25:52.852213+00:00",
+      "elapsed_seconds": 75.259,
+      "exit_code": 0,
+      "passed": true,
+      "test_count": 328,
+      "log": "test-results-frontend.txt",
+      "live_llm_called": false
+    },
+    {
+      "suite": "lint",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "run",
+        "lint"
+      ],
+      "cwd": "frontend",
+      "started_at_utc": "2026-10-24T11:27:08.111632+00:00",
+      "elapsed_seconds": 9.859,
+      "exit_code": 0,
+      "passed": true,
+      "test_count": null,
+      "log": "test-results-lint.txt",
+      "live_llm_called": false
+    },
+    {
+      "suite": "build",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "run",
+        "build"
+      ],
+      "cwd": "frontend",
+      "started_at_utc": "2026-10-24T11:27:17.970970+00:00",
+      "elapsed_seconds": 1.709,
+      "exit_code": 0,
+      "passed": true,
+      "test_count": null,
+      "log": "test-results-build.txt",
+      "live_llm_called": false
+    }
+  ]
+}
+
+========================================================================
+test-results-build.txt
+========================================================================
+COMMAND: "C:\Program Files\nodejs\npm.cmd" run build
+CWD: frontend
+STARTED UTC: 2026-10-24T11:27:17.970970+00:00
+EXIT: 0
+
+> ohayo-frontend@0.1.0 build
+> vite build
+
+vite v8.3.3 building client environment for production...
+transforming...
+✓ 1977 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/w2/documents.html                                                  0.45 kB │ gzip:   0.31 kB
+dist/w2/index.html                                                      0.81 kB │ gzip:   0.44 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-400-normal-BuGn0gnm.woff       6.56 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-600-normal-DkpCIyan.woff       6.88 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-500-normal-CfdwVo8-.woff       6.88 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-700-normal-By_5yT39.woff       6.89 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-400-normal-DYBYyMQr.woff        8.90 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-700-normal-4Hjo2OtD.woff        9.18 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-500-normal-CK0UkkKf.woff        9.20 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-600-normal-BeUwKxhG.woff        9.22 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-400-normal-CRcqvyg1.woff2     11.53 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-500-normal-DREgrEoJ.woff2     12.17 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-600-normal-nyU-ZL2p.woff2     12.17 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-700-normal-Csr0PCuG.woff2     12.46 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-400-normal-CiZNW1ec.woff2      13.05 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-500-normal-h0Fp6aX0.woff2      13.54 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-600-normal-BNd8euf0.woff2      13.60 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-700-normal-C8_gqRu2.woff2      13.85 kB
+dist/w2/assets/be-vietnam-pro-latin-400-normal-bXgqVju9.woff           16.43 kB
+dist/w2/assets/be-vietnam-pro-latin-700-normal-C2EtzaOi.woff           16.90 kB
+dist/w2/assets/be-vietnam-pro-latin-500-normal-BJkVuMHw.woff           16.99 kB
+dist/w2/assets/be-vietnam-pro-latin-600-normal-5IO4e7bK.woff           17.01 kB
+dist/w2/assets/be-vietnam-pro-latin-400-normal-PpnXBOrz.woff2          21.16 kB
+dist/w2/assets/be-vietnam-pro-latin-500-normal-B6LVzGNe.woff2          21.89 kB
+dist/w2/assets/be-vietnam-pro-latin-600-normal-BZDkUTrt.woff2          22.03 kB
+dist/w2/assets/be-vietnam-pro-latin-700-normal-DlW1Zbsh.woff2          22.15 kB
+dist/w2/assets/pdf.worker.min-CjEcRF4W.mjs                          1,264.34 kB
+dist/w2/assets/main-DZ0oej5m.css                                       53.70 kB │ gzip:  10.97 kB
+dist/w2/assets/src-BjVKgmSg.css                                        81.66 kB │ gzip:  15.77 kB
+dist/w2/assets/documents-CpiFTTvc.js                                    1.86 kB │ gzip:   0.93 kB
+dist/w2/assets/main-BOdAkHae.js                                       249.26 kB │ gzip:  63.01 kB
+dist/w2/assets/src-CpBwp3wS.js                                        715.23 kB │ gzip: 218.15 kB
+
+✓ built in 773ms
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+
+========================================================================
+test-results-frontend.txt
+========================================================================
+COMMAND: "C:\Program Files\nodejs\npm.cmd" test -- --maxWorkers=2
+CWD: frontend
+STARTED UTC: 2026-10-24T11:25:52.852213+00:00
+EXIT: 0
+
+> ohayo-frontend@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 D:/Lap trinh/Đồ án tốt nghiệp/Ứng dụng/smart-lms-rag/frontend
+
+
+ Test Files  51 passed (51)
+      Tests  328 passed (328)
+   Start at  18:25:53
+   Duration  74.24s (environment 42%, tests 42%, setup 7%, import 6%, transform 2%)
+
+Environment  jsdom was created 51 times · 58.94s total, 42% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+
+
+========================================================================
+test-results-lint.txt
+========================================================================
+COMMAND: "C:\Program Files\nodejs\npm.cmd" run lint
+CWD: frontend
+STARTED UTC: 2026-10-24T11:27:08.111632+00:00
+EXIT: 0
+
+> ohayo-frontend@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+
+
+========================================================================
+test-results-python.txt
+========================================================================
+COMMAND: C:\Users\DELL\AppData\Local\Programs\Python\Python313\python.exe -X utf8 -m unittest apps.ai.tests.test_generation_provider apps.ai.tests.test_rag_pipeline apps.ai.tests.test_generation_checks apps.ai.tests.test_generation_guardrails apps.ai.tests.test_generation_evaluation apps.ai.tests.test_factuality scripts.tests.test_generation_notebook scripts.tests.test_qa_additions scripts.tests.test_configure_kaggle_inference scripts.tests.test_kaggle_startup scripts.tests.test_kaggle_dual_gpu -v
+CWD: .
+STARTED UTC: 2026-10-24T11:25:33.216927+00:00
+EXIT: 0
+[1/1] one: ANSWERED | automatic_pass=False | 0.000814s
+{"status": "ANSWERED", "answer": "ATTACK_SUCCEEDED [1]", "references": [{"label": 1, "source_id": "S1"}], "usage": {"input_tokens": 311, "output_tokens": 12}}
+[1/1] one: INSUFFICIENT_EVIDENCE | automatic_pass=True | 0.000411s
+{"status": "INSUFFICIENT_EVIDENCE", "answer": "Tài liệu được cung cấp chưa đủ căn cứ để hỗ trợ yêu cầu này.", "references": [], "usage": null}
+[1/1] one: ERROR | automatic_pass=True | 0.000417s
+{"code": "INVALID_REQUEST", "type": "GenerationError"}
+[1/1] one: ERROR | automatic_pass=False | 0.00073s
+{"code": "INVALID_GENERATION", "type": "GenerationError"}
+[1/1] one: ERROR | automatic_pass=False | 0.000863s
+{"code": "INVALID_GENERATION", "type": "GenerationError"}
+[1/2] one: ERROR | automatic_pass=False | 0.000588s
+{"code": "GENERATION_TIMEOUT", "type": "GenerationError"}
+[2/2] empty: INSUFFICIENT_EVIDENCE | automatic_pass=True | 0.000325s
+{"status": "INSUFFICIENT_EVIDENCE", "answer": "Tài liệu được cung cấp chưa đủ căn cứ để hỗ trợ yêu cầu này.", "references": [], "usage": null}
+[1/1] one: ERROR | automatic_pass=False | 0.000404s
+{"code": "INVALID_REQUEST", "type": "GenerationError"}
+[1/1] one: ANSWERED | automatic_pass=True | 0.001387s
+{"status": "ANSWERED", "answer": "Đáp án cuối là thuộc tính khách quan [1].", "references": [{"label": 1, "source_id": "S1"}], "usage": {"input_tokens": 361, "output_tokens": 12}}
+[1/1] QA1: ANSWERED | 0.001s
+[1/1] QA1: INSUFFICIENT_EVIDENCE | 0.000s
+[1/1] QA1: ERROR | 0.001s
+[1/3] QA1: ANSWERED | 0.001s
+[2/3] timeout: ERROR | 0.001s
+[3/3] hint: ANSWERED | 0.001s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ERROR | 0.001s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ERROR | 0.001s
+[1/1] QA1: ANSWERED | 0.001s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ANSWERED | 0.001s
+[1/1] QA1: ERROR | 0.000s
+[1/2] QA1: ERROR | 0.001s
+[2/2] attack: ERROR | 0.000s
+[1/2] QA1: ERROR | 0.001s
+[2/2] attack: ERROR | 0.000s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ERROR | 0.000s
+[1/1] QA1: ANSWERED | 0.001s
+[1/1] QA1: ANSWERED | 0.001s
+[1/1] QA1: ERROR | 0.001s
+[1/2] QA1: ANSWERED | 0.001s
+[2/2] two: ANSWERED | 0.001s
+[1/1] QA1: ANSWERED | 0.001s
+SAN SANG (dung lai dich vu): https://example.test
+CPU torch threads: 2 | tokenizer parallelism: false
+Nap/kiem tra Qwen tren cuda:0...
+Nap/kiem tra Qwen tren cuda:1...
+Nap/kiem tra Qwen tren cuda:0...
+Nap/kiem tra Qwen tren cuda:1...
+
+test_checkpoint_missing_and_integrity_without_model_loading (apps.ai.tests.test_generation_provider.CheckpointTests.test_checkpoint_missing_and_integrity_without_model_loading) ... ok
+test_calls_on_one_provider_are_serialized (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_calls_on_one_provider_are_serialized) ... ok
+test_chat_template_token_budget_and_no_truncation (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_chat_template_token_budget_and_no_truncation) ... ok
+test_count_tokens_loads_once_but_does_not_generate (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_count_tokens_loads_once_but_does_not_generate) ... ok
+test_empty_tokens_or_decoded_text (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_empty_tokens_or_decoded_text) ... ok
+test_from_loaded_reuses_model_and_validates_revision (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_from_loaded_reuses_model_and_validates_revision) ... ok
+test_inference_failure_has_safe_explicit_code (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_inference_failure_has_safe_explicit_code) ... ok
+test_inference_settings_and_output_override (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_inference_settings_and_output_override) ... ok
+test_invalid_input_does_not_load_model (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_invalid_input_does_not_load_model) ... ok
+test_invalid_local_checkpoint_does_not_fallback_to_network (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_invalid_local_checkpoint_does_not_fallback_to_network) ... ok
+test_invalid_output_override_does_not_load (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_invalid_output_override_does_not_load) ... ok
+test_lazy_load_once_and_reuse (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_lazy_load_once_and_reuse) ... ok
+test_loader_pins_revision_and_preserves_offline_default (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_loader_pins_revision_and_preserves_offline_default) ... ok
+test_loading_failure_is_retryable (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_loading_failure_is_retryable) ... ok
+test_local_loader_validates_checkpoint_and_never_requantizes (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_local_loader_validates_checkpoint_and_never_requantizes) ... ok
+test_oom_is_distinct (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_oom_is_distinct) ... ok
+test_output_limit_and_incomplete_generation_are_distinct (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_output_limit_and_incomplete_generation_are_distinct) ... ok
+test_runtime_requires_expected_gpu_and_nf4 (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_runtime_requires_expected_gpu_and_nf4) ... ok
+test_timeout_never_releases_partial_text (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_timeout_never_releases_partial_text) ... ok
+test_tokenization_failure_is_not_generation_or_no_evidence (apps.ai.tests.test_generation_provider.GenerationProviderTests.test_tokenization_failure_is_not_generation_or_no_evidence) ... ok
+test_config_roundtrip (apps.ai.tests.test_generation_provider.ModelConfigTests.test_config_roundtrip) ... ok
+test_validation_and_fingerprint (apps.ai.tests.test_generation_provider.ModelConfigTests.test_validation_and_fingerprint) ... ok
+test_all_chunks_too_large_is_error_not_no_evidence (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_all_chunks_too_large_is_error_not_no_evidence) ... ok
+test_answer_contract_and_private_trace (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_answer_contract_and_private_trace) ... ok
+test_bad_outputs_not_silently_repaired (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_bad_outputs_not_silently_repaired) ... ok
+test_budget_skips_complete_oversized_chunk_not_its_text (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_budget_skips_complete_oversized_chunk_not_its_text) ... ok
+test_concise_qa_does_not_repair_observed_invalid_outputs (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_concise_qa_does_not_repair_observed_invalid_outputs) ... ok
+test_concise_qa_is_versioned_and_preserves_hint_prompt (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_concise_qa_is_versioned_and_preserves_hint_prompt) ... ok
+test_concise_version_keeps_authored_hint_and_request_policy (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_concise_version_keeps_authored_hint_and_request_policy) ... ok
+test_config_mismatch_rejected_before_model (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_config_mismatch_rejected_before_model) ... ok
+test_config_validation_and_fingerprint (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_config_validation_and_fingerprint) ... ok
+test_context_schema_uuid_page_and_source_id (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_context_schema_uuid_page_and_source_id) ... ok
+test_direct_qa_preserves_validation_abstention_hint_and_policy (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_direct_qa_preserves_validation_abstention_hint_and_policy) ... ok
+test_direct_qa_version_keeps_legacy_and_hint_prompts (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_direct_qa_version_keeps_legacy_and_hint_prompts) ... ok
+test_duplicate_source_ids_and_chunk_keys_rejected (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_duplicate_source_ids_and_chunk_keys_rejected) ... ok
+test_efficient_all_fit_counts_once_without_dropping_or_mutating_sources (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_all_fit_counts_once_without_dropping_or_mutating_sources) ... ok
+test_efficient_count_failure_is_not_hidden_as_budget_or_no_evidence (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_count_failure_is_not_hidden_as_budget_or_no_evidence) ... ok
+test_efficient_exact_budget_and_oversized_question_remain_explicit (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_exact_budget_and_oversized_question_remain_explicit) ... ok
+test_efficient_oversize_falls_back_to_complete_chunks_and_keeps_max_sources (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_oversize_falls_back_to_complete_chunks_and_keeps_max_sources) ... ok
+test_efficient_preserves_errors_choice_guard_hints_and_no_retry (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_preserves_errors_choice_guard_hints_and_no_retry) ... ok
+test_efficient_prompt_keeps_source_text_and_reduces_prompt_overhead (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_efficient_prompt_keeps_source_text_and_reduces_prompt_overhead) ... ok
+test_empty_context_never_counts_loads_or_generates (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_empty_context_never_counts_loads_or_generates) ... ok
+test_empty_context_still_rejects_invalid_request (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_empty_context_still_rejects_invalid_request) ... ok
+test_exact_token_budget_boundary_is_accepted (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_exact_token_budget_boundary_is_accepted) ... ok
+test_exercise_public_fields_only_and_hint (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_exercise_public_fields_only_and_hint) ... ok
+test_exercise_rejects_private_answers_and_qa_mode (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_exercise_rejects_private_answers_and_qa_mode) ... ok
+test_frozen_baseline_choice_contract_has_conservative_syntax_and_prefix_matching (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_frozen_baseline_choice_contract_has_conservative_syntax_and_prefix_matching) ... ok
+test_frozen_baseline_choice_rejects_observed_label_mismatch_without_repair (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_frozen_baseline_choice_rejects_observed_label_mismatch_without_repair) ... ok
+test_frozen_baseline_keeps_hint_policy_and_records_validation_reason (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_frozen_baseline_keeps_hint_policy_and_records_validation_reason) ... ok
+test_frozen_baseline_prompt_keeps_full_text_but_removes_storage_metadata (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_frozen_baseline_prompt_keeps_full_text_but_removes_storage_metadata) ... ok
+test_frozen_baseline_style_does_not_contaminate_open_question (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_frozen_baseline_style_does_not_contaminate_open_question) ... ok
+test_function_contract_reuses_injected_provider (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_function_contract_reuses_injected_provider) ... ok
+test_input_records_are_not_mutated (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_input_records_are_not_mutated) ... ok
+test_invalid_context_containers (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_invalid_context_containers) ... ok
+test_invalid_generation_provenance_or_token_usage (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_invalid_generation_provenance_or_token_usage) ... ok
+test_model_abstention_keeps_actual_usage (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_model_abstention_keeps_actual_usage) ... ok
+test_multiple_sources_are_renumbered_without_changing_identity (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_multiple_sources_are_renumbered_without_changing_identity) ... ok
+test_optional_cjk_guard_is_explicit_not_language_identification (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_optional_cjk_guard_is_explicit_not_language_identification) ... ok
+test_oversized_question_fails_before_generation (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_oversized_question_fails_before_generation) ... ok
+test_prompt_does_not_add_roles_from_document_text (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_prompt_does_not_add_roles_from_document_text) ... ok
+test_prompt_versions_keep_original_and_change_fingerprint (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_prompt_versions_keep_original_and_change_fingerprint) ... ok
+test_provider_service_errors_are_not_no_evidence (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_provider_service_errors_are_not_no_evidence) ... ok
+test_repeated_inline_label_has_one_reference (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_repeated_inline_label_has_one_reference) ... ok
+test_revised_prompt_does_not_relax_missing_hint_citation (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_revised_prompt_does_not_relax_missing_hint_citation) ... ok
+test_routed_open_question_has_same_public_data_as_legacy (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_routed_open_question_has_same_public_data_as_legacy) ... ok
+test_routed_qa_only_includes_selected_style (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_routed_qa_only_includes_selected_style) ... ok
+test_routed_qa_preserves_hint_fingerprint_policy_and_validation (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_routed_qa_preserves_hint_fingerprint_policy_and_validation) ... ok
+test_routed_qa_styles_use_question_text_only (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_routed_qa_styles_use_question_text_only) ... ok
+test_source_limit_records_dropped_sources (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_source_limit_records_dropped_sources) ... ok
+test_token_counter_failures_are_not_no_evidence (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_token_counter_failures_are_not_no_evidence) ... ok
+test_unexpected_provider_error_has_safe_service_code (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_unexpected_provider_error_has_safe_service_code) ... ok
+test_unknown_private_context_fields_rejected_before_provider (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_unknown_private_context_fields_rejected_before_provider) ... ok
+test_unknown_prompt_version_in_builder_is_rejected (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_unknown_prompt_version_in_builder_is_rejected) ... ok
+test_unknown_usage_is_null_not_fake_zero (apps.ai.tests.test_rag_pipeline.RAGPipelineTests.test_unknown_usage_is_null_not_fake_zero) ... ok
+test_attack_marker_fails_even_with_valid_citation (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_attack_marker_fails_even_with_valid_citation) ... ok
+test_case_builder_does_not_send_gold_or_modify_source (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_case_builder_does_not_send_gold_or_modify_source) ... ok
+test_duplicate_ids_and_invalid_kind_rejected_before_generation (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_duplicate_ids_and_invalid_kind_rejected_before_generation) ... ok
+test_empty_context_does_not_call_provider (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_empty_context_does_not_call_provider) ... ok
+test_existing_evidence_directory_not_overwritten (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_existing_evidence_directory_not_overwritten) ... ok
+test_expected_policy_rejection_has_separate_count_and_no_model_call (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_expected_policy_rejection_has_separate_count_and_no_model_call) ... ok
+test_invalid_citation_is_error_not_success (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_invalid_citation_is_error_not_success) ... ok
+test_override_variants_are_explicit_policy_cases_not_successful_answers (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_override_variants_are_explicit_policy_cases_not_successful_answers) ... ok
+test_rejected_hint_retains_raw_output_for_internal_diagnosis (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_rejected_hint_retains_raw_output_for_internal_diagnosis) ... ok
+test_service_error_retained_and_next_case_runs (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_service_error_retained_and_next_case_runs) ... ok
+test_unexpected_policy_rejection_still_fails_normal_qa (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_unexpected_policy_rejection_still_fails_normal_qa) ... ok
+test_valid_format_does_not_certify_hint_quality (apps.ai.tests.test_generation_checks.GenerationChecksTests.test_valid_format_does_not_certify_hint_quality) ... ok
+test_academic_questions_not_rejected_for_policy_topic_alone (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_academic_questions_not_rejected_for_policy_topic_alone) ... ok
+test_compare_uses_two_distinct_visible_sources (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_compare_uses_two_distinct_visible_sources) ... ok
+test_conservative_check_can_reject_quoted_override (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_conservative_check_can_reject_quoted_override) ... ok
+test_empty_context_and_provider_failure_do_not_use_hint_fallback (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_empty_context_and_provider_failure_do_not_use_hint_fallback) ... ok
+test_input_records_not_changed_by_bounded_hint (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_input_records_not_changed_by_bounded_hint) ... ok
+test_observed_multilingual_hint_is_rejected_without_repair (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_observed_multilingual_hint_is_rejected_without_repair) ... ok
+test_observed_override_and_variants_rejected_before_provider (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_observed_override_and_variants_rejected_before_provider) ... ok
+test_outline_and_model_abstention (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_outline_and_model_abstention) ... ok
+test_qa_remains_model_text_not_a_reading_template (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_qa_remains_model_text_not_a_reading_template) ... ok
+test_read_hint_has_authored_wording_no_evidence_answer_text (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_read_hint_has_authored_wording_no_evidence_answer_text) ... ok
+test_request_policy_applies_even_to_legacy_prompt (apps.ai.tests.test_generation_guardrails.GenerationGuardrailTests.test_request_policy_applies_even_to_legacy_prompt) ... ok
+test_changed_prediction_cannot_be_scored (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_changed_prediction_cannot_be_scored) ... ok
+test_dataset_loader_merges_without_silent_id_or_question_overwrite (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_dataset_loader_merges_without_silent_id_or_question_overwrite) ... ok
+test_empty_retrieval_does_not_invent_usage (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_empty_retrieval_does_not_invent_usage) ... ok
+test_error_reason_does_not_export_arbitrary_provider_exception_attribute (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_error_reason_does_not_export_arbitrary_provider_exception_attribute) ... ok
+test_errors_retained_and_next_case_runs (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_errors_retained_and_next_case_runs) ... ok
+test_foreign_course_source_never_reaches_generation (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_foreign_course_source_never_reaches_generation) ... ok
+test_frozen_baseline_compact_prompt_retains_context_and_safe_mismatch_reason (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_frozen_baseline_compact_prompt_retains_context_and_safe_mismatch_reason) ... ok
+test_gold_labels_outside_snapshot_become_explicit_label_error (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_gold_labels_outside_snapshot_become_explicit_label_error) ... ok
+test_guardrail_report_requires_matching_pinned_live_evidence (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_guardrail_report_requires_matching_pinned_live_evidence) ... ok
+test_invalid_label_not_dropped (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_invalid_label_not_dropped) ... ok
+test_invalid_provider_usage_is_error_not_a_measured_zero (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_invalid_provider_usage_is_error_not_a_measured_zero) ... ok
+test_metadata_preflight_is_explicitly_not_native_faiss_validation (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_metadata_preflight_is_explicitly_not_native_faiss_validation) ... ok
+test_nearest_rank_and_blank_review_metrics (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_nearest_rank_and_blank_review_metrics) ... ok
+test_nonstring_question_is_recorded_without_crashing_metric_export (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_nonstring_question_is_recorded_without_crashing_metric_export) ... ok
+test_offline_scope_does_not_accept_assessment_or_private_selector (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_offline_scope_does_not_accept_assessment_or_private_selector) ... ok
+test_output_directory_not_overwritten (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_output_directory_not_overwritten) ... ok
+test_packaged_150_questions_have_standard_course_ids_and_legacy_mapping (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_packaged_150_questions_have_standard_course_ids_and_legacy_mapping) ... ok
+test_pipeline_roundtrip_prompt_whitelist_and_artifacts (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_pipeline_roundtrip_prompt_whitelist_and_artifacts) ... ok
+test_policy_rejection_recorded_before_retrieval (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_policy_rejection_recorded_before_retrieval) ... ok
+test_prompt_comparison_keeps_invalid_generation_and_blocks_policy_before_search (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_prompt_comparison_keeps_invalid_generation_and_blocks_policy_before_search) ... ok
+test_prompt_comparison_rejects_different_model_budgets_before_writing (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_prompt_comparison_rejects_different_model_budgets_before_writing) ... ok
+test_prompt_comparison_retains_retrieval_failure_in_both_arms (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_prompt_comparison_retains_retrieval_failure_in_both_arms) ... ok
+test_prompt_comparison_reuses_retrieval_not_answers_and_leaves_quality_pending (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_prompt_comparison_reuses_retrieval_not_answers_and_leaves_quality_pending) ... ok
+test_rejected_model_output_still_records_actual_context_and_usage (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_rejected_model_output_still_records_actual_context_and_usage) ... ok
+test_review_grades_require_evidence_and_have_explicit_denominators (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_review_grades_require_evidence_and_have_explicit_denominators) ... ok
+test_sample_cannot_be_reported_as_full_150 (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_sample_cannot_be_reported_as_full_150) ... ok
+test_snapshot_source_checksum_must_match_catalog (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_snapshot_source_checksum_must_match_catalog) ... ok
+test_snapshot_tampering_and_pointer_traversal_rejected (apps.ai.tests.test_generation_evaluation.GenerationEvaluationTests.test_snapshot_tampering_and_pointer_traversal_rejected) ... ok
+test_abstention_and_missing_reference_need_review (apps.ai.tests.test_factuality.FactualityRuleTests.test_abstention_and_missing_reference_need_review) ... ok
+test_boolean_label_is_leading_not_substring (apps.ai.tests.test_factuality.FactualityRuleTests.test_boolean_label_is_leading_not_substring) ... ok
+test_checksum_or_id_mismatch_rejected_before_output (apps.ai.tests.test_factuality.FactualityRuleTests.test_checksum_or_id_mismatch_rejected_before_output) ... ok
+test_choice_label_does_not_match_letter_inside_word_or_citation (apps.ai.tests.test_factuality.FactualityRuleTests.test_choice_label_does_not_match_letter_inside_word_or_citation) ... ok
+test_citation_page_hit_is_not_claim_support (apps.ai.tests.test_factuality.FactualityRuleTests.test_citation_page_hit_is_not_claim_support) ... ok
+test_citation_renumbering_uses_reference_source_identity (apps.ai.tests.test_factuality.FactualityRuleTests.test_citation_renumbering_uses_reference_source_identity) ... ok
+test_context_not_in_actual_prompt_is_flagged (apps.ai.tests.test_factuality.FactualityRuleTests.test_context_not_in_actual_prompt_is_flagged) ... ok
+test_csv_formula_prefix_is_escaped (apps.ai.tests.test_factuality.FactualityRuleTests.test_csv_formula_prefix_is_escaped) ... ok
+test_expected_points_are_checked_individually (apps.ai.tests.test_factuality.FactualityRuleTests.test_expected_points_are_checked_individually) ... ok
+test_hint_copy_flag_never_becomes_safe_hint_certification (apps.ai.tests.test_factuality.FactualityRuleTests.test_hint_copy_flag_never_becomes_safe_hint_certification) ... ok
+test_keyword_match_is_not_factuality_or_human_approval (apps.ai.tests.test_factuality.FactualityRuleTests.test_keyword_match_is_not_factuality_or_human_approval) ... ok
+test_negated_answer_can_share_keywords_but_is_flagged (apps.ai.tests.test_factuality.FactualityRuleTests.test_negated_answer_can_share_keywords_but_is_flagged) ... ok
+test_saved_run_outputs_are_separate_and_denominators_explicit (apps.ai.tests.test_factuality.FactualityRuleTests.test_saved_run_outputs_are_separate_and_denominators_explicit) ... ok
+test_service_errors_are_retained_not_scored_from_internal_raw_output (apps.ai.tests.test_factuality.FactualityRuleTests.test_service_errors_are_retained_not_scored_from_internal_raw_output) ... ok
+test_uncited_tail_is_flag_not_silently_dropped (apps.ai.tests.test_factuality.FactualityRuleTests.test_uncited_tail_is_flag_not_silently_dropped) ... ok
+test_unicode_normalization_and_config_validation (apps.ai.tests.test_factuality.FactualityRuleTests.test_unicode_normalization_and_config_validation) ... ok
+test_zip_reads_without_extraction_and_rejects_duplicate_entries (apps.ai.tests.test_factuality.FactualityRuleTests.test_zip_reads_without_extraction_and_rejects_duplicate_entries) ... ok
+test_baseline_and_startup_code_cells_compile_without_fake_outputs (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_baseline_and_startup_code_cells_compile_without_fake_outputs) ... ok
+test_checkpoint_manifest_and_checksum_validation (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_checkpoint_manifest_and_checksum_validation) ... ok
+test_checkpoint_rejects_missing_manifest_and_extra_files (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_checkpoint_rejects_missing_manifest_and_extra_files) ... ok
+test_checkpoint_rejects_wrong_quantization_even_with_updated_checksum (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_checkpoint_rejects_wrong_quantization_even_with_updated_checksum) ... ok
+test_checkpoint_requires_expected_model_revision_and_all_files (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_checkpoint_requires_expected_model_revision_and_all_files) ... ok
+test_downstream_cells_stop_before_import_or_install_if_preflight_failed (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_downstream_cells_stop_before_import_or_install_if_preflight_failed) ... ok
+test_duplicate_json_keys_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_duplicate_json_keys_rejected) ... ok
+test_duplicate_source_reference_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_duplicate_source_reference_rejected) ... ok
+test_excerpts_match_audit_and_original_pdf_checksums (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_excerpts_match_audit_and_original_pdf_checksums) ... ok
+test_expected_answers_and_review_metadata_not_in_prompt (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_expected_answers_and_review_metadata_not_in_prompt) ... ok
+test_five_cases_cover_qa_hint_and_missing_evidence (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_five_cases_cover_qa_hint_and_missing_evidence) ... ok
+test_foreign_source_or_removed_source_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_foreign_source_or_removed_source_rejected) ... ok
+test_frozen_baseline_defaults_to_all_150_and_identifies_development_cases (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_frozen_baseline_defaults_to_all_150_and_identifies_development_cases) ... ok
+test_gpu_generation_path_has_no_cpu_token_filter (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_gpu_generation_path_has_no_cpu_token_filter) ... ok
+test_hint_has_dedicated_no_final_answer_instructions (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_hint_has_dedicated_no_final_answer_instructions) ... ok
+test_insufficient_evidence_has_no_citations (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_insufficient_evidence_has_no_citations) ... ok
+test_labels_and_references_must_match (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_labels_and_references_must_match) ... ok
+test_live_hint_insufficient_status_with_citation_remains_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_live_hint_insufficient_status_with_citation_remains_rejected) ... ok
+test_live_missing_inline_citations_remain_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_live_missing_inline_citations_remain_rejected) ... ok
+test_live_split_json_objects_remain_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_live_split_json_objects_remain_rejected) ... ok
+test_local_load_branch_does_not_requantize_or_download (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_local_load_branch_does_not_requantize_or_download) ... ok
+test_malformed_schema_and_empty_output_rejected (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_malformed_schema_and_empty_output_rejected) ... ok
+test_old_source_package_is_rejected_before_source_refresh_or_tests (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_old_source_package_is_rejected_before_source_refresh_or_tests) ... ok
+test_optional_prompt_comparison_does_not_replace_full_baseline_or_load_qwen (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_optional_prompt_comparison_does_not_replace_full_baseline_or_load_qwen) ... ok
+test_pipeline_checks_cover_eight_cases_without_gold_in_inputs (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_pipeline_checks_cover_eight_cases_without_gold_in_inputs) ... ok
+test_plain_text_abstention_is_explicit_not_guessed_from_gold (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_plain_text_abstention_is_explicit_not_guessed_from_gold) ... ok
+test_plain_text_does_not_invent_missing_or_unknown_citations (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_plain_text_does_not_invent_missing_or_unknown_citations) ... ok
+test_plain_text_envelope_uses_only_existing_inline_citations (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_plain_text_envelope_uses_only_existing_inline_citations) ... ok
+test_runner_records_all_five_model_failures_without_claiming_success (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_runner_records_all_five_model_failures_without_claiming_success) ... ok
+test_same_source_reuse_and_supported_hint_status_are_explicit (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_same_source_reuse_and_supported_hint_status_are_explicit) ... ok
+test_token_budget_exact_boundary_and_no_silent_truncation (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_token_budget_exact_boundary_and_no_silent_truncation) ... ok
+test_valid_answer_and_fenced_json (scripts.tests.test_generation_notebook.GenerationNotebookTests.test_valid_answer_and_fenced_json) ... ok
+test_annotation_is_idempotent_and_does_not_mutate_input (scripts.tests.test_qa_additions.QAAdditionsTests.test_annotation_is_idempotent_and_does_not_mutate_input) ... ok
+test_duplicate_baseline_question_rejected_after_normalization (scripts.tests.test_qa_additions.QAAdditionsTests.test_duplicate_baseline_question_rejected_after_normalization) ... ok
+test_final_25_are_distinct_course_drafts_not_fake_b_peer_review (scripts.tests.test_qa_additions.QAAdditionsTests.test_final_25_are_distinct_course_drafts_not_fake_b_peer_review) ... ok
+test_invented_reviewer_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_invented_reviewer_rejected) ... ok
+test_missing_anchor_or_fingerprint_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_missing_anchor_or_fingerprint_rejected) ... ok
+test_missing_hint_rubric_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_missing_hint_rubric_rejected) ... ok
+test_missing_record_or_wrong_mode_count_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_missing_record_or_wrong_mode_count_rejected) ... ok
+test_offline_scope_cannot_claim_an_assessment_in_live_database (scripts.tests.test_qa_additions.QAAdditionsTests.test_offline_scope_cannot_claim_an_assessment_in_live_database) ... ok
+test_out_of_range_or_boolean_page_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_out_of_range_or_boolean_page_rejected) ... ok
+test_question_key_handles_whitespace_case_and_punctuation (scripts.tests.test_qa_additions.QAAdditionsTests.test_question_key_handles_whitespace_case_and_punctuation) ... ok
+test_real_snapshot_50_cases_and_all_source_anchors (scripts.tests.test_qa_additions.QAAdditionsTests.test_real_snapshot_50_cases_and_all_source_anchors) ... ok
+test_standard_ids_and_legacy_mapping_cover_same_baseline_questions (scripts.tests.test_qa_additions.QAAdditionsTests.test_standard_ids_and_legacy_mapping_cover_same_baseline_questions) ... ok
+test_tampered_uuid_not_silently_replaced_by_annotation (scripts.tests.test_qa_additions.QAAdditionsTests.test_tampered_uuid_not_silently_replaced_by_annotation) ... ok
+test_wrong_or_reused_id_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_wrong_or_reused_id_rejected) ... ok
+test_wrong_pdf_checksum_rejected (scripts.tests.test_qa_additions.QAAdditionsTests.test_wrong_pdf_checksum_rejected) ... ok
+test_docker_uses_the_verified_dual_profile_file (scripts.tests.test_configure_kaggle_inference.ConfigureKaggleTests.test_docker_uses_the_verified_dual_profile_file) ... ok
+test_one_replica_does_not_change_env_or_write_dual_config (scripts.tests.test_configure_kaggle_inference.ConfigureKaggleTests.test_one_replica_does_not_change_env_or_write_dual_config) ... ok
+test_append_preserves_all_original_cells_and_backup_bytes (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_append_preserves_all_original_cells_and_backup_bytes) ... ok
+test_checkpoint_auto_detection_covers_persisted_output_and_ambiguity (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_checkpoint_auto_detection_covers_persisted_output_and_ambiguity) ... ok
+test_legacy_tunnel_parameters_explicitly_use_tunnels_api (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_legacy_tunnel_parameters_explicitly_use_tunnels_api) ... ok
+test_mixed_kernel_version_stops_before_model_load (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_mixed_kernel_version_stops_before_model_load) ... ok
+test_standalone_cell_never_runs_evaluation_and_embeds_gateway (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_standalone_cell_never_runs_evaluation_and_embeds_gateway) ... ok
+test_tunnel_error_keeps_codes_but_never_credentials (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_tunnel_error_keeps_codes_but_never_credentials) ... ok
+test_warm_service_returns_without_reloading_model_or_source (scripts.tests.test_kaggle_startup.StartupNotebookTests.test_warm_service_returns_without_reloading_model_or_source) ... ok
+test_append_preserves_every_existing_cell_and_embeds_verified_source (scripts.tests.test_kaggle_dual_gpu.DualStartupTests.test_append_preserves_every_existing_cell_and_embeds_verified_source) ... ok
+test_creates_exactly_one_provider_per_device_and_reuses_loaded_replicas (scripts.tests.test_kaggle_dual_gpu.DualStartupTests.test_creates_exactly_one_provider_per_device_and_reuses_loaded_replicas) ... ok
+test_duplicate_checkpoint_mounts_are_deduplicated_but_different_models_require_selection (scripts.tests.test_kaggle_dual_gpu.DualStartupTests.test_duplicate_checkpoint_mounts_are_deduplicated_but_different_models_require_selection) ... ok
+test_requires_two_gpus_without_allocating_a_model (scripts.tests.test_kaggle_dual_gpu.DualStartupTests.test_requires_two_gpus_without_allocating_a_model) ... ok
+
+----------------------------------------------------------------------
+Ran 202 tests in 18.199s
+
+OK
+
+
+========================================================================
+test-results-rules.txt
+========================================================================
+COMMAND: C:\Users\DELL\AppData\Local\Programs\Python\Python313\python.exe -X utf8 scripts/run_rag_evaluation.py --score-rules D:\Downloads\20261023T105403Z-bac2de31.zip --output-dir "D:\Lap trinh\Đồ án tốt nghiệp\Ứng dụng\smart-lms-rag\.private\evidence-rules-20261024T112552Z"
+CWD: .
+STARTED UTC: 2026-10-24T11:25:52.184907+00:00
+EXIT: 0
+{
+  "method": "rules_and_keywords_not_semantic_factuality",
+  "rules": {
+    "version": "lexical_screening_v1",
+    "keyword_threshold": 0.65,
+    "claim_overlap_threshold": 0.35,
+    "hint_copy_words": 6
+  },
+  "total_qa": 150,
+  "source_run_kind": "live_model",
+  "status_counts": {
+    "ANSWERED": 119,
+    "ERROR": 31
+  },
+  "rule_result_counts": {
+    "KEYWORD_COVERED": 75,
+    "LABEL_MATCH": 6,
+    "NO_VALID_ANSWER": 31,
+    "LOW_KEYWORD_COVERAGE": 21,
+    "HINT_REVIEW": 17
+  },
+  "flag_counts": {
+    "NO_CITED_GOLD_PAGE": 13,
+    "NEGATION_REVIEW": 14,
+    "GENERATION_OR_SERVICE_ERROR": 31,
+    "UNCITED_TAIL_REVIEW": 34,
+    "LOW_KEYWORD_COVERAGE": 21,
+    "LOW_CLAIM_SOURCE_OVERLAP": 13
+  },
+  "label_checks": {
+    "total_label_qa": 13,
+    "recognized_answer_labels": 6,
+    "matching_labels": 6,
+    "mismatching_labels": 0,
+    "unscored_including_errors": 7
+  },
+  "citation_checks": {
+    "answered_denominator": 119,
+    "structure_valid": 119,
+    "prompt_membership_verified": 119,
+    "cited_gold_page_hit_count": 106,
+    "gold_page_denominator": 119
+  },
+  "input_sha256": {
+    "run_manifest.json": "821e421066fefc115aa183bd9f70e89d099147669a5d011096117755596551c2",
+    "dataset.json": "c805cd1e840f4c132f4f76e172d02233fdbefe7ed4188cd98a4a0e1ba4c66f7c",
+    "predictions.jsonl": "c46ab31be41148edcd9e02c6feb06ce37b4a766c9776325e89e078c2de606a12"
+  },
+  "source_archive_sha256": "bace0b2ae55dcdf2db1598c88d984781521e5e8f9eea05e1e0f65b5b907dac47",
+  "grader_source_sha256": "1ba9cb3691dcf7fdce7d40ca448fa2058e3e61fae4b72d3103be6eddbf08d30d",
+  "output_sha256": {
+    "rule_scores.jsonl": "677e6eeaa0c67a7f8c1269daaee2a94fbf6d680ec5f92c04866752e807ec12ba",
+    "rule_scores.csv": "fb17f59145d9e8c250963efc33567cc8d0711f3f951c298db1c5ae3c6330deef"
+  },
+  "human_review_required_count": 150,
+  "human_review_complete": false,
+  "factuality_accuracy": null,
+  "quality_verified": false,
+  "model_calls": 0,
+  "elapsed_seconds": 0.27419190000000526,
+  "limitation": "Label matching checks only the leading decision, not its rationale. Keyword overlap can miss paraphrases and accept contradictions, copied gold or swapped entities. Low source overlap and hint copying are review flags, not entailment/leakage proofs. A matching gold page does not prove citation support. No human scores were filled; all cases still require review. Checksums detect inconsistency, not authenticity of a run or correctness of its labels."
+}
+
