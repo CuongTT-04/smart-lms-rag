@@ -16,7 +16,7 @@ it('opens the citation page instead of page one', async () => {
   render(<PdfCanvas url="blob:citation" title="Citation" initialPage={2} />)
   await waitFor(() => expect(screen.getByLabelText('Trang PDF hiện tại')).toHaveTextContent('2 / 2'))
   const doc=await getDocument.mock.results[0].value.promise
-  expect(doc.getPage).toHaveBeenCalledWith(2)
+  await waitFor(() => expect(doc.getPage).toHaveBeenCalledWith(2))
 })
 it('rejects citation pages outside the PDF instead of clamping them', async () => {
   render(<PdfCanvas url="blob:citation" title="Citation" initialPage={3} />)

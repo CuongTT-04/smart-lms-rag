@@ -1,0 +1,28 @@
+group,metric,value,unit,denominator,source,note
+generation,total_qa,150,count,150,manifest.json#baseline_metrics,
+generation,ANSWERED,119,count,150,manifest.json#baseline_metrics,Status is not semantic correctness.
+generation,ERROR,31,count,150,manifest.json#baseline_metrics,Status is not semantic correctness.
+generation,answered_rate,0.7933333333333333,ratio,150,manifest.json#baseline_metrics,Not accuracy.
+generation,generation:INVALID_GENERATION,10,count,150,manifest.json#baseline_metrics,
+generation,generation:OUTPUT_LIMIT_REACHED,6,count,150,manifest.json#baseline_metrics,
+generation,generation:GENERATION_TIMEOUT,15,count,150,manifest.json#baseline_metrics,
+latency,mean,17.56853034462667,seconds,150,manifest.json#baseline_metrics,Sequential retrieval + pipeline; includes errors; no warmup.
+latency,p50,16.56870158599986,seconds,150,manifest.json#baseline_metrics,Sequential retrieval + pipeline; includes errors; no warmup.
+latency,p95,30.435893949000274,seconds,150,manifest.json#baseline_metrics,Sequential retrieval + pipeline; includes errors; no warmup.
+retrieval,mean_latency,0.30964540544664637,seconds,150,manifest.json#baseline_metrics,
+retrieval,page_recall@1,0.75,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+retrieval,page_recall@3,0.95,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+retrieval,page_recall@5,0.97,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+retrieval,hit_rate@1,0.76,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+retrieval,hit_rate@3,0.9533333333333334,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+retrieval,hit_rate@5,0.9733333333333334,ratio,150,manifest.json#baseline_metrics,Top-k chunks then deduplicate pages; not answer correctness.
+lexical_rules,KEYWORD_COVERED,75,count,150,manifest.json#rule_metrics,Heuristic screening; requires human review.
+lexical_rules,LABEL_MATCH,6,count,150,manifest.json#rule_metrics,Heuristic screening; requires human review.
+lexical_rules,NO_VALID_ANSWER,31,count,150,manifest.json#rule_metrics,Heuristic screening; requires human review.
+lexical_rules,LOW_KEYWORD_COVERAGE,21,count,150,manifest.json#rule_metrics,Heuristic screening; requires human review.
+lexical_rules,HINT_REVIEW,17,count,150,manifest.json#rule_metrics,Heuristic screening; requires human review.
+citations,cited_gold_page_hit_count,106,count,119,manifest.json#rule_metrics,Page match does not establish claim support.
+quality,factuality_accuracy,,ratio,,manifest.json#rule_metrics,NOT_VERIFIED; blank is not zero.
+quality,reviewed_qa,0,count,150,manifest.json#baseline_metrics,
+tests,python,202,count,202,test-results.txt,Unit/mock tests; no live model.
+tests,frontend,328,count,328,test-results.txt,Unit/mock tests; no live model.

@@ -1,0 +1,720 @@
+{
+  "schema_version": 1,
+  "week": "W04",
+  "collected_at_utc": "2026-10-24T11:27:19.734216+00:00",
+  "status": "EVIDENCE_PACKAGED_ACCEPTANCE_PENDING",
+  "source_commit_before_evidence": "9d7166f01a99f4b297b327c1971e44702b404211",
+  "baseline_source_archive": {
+    "filename": "20261023T105403Z-bac2de31.zip",
+    "sha256": "bace0b2ae55dcdf2db1598c88d984781521e5e8f9eea05e1e0f65b5b907dac47",
+    "retained_outside_git": true,
+    "output_checksums_verified": true,
+    "qa_id_order_and_count_verified": true
+  },
+  "baseline_source_commit": "b0136a6434ca5948b2fb9ade8ce765dbcd334cce",
+  "baseline_source_working_tree_dirty": true,
+  "source_note": "Current source differs from frozen benchmark; original run manifest is retained in the external detailed archive.",
+  "source_sha256": {
+    "backend/apps/ai/evaluation/__init__.py": "f8bcf880f94f15056d481b8a976e472f2ab4749ae312812fc18ba03dead07329",
+    "backend/apps/ai/evaluation/factuality.py": "1ba9cb3691dcf7fdce7d40ca448fa2058e3e61fae4b72d3103be6eddbf08d30d",
+    "backend/apps/ai/evaluation/generation.py": "386623285c3742c5c75165523e7a8dfbffd637835c68d9fad05a252f9d12b520",
+    "backend/apps/ai/evaluation/metrics.py": "af1a38f25cb652aafb3810f8f6e4db5a8cfde692886805d1740738d02ac375a9",
+    "backend/apps/ai/evaluation/snapshot.py": "4a879e9215f061d5910b51ca6e0825635838b7485705a2dc81d867cb38dfd194",
+    "backend/apps/ai/prompts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/prompts/guarded.py": "bd37e4403c3f2db918784ef3fcc8b87d57f76a4f579476f62d1d9bbb4e2da49e",
+    "backend/apps/ai/prompts/qa.py": "21b10eeca307ea2117f810ab2557ada5c6ece3e4b7059b0e8c126d6dcc03b27f",
+    "backend/apps/ai/prompts/system.py": "1d844667bcf91611562c563e0d4ffed11a0c42e5a6f9cfdc40a60e02a3e7125e",
+    "backend/apps/ai/providers/__init__.py": "1831c0b59cd37a75baeab86c6b57008789c242dde48746325ab7bec05e37db45",
+    "backend/apps/ai/providers/base.py": "69e623a477395f80fcf07e05761f11c6df747da04834b264b8b7798bfd43e31f",
+    "backend/apps/ai/providers/checkpoint.py": "a9d4baaa584cea08bdb39893fab670152bfe3fc14eefcecd514a547c4c59f42f",
+    "backend/apps/ai/providers/local.py": "12651e1f9ececf46f5cdd7a78528d2e03ae7005ba1aa51cbe6490e1912e992c8",
+    "backend/apps/ai/providers/openai.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/rag/__init__.py": "a03861fbd62fdec1bacb2c95f29ea3b6ffbaef96e23b33b21f4b38bc523408da",
+    "backend/apps/ai/rag/base.py": "14365fe04a9b87e04a42e5533d0fa12a396ee92d7ce5cccea08765e51d5cc4e7",
+    "backend/apps/ai/rag/checks.py": "542ded051839d40ae53c9a1e2f05aefab61ad018b8565c37b139887c5d20411e",
+    "backend/apps/ai/rag/citations.py": "3c6fdb1e60459561d5f9c144f1a2f840115db55c62643f15ac57ed089704f76d",
+    "backend/apps/ai/rag/context_builder.py": "8932af50dd10f3a222b93faf82b686331bbb2b49eed89e4931c7efd5f6dba91b",
+    "backend/apps/ai/rag/guardrails.py": "0b031fc1205477de70b1c12bc1d3a864c124756ba8bb303276cba7652388f24a",
+    "backend/apps/ai/rag/pipeline.py": "02009f4db440a9a7f100f53d8a5e46243fc6aa0aaa723ad7484786886c4a3af4",
+    "scripts/tests/test_configure_kaggle_inference.py": "ddf7fe9efe3c4bc12443082d5233702cef08f3beb8d718483269d1681b3ad02a",
+    "scripts/tests/test_corpus_audit.py": "eff5d60b07c33422ece2df3fd473c2a90352d1151856f6a1aef7f7431378ff10",
+    "scripts/tests/test_generation_notebook.py": "576395d54c2e704c52bd669976b251fd1bf9d71526b5d2ccbe1e07f9d17aa8ac",
+    "scripts/tests/test_ingest_cli.py": "a1bf213be4b638a166b11eb56ee7354b4a0da16bce32925ec0f7d6160e37fae9",
+    "scripts/tests/test_kaggle_dual_gpu.py": "5007474ef6b385c7916051e6ce7ae75258909d895e92dd34b04e9fa5cb9e7418",
+    "scripts/tests/test_kaggle_startup.py": "495ceb71517b512d29c67980177003865f1ccf75127aff251ddccb5d57a92ce2",
+    "scripts/tests/test_qa_additions.py": "94098346bedc67731d41ac2b5e66f0a9358a604b4b7f4a8dc00d710b1ac03c42",
+    "notebooks/generation_setup.ipynb": "f85cfdcd2a7cf408cf609c9abd2b0c849841448d25e0f39affbdab0e2983fb86",
+    "scripts/run_rag_evaluation.py": "867bb4279124d812f364ea837272fc792f81aa7a6ad9f1fbac197cfad36e2406",
+    "docs/reports/w4-ab-generation-integration.md": "c96565d82bb4897e190e924f7f8ed7b856985c2c4efc483c2d1a724a8295ee67",
+    "docker-compose.yml": "9724246e142840af74e86be42c04af27b591cd128c2f724740402b170dc0c5d3"
+  },
+  "human_review_complete": false,
+  "quality_verified": false,
+  "full_online_acceptance_verified": false,
+  "github_tracking": {
+    "milestone": "RAG answer, citations",
+    "issue_urls": [],
+    "pull_request_urls": [
+      "https://github.com/CuongTT-04/smart-lms-rag/pull/6",
+      "https://github.com/CuongTT-04/smart-lms-rag/pull/5"
+    ],
+    "review_status": "PENDING_GITHUB_VERIFICATION",
+    "end_of_week_tag": "w04",
+    "tag_verified": false,
+    "tracking_source": "Supplied group report; live GitHub assignment/review not verified."
+  },
+  "reported_integration_source": "../../docs/reports/w4-ab-generation-integration.md",
+  "reported_integration_note": "Historical report by B; private raw integration artifacts unavailable here; not rerun.",
+  "excluded": [
+    "secrets and .env",
+    "model weights",
+    "raw PDF excerpts and predictions",
+    "private integration artifacts"
+  ],
+  "files": {
+    "figures/baseline-summary.svg": {
+      "sha256": "3a0a8d58c3942ad3190f8ea8c8c12155817f946076f87c3cb5dbed218bc08d88",
+      "size_bytes": 1731
+    },
+    "figures/chatbot-answer.png": {
+      "sha256": "29937101f38f8dc8675131b17314d00407fc661448a6a950a7cd6c2921aa7906",
+      "size_bytes": 287441
+    },
+    "figures/chatbot-citation-pdf.png": {
+      "sha256": "753780295e894e67da47dbecca5dffeed55b73d41cc3b8e6447ebd9d62806a3a",
+      "size_bytes": 249666
+    },
+    "figures/chatbot-citation-tooltip.png": {
+      "sha256": "b4905b178706289e14763407047d341bb6b975ef699f8957315244f359809d96",
+      "size_bytes": 299461
+    },
+    "figures/notifications-panel.png": {
+      "sha256": "b026723611d0269908f8340d0dce3a05b12527fb1c4b42b1ee70552e7b4472e4",
+      "size_bytes": 318270
+    },
+    "figures/student-quiz-attempt.png": {
+      "sha256": "42cf9f884df41ab40ad1b621cae383ef646c50e652cc0a5106153c2babfa6ec6",
+      "size_bytes": 174545
+    },
+    "figures/student-video-checkpoint-question.jpg": {
+      "sha256": "f85af873714553f81ac2234f173283d7c0bc2705aa669a2a4da68d14f5642093",
+      "size_bytes": 48953
+    },
+    "figures/student-video-player.png": {
+      "sha256": "e1ade3e2bb3f9e15b8d6ed816235d4d520de22f590911bc0a79bade7241cdb3a",
+      "size_bytes": 1036004
+    },
+    "figures/student-written-assignment.png": {
+      "sha256": "e7794c903f08fc355dfccd74e9e00acec728403f82a5f7449f7c04fc33d0d787",
+      "size_bytes": 159219
+    },
+    "figures/teacher-assessment-results.png": {
+      "sha256": "5c98bf893ad9c58de64e1e37778588dc3b3f342f60f3aa2285daace0880df5da",
+      "size_bytes": 226264
+    },
+    "figures/teacher-quiz-create.png": {
+      "sha256": "b36f3ad1807eb7abc1749a67655882f49e1c4a9d483ca77b066059be34c49cb3",
+      "size_bytes": 394075
+    },
+    "figures/teacher-video-question-list.png": {
+      "sha256": "e539087a41bd4da432bb79ec971d5406469b3e5b7f7e313029fa78c244a51937",
+      "size_bytes": 697919
+    },
+    "figures/teacher-video-quiz-question.png": {
+      "sha256": "94e9d9e386f48c582fb4a9f2f148c6728c706c0fe9987d645f3a7179c00f659a",
+      "size_bytes": 398415
+    },
+    "figures/teacher-video-student-responses.png": {
+      "sha256": "4a55a1fe4417782898be3d66fe88b53d0cef60582b2d5526f888a8bfbeb99764",
+      "size_bytes": 125725
+    },
+    "figures/teacher-video-upload.png": {
+      "sha256": "47c32b72475fc03c66b6ebf0c0427a5fc7c6406f2555db406b2fa820ad1c5914",
+      "size_bytes": 236900
+    },
+    "figures/teacher-video-workspace.png": {
+      "sha256": "963213dd564b5e5e07e85d39fd1c5c57aaee212d78838db678e52cd9ff25e6a7",
+      "size_bytes": 918165
+    },
+    "figures/teacher-video-written-question.png": {
+      "sha256": "942d3b1db2019622528d8662e71f82b092c727ef48a1e320ce7f528451a6beda",
+      "size_bytes": 303486
+    },
+    "figures/teacher-written-assignment-create.png": {
+      "sha256": "133975c96819b85d0f0278f44715160570a3c40076655bde98cec257857c413f",
+      "size_bytes": 276120
+    },
+    "metrics.csv": {
+      "sha256": "43dbfd2f97b08fad795d06366c79fb58f7c368e229393cf7da87e83d7d838450",
+      "size_bytes": 2996
+    },
+    "README.md": {
+      "sha256": "368ceb7abebc33ef40b05c14735b10f8a903f862b6845b80610610ff624197d1",
+      "size_bytes": 9464
+    },
+    "test-results.txt": {
+      "sha256": "5af7ddbbd76c988925f1bec7645bb9313e87629177555ce90c68103855e00366",
+      "size_bytes": 50554
+    }
+  },
+  "baseline_metrics": {
+    "run_kind": "live_model",
+    "total_qa": 150,
+    "dataset_available_count": 150,
+    "is_full_150_run": true,
+    "status_counts": {
+      "ANSWERED": 119,
+      "ERROR": 31
+    },
+    "error_count": 31,
+    "error_groups": {
+      "generation:INVALID_GENERATION": 10,
+      "generation:OUTPUT_LIMIT_REACHED": 6,
+      "generation:GENERATION_TIMEOUT": 15
+    },
+    "validation_reason_counts": {
+      "UNEXPECTED_CJK": 2,
+      "CHOICE_FORMAT": 6,
+      "MISSING_CITATION": 2
+    },
+    "latency_seconds": {
+      "count": 150,
+      "mean": 17.56853034462667,
+      "p50": 16.56870158599986,
+      "p95": 30.435893949000274,
+      "method": "nearest_rank",
+      "first_case": 17.74858601400001
+    },
+    "token_usage": {
+      "measured_generation_calls": 129,
+      "no_generation_calls": 0,
+      "unmeasured_generation_attempts": 21,
+      "input_tokens": 379028,
+      "output_tokens": 13581,
+      "note": "Includes observed model usage even when output validation fails; exceptions without usage remain unmeasured. Hint tokens describe action selection."
+    },
+    "cost": null,
+    "human_review_complete": false,
+    "quality": {
+      "content_correct": null,
+      "grounded": null,
+      "citation_supports_claim": null,
+      "citation_page_correct": null,
+      "hint_no_answer_leak": null,
+      "reviewed_qa": 0
+    },
+    "retrieval_page_metrics": {
+      "protocol_version": "w3-page-v1",
+      "unit": "document_version_page",
+      "k_unit": "chunk",
+      "ks": [
+        1,
+        3,
+        5
+      ],
+      "requested_top_k": 5,
+      "aggregation": "macro over valid gold QA; empty/error retrieval=0; deduplicate pages after slicing top-k chunks",
+      "total_qa": 150,
+      "scored_qa": 150,
+      "recorded_prediction_qa": 150,
+      "missing_prediction_qa": 0,
+      "invalid_label_qa": 0,
+      "no_evidence_qa": 0,
+      "retrieval_error_qa": 0,
+      "status_counts": {
+        "OK": 150
+      },
+      "latency_count": 150,
+      "mean_latency_seconds": 0.30964540544664637,
+      "page_recall": {
+        "1": 0.75,
+        "3": 0.95,
+        "5": 0.97
+      },
+      "hit_rate": {
+        "1": 0.76,
+        "3": 0.9533333333333334,
+        "5": 0.9733333333333334
+      },
+      "provenance": {
+        "run_kind": "live_model",
+        "offline_scope": true
+      },
+      "authorization_verified": false,
+      "limitation": "Page matches do not establish passage relevance or answer quality; no-evidence behavior requires separate tests."
+    },
+    "authorization_verified": false,
+    "rag_verified": false,
+    "limitation": "Output status and page hits are not semantic quality. Human scores remain blank; no DB/API/UI authorization tested."
+  },
+  "baseline_config": {
+    "model": {
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "device": "cuda:0",
+      "checkpoint_path": null,
+      "cache_dir": "/tmp/ohayo-huggingface",
+      "local_files_only": true,
+      "context_tokens": 4096,
+      "max_input_tokens": 3584,
+      "max_new_tokens": 256,
+      "timeout_seconds": 30.0
+    },
+    "prompt_version": "frozen_baseline",
+    "temperature": 0.0,
+    "max_sources": 10,
+    "reject_cjk_output": true
+  },
+  "baseline_output_sha256": {
+    "dataset.json": "c805cd1e840f4c132f4f76e172d02233fdbefe7ed4188cd98a4a0e1ba4c66f7c",
+    "predictions.jsonl": "c46ab31be41148edcd9e02c6feb06ce37b4a766c9776325e89e078c2de606a12",
+    "scores.csv": "8690cbc4abb697cdfe1cfb1028e19430c2b9c6686e0e372394fcda019ea74459",
+    "metrics.json": "9524dba26a6fa9b21a9a8b95f8d286b4921e52bcbb07f46552b70303218cb2e9"
+  },
+  "rule_metrics": {
+    "method": "rules_and_keywords_not_semantic_factuality",
+    "rules": {
+      "version": "lexical_screening_v1",
+      "keyword_threshold": 0.65,
+      "claim_overlap_threshold": 0.35,
+      "hint_copy_words": 6
+    },
+    "total_qa": 150,
+    "source_run_kind": "live_model",
+    "status_counts": {
+      "ANSWERED": 119,
+      "ERROR": 31
+    },
+    "rule_result_counts": {
+      "KEYWORD_COVERED": 75,
+      "LABEL_MATCH": 6,
+      "NO_VALID_ANSWER": 31,
+      "LOW_KEYWORD_COVERAGE": 21,
+      "HINT_REVIEW": 17
+    },
+    "flag_counts": {
+      "NO_CITED_GOLD_PAGE": 13,
+      "NEGATION_REVIEW": 14,
+      "GENERATION_OR_SERVICE_ERROR": 31,
+      "UNCITED_TAIL_REVIEW": 34,
+      "LOW_KEYWORD_COVERAGE": 21,
+      "LOW_CLAIM_SOURCE_OVERLAP": 13
+    },
+    "label_checks": {
+      "total_label_qa": 13,
+      "recognized_answer_labels": 6,
+      "matching_labels": 6,
+      "mismatching_labels": 0,
+      "unscored_including_errors": 7
+    },
+    "citation_checks": {
+      "answered_denominator": 119,
+      "structure_valid": 119,
+      "prompt_membership_verified": 119,
+      "cited_gold_page_hit_count": 106,
+      "gold_page_denominator": 119
+    },
+    "input_sha256": {
+      "run_manifest.json": "821e421066fefc115aa183bd9f70e89d099147669a5d011096117755596551c2",
+      "dataset.json": "c805cd1e840f4c132f4f76e172d02233fdbefe7ed4188cd98a4a0e1ba4c66f7c",
+      "predictions.jsonl": "c46ab31be41148edcd9e02c6feb06ce37b4a766c9776325e89e078c2de606a12"
+    },
+    "source_archive_sha256": "bace0b2ae55dcdf2db1598c88d984781521e5e8f9eea05e1e0f65b5b907dac47",
+    "grader_source_sha256": "1ba9cb3691dcf7fdce7d40ca448fa2058e3e61fae4b72d3103be6eddbf08d30d",
+    "output_sha256": {
+      "rule_scores.jsonl": "677e6eeaa0c67a7f8c1269daaee2a94fbf6d680ec5f92c04866752e807ec12ba",
+      "rule_scores.csv": "fb17f59145d9e8c250963efc33567cc8d0711f3f951c298db1c5ae3c6330deef"
+    },
+    "human_review_required_count": 150,
+    "human_review_complete": false,
+    "factuality_accuracy": null,
+    "quality_verified": false,
+    "model_calls": 0,
+    "elapsed_seconds": 0.27419190000000526,
+    "limitation": "Label matching checks only the leading decision, not its rationale. Keyword overlap can miss paraphrases and accept contradictions, copied gold or swapped entities. Low source overlap and hint copying are review flags, not entailment/leakage proofs. A matching gold page does not prove citation support. No human scores were filled; all cases still require review. Checksums detect inconsistency, not authenticity of a run or correctness of its labels."
+  },
+  "test_summary": {
+    "collected_at_utc": "2026-10-24T11:27:19.680169+00:00",
+    "execution_note": "Rerun outside sandbox after permission/temporary-file failures; no production code changed to pass tests.",
+    "scope": "local_unit_contract_tests_and_offline_rule_scoring_not_live_gpu_or_database",
+    "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+    "all_commands_passed": true,
+    "suites": [
+      {
+        "suite": "python",
+        "command": [
+          "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+          "-X",
+          "utf8",
+          "-m",
+          "unittest",
+          "apps.ai.tests.test_generation_provider",
+          "apps.ai.tests.test_rag_pipeline",
+          "apps.ai.tests.test_generation_checks",
+          "apps.ai.tests.test_generation_guardrails",
+          "apps.ai.tests.test_generation_evaluation",
+          "apps.ai.tests.test_factuality",
+          "scripts.tests.test_generation_notebook",
+          "scripts.tests.test_qa_additions",
+          "scripts.tests.test_configure_kaggle_inference",
+          "scripts.tests.test_kaggle_startup",
+          "scripts.tests.test_kaggle_dual_gpu",
+          "-v"
+        ],
+        "cwd": ".",
+        "started_at_utc": "2026-10-24T11:25:33.216927+00:00",
+        "elapsed_seconds": 18.968,
+        "exit_code": 0,
+        "passed": true,
+        "test_count": 202,
+        "log": "test-results-python.txt",
+        "live_llm_called": false
+      },
+      {
+        "suite": "rules",
+        "command": [
+          "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+          "-X",
+          "utf8",
+          "scripts/run_rag_evaluation.py",
+          "--score-rules",
+          "D:\\Downloads\\20261023T105403Z-bac2de31.zip",
+          "--output-dir",
+          "D:\\Lap trinh\\Đồ án tốt nghiệp\\Ứng dụng\\smart-lms-rag\\.private\\evidence-rules-20261024T112552Z"
+        ],
+        "cwd": ".",
+        "started_at_utc": "2026-10-24T11:25:52.184907+00:00",
+        "elapsed_seconds": 0.652,
+        "exit_code": 0,
+        "passed": true,
+        "test_count": null,
+        "log": "test-results-rules.txt",
+        "live_llm_called": false
+      },
+      {
+        "suite": "frontend",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "test",
+          "--",
+          "--maxWorkers=2"
+        ],
+        "cwd": "frontend",
+        "started_at_utc": "2026-10-24T11:25:52.852213+00:00",
+        "elapsed_seconds": 75.259,
+        "exit_code": 0,
+        "passed": true,
+        "test_count": 328,
+        "log": "test-results-frontend.txt",
+        "live_llm_called": false
+      },
+      {
+        "suite": "lint",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "run",
+          "lint"
+        ],
+        "cwd": "frontend",
+        "started_at_utc": "2026-10-24T11:27:08.111632+00:00",
+        "elapsed_seconds": 9.859,
+        "exit_code": 0,
+        "passed": true,
+        "test_count": null,
+        "log": "test-results-lint.txt",
+        "live_llm_called": false
+      },
+      {
+        "suite": "build",
+        "command": [
+          "C:\\Program Files\\nodejs\\npm.cmd",
+          "run",
+          "build"
+        ],
+        "cwd": "frontend",
+        "started_at_utc": "2026-10-24T11:27:17.970970+00:00",
+        "elapsed_seconds": 1.709,
+        "exit_code": 0,
+        "passed": true,
+        "test_count": null,
+        "log": "test-results-build.txt",
+        "live_llm_called": false
+      }
+    ]
+  },
+  "detailed_archive": {
+    "filename": "evidence-details.zip",
+    "local_location": ".private/evidence-details.zip",
+    "retained_outside_git": true,
+    "sha256": "dfa8744a66678cf4e031bd33ca74c7581388cd2ebf0ab4db8cc84ae79443c223",
+    "files": {
+      "baseline-environment.txt": "bcbb59e8fb92437f8c41755a7b6b206461f5fdce2dbb00f51188deae06399906",
+      "baseline-metrics.json": "9524dba26a6fa9b21a9a8b95f8d286b4921e52bcbb07f46552b70303218cb2e9",
+      "baseline-run.json": "821e421066fefc115aa183bd9f70e89d099147669a5d011096117755596551c2",
+      "rule-metrics.json": "a927e9b7383d4886ae0281146385f50ab27072afc99f7b94e86b49aff8318a1b",
+      "rule-scores.csv": "2c7a39521c7fab36288520ed52dbf0a6a9bf16c454f7b8558ee68a36800c5a1c",
+      "test-results.json": "3e427da3bb4d5cb90f91e8c7ae7d6efbfc471c9cf6ff86e45779db66e6282353",
+      "test-results-build.txt": "aa0d63a95cdfe82e3c5f0297f3988f340188031d95efa0f6b1c5b5f27a08179f",
+      "test-results-frontend.txt": "364ac8f00d2e7c3f34b452324544c712503b881d2a14012c6a41c56a8142c8cc",
+      "test-results-lint.txt": "12031417cab12d43b06a5393cabc38eb03dad089d4cd019b1d7653db085c6b17",
+      "test-results-python.txt": "7c1593876d2f05e336e68cea04b86adb08683fbddc86a0a99f36de319417056b",
+      "test-results-rules.txt": "f52a4d14be3201e2941d60df2fa2ac19c2fbc5284f89734f7280626493e8c670"
+    },
+    "note": "Original benchmark ZIP and detailed ZIP must be supplied separately to authorized reviewers; not available from a fresh Git clone."
+  },
+  "interface_screenshot_source": {
+    "url": "https://docs.google.com/document/d/1h_h9-OaVckw8XYioUAV79RmSIFh4Ibnf/edit",
+    "title": "ĐATN_N2_Báo cáo tuần 04.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "source_modified_at_utc": "2026-10-24T11:25:13.337Z",
+    "source_sha256": "fde40b9f51f86c1be7062b100babb5690f4d59a0f2e4623dd3439a534b041ada",
+    "scope": "Sections 2.4 through 2.7; all 17 embedded interface images in document order.",
+    "images_unchanged": true,
+    "limitation": "Historical screenshots extracted from the supplied report, not a new live UI test, factuality score or authorization acceptance.",
+    "images": [
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 106,
+        "following_text": [
+          "Giao diện thêm video phía giáo viên.",
+          ""
+        ],
+        "dimensions": [
+          1901,
+          926
+        ],
+        "path": "figures/teacher-video-upload.png",
+        "embedded_media_path": "word/media/image30.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 108,
+        "following_text": [
+          "Giao diện làm việc video phía giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1910,
+          1314
+        ],
+        "path": "figures/teacher-video-workspace.png",
+        "embedded_media_path": "word/media/image35.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 110,
+        "following_text": [
+          "Giao diện thêm câu hỏi trắc nghiệm phía giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1910,
+          1366
+        ],
+        "path": "figures/teacher-video-quiz-question.png",
+        "embedded_media_path": "word/media/image28.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 112,
+        "following_text": [
+          "Giao diện thêm câu hỏi tự luận phía giáo viên",
+          "Giáo viên có thể quản lý các câu hỏi và câu trả lời của học viên ngay dưới video:"
+        ],
+        "dimensions": [
+          1912,
+          932
+        ],
+        "path": "figures/teacher-video-written-question.png",
+        "embedded_media_path": "word/media/image9.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 115,
+        "following_text": [
+          "Giao diện quản lý các câu hỏi có trong video phía giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1911,
+          936
+        ],
+        "path": "figures/teacher-video-question-list.png",
+        "embedded_media_path": "word/media/image17.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 117,
+        "following_text": [
+          "Giao diện xem các câu trả lời của học viên phía giáo viên",
+          "Phía học viên, trình phát dừng tại mốc để hiển thị câu hỏi. Trắc nghiệm được kiểm tra đúng/sai; câu sai có thể đưa về mốc xem lại do giáo viên thiết lập. Tự luận được lưu với trạng thái không tự kết luận đúng/sai. Backend lưu tiến độ theo học viên, kiểm tra revision câu hỏi và request_id để hạn chế gửi lặp hoặc sử dụng kết quả cũ. Việc tua/tải lại không được tự đánh dấu đã vượt câu hỏi."
+        ],
+        "dimensions": [
+          1911,
+          932
+        ],
+        "path": "figures/teacher-video-student-responses.png",
+        "embedded_media_path": "word/media/image31.png"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 120,
+        "following_text": [
+          "Giao diện câu hỏi tại mốc video phía học viên.",
+          "Khi học viên đã hoàn thành học 1 video thì sẽ đưa vào trạng thái đã xem. Ở trạng thái đã xem, học viên có thể tự do tua các mốc thời gian, không còn dựa vào mốc thời gian xem lớn nhất (mốc thời gian xem lớn nhất là mốc thời lượng cuối học viên đã xem, nó nhỏ hơn tổng thời gian video nhằm tránh việc tua trước để hoàn thành nhanh video) và xem lại lịch sử các câu trả lời có trong video"
+        ],
+        "dimensions": [
+          1280,
+          720
+        ],
+        "path": "figures/student-video-checkpoint-question.jpg",
+        "embedded_media_path": "word/media/image19.jpg"
+      },
+      {
+        "section": "2.4. Hoàn thiện video tương tác",
+        "paragraph_index": 123,
+        "following_text": [
+          "Giao diện xem video phía học viên",
+          "2.5. Bài tập, kiểm tra và thống kê kết quả"
+        ],
+        "dimensions": [
+          1920,
+          1650
+        ],
+        "path": "figures/student-video-player.png",
+        "embedded_media_path": "word/media/image16.png"
+      },
+      {
+        "section": "2.5. Bài tập, kiểm tra và thống kê kết quả",
+        "paragraph_index": 129,
+        "following_text": [
+          "Giao diện tạo bài trắc nghiệm phía giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1910,
+          1854
+        ],
+        "path": "figures/teacher-quiz-create.png",
+        "embedded_media_path": "word/media/image33.png"
+      },
+      {
+        "section": "2.5. Bài tập, kiểm tra và thống kê kết quả",
+        "paragraph_index": 131,
+        "following_text": [
+          "Giao diện tạo bài tự luận phía giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1907,
+          936
+        ],
+        "path": "figures/teacher-written-assignment-create.png",
+        "embedded_media_path": "word/media/image8.png"
+      },
+      {
+        "section": "2.5. Bài tập, kiểm tra và thống kê kết quả",
+        "paragraph_index": 133,
+        "following_text": [
+          "Dashboard kết quả bài tập của giáo viên",
+          ""
+        ],
+        "dimensions": [
+          1910,
+          1510
+        ],
+        "path": "figures/teacher-assessment-results.png",
+        "embedded_media_path": "word/media/image21.png"
+      },
+      {
+        "section": "2.5. Bài tập, kiểm tra và thống kê kết quả",
+        "paragraph_index": 135,
+        "following_text": [
+          "Giao diện làm bài trắc nghiệm phía học viên",
+          ""
+        ],
+        "dimensions": [
+          1920,
+          1627
+        ],
+        "path": "figures/student-quiz-attempt.png",
+        "embedded_media_path": "word/media/image22.png"
+      },
+      {
+        "section": "2.5. Bài tập, kiểm tra và thống kê kết quả",
+        "paragraph_index": 137,
+        "following_text": [
+          "Giao diện làm bài tự luận phía học viên",
+          "2.6. Chuông thông báo và cập nhật thời gian thực"
+        ],
+        "dimensions": [
+          1920,
+          1343
+        ],
+        "path": "figures/student-written-assignment.png",
+        "embedded_media_path": "word/media/image27.png"
+      },
+      {
+        "section": "2.6. Chuông thông báo và cập nhật thời gian thực",
+        "paragraph_index": 142,
+        "following_text": [
+          "Chuông thông báo, trạng thái chưa đọc và điều hướng đến nội dung liên quan.",
+          "2.7. Tích hợp LLM. sinh câu trả lời có citation"
+        ],
+        "dimensions": [
+          1915,
+          971
+        ],
+        "path": "figures/notifications-panel.png",
+        "embedded_media_path": "word/media/image29.png"
+      },
+      {
+        "section": "2.7. Tích hợp LLM. sinh câu trả lời có citation",
+        "paragraph_index": 167,
+        "following_text": [
+          "Khi di chuột đến các citation [1],[2],... đều có các dẫn chứng đã được chuyển sang dạng text của pdf học liệu.",
+          ""
+        ],
+        "dimensions": [
+          1915,
+          970
+        ],
+        "path": "figures/chatbot-answer.png",
+        "embedded_media_path": "word/media/image26.png"
+      },
+      {
+        "section": "2.7. Tích hợp LLM. sinh câu trả lời có citation",
+        "paragraph_index": 169,
+        "following_text": [
+          "Phía dưới cũng liệt kê các nguồn lấy citation, khi nhấn sẽ hiển thị trang lấy citaion:",
+          ""
+        ],
+        "dimensions": [
+          1917,
+          972
+        ],
+        "path": "figures/chatbot-citation-tooltip.png",
+        "embedded_media_path": "word/media/image34.png"
+      },
+      {
+        "section": "2.7. Tích hợp LLM. sinh câu trả lời có citation",
+        "paragraph_index": 171,
+        "following_text": [
+          "3. Quản lý mã nguồn và bằng chứng",
+          "Repository lưu mã nguồn và sản phẩm của nhóm:"
+        ],
+        "dimensions": [
+          1917,
+          1078
+        ],
+        "path": "figures/chatbot-citation-pdf.png",
+        "embedded_media_path": "word/media/image32.png"
+      }
+    ]
+  },
+  "readme_source": {
+    "url": "https://docs.google.com/document/d/1h_h9-OaVckw8XYioUAV79RmSIFh4Ibnf/edit",
+    "source_modified_at_utc": "2026-10-24T12:15:42.115Z",
+    "scope": "Condensed report sections 1-4, all seven work areas; original evidence metrics and limitations retained."
+  }
+}
