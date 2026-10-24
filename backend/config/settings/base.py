@@ -54,6 +54,7 @@ LOCAL_APPS = [
     "apps.ai",
     "apps.payments",
     "apps.operations",
+    "apps.notifications",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.notifications.context.NotificationActorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -91,23 +93,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+NOTIFICATION_REDIS_URL = os.getenv('NOTIFICATION_REDIS_URL', 'redis://redis:6379/0')
+CHANNEL_LAYERS = {'default': {'BACKEND': 'channels_redis.core.RedisChannelLayer', 'CONFIG': {'hosts': [NOTIFICATION_REDIS_URL]}}}
 
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("DB_NAME") or str(PROJECT_DIR / "db.sqlite3"),
-    }
-}
 
-if os.getenv("DB_ENGINE") and os.getenv("DB_ENGINE") != "django.db.backends.sqlite3":
-    DATABASES["default"].update(
-        {
-            "USER": os.getenv("DB_USER", ""),
-            "PASSWORD": os.getenv("DB_PASSWORD", ""),
-            "HOST": os.getenv("DB_HOST", ""),
-            "PORT": os.getenv("DB_PORT", ""),
-        }
-    )
+from config.database import database_config
+
+DATABASES = {"default": database_config(os.environ)}
+
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -194,6 +189,7 @@ SPECTACULAR_SETTINGS = {
         "common.schema.align_request_constraints",
     ],
     "ENUM_NAME_OVERRIDES": {
+        "ChatMode": "apps.ai.api.serializers.CHAT_MODE_CHOICES",
         "RegistrationRole": "common.schema.REGISTRATION_ROLE_CHOICES",
         "UserRole": "common.schema.USER_ROLE_CHOICES",
         "UserStatus": "common.schema.USER_STATUS_CHOICES",

@@ -2,6 +2,27 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { apiRequest, setAccessToken, clearAccessToken } from './api'
 beforeEach(() => { vi.stubGlobal('fetch',vi.fn());setAccessToken('access') })
 afterEach(() => { clearAccessToken();vi.unstubAllGlobals() })
+it('rejects a shared refresh cookie that belongs to a different account', async () => {
+  const jwt = (id) => `e30.${btoa(JSON.stringify({ user_id: id }))}.signature`
+  setAccessToken(jwt('account-a'))
+  fetch.mockResolvedValueOnce(new Response('{}', { status: 401 }))
+    .mockResolvedValueOnce(new Response(JSON.stringify({ access: jwt('account-b') })))
+  await expect(apiRequest('/notifications/')).rejects.toMatchObject({ status: 401 })
+  expect(fetch).toHaveBeenCalledTimes(2)
+})
+it('does not overwrite a new login when an older refresh resolves late', async () => {
+  let complete
+  fetch.mockResolvedValueOnce(new Response('{}', { status: 401 }))
+    .mockReturnValueOnce(new Promise((resolve) => { complete = resolve }))
+  const pending = apiRequest('/notifications/')
+  await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+  setAccessToken('new-login')
+  complete(new Response(JSON.stringify({ access: 'old-refreshed' })))
+  await expect(pending).rejects.toMatchObject({ status: 401 })
+  fetch.mockResolvedValueOnce(new Response('{}'))
+  await apiRequest('/users/me/')
+  expect(fetch.mock.calls.at(-1)[1].headers.Authorization).toBe('Bearer new-login')
+})
 it('returns a PDF blob through the existing bearer client', async () => {
   fetch.mockResolvedValue(new Response('%PDF-fixture',{headers:{'Content-Type':'application/pdf'}}))
   const blob=await apiRequest('/documents/doc/view/',{responseType:'blob'})

@@ -154,6 +154,11 @@ def remove_classroom(*, actor, course, classroom_id):
     classroom = Classroom.objects.select_for_update().filter(pk=classroom_id, course=course).first()
     if classroom is None:
         raise Classroom.DoesNotExist
+    from apps.notifications.events import students, scope
+    from apps.notifications.services import notify
+    import uuid
+    notify(event_id=uuid.uuid4(), recipients=students(course, classroom), actor=actor,
+           kind='CLASSROOM_REMOVED', title='Lớp học của bạn đã được gỡ', context=scope(course, classroom))
     now = timezone.now()
     for session in classroom.sessions.select_for_update().filter(removed_at__isnull=True).order_by('pk'):
         for material in session.materials.filter(removed_at__isnull=True).order_by('pk'):

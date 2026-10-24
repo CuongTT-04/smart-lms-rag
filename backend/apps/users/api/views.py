@@ -253,6 +253,16 @@ class LogoutView(APIView):
             except TokenError:
                 pass
         response = Response(status=status.HTTP_204_NO_CONTENT)
+        from django.db import transaction
+        from asgiref.sync import async_to_sync
+        from channels.layers import get_channel_layer
+        import logging
+        def close_sockets():
+            try:
+                async_to_sync(get_channel_layer().group_send)(f'notifications.{request.user.pk}', {'type': 'session.close'})
+            except Exception:
+                logging.getLogger(__name__).warning('Không thể đóng socket; phiên realtime sẽ tự hết hạn.')
+        transaction.on_commit(close_sockets)
         clear_refresh_cookie(response)
         return response
 

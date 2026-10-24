@@ -119,9 +119,9 @@ Watermark được áp dụng cho bản trình bày học liệu phục vụ ng�
 
 | Nhóm chức năng | Yêu cầu được chọn | Mức thực hiện trong MVP | Giới hạn |
 |---|---|---|---|
-| Bài đánh giá | FR-26; UC-18 | Quiz một lựa chọn đúng và bài tự luận/nộp file; lưu đề, hạn, thời gian làm và chính sách công bố. | Không có ngân hàng câu hỏi ngẫu nhiên, nhiều loại câu hỏi hoặc giám sát thi. |
-| Lượt làm quiz | FR-27–FR-28; UC-19 | Một lượt làm mỗi học viên; lưu câu trả lời, nộp và tự chấm trên server theo phiên bản đề. | Không cho sửa nội dung quiz sau khi đã có lượt làm; muốn sửa phải tạo bản/bài mới. |
-| Nộp bài tập | FR-29; UC-20 | Một lượt nộp gồm văn bản hoặc một file; kiểm tra hạn và xác nhận đã nhận. | Không nhận nộp muộn/nộp lại; file đính kèm chỉ phục vụ chấm bài, không tự đưa vào corpus AI. |
+| Bài đánh giá | FR-26; UC-18 | Quiz một hoặc nhiều đáp án theo từng câu và bài tự luận/nộp file; lưu đề, hạn, thời gian làm và chính sách công bố. | Không có ngân hàng câu hỏi ngẫu nhiên, camera giám sát hay khóa trình duyệt tuyệt đối; Kiểm tra ghi nhận chuyển tab/thoát fullscreen và cảnh báo. |
+| Lượt làm quiz | FR-27–FR-28; UC-19 | Ôn tập nhiều lượt trước hạn; Kiểm tra một lượt. Lưu câu trả lời, nộp và tự chấm trên server theo phiên bản đề. | Không cho sửa nội dung quiz sau khi đã có lượt làm; muốn sửa phải tạo bản/bài mới. |
+| Nộp bài tập | FR-29; UC-20 | Văn bản hoặc một file; Ôn tập cho sửa/nộp lại trước hạn, Kiểm tra một lần nộp chính thức có xác nhận; lưu lịch sử. | Không nhận nộp muộn; Kiểm tra không nộp lại; file đính kèm chỉ phục vụ chấm bài, không tự đưa vào corpus AI. |
 | Chấm và xem kết quả | FR-30–FR-31; UC-21–UC-22 | Giáo viên chấm tự luận theo thang 0–10, nhận xét, công bố; học viên xem kết quả cá nhân. | Không dùng AI để quyết định điểm chính thức; sửa điểm có dấu vết. |
 | Thống kê lớp | FR-32; UC-23 | Hiển thị thành viên, tiến độ, số bài đã nộp và phân bố điểm trong lớp phụ trách. | Chưa có dự báo kết quả học tập, gợi ý cá nhân hóa hoặc xuất báo cáo tùy biến. |
 
@@ -149,8 +149,8 @@ MVP chọn **34 yêu cầu chức năng sản phẩm**: FR-01–FR-04, FR-06, FR
 | Học liệu AI | Chỉ bản đang phục vụ và sẵn sàng, được đánh dấu cho học viên sử dụng, mới vào context. Đáp án/rubric riêng không được lập chỉ mục cho học viên. | FR-13–FR-18, FR-23 |
 | Thiếu nguồn | Hỏi lại hoặc báo chưa đủ bằng chứng, không tự chuyển sang tri thức tổng quát. | FR-20, BR-05 |
 | Bài luyện tập | Cho gợi ý khái niệm và bước tiếp theo, không mặc định cung cấp toàn bộ lời giải. | FR-22–FR-23 |
-| Quiz đang làm | Không cho trợ giúp AI theo bài; trạng thái được kiểm tra phía server. Không bảo đảm phát hiện mọi đề được người dùng sao chép sang một câu hỏi độc lập. | FR-22, FR-26–FR-27, NFR-31 |
-| Bài tự luận có chấm điểm | Giáo viên chọn tắt trợ giúp hoặc chỉ cho gợi ý khái niệm. Sau hạn vẫn áp dụng chính sách đã cấu hình; không tự mở lời giải. | FR-22–FR-23, FR-26 |
+| Chế độ Kiểm tra | Không cho trợ giúp AI theo bài; chính sách được kiểm tra phía server. Ôn tập cho gợi ý; không bảo đảm phát hiện mọi đề sao chép sang câu hỏi độc lập. | FR-22, FR-26–FR-27, NFR-31 |
+| Bài tự luận có chấm điểm | Kiểm tra tắt trợ giúp AI. Ôn tập có gợi ý theo học liệu; sau hạn không tự mở lời giải hoặc cho sửa bài. | FR-22–FR-23, FR-26 |
 | Hội thoại | Chỉ duy trì ngữ cảnh cần thiết trong phiên hiện tại; không có lịch sử hội thoại lâu dài hoặc API xem lại. Nếu không còn phiên/quyền thì không tái sử dụng ngữ cảnh cũ. | NFR-01, NFR-05; FR-25 hoãn lại |
 | Lưu trữ sau khi gỡ | Giữ metadata và dấu vết cần kiểm chứng; ngừng quyền đọc/phục vụ bản đã gỡ. File vật lý chỉ người có quyền vận hành tiếp cận theo chính sách lưu dữ liệu; chưa có xóa tự động theo lịch. | FR-13, FR-17, FR-36, NFR-05, NFR-16 |
 | Dùng dữ liệu người học để nghiên cứu | Không tự lấy hội thoại hoặc bài nộp làm dữ liệu fine-tune. Corpus/instruction/QA nghiên cứu được chuẩn bị riêng, có quyền sử dụng và kiểm soát thông tin cá nhân. | FR-R01–FR-R02, NFR-05 |
@@ -323,3 +323,17 @@ Khi phát hiện cần thay đổi phạm vi, nhóm ghi rõ nội dung, lý do, 
 Thay đổi ngưỡng AI, model hoặc cấu hình retrieval phải được quyết định trên development trước đánh giá cuối. Nhóm không tự mở thêm chức năng chỉ vì có công nghệ mới, không cắt phần nghiên cứu bắt buộc mà vẫn giữ nguyên tuyên bố hoàn thành đề tài và không coi việc viết xong tài liệu phạm vi là sản phẩm đã được nghiệm thu.
 
 Cập nhật phạm vi ngày 03/10/2026: thêm FR-37/FR-38 và MVP-11; không bổ sung cơ chế tắt watermark độc lập. Mở rộng bản xem cho DOCX/PPTX/TXT/OCR được kiểm chứng ở FIN-10 của sản phẩm cuối.
+
+
+### Cập nhật phạm vi Bài tập ngày 17/10/2026
+
+Chế độ chính thức là **Ôn tập / Kiểm tra**. Ôn tập cho làm lại quiz và chỉnh sửa/nộp lại tự luận trước hạn, có phần gợi ý/AI. Kiểm tra chỉ một lượt quiz hoặc một lần nộp tự luận chính thức, có dialog xác nhận không thể chỉnh sửa/nộp lại. Mọi lượt giữ lịch sử; lượt mới không kế thừa điểm/nhận xét của lượt cũ. Đề đã có lượt làm giữ nguyên; cần thay đổi phải tạo bài mới.
+
+Kiểm tra yêu cầu fullscreen khi bắt đầu/tiếp tục và ghi sự kiện chuyển tab/ẩn trang/thoát fullscreen. Hệ thống chỉ cảnh báo và ghi log với thời điểm nhận ở server; giáo viên tự quyết định xử lý, ghi nhận xét nội bộ hoặc điều chỉnh điểm có audit. Không tự động nộp bài, khóa bài, trừ điểm hoặc kết luận gian lận do vi phạm. Fullscreen là yêu cầu của giao diện, không phải cơ chế chống gian lận tuyệt đối. Quiz hết thời lượng/hạn chung vẫn chốt theo dữ liệu đã lưu; đây là quy tắc thời gian, không phải hình phạt vi phạm.
+
+Dashboard và xuất Excel (.xlsx) có ở **cả hai chế độ**: tổng hợp học viên/trạng thái/điểm, lịch sử mọi lượt, tiến độ nộp, phân bố điểm, bài nộp theo ngày và tỷ lệ đúng từng câu quiz. Mặc định điểm/thống kê dùng lượt đã nộp mới nhất của mỗi học viên; bản nháp sửa tiếp không thay điểm lượt đã nộp cho đến khi nộp lượt mới. Excel theo đúng bộ lọc tìm kiếm/trạng thái, gồm Tổng hợp, Chi tiết lượt làm, Thống kê; Kiểm tra thêm Vi phạm và ghi nhận xử lý của giáo viên. Chỉ giáo viên quản lý được xem/xuất dữ liệu lớp.
+
+Trạng thái triển khai AI: chưa có provider sinh câu trả lời. Ôn tập cung cấp gợi ý nhập tay và thông báo AI chưa kết nối; API trợ giúp Kiểm tra trả 403. Không mô phỏng gợi ý nhập tay thành kết quả AI.
+
+
+Cập nhật kiểu trắc nghiệm 17/10/2026: giáo viên chọn **Một đáp án / Nhiều đáp án** riêng cho từng câu trong video và quiz. Thuộc tính `multiple` là cấu hình tường minh, không suy ra từ số đáp án đúng. Một đáp án dùng radio tròn, cần đúng một đáp án đúng; Nhiều đáp án dùng checkbox vuông, cho cấu hình từ một đáp án đúng trở lên. Chấm theo tập lựa chọn khớp toàn bộ đáp án, không cho điểm một phần. Dashboard/Excel dùng cùng quy tắc và hiển thị đầy đủ các lựa chọn đã chọn.

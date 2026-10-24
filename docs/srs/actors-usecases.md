@@ -285,7 +285,7 @@ Mỗi use case được mô tả qua mục tiêu, tiền điều kiện, luồng
 - **Actor / mục tiêu:** học viên hoàn thành quiz được giao.
 - **Tiền điều kiện / kích hoạt:** có quyền, còn thời gian và lượt làm; bắt đầu quiz.
 - **Luồng chính:** kiểm tra điều kiện → tạo lượt làm gắn phiên bản đề → trả câu hỏi không kèm đáp án bảo vệ → ghi câu trả lời → nộp bài → backend kiểm tra thời gian và tự chấm theo đáp án → trả kết quả được phép công bố.
-- **Ngoại lệ:** hết thời gian, mất kết nối, nộp lặp hoặc vượt lượt thì áp dụng một lượt làm, chốt dữ liệu đã lưu khi hết hạn, nộp lặp nhất quán; đồng hồ client không quyết định hạn. AI gợi ý phải tuân thủ chính sách của lượt làm.
+- **Ngoại lệ:** hết thời gian, mất kết nối, nộp lặp hoặc vượt lượt thì áp dụng số lượt theo chế độ (Kiểm tra một lượt, Ôn tập nhiều lượt), chốt dữ liệu đã lưu khi hết hạn, nộp lặp nhất quán; đồng hồ client không quyết định hạn. AI gợi ý phải tuân thủ chính sách của lượt làm.
 - **Hậu điều kiện:** lượt làm và điểm được lưu nhất quán; thời điểm công bố đáp án/lời giải là quyết định riêng.
 
 ### UC-20 Nộp bài tập
@@ -293,7 +293,7 @@ Mỗi use case được mô tả qua mục tiêu, tiền điều kiện, luồng
 - **Actor / mục tiêu:** học viên gửi bài tự luận hoặc file theo yêu cầu.
 - **Tiền điều kiện / kích hoạt:** có quyền và bài còn nhận nộp; chọn nộp bài.
 - **Luồng chính:** nhập nội dung/chọn file → kiểm tra định dạng, kích thước và hạn tại backend → lưu lượt nộp và thời điểm → xác nhận đã nhận bài.
-- **Ngoại lệ:** file lỗi, vượt giới hạn hoặc hết hạn thì báo rõ; bản hiện tại không cho nộp lại/nộp muộn; thao tác lặp không tạo kết quả mâu thuẫn.
+- **Ngoại lệ:** file lỗi, vượt giới hạn hoặc hết hạn thì báo rõ; Kiểm tra không cho nộp lại, Ôn tập cho sửa/nộp lại trước hạn; không nhận nộp muộn; thao tác lặp không tạo kết quả mâu thuẫn.
 - **Hậu điều kiện:** lượt nộp gắn đúng học viên/bài/phiên bản; chưa có điểm chính thức nếu chờ giáo viên chấm.
 
 ### UC-21 Chấm bài và phản hồi
@@ -479,3 +479,17 @@ SRS mô tả toàn bộ sản phẩm đồ án. Đăng ký, tìm lớp, dashboar
 MVP triển khai trước 21 use cases lõi trong giới hạn đã ghi; sản phẩm cuối hoàn thành 29 use cases. Hoạt động nghiên cứu RES-01–RES-04 thực hiện riêng và không tạo actor hoặc nhóm quyền người dùng LMS. Cổng thanh toán là tác nhân tích hợp ngoài hệ thống.
 
 Các lựa chọn kỹ thuật còn cần chốt gồm model/retrieval, OCR backend và chuẩn vị trí nguồn, cổng thanh toán/đối soát, nơi phục vụ video và inference, thời hạn lưu dữ liệu, rubric/evaluator. Căn cứ và mốc chốt được theo dõi tại mục 14.2 của [SRS](../SRS.md); thay đổi chức năng phải cập nhật đồng thời SRS, yêu cầu và MVP.
+
+
+### Cập nhật phạm vi Bài tập ngày 17/10/2026
+
+Chế độ chính thức là **Ôn tập / Kiểm tra**. Ôn tập cho làm lại quiz và chỉnh sửa/nộp lại tự luận trước hạn, có phần gợi ý/AI. Kiểm tra chỉ một lượt quiz hoặc một lần nộp tự luận chính thức, có dialog xác nhận không thể chỉnh sửa/nộp lại. Mọi lượt giữ lịch sử; lượt mới không kế thừa điểm/nhận xét của lượt cũ. Đề đã có lượt làm giữ nguyên; cần thay đổi phải tạo bài mới.
+
+Kiểm tra yêu cầu fullscreen khi bắt đầu/tiếp tục và ghi sự kiện chuyển tab/ẩn trang/thoát fullscreen. Hệ thống chỉ cảnh báo và ghi log với thời điểm nhận ở server; giáo viên tự quyết định xử lý, ghi nhận xét nội bộ hoặc điều chỉnh điểm có audit. Không tự động nộp bài, khóa bài, trừ điểm hoặc kết luận gian lận do vi phạm. Fullscreen là yêu cầu của giao diện, không phải cơ chế chống gian lận tuyệt đối. Quiz hết thời lượng/hạn chung vẫn chốt theo dữ liệu đã lưu; đây là quy tắc thời gian, không phải hình phạt vi phạm.
+
+Dashboard và xuất Excel (.xlsx) có ở **cả hai chế độ**: tổng hợp học viên/trạng thái/điểm, lịch sử mọi lượt, tiến độ nộp, phân bố điểm, bài nộp theo ngày và tỷ lệ đúng từng câu quiz. Mặc định điểm/thống kê dùng lượt đã nộp mới nhất của mỗi học viên; bản nháp sửa tiếp không thay điểm lượt đã nộp cho đến khi nộp lượt mới. Excel theo đúng bộ lọc tìm kiếm/trạng thái, gồm Tổng hợp, Chi tiết lượt làm, Thống kê; Kiểm tra thêm Vi phạm và ghi nhận xử lý của giáo viên. Chỉ giáo viên quản lý được xem/xuất dữ liệu lớp.
+
+Trạng thái triển khai AI: chưa có provider sinh câu trả lời. Ôn tập cung cấp gợi ý nhập tay và thông báo AI chưa kết nối; API trợ giúp Kiểm tra trả 403. Không mô phỏng gợi ý nhập tay thành kết quả AI.
+
+
+Cập nhật kiểu trắc nghiệm 17/10/2026: giáo viên chọn **Một đáp án / Nhiều đáp án** riêng cho từng câu trong video và quiz. Thuộc tính `multiple` là cấu hình tường minh, không suy ra từ số đáp án đúng. Một đáp án dùng radio tròn, cần đúng một đáp án đúng; Nhiều đáp án dùng checkbox vuông, cho cấu hình từ một đáp án đúng trở lên. Chấm theo tập lựa chọn khớp toàn bộ đáp án, không cho điểm một phần. Dashboard/Excel dùng cùng quy tắc và hiển thị đầy đủ các lựa chọn đã chọn.

@@ -76,6 +76,14 @@ def retry_ingestion(user,document,version,key):
             require_access(user,locked.course,manage=True)
             version=DocumentVersion.objects.select_for_update().get(pk=version.pk,document=locked,removed_at__isnull=True)
             missing_view=version.status in {"EXTRACTED","READY"} and (version.watermark_status!="READY" or not version.watermarked_view_key or not private_path(version.watermarked_view_key).is_file())
+            if version.status in {'EXTRACTED','READY'} and not missing_view:
+                failed_index=version.jobs.filter(job_type='INDEX',status='FAILED').order_by('-created_at').first()
+                if failed_index and not version.jobs.filter(job_type='INDEX',status__in=['QUEUED','RUNNING']).exists():
+                    op=DocumentOperation.objects.create(actor=user,course=locked.course,action='RETRY',
+                        client_key=key,payload_digest=digest,document=locked,version=version,job=failed_index)
+                    failed_index.status='QUEUED';failed_index.attempt_count=0;failed_index.error_code='';failed_index.worker_token=None
+                    failed_index.save(update_fields=['status','attempt_count','error_code','worker_token'])
+                    return op
             if version.status!="FAILED" and not missing_view:raise DocumentError("RETRY_NOT_ALLOWED","Only failed extraction or a missing protected view can be retried.",409)
             if version.jobs.filter(status__in=["QUEUED","RUNNING"]).exists():
                 raise DocumentError("RETRY_NOT_ALLOWED","An extraction job is already active.",409)

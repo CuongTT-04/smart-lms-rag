@@ -21,10 +21,10 @@ def read_csv(path):
 
 def main():
     qa = ROOT/'data/qa'
-    rows = read_csv(qa/'qa_w3_v1.0.csv')
-    audit = read_csv(qa/'qa_w3_source_audit.csv')
+    rows = read_csv(qa/'qa_baseline.csv')
+    audit = read_csv(qa/'qa_source_audit.csv')
     log = read_csv(qa/'qa_review_log.csv')
-    data = json.loads((qa/'qa_w3_v1.0.json').read_text(encoding='utf-8'))
+    data = json.loads((qa/'qa_baseline.json').read_text(encoding='utf-8'))
     cases = {row['qa_id']: row for row in data['cases']}
     assert len(rows) == len(cases) == len(audit) == len(log) == 100
     assert len({row['qa_id'] for row in rows}) == 100
@@ -49,10 +49,10 @@ def main():
     assert special['source_doc'] == 'ch01.pdf' and json.loads(special['source_pages']) == [20]
     assert json.loads(next(row for row in rows if row['qa_id'] == 'KTCTMLN_QA_005')['source_pages']) == [10]
     modified = [row['qa_id'] for row in audit if json.loads(row['changes'])]
-    assert modified == ['KTCTMLN_QA_005', 'CUONG_W3_QA_023']
-    inputs = ['qa_pilot_v1.0.csv', 'qa_pilot_v2.0.csv', 'qa_w3_cuong_v1.0.csv']
+    assert modified == ['KTCTMLN_QA_005', 'CNXHKH_QA_018']
+    inputs = ['qa_pilot_v1.0.csv', 'qa_pilot_v2.0.csv', 'qa_contributions.csv']
     original = {name: (qa/name).read_bytes() for name in inputs}
-    names = ['qa_w3_v1.0.csv', 'qa_w3_v1.0.json', 'qa_review_log.csv', 'qa_w3_source_audit.csv', 'w3_source_map.json']
+    names = ['qa_baseline.csv', 'qa_baseline.json', 'qa_review_log.csv', 'qa_source_audit.csv', 'source_map.json']
     before = {name: (qa/name).read_bytes() for name in names}
     spec = importlib.util.spec_from_file_location('qa_merge_verified', ROOT/'scripts/merge_w3_qa.py')
     module = importlib.util.module_from_spec(spec)
@@ -68,7 +68,7 @@ def main():
               'special_qa': {'qa_id': 'KTCTMLN_QA_001', 'source_doc': 'KTCTMLN/ch01.pdf',
                              'physical_page': 20, 'question_answer_and_page_unchanged': True,
                              'source_evidence_verified': True, 'human_peer_approved': False},
-              'dataset_sha256': hashlib.sha256((qa/'qa_w3_v1.0.json').read_bytes()).hexdigest(),
+              'dataset_sha256': hashlib.sha256((qa/'qa_baseline.json').read_bytes()).hexdigest(),
               'outputs_sha256': {name: hashlib.sha256((qa/name).read_bytes()).hexdigest() for name in names},
               'limitation': 'Agent-assisted content/source audit, not human peer approval; no predictions used to modify gold. No claim of semantic independence or model quality.'}
     directory = ROOT/'docs/reports'

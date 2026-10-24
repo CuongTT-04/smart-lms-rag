@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import PdfCanvas from './PdfCanvas'
 import { materialPdf, documentStatus } from '../../services/document.service'
 
-export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false, annotatable = true, hideHeader = false, showFeedback = true }) {
+export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false, annotatable = true, hideHeader = false, showFeedback = true, initialPage = 1, expectedVersionId }) {
   const [url,setUrl]=useState('')
   const [error,setError]=useState('')
   const [renaming, setRenaming] = useState(false)
@@ -42,7 +42,10 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
     }
     async function load() {
       try {
-        const blob=await materialPdf(document.document_id,false,controller.signal,preferCurrent ? version : undefined)
+        if (expectedVersionId && version !== expectedVersionId) {
+          onUnavailable('Nguồn trích dẫn đã thay đổi phiên bản.');return
+        }
+        const blob=await materialPdf(document.document_id,false,controller.signal,preferCurrent ? version : undefined,...(expectedVersionId ? [expectedVersionId] : []))
         if (controller.signal.aborted || !await check()) return
         objectUrl=URL.createObjectURL(blob);setError('');setUrl(objectUrl)
         timer=setTimeout(watch,2000)
@@ -52,7 +55,7 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
     }
     load()
     return ()=>{ controller.abort();clearTimeout(timer);if (objectUrl) URL.revokeObjectURL(objectUrl) }
-  },[document.document_id,document.material_policy,document.published_version_id,version,revision,onUnavailable,preferCurrent])
+  },[document.document_id,document.material_policy,document.published_version_id,version,revision,onUnavailable,preferCurrent,expectedVersionId])
   return <section aria-label="Xem PDF" className="material-viewer">
     {!hideHeader && <div className="material-actions"><h4>{document.title}</h4>{onRename ? <button type="button" className="outline-button" onClick={() => { setName(document.title); setRenameError(''); setRenaming(true) }}>Đổi tên</button> : <button type="button" className="outline-button" onClick={onClose}>Đóng PDF</button>}</div>}
     {renaming && <form className="material-rename-form" onSubmit={saveName}>
@@ -61,6 +64,6 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
       <button type="button" className="outline-button" disabled={saving} onClick={() => setRenaming(false)}>Hủy</button>
       {renameError && <p role="alert">{renameError}</p>}
     </form>}
-    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas allowCopy={document.material_policy === 'PUBLIC_DOWNLOAD'} key={url} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
+    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas initialPage={initialPage} allowCopy={document.material_policy === 'PUBLIC_DOWNLOAD'} key={`${url}:${initialPage}`} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
   </section>
 }

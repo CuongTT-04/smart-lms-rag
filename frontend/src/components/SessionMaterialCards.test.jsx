@@ -85,7 +85,7 @@ it('toggles every sidebar category and its expanded state', async () => {
     const initiallyOpen = button.getAttribute('aria-expanded') === 'true'
     await userEvent.click(button)
     expect(button).toHaveAttribute('aria-expanded', String(!initiallyOpen))
-    expect(button.querySelector(initiallyOpen ? '.lucide-chevron-right' : '.lucide-chevron-down')).toBeInTheDocument()
+    expect(button.querySelector('.session-category-chevron')).toBeInTheDocument()
     await userEvent.click(button)
     await waitFor(() => expect(button).toHaveAttribute('aria-expanded', String(initiallyOpen)))
   }

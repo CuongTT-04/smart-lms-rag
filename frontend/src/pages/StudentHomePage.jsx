@@ -30,6 +30,7 @@ function EmptyCourses() {
 
 export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
   const [view, setView] = useHistoryState('student.view', 'overview')
+  const [notificationNavigation] = useHistoryState('notifications.navigation', '')
   const [courses, setCourses] = useState([])
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [joinedRoom, setJoinedRoom] = useHistoryState('student.classroom', null)
@@ -158,7 +159,7 @@ export default function StudentHomePage({ user, onLogout, onUserUpdated, onSessi
               {view === 'join' && <>
                 <div hidden={!!joinedRoom}><StudentEnrollmentPanel onCoursesChanged={async () => setCourses(await listAllCourses())} onOpenClass={openJoinedClass} /></div>
                 {joinedRoom && detailLoading && <p role="status">Đang mở lớp học...</p>}
-                {joinedRoom && selectedCourse?.id === joinedRoom.course_id && <ClassroomWorkspace key={joinedRoom.classroom_id} canManage={false} course={selectedCourse} initialRoom={{ id: joinedRoom.classroom_id, name: joinedRoom.classroom_name }} backLabel="Lớp đã tham gia" onBack={backToJoinedClasses} onCourse={() => openCourse({ id: joinedRoom.course_id })} />}
+                {joinedRoom && selectedCourse?.id === joinedRoom.course_id && <ClassroomWorkspace key={`${joinedRoom.classroom_id}:${notificationNavigation}`} canManage={false} course={selectedCourse} initialRoom={{ id: joinedRoom.classroom_id, name: joinedRoom.classroom_name }} backLabel="Lớp đã tham gia" onBack={backToJoinedClasses} onCourse={() => openCourse({ id: joinedRoom.course_id })} />}
               </>}
             </>
           )}

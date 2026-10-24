@@ -66,7 +66,7 @@ describe('profile management', () => {
     change('Xác nhận mật khẩu', 'New-Ohayo-849!')
     updateProfile.mockResolvedValueOnce({ user: student, requires_login: true })
     await userEvent.click(screen.getByRole('button', { name: 'Đổi mật khẩu' }))
-    expect(onSessionExpired).toHaveBeenCalledWith('Đổi mật khẩu thành công. Vui lòng đăng nhập lại.')
+    expect(onSessionExpired).toHaveBeenCalledWith('Đổi mật khẩu thành công. Vui lòng đăng nhập lại.', 'success')
   })
 
   it('shows nested backend errors and allows retry', async () => {

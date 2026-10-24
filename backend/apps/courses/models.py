@@ -268,3 +268,7 @@ class ClassroomCommentMute(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['classroom', 'user'], name='unique_classroom_comment_mute')]
+
+
+from .video_models import SessionVideo, VideoQuestion, VideoProgress, VideoAnswer  # noqa: E402,F401
+from .assessment_models import Assessment, AssessmentAttempt, AssessmentEvent, AssessmentGradeAudit  # noqa: E402,F401

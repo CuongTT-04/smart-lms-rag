@@ -13,7 +13,39 @@ from .comment_views import AnnouncementCommentsView, AnnouncementCommentDetailVi
 
 app_name = "courses"
 
+from .video_views import SessionVideosView, SessionVideoDetailView, SessionVideoFileView, VideoQuestionsView, VideoQuestionDetailView, VideoProgressView, VideoAnswersView, VideoResponsesView, VideoOwnAnswersView
+
+video_prefix = '<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/<uuid:session_id>/videos/'
+video_detail = video_prefix + '<uuid:video_id>/'
+
+from .assessment_views import (AssessmentsView, AssessmentDetailView, AssessmentStartView, AssessmentAttemptView,
+    AssessmentSubmitView, AssessmentEventView, AssessmentGradeView, AssessmentFileView,
+    AssessmentAssistanceView, AssessmentDashboardView, AssessmentExportView)
+assessment_prefix = '<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/<uuid:session_id>/assessments/'
+assessment_detail = assessment_prefix + '<uuid:assessment_id>/'
+assessment_attempt = assessment_detail + 'attempts/<uuid:attempt_id>/'
+
 urlpatterns = [
+    path(assessment_prefix, AssessmentsView.as_view(), name='assessments'),
+    path(assessment_detail, AssessmentDetailView.as_view(), name='assessment'),
+    path(assessment_detail + 'start/', AssessmentStartView.as_view(), name='assessment-start'),
+    path(assessment_detail + 'assistance/', AssessmentAssistanceView.as_view(), name='assessment-assistance'),
+    path(assessment_detail + 'dashboard/', AssessmentDashboardView.as_view(), name='assessment-dashboard'),
+    path(assessment_detail + 'export/', AssessmentExportView.as_view(), name='assessment-export'),
+    path(assessment_attempt, AssessmentAttemptView.as_view(), name='assessment-attempt'),
+    path(assessment_attempt + 'submit/', AssessmentSubmitView.as_view(), name='assessment-submit'),
+    path(assessment_attempt + 'events/', AssessmentEventView.as_view(), name='assessment-event'),
+    path(assessment_attempt + 'grade/', AssessmentGradeView.as_view(), name='assessment-grade'),
+    path(assessment_attempt + 'file/', AssessmentFileView.as_view(), name='assessment-file'),
+    path(video_prefix, SessionVideosView.as_view(), name='session-videos'),
+    path(video_detail, SessionVideoDetailView.as_view(), name='session-video'),
+    path(video_detail + 'file/', SessionVideoFileView.as_view(), name='session-video-file'),
+    path(video_detail + 'questions/', VideoQuestionsView.as_view(), name='video-questions'),
+    path(video_detail + 'questions/<uuid:question_id>/', VideoQuestionDetailView.as_view(), name='video-question'),
+    path(video_detail + 'questions/<uuid:question_id>/answers/', VideoAnswersView.as_view(), name='video-answers'),
+    path(video_detail + 'progress/', VideoProgressView.as_view(), name='video-progress'),
+    path(video_detail + 'answers/mine/', VideoOwnAnswersView.as_view(), name='video-own-answers'),
+    path(video_detail + 'responses/', VideoResponsesView.as_view(), name='video-responses'),
     path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/', AnnouncementCommentsView.as_view(), name='announcement-comments'),
     path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/<uuid:comment_id>/', AnnouncementCommentDetailView.as_view(), name='announcement-comment-delete'),
     path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/<uuid:comment_id>/vote/', AnnouncementCommentVoteView.as_view(), name='announcement-comment-vote'),

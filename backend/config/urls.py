@@ -23,6 +23,7 @@ def health_check(_request):
 
 
 urlpatterns = [
+    path('api/notifications/', include('apps.notifications.api.urls')),
     path("admin/", admin.site.urls),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(

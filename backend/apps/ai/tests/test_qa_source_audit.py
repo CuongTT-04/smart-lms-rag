@@ -25,7 +25,7 @@ class SourceAuditTests(unittest.TestCase):
             for file in ('qa_pilot_v2.0_additions.json', 'qa_pilot_v2.0_corrections.json'):
                 (root/file).write_text(json.dumps({'rows': []}), encoding='utf-8')
             check = {'qa_id': 'q1', 'anchor': 'Bằng chứng', 'terms': terms or ['nội dung'], 'changes': changes or {}}
-            (root/'qa_w3_source_checks.json').write_text(json.dumps({'checks': [check]}), encoding='utf-8')
+            (root/'qa_source_checks.json').write_text(json.dumps({'checks': [check]}), encoding='utf-8')
             row = {'qa_id': 'q1', 'course_id': 'C', 'source_doc': 'ch01.pdf', 'source_page': '1',
                    'source_pages': '[1]', 'ground_truth': 'old'}
             reader = SimpleNamespace(pages=[SimpleNamespace(extract_text=lambda: 'Bằng chứng nội dung')])
