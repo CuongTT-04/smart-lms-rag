@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { BookOpen, ChevronDown, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { sendChatFeedback } from '../../services/ai.service'
 import CitationText from './CitationText'
@@ -27,6 +27,8 @@ function AnimatedAnswer({ result, active, animate }) {
 }
 
 export default function ChatAnswer({ result, onOpenCitation, active = true, animate = true }) {
+  const [sourcesOpen, setSourcesOpen] = useState(false)
+  const sourcesId = useId()
   const [rating, setRating] = useState(result.rating || null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -52,14 +54,18 @@ export default function ChatAnswer({ result, onOpenCitation, active = true, anim
       {duration !== null && <p className="ai-chat-response-time">Phản hồi trong {duration}</p>}
       <AnimatedAnswer result={result} active={active} animate={animate} />
     </div>
-    {result.citations?.length > 0 && <details className="ai-chat-sources">
-      <summary><span>Nguồn học liệu ({result.citations.length})</span><ChevronDown size={15} /></summary>
-      <div className="ai-chat-source-list">
+    {result.citations?.length > 0 && <section className="ai-chat-sources">
+      <button className="ai-chat-sources-toggle" type="button" aria-expanded={sourcesOpen} aria-controls={sourcesId} onClick={() => setSourcesOpen(open => !open)}>
+        <span>Nguồn học liệu ({result.citations.length})</span><ChevronDown size={15} />
+      </button>
+      <div id={sourcesId} className={`ai-chat-source-panel ${sourcesOpen ? 'is-open' : 'is-closed'}`} aria-hidden={!sourcesOpen} inert={!sourcesOpen}>
+      <div className="ai-chat-source-clip"><div className="ai-chat-source-list">
       {result.citations.map((citation) => <button className="ai-chat-source" key={citation.label} type="button" onClick={() => onOpenCitation?.(citation)}>
         <BookOpen size={15} /><span>[{citation.label}] {citation.document_title} — trang {citation.page_number}</span>
       </button>)}
+      </div></div>
       </div>
-    </details>}
+    </section>}
     {result.request_id && <div className="ai-chat-feedback" aria-label="Đánh giá câu trả lời">
       <button type="button" className="ai-feedback-like" aria-label="Thích câu trả lời" title="Thích" aria-pressed={rating === 'LIKE'} disabled={saving} onClick={() => rate('LIKE')}><ThumbsUp size={16} fill={rating === 'LIKE' ? 'currentColor' : 'none'} /></button>
       <button type="button" className="ai-feedback-dislike" aria-label="Không thích câu trả lời" title="Không thích" aria-pressed={rating === 'DISLIKE'} disabled={saving} onClick={() => rate('DISLIKE')}><ThumbsDown size={16} fill={rating === 'DISLIKE' ? 'currentColor' : 'none'} /></button>

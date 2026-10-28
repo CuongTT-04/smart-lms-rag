@@ -22,12 +22,14 @@ it('sends server selectors only and opens a trusted citation', async () => {
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
   expect(await screen.findByRole('button',{name:'Trích dẫn [1]'})).toBeVisible()
   expect(sendChat).toHaveBeenCalledWith({...scope,mode:'qa',question:'Nội dung?'},expect.objectContaining({signal:expect.any(AbortSignal)}))
-  expect(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeVisible()
+  expect(screen.queryByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeInTheDocument()
+  expect(screen.getByRole('button',{name:'Nguồn học liệu (1)'})).toHaveAttribute('aria-expanded','false')
   await userEvent.click(screen.getByText('Nguồn học liệu (1)'))
   await userEvent.click(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'}))
   expect(open).toHaveBeenCalledWith(citation)
   await userEvent.click(screen.getByText('Nguồn học liệu (1)'))
-  expect(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeVisible()
+  expect(screen.queryByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeInTheDocument()
+  expect(screen.getByRole('button',{name:'Nguồn học liệu (1)'})).toHaveAttribute('aria-expanded','false')
 })
 
 it('posts questions into a retained conversation and clears the composer', async () => {
