@@ -1,0 +1,139 @@
+{
+  "b_data_review": "PENDING_INPUT",
+  "files": {
+    "Evidence/W05/README.md": {
+      "sha256": "ddd7acb5f55a3f44a7918ce57c1dea2f73e45a17eb5e0e1b9b36eca96389d9d8",
+      "size_bytes": 1765
+    },
+    "Evidence/W05/metrics.csv": {
+      "sha256": "51275e88ec03c261bc5d3bcfef5c0be22690102d65ffdc08539c8fb4d72d112a",
+      "size_bytes": 983
+    },
+    "Evidence/W05/test-results.json": {
+      "sha256": "9ea2768b9df08a3216f1932016ea7ce71a514e0bd95488944f1c16a54f35ab79",
+      "size_bytes": 1974
+    },
+    "data/instruction/input-contract.json": {
+      "sha256": "a7b34905c3332ed97816b408b134b0a339c601f4f357bfa8bcba9332750244e0",
+      "size_bytes": 16682
+    },
+    "docs/dataset-card-v2.0.md": {
+      "sha256": "cabc7ad45ae5382de1b7d7a90dcfa13dbd7545cd5979ecf045971f0841019aac",
+      "size_bytes": 9080
+    },
+    "docs/dataset-card.md": {
+      "sha256": "1869045f19669fd14de0f540478ed19169f37c45d98a487630a0ddee70c81f20",
+      "size_bytes": 9039
+    },
+    "docs/instruction-input-review.md": {
+      "sha256": "5491c88e4490dd715adbe0883999c6129de6540d0b039b18dc505d247e66913d",
+      "size_bytes": 34119
+    },
+    "scripts/instruction/__init__.py": {
+      "sha256": "76bf4f0960d28ec97bb707f9acd135ae56b2761c6bf07059a8035ade40d34954",
+      "size_bytes": 56
+    },
+    "scripts/instruction/common.py": {
+      "sha256": "53bbc2a726de4983dfd54363c16c4b5e7c3beb0caf9accb60bbf634fd2548641",
+      "size_bytes": 18549
+    },
+    "scripts/instruction/export_sft_dataset.py": {
+      "sha256": "dbef920fb114e91cc6bd7cd03e66446f525061acfb66d70b504b161493b033ff",
+      "size_bytes": 9234
+    },
+    "scripts/instruction/generate_candidates.py": {
+      "sha256": "cf2b45eeefbb79d73f04fcf1f5c2f0ae94f86cc69965c33db8542438a29ffa81",
+      "size_bytes": 4139
+    },
+    "scripts/instruction/prepare_sft.py": {
+      "sha256": "c8e14ff0d6a9250d2e6ee810c5276601c9affe6afbcb53b970ae15e1fcf068ba",
+      "size_bytes": 17004
+    },
+    "scripts/instruction/requirements.txt": {
+      "sha256": "96f018d5e381d30292e6ada2838f046c8ea617f7f2b5c053d8c1914fdd6f56e0",
+      "size_bytes": 95
+    },
+    "scripts/instruction/tests/__init__.py": {
+      "sha256": "5d3ab4abddcf3b095482665da95a0d6982272fdb748696c5d6cf33cc6561af14",
+      "size_bytes": 78
+    },
+    "scripts/instruction/tests/support.py": {
+      "sha256": "20415ad2a5fafdbc7348bc5a91090f1563a238d9a603d973ef51f5f597f6f2d0",
+      "size_bytes": 4811
+    },
+    "scripts/instruction/tests/test_common.py": {
+      "sha256": "b94b0568e8e4a08c74f1da7b61861250594c56a2636a0d37197ab4d579b04b84",
+      "size_bytes": 12740
+    },
+    "scripts/instruction/tests/test_export.py": {
+      "sha256": "4fc74bca4e6fe61442b7080c3e6d645df496dcb58d112631bab747ba4ef7e233",
+      "size_bytes": 8780
+    },
+    "scripts/instruction/tests/test_generation.py": {
+      "sha256": "8a5a1df1cbb2e7ffbb24f4e13df9ad0c9e193036327feaa914bcef44ab99857e",
+      "size_bytes": 5568
+    },
+    "scripts/instruction/tests/test_handoff.py": {
+      "sha256": "504949e322b5973cc693c2d68cddd8bf625eb20d5aa03b220d2deab5664d13a9",
+      "size_bytes": 3273
+    },
+    "scripts/instruction/tests/test_private_drafts.py": {
+      "sha256": "e83b58db1ee0bd96a868c6c1fb811f173fa1f99e97655b501125be08e8f36de2",
+      "size_bytes": 7369
+    },
+    "scripts/instruction/tests/test_sft_preparation.py": {
+      "sha256": "33dadc6cd54c449028da7af0a3ccbe3fe9e2fc2a48435ad86750bc70015164d7",
+      "size_bytes": 11957
+    },
+    "scripts/instruction/verify_handoff.py": {
+      "sha256": "bf35d5530546256c6e950ca6ffd188c348ae1817d0e7b29f6157ce13cfac1821",
+      "size_bytes": 3567
+    }
+  },
+  "final_b_review": "PENDING",
+  "limitations": [
+    "validation has no KTCTMLN; holdout only KTCTMLN",
+    "training and model quality not evaluated",
+    "no group dataset acceptance",
+    "clean extraction reused installed pinned dependencies; fresh pip install not tested"
+  ],
+  "manifest_hashes_itself": false,
+  "pr_created": false,
+  "private_archive": {
+    "archive": ".private/instruction/handoff/member-a-handoff.zip",
+    "clean_extraction_demo": {
+      "dependency_runtime": "existing isolated pinned CPU packages",
+      "fresh_extracted_inputs": true,
+      "gpu_used": false,
+      "model_loaded": false,
+      "new_machine_dependency_install_tested": false,
+      "reopened_records": 250,
+      "status": "PASSED"
+    },
+    "delivery_status": "NOT_SENT",
+    "final_b_review": "PENDING",
+    "group_release_ready": false,
+    "integrity": {
+      "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+      "file_count": 163,
+      "final_b_review": "PENDING",
+      "group_release_ready": false,
+      "scope": "ARCHIVE_INTEGRITY_ONLY_NOT_CONTENT_APPROVAL",
+      "status": "PASSED"
+    },
+    "payload_file_count": 163,
+    "schema_version": 1,
+    "sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+    "size_bytes": 10018789,
+    "status": "PREPARED_AND_VERIFIED_NOT_SENT"
+  },
+  "public_redistribution_allowed": false,
+  "schema_version": 1,
+  "scope": "MEMBER_A_ONLY",
+  "source_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "source_rights_status": "DECLARED_NOT_VERIFIED",
+  "status": "MEMBER_A_PREPARED_PENDING_B_REVIEW",
+  "tag_created": false,
+  "week": "W05",
+  "working_tree_changes_included": true
+}

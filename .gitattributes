@@ -1,1 +1,3 @@
 docker/backend/*.sh text eol=lf
+# Keep the byte-pinned schema identical to its source archive.
+data/instruction/record-schema.json -text
