@@ -7,6 +7,7 @@ import json
 from .providers import GenerationError, LocalModelProvider, ModelConfig
 from .rag import ExerciseContext, GenerationConfig, RAGPipeline
 from apps.documents.exceptions import DocumentError
+from .rag.errors import public_validation_error
 
 
 def visible_exercise(value):
@@ -33,23 +34,30 @@ class GenerationBridge:
     def __init__(self,pipeline):
         self.pipeline=pipeline
 
-    def __call__(self,*,question,mode,contexts,exercise,config):
+    def __call__(self,*,question,mode,contexts,exercise,config,history=None):
         try:
             public_exercise=visible_exercise(exercise)
         except (ValueError,KeyError,TypeError) as exc:
             raise DocumentError('INVALID_REQUEST','Thông tin bài ôn tập không hợp lệ.',400) from exc
         try:
-            result=self.pipeline.generate_answer(question=question,mode=mode,contexts=contexts,exercise=public_exercise)
+            arguments = dict(question=question,mode=mode,contexts=contexts,exercise=public_exercise)
+            if history is not None:
+                arguments['history'] = history
+            result=self.pipeline.generate_answer(**arguments)
             # Validate against the actual prompt, not every pre-budget retrieval hit.
             used=set(result.trace.used_source_ids)
             if any(reference.source_id not in used for reference in result.references):
                 raise GenerationError('INVALID_GENERATION','Reference outside prompt')
-            return result.to_dict()
+            output = result.to_dict()
+            if history is not None:
+                output['_memory'] = result.trace.memory
+            return output
         except GenerationError as exc:
             if exc.code=='INVALID_REQUEST':
                 raise DocumentError('INVALID_REQUEST','Yêu cầu không phù hợp với chính sách trợ lý.',400) from exc
-            if exc.code=='INVALID_GENERATION':
-                raise DocumentError('INVALID_GENERATION','Phản hồi AI chưa hợp lệ. Vui lòng thử lại.',503) from exc
+            if exc.code in {'INVALID_GENERATION', 'EMPTY_OUTPUT'}:
+                reason = 'EMPTY_OUTPUT' if exc.code == 'EMPTY_OUTPUT' else getattr(exc, 'validation_reason', None)
+                raise DocumentError(*public_validation_error(reason)) from exc
             raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI không thể hoàn tất yêu cầu lúc này.',503) from exc
 
 
@@ -66,7 +74,7 @@ def _local_bridge(config_json):
         prompt_version=config['prompt_version'],temperature=config['temperature'])))
 
 
-def generate_answer(*,question,mode,contexts,exercise,config):
+def generate_answer(*,question,mode,contexts,exercise,config,history=None):
     """Local CUDA entrypoint; Kaggle hosting requires an authenticated remote provider."""
     bridge=_local_bridge(json.dumps(config,sort_keys=True))
-    return bridge(question=question,mode=mode,contexts=contexts,exercise=exercise,config=config)
+    return bridge(question=question,mode=mode,contexts=contexts,exercise=exercise,config=config,history=history)

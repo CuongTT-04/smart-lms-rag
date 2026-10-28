@@ -45,6 +45,13 @@
 .session-pdf-empty h3 { margin: 0; color: #315b47; }
 .session-content-placeholder { padding: 80px 24px; text-align: center; color: #60826b; background: #fff; border-radius: 12px; border: 1px solid #dce5df; }
 .session-assistant-panel { z-index: 65; top: 90px; }
+.session-assistant-panel .class-assistant-heading { gap: 8px; }
+.session-assistant-panel .class-assistant-heading > span { min-width: 0; gap: 8px; }
+.session-assistant-panel .class-assistant-heading > span > svg { flex-shrink: 0; }
+.session-assistant-panel .class-assistant-heading > span > strong { white-space: nowrap; font-size: 21px; letter-spacing: .02em; }
+.session-assistant-heading-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0; }
+.session-assistant-heading-actions > .icon-button { width: 30px; height: 30px; padding: 0; }
+@media (max-width: 370px) { .session-assistant-panel .class-assistant-heading { padding-inline: 12px; } .session-assistant-panel .class-assistant-heading > span > strong { font-size: 14px; } }
 .session-assistant-panel .class-assistant-scope { min-width: 0; }
 .session-assistant-panel .class-assistant-scope > svg { flex-shrink: 0; }
 .session-assistant-panel .class-assistant-scope > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

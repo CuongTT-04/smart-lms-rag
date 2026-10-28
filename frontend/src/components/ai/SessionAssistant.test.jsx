@@ -18,17 +18,21 @@ beforeEach(() => {
 it('sends server selectors only and opens a trusted citation', async () => {
   const open=vi.fn()
   render(<SessionAssistant scope={scope} onOpenCitation={open} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Nội dung?')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Nội dung?')
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
   expect(await screen.findByRole('button',{name:'Trích dẫn [1]'})).toBeVisible()
   expect(sendChat).toHaveBeenCalledWith({...scope,mode:'qa',question:'Nội dung?'},expect.objectContaining({signal:expect.any(AbortSignal)}))
+  expect(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeVisible()
+  await userEvent.click(screen.getByText('Nguồn học liệu (1)'))
   await userEvent.click(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'}))
   expect(open).toHaveBeenCalledWith(citation)
+  await userEvent.click(screen.getByText('Nguồn học liệu (1)'))
+  expect(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'})).not.toBeVisible()
 })
 
 it('posts questions into a retained conversation and clears the composer', async () => {
   render(<SessionAssistant scope={scope} />)
-  const input=screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'})
+  const input=screen.getByRole('textbox',{name:'Câu hỏi cho ayo'})
   await userEvent.type(input,'Câu hỏi đầu{Enter}')
   expect(await screen.findByText('Câu hỏi đầu')).toBeVisible()
   expect(input).toHaveValue('')
@@ -42,7 +46,7 @@ it('posts questions into a retained conversation and clears the composer', async
 
 it('previews the original excerpt on hover or focus and retains the PDF source', async () => {
   render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Nguồn?{Enter}')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Nguồn?{Enter}')
   const marker=await screen.findByRole('button',{name:'Trích dẫn [1]'})
   await userEvent.hover(marker)
   expect(screen.getByRole('tooltip')).toHaveTextContent('Đoạn trích nguyên văn từ PDF.')
@@ -50,12 +54,13 @@ it('previews the original excerpt on hover or focus and retains the PDF source',
   await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument())
   marker.focus()
   expect(await screen.findByRole('tooltip')).toHaveTextContent('trang 3')
+  await userEvent.click(screen.getByText('Nguồn học liệu (1)'))
   expect(screen.getByRole('button',{name:'[1] Tài liệu — trang 3'})).toBeVisible()
 })
 
 it('saves changes to answer feedback and does not claim success on failure', async () => {
   render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Đánh giá{Enter}')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Đánh giá{Enter}')
   const like=await screen.findByRole('button',{name:'Thích câu trả lời'})
   await userEvent.click(like)
   expect(like).toHaveAttribute('aria-pressed','true')
@@ -72,7 +77,7 @@ it('shows thinking while pending and keeps the question on failure', async () =>
   let reject
   sendChat.mockImplementation(()=>new Promise((_resolve, fail)=>{reject=fail}))
   render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Giải thích{Enter}')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Giải thích{Enter}')
   expect(screen.getByRole('status')).toHaveTextContent('Đang suy nghĩ')
   expect(screen.getByText('Giải thích')).toBeVisible()
   reject(new Error('offline'))
@@ -82,7 +87,7 @@ it('shows thinking while pending and keeps the question on failure', async () =>
 
 it('uses Shift+Enter for a newline instead of submitting', async () => {
   render(<SessionAssistant scope={scope} />)
-  const input=screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'})
+  const input=screen.getByRole('textbox',{name:'Câu hỏi cho ayo'})
   await userEvent.type(input,'Dòng đầu{Shift>}{Enter}{/Shift}Dòng sau')
   expect(input).toHaveValue('Dòng đầu\nDòng sau')
   expect(sendChat).not.toHaveBeenCalled()
@@ -90,7 +95,7 @@ it('uses Shift+Enter for a newline instead of submitting', async () => {
 
 it('keeps a focused citation preview open when the pointer leaves', async () => {
   render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Nguồn?{Enter}')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Nguồn?{Enter}')
   const marker=await screen.findByRole('button',{name:'Trích dẫn [1]'})
   await userEvent.click(marker)
   await userEvent.unhover(marker)
@@ -118,7 +123,7 @@ it('ignores a late response after scope changes', async () => {
   let finish
   sendChat.mockImplementation(() => new Promise((resolve) => { finish=resolve }))
   const {rerender}=render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Câu hỏi cũ')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Câu hỏi cũ')
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
   const signal=sendChat.mock.calls[0][1].signal
   rerender(<SessionAssistant scope={{...scope,session_id:'s2'}} />)
@@ -130,15 +135,15 @@ it('ignores a late response after scope changes', async () => {
 it('shows service errors and allows retry', async () => {
   sendChat.mockRejectedValue(new Error('secret'))
   render(<SessionAssistant scope={scope} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Nội dung?')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Nội dung?')
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
   expect(await screen.findByRole('alert')).toHaveTextContent('Không thể sử dụng AI.')
-  expect(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'})).toBeEnabled()
+  expect(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'})).toBeEnabled()
 })
 
 it('starts in hint mode when opened from a practice question', async () => {
   render(<SessionAssistant scope={scope} exercise={{assessment_id:'a1',question_id:'q1'}} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho trợ lý'}),'Giúp tôi bắt đầu')
+  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Giúp tôi bắt đầu')
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
   expect(sendChat.mock.calls[0][0]).toMatchObject({mode:'hint',assessment_id:'a1',question_id:'q1'})
 })

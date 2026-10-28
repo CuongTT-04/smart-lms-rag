@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { sendChat, chatErrorMessage } from '../../services/ai.service'
 import ChatAnswer from './ChatAnswer'
+import ChatUserMessage from './ChatUserMessage'
+import DocumentAssistant from './DocumentAssistant'
 import './assistant.css'
 
 export default function SessionAssistant(props) {
-  const key = JSON.stringify([props.scope, props.exercise?.assessment_id, props.exercise?.question_id])
+  const key = JSON.stringify([props.scope, props.documentId, props.documentVersion, props.exercise?.assessment_id, props.exercise?.question_id])
+  if (!props.exercise && props.documentId) return <DocumentAssistant key={key} {...props} />
+  if (!props.exercise && props.requireDocument) return <div className="ai-chat-content"><p className="ai-chat-empty">Chọn một học liệu để bắt đầu trò chuyện và xem lịch sử.</p></div>
   return <AssistantForm key={key} {...props} />
 }
 
@@ -43,7 +47,7 @@ function AssistantForm({ scope, exercise, onOpenCitation, visible = true }) {
     const text = question.trim()
     const id = ++sequence.current
     pinned.current = true
-    setTurns((current) => [...current, { id, question: text, pending: true }])
+    setTurns((current) => [...current, { id, question: text, createdAt: new Date().toISOString(), pending: true }])
     setQuestion('')
     if (input.current) input.current.style.height = '24px'
     setBusy(true)
@@ -59,23 +63,23 @@ function AssistantForm({ scope, exercise, onOpenCitation, visible = true }) {
   }
   return <div className="ai-chat-content">
     {exercise && <label className="ai-chat-mode">Cách hỗ trợ<select value={mode} disabled={busy} onChange={(event) => setMode(event.target.value)}><option value="qa">Hỏi đáp học liệu</option><option value="hint">Gợi ý ôn tập</option></select></label>}
-    <div className="ai-chat-result" ref={thread} aria-label="Hội thoại với trợ lý" onScroll={() => {
+    <div className="ai-chat-result" ref={thread} aria-label="Hội thoại với ayo" onScroll={() => {
       const box = thread.current
       pinned.current = box.scrollHeight - box.scrollTop - box.clientHeight < 60
     }}>
       <div ref={content} className="ai-chat-thread">{turns.map((turn) => <section className="ai-chat-turn" key={turn.id}>
-        <div className="ai-user-message">{turn.question}</div>
+        <ChatUserMessage question={turn.question} createdAt={turn.createdAt} />
         {turn.pending && <div className="ai-thinking" role="status"><span className="ai-thinking-dots" aria-hidden="true"><i /><i /><i /></span>Đang suy nghĩ…</div>}
         {turn.error && <div><p className="error-banner" role="alert">{turn.error}</p><button className="ai-chat-retry" type="button" disabled={busy} onClick={() => { setQuestion(turn.question); input.current?.focus() }}>Soạn lại câu hỏi</button></div>}
         {turn.result && <ChatAnswer result={turn.result} onOpenCitation={onOpenCitation} active={visible} />}
       </section>)}</div>
     </div>
     <form className="ai-chat-compose" onSubmit={submit}>
-      <textarea ref={input} aria-label="Câu hỏi cho trợ lý" value={question} onChange={(event) => { setQuestion(event.target.value); resizeInput() }} onKeyDown={(event) => {
+      <textarea ref={input} aria-label="Câu hỏi cho ayo" value={question} onChange={(event) => { setQuestion(event.target.value); resizeInput() }} onKeyDown={(event) => {
         if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); submit(event) }
-      }} maxLength={8000} rows={1} disabled={busy} placeholder="Hỏi bất cứ điều gì…" />
+      }} maxLength={8000} rows={1} disabled={busy} placeholder="Hỏi ayo…" />
       <button className="ai-chat-send" aria-label="Gửi câu hỏi" title="Gửi câu hỏi" disabled={busy || !question.trim()} type="submit"><ArrowUp size={19} /></button>
     </form>
-    <p className="ai-chat-disclaimer">Chatbot AI có thể sai — hãy đối chiếu với học liệu.</p>
+    <p className="ai-chat-disclaimer">ayo có thể sai — hãy đối chiếu với học liệu.</p>
   </div>
 }

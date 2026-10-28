@@ -22,7 +22,7 @@ class RAGPipeline:
                 or config.model.fingerprint() != self.provider.config.fingerprint()):
             raise GenerationError("INVALID_REQUEST", "Pipeline and provider configurations must agree.")
 
-    def generate_answer(self, *, question, mode, contexts, exercise=None, config=None):
+    def generate_answer(self, *, question, mode, contexts, exercise=None, config=None, history=None):
         started = perf_counter()
         config = self.config if config is None else config
         self._check_config(config)
@@ -43,14 +43,26 @@ class RAGPipeline:
         except (ValueError, TypeError, KeyError, AttributeError) as exc:
             raise GenerationError("INVALID_REQUEST", "Question, evidence or visible exercise fields are invalid.") from exc
         check_request_policy(question)
+        if history is not None:
+            from .conversation import validate_history
+            validate_history(history)
+            if mode != 'qa' or exercise is not None:
+                raise GenerationError('INVALID_REQUEST', 'Document memory only supports QA.')
         if not evidence:
             return GenerationResult(
                 "INSUFFICIENT_EVIDENCE", INSUFFICIENT_MESSAGE, (), None,
                 GenerationTrace((), (), None, config.fingerprint(), None, (),
-                                perf_counter() - started, mode == "hint", "empty_context_notice"),
+                                perf_counter() - started, mode == "hint", "empty_context_notice",
+                                dict(protocol='chat_history_v1',turns_used=0,turns_dropped=len(history),history_tokens=0) if history is not None else None),
             )
-        prepared = prepare_prompt(question=question.strip(), mode=mode, contexts=evidence,
-                                  exercise=exercise, config=config, provider=self.provider)
+        memory = None
+        if history is None:
+            prepared = prepare_prompt(question=question.strip(), mode=mode, contexts=evidence,
+                                      exercise=exercise, config=config, provider=self.provider)
+        else:
+            from .conversation import prepare_conversation_prompt
+            prepared, memory = prepare_conversation_prompt(question=question.strip(), mode=mode, contexts=evidence,
+                exercise=exercise, config=config, provider=self.provider, history=history)
         try:
             output = self.provider.generate(prepared.messages)
         except GenerationError:
@@ -75,7 +87,7 @@ class RAGPipeline:
             )
             if mode == "qa" and config.prompt_version in ("frozen_baseline", "efficient_grounded"):
                 validate_choice_answer(question, output.text)
-        return GenerationResult(
+        result = GenerationResult(
             status, answer, references, usage,
             GenerationTrace(tuple(item.source_id for item in prepared.contexts),
                             prepared.dropped_source_ids, prepared.prompt_sha256,
@@ -85,6 +97,10 @@ class RAGPipeline:
                             and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded") else
                             "insufficient_evidence_notice" if status == "INSUFFICIENT_EVIDENCE" else "model_text"),
         )
+        if memory is not None:
+            from dataclasses import replace
+            result = replace(result, trace=replace(result.trace, memory=memory))
+        return result
 
 
 def generate_answer(*, question, mode, contexts, exercise, config, provider):

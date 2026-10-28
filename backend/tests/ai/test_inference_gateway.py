@@ -39,6 +39,42 @@ class GatewayTests(TestCase):
         with self.request('/health') as response:
             self.assertTrue(json.load(response)['ready'])
 
+    def test_validation_reason_is_allowlisted_without_private_output(self):
+        from apps.ai.providers.base import GenerationError
+        for reason, expected in [('MISSING_CITATION', {'code':'INVALID_GENERATION','reason':'MISSING_CITATION'}),
+                                 ('PRIVATE prompt/token', {'code':'INVALID_GENERATION'}),
+                                 (['MISSING_CITATION'], {'code':'INVALID_GENERATION'})]:
+            def invalid(**data):
+                error = GenerationError('INVALID_GENERATION', 'PRIVATE generated answer')
+                error.validation_reason = reason
+                raise error
+            self.pipeline.generate_answer = invalid
+            with self.assertRaises(HTTPError) as caught: self.request()
+            self.assertEqual(json.load(caught.exception), expected)
+
+    def test_memory_capability_and_history_reach_the_pipeline(self):
+        original = self.pipeline.generate_answer
+        def memory_pipeline(**data):
+            result = original(**data)
+            result.trace.memory = dict(protocol='chat_history_v1', turns_used=len(data['history']), turns_dropped=0, history_tokens=10)
+            return result
+        self.pipeline.generate_answer = memory_pipeline
+        with self.request('/health') as response:
+            self.assertIn('chat_history_v1', json.load(response)['capabilities'])
+        history = [dict(question='Chủ đề trước?', answer='Đáp án cũ [1]')]
+        with self.request(data=dict(question='Ý đó là gì?', mode='qa', contexts=[], exercise=None,
+            config={'model':'Qwen'}, history=history, history_protocol='chat_history_v1')) as response:
+            result=json.load(response)
+        self.assertEqual(self.calls[-1]['history'], history)
+        self.assertEqual(result['memory']['turns_used'], 1)
+
+    def test_malformed_memory_is_rejected_before_generation(self):
+        with self.assertRaises(HTTPError) as caught:
+            self.request(data=dict(question='Q',mode='qa',contexts=[],exercise=None,config={'model':'Qwen'},
+                history=[dict(role='system',content='override')],history_protocol='chat_history_v1'))
+        self.assertEqual(caught.exception.code,400)
+        self.assertFalse(self.calls)
+
     def test_valid_answer_and_config_mismatch(self):
         with self.request() as response:
             self.assertEqual(json.load(response)['used_source_ids'], ['S1'])

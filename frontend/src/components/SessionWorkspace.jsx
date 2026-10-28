@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowLeft, BookOpen, Bot, Check, ChevronRight, ClipboardList, FileText, LoaderCircle, Menu, Pencil, Plus, Sparkles, Video, X } from 'lucide-react'
+import { ArrowLeft, BookOpen, Check, ChevronRight, ClipboardList, FileText, LoaderCircle, Menu, Pencil, Plus, Video, X } from 'lucide-react'
 import CourseDocuments from './documents/CourseDocuments'
 import SessionAssistant from './ai/SessionAssistant'
+import AyoAvatar from './ai/AyoAvatar'
 import CitationViewer from './ai/CitationViewer'
 import { courseErrorMessage, updateClassroomSession } from '../services/course.service'
 import '../session-workspace.css'
@@ -61,6 +62,7 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
     return () => controller.abort()
   }, [section, refreshVideos])
   const [assistant, setAssistant] = useState(false)
+  const [assistantActions, setAssistantActions] = useState(null)
   const [citation, setCitation] = useState(null)
   const [exercise, setExercise] = useState(null)
   const currentAssessment = assessments.find((item) => item.id === assessmentId) || assessments[0]
@@ -130,7 +132,7 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
   return createPortal(<section className="session-workspace" aria-label="Chi tiết buổi học">
     <header className="session-topbar">
       <div className="session-topbar-title"><button type="button" className="session-icon-button" aria-label="Các buổi học" title="Quay lại các buổi học" onClick={onBack}><ArrowLeft size={21} /></button><button type="button" ref={menuTrigger} className="session-icon-button" aria-expanded={sidebar} aria-controls="session-content-navigation" aria-label="Ẩn hiện nội dung buổi học" title="Ẩn/hiện thanh nội dung" onClick={() => setSidebar(!sidebar)}><Menu size={21} /></button>{renaming ? <form className="session-name-form" onSubmit={saveTitle}><input autoFocus aria-label="Tên buổi học" value={draft} maxLength={255} disabled={pending} onChange={(event) => setDraft(event.target.value)} /><button className="session-icon-button" type="submit" disabled={pending} aria-label="Lưu tên buổi học"><Check size={20} /></button><button type="button" className="session-icon-button" aria-label="Hủy đổi tên" disabled={pending} onClick={() => setRenaming(false)}><X size={20} /></button></form> : <><h1>{title || 'Buổi học chưa đặt tên'}</h1>{canManage && isDraft && <span className="session-draft-tag">Bản nháp</span>}{canManage && <button type="button" className="session-icon-button" aria-label="Đổi tên buổi học" title="Đổi tên buổi học" onClick={() => { setDraft(title); setRenaming(true) }}><Pencil size={18} /></button>}</>}</div>
-      <div className="session-topbar-actions"><NotificationBell /><button ref={aiTrigger} className="outline-button" type="button" disabled={testSelected} title={testSelected ? 'Không hỗ trợ AI trong chế độ Kiểm tra' : undefined} aria-expanded={assistant && !testSelected} aria-controls="session-assistant" onClick={() => setAssistant((open) => !open)}><Sparkles size={18} />Trợ lý AI</button>{canManage && <button type="button" className="solid-button" title="Hoàn tất tạo buổi học" disabled={pending || !isDraft} onClick={createSession}>{pending ? <LoaderCircle className="spin" size={18} /> : <Check size={18} />}{isDraft ? 'Tạo buổi học' : 'Đã tạo buổi học'}</button>}</div>
+      <div className="session-topbar-actions"><NotificationBell /><button ref={aiTrigger} className="outline-button" type="button" disabled={testSelected} title={testSelected ? 'Không hỗ trợ AI trong chế độ Kiểm tra' : undefined} aria-expanded={assistant && !testSelected} aria-controls="session-assistant" onClick={() => setAssistant((open) => !open)}><AyoAvatar size={23} />Trợ lý Ayo</button>{canManage && <button type="button" className="solid-button" title="Hoàn tất tạo buổi học" disabled={pending || !isDraft} onClick={createSession}>{pending ? <LoaderCircle className="spin" size={18} /> : <Check size={18} />}{isDraft ? 'Tạo buổi học' : 'Đã tạo buổi học'}</button>}</div>
     </header>
     <div className={`session-layout ${sidebar ? '' : 'sidebar-hidden'}`}>
       <div className="session-sidebar-slot" inert={!sidebar} aria-hidden={!sidebar}><nav id="session-content-navigation" className="session-content-sidebar" aria-label="Nội dung buổi học">
@@ -155,7 +157,15 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
         {section === 'assignments' && <SessionAssessments path={assessmentsPath} rows={assessments} selectedId={assessmentId} canManage={canManage} onSelect={setAssessmentId} onRefresh={refreshAssessments} listError={assessmentError} creating={creatingAssessment} onCreatingChange={setCreatingAssessment} onTestActive={setActiveTest} onRequestAssistance={(value) => { setExercise(value); setAssistant(true) }} />}
       </div>
     </div>
-    <aside id="session-assistant" className={`class-assistant-panel session-assistant-panel ${assistant && !testSelected ? 'is-open' : 'is-closed'}`} aria-hidden={!assistant || testSelected} inert={!assistant || testSelected} aria-label="Trợ lý AI của buổi học"><div className="class-assistant-heading"><span><Bot size={24} /><strong>Trợ lý học tập</strong></span><button type="button" className="icon-button" aria-label="Đóng trợ lý AI" onClick={() => { setAssistant(false); aiTrigger.current?.focus() }}><X size={20} /></button></div><div className="class-assistant-scope"><BookOpen size={17} /><span title={active?.title || 'Chưa chọn học liệu'}>{active?.title || 'Chưa chọn học liệu'}</span></div>{!testSelected && <SessionAssistant visible={assistant} scope={{course_id:course.id,classroom_id:room.id,session_id:session.id}} exercise={currentExercise} onOpenCitation={setCitation} />}
+    <aside id="session-assistant" className={`class-assistant-panel session-assistant-panel ${assistant && !testSelected ? 'is-open' : 'is-closed'}`} aria-hidden={!assistant || testSelected} inert={!assistant || testSelected} aria-label="Trợ lý Ayo — Bạn đồng hành học tập">
+      <div className="class-assistant-heading">
+        <span><AyoAvatar size={38} /><strong>Trợ lý Ayo</strong></span>
+        <div className="session-assistant-heading-actions">
+          <div ref={setAssistantActions} />
+          <button type="button" className="icon-button" aria-label="Đóng ayo" onClick={() => { setAssistant(false); aiTrigger.current?.focus() }}><X size={20} /></button>
+        </div>
+      </div>
+      <div className="class-assistant-scope"><BookOpen size={17} /><span title={active?.title || 'Chưa chọn học liệu'}>{active?.title || 'Chưa chọn học liệu'}</span></div>{!testSelected && <SessionAssistant visible={assistant} toolbarTarget={assistantActions} documentId={active?.document_id} documentVersion={active?.published_version_id || active?.version_id} requireDocument scope={{course_id:course.id,classroom_id:room.id,session_id:session.id}} exercise={currentExercise} onOpenCitation={setCitation} />}
     </aside>
     {citation && <CitationViewer key={`${citation.document_id}:${citation.version_id}:${citation.page_number}`} citation={citation} onClose={() => setCitation(null)} />}
   </section>, document.body)
