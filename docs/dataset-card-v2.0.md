@@ -105,3 +105,11 @@ Trên máy đã có đầy đủ đầu vào riêng tư, kiểm lại bằng `py
 - Dữ liệu chọn từ phạm vi nguồn A, độ phủ và ngôn ngữ PDF có giới hạn; split hiện lệch môn như mục 5.
 - Quyền nguồn chưa xác minh; không phát hành công khai. B chưa duyệt cuối, review dữ liệu B đang chờ đầu vào; chưa nghiệm thu bộ 500 mẫu.
 - Gói bàn giao A đã chuẩn bị; hướng dẫn kiểm trên máy mới và checklist B nằm ở mục 11 của tài liệu tổng hợp. Chưa gửi gói, tạo PR hoặc tag. Tiếp theo: chuyển riêng gói cho B, sửa theo review, tích hợp dữ liệu nhóm rồi audit lại phần thay đổi trước thử nghiệm huấn luyện.
+
+## Tiếp nhận trên máy B ngày29/10/2026
+
+Đã nhận ZIP và kiểm lại kỹ thuật trên CPU:250 mẫu,163 file bàn giao,10 file SFT và token/labels/padding đạt. Công cụ đã được kiểm lại với workspace hiện tại. Kết quả rà soát sơ bộ bằng công cụ đề nghị sửa W5_A_00116, W5_A_00139, W5_A_00146; chưa có human B approval hoặc group acceptance. Xem [báo cáo tiếp nhận](weekly/W5/tiep-nhan-member-a.md), receipt-verification và test-results trong Evidence/W05. Gói gốc và SELF_REVIEW giữ nguyên; cần A sửa/tái xuất rồi review lại hash mới. Chưa chia lại bộ500, chưa train.
+
+## Cập nhật bộ chung29/10/2026
+
+Đã tạo và audit CPU500 candidate, split385/57/58 đủ ba môn trong từng tập,3 bản sửa A có hash mới. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md. Gói gốc giữ nguyên; peer confirmations vẫn cần thật, chưa train hoặc nghiệm thu nhóm.

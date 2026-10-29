@@ -40,6 +40,7 @@ def main():
     parser.add_argument('--local', action='store_true', help='Duong dan config cho Django local thay vi Docker')
     parser.add_argument('--use-env-token', action='store_true', help='Dung token da luu trong .env, khong in token')
     parser.add_argument('--dual-gpu', action='store_true', help='Chi chap nhan gateway hai replica va profile 1024 token/90 giay')
+    parser.add_argument('--chat-memory', action='store_true', help='Yeu cau gateway ho tro chat_history_v1 truoc khi ghi cau hinh')
     args = parser.parse_args()
     url = args.url.rstrip('/')
     parts = urlsplit(url)
@@ -70,6 +71,8 @@ def main():
         if args.dual_gpu and (health.get('replicas') != 2 or config['max_output_tokens'] != 1024
                 or config['max_input_tokens'] != 3584 or config['timeout_seconds'] != 90):
             raise ValueError('The two-GPU startup cell is not ready')
+        if args.chat_memory and 'chat_history_v1' not in health.get('capabilities', []):
+            raise ValueError('Gateway does not support document conversation memory')
     except Exception as exc:
         status = getattr(exc, 'code', None)
         label = str(status) if type(status) is int else type(exc).__name__

@@ -22,6 +22,13 @@ class GenerationBridgeTests(SimpleTestCase):
         self.assertEqual(result['references'],[{'label':1,'source_id':'S1'}])
         self.assertEqual(self.provider.generate_calls,1)
 
+    def test_conversation_bridge_passes_history_into_real_prompt_builder(self):
+        result = self.call(history=[{'question':'Chủ đề trước?', 'answer':'Câu trả lời trước [9]'}])
+        self.assertEqual(result['_memory']['protocol'],'chat_history_v1')
+        self.assertEqual(result['_memory']['turns_used'],1)
+        self.assertEqual([m['role'] for m in self.provider.messages],['system','user','assistant','user'])
+        self.assertNotIn('[9]',self.provider.messages[2]['content'])
+
     def test_hint_translates_visible_exercise_and_hides_answer_fields(self):
         self.provider.text='READ [1]'
         exercise={'assessment_id':'a1','title':'Ôn tập','description':'Đề bài', 'kind':'QUIZ',
@@ -38,3 +45,9 @@ class GenerationBridgeTests(SimpleTestCase):
         self.provider.failure=GenerationError('GENERATION_TIMEOUT','Timeout')
         with self.assertRaises(DocumentError) as caught:self.call()
         self.assertEqual(caught.exception.code,'GENERATION_UNAVAILABLE')
+
+    def test_missing_and_unknown_citations_have_specific_public_errors(self):
+        for text, code in [('Answer without source', 'GENERATION_MISSING_CITATION'), ('Answer [9]', 'GENERATION_INVALID_CITATION')]:
+            self.provider.text=text
+            with self.assertRaises(DocumentError) as caught: self.call()
+            self.assertEqual(caught.exception.code,code)

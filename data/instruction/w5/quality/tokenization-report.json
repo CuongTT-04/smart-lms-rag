@@ -1,0 +1,14 @@
+{
+  "status": "B_DRAFT_ONLY_NOT_RELEASE_AUDIT",
+  "training_ready": false,
+  "record_count": 250,
+  "current_report": "member-b-draft-tokenization.json",
+  "max_tokens": {
+    "prompt_tokens": 1091,
+    "completion_tokens": 91,
+    "sequence_tokens": 1152
+  },
+  "model_weights_loaded": false,
+  "trainer_integration": "NOT_RUN_W6",
+  "contract_fingerprint": "6bb7ee2b0b458989c31769e25b548808d2cc3dbdce3acc84c285a9e287ef6615"
+}

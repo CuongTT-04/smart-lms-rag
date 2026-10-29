@@ -40,11 +40,11 @@ class GenerationNotebookTests(unittest.TestCase):
 
     def test_baseline_and_startup_code_cells_compile_without_fake_outputs(self):
         codes = [cell for cell in self.notebook["cells"] if cell["cell_type"] == "code"]
-        startup_ids = {"ohayo-independent-startup", "ohayo-dual-gpu-startup"}
+        startup_ids = {"ohayo-independent-startup", "ohayo-dual-gpu-startup", "ohayo-chat-memory-startup"}
         baseline_codes = [cell for cell in codes if cell["id"] not in startup_ids]
         self.assertEqual(len(baseline_codes), 18)
         self.assertEqual({cell["id"] for cell in codes} & startup_ids, startup_ids)
-        self.assertEqual(len(codes), 20)
+        self.assertEqual(len(codes), 21)
         for cell in codes:
             compile("".join(cell["source"]), cell["id"], "exec")
             self.assertIsNone(cell["execution_count"])

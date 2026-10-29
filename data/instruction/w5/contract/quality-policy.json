@@ -1,0 +1,121 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "quality_policy",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "target_accepted_records": 500,
+  "target_per_author": {
+    "A": 250,
+    "B": 250
+  },
+  "task_quota": {
+    "qa": 300,
+    "summary": 100,
+    "hint": 50,
+    "insufficient_evidence": 50
+  },
+  "per_author_task_quota": {
+    "qa": 150,
+    "summary": 50,
+    "hint": 25,
+    "insufficient_evidence": 25
+  },
+  "course_quota": {
+    "THMLN": 200,
+    "KTCTMLN": 150,
+    "CNXHKH": 150
+  },
+  "rubric": {
+    "criteria": [
+      "instruction_clarity",
+      "content_correctness",
+      "grounding_and_citation",
+      "task_behavior",
+      "language_and_format"
+    ],
+    "score_values": [
+      0,
+      1,
+      2
+    ],
+    "minimum_total": 9,
+    "required_score_2": [
+      "content_correctness",
+      "grounding_and_citation",
+      "task_behavior"
+    ],
+    "disallow_any_zero": true,
+    "required_peer_review_fraction": 1.0,
+    "author_can_self_approve": false,
+    "decisions": [
+      "ACCEPT",
+      "REVISE",
+      "REJECT"
+    ],
+    "review_binds_to": "content_sha256"
+  },
+  "hard_reject": [
+    "fabricated_or_unsupported_claim",
+    "unsupported_citation",
+    "hint_discloses_final_answer",
+    "benchmark_or_derived_benchmark_sample",
+    "private_user_data_or_secret",
+    "unverified_source_rights",
+    "invalid_target_format",
+    "fixture_in_production_release"
+  ],
+  "duplicate_detection": {
+    "normalization": "NFC + casefold + whitespace collapse",
+    "exact_duplicate_allowed": false,
+    "near_duplicate_metric": "character_5gram_jaccard",
+    "flag_threshold": 0.85,
+    "automatic_semantic_approval": false,
+    "near_duplicate_requires_human_resolution": true
+  },
+  "source_verification": {
+    "pdf_sha256": true,
+    "physical_pdf_pages_1based": true,
+    "text_sha256": true,
+    "semantic_support_requires_human_review": true
+  },
+  "evidence_context_projection": [
+    "source_id",
+    "chunk_id",
+    "text",
+    "document_id",
+    "version_id",
+    "document_title",
+    "page_number",
+    "section_title"
+  ],
+  "model_input_allowed": [
+    "question",
+    "mode",
+    "contexts_projected_to_EvidenceContext",
+    "exercise_public_fields"
+  ],
+  "model_input_forbidden": [
+    "target_text",
+    "ground_truth",
+    "expected_points",
+    "answer_key",
+    "rubric",
+    "reviews",
+    "private_user_data"
+  ],
+  "hash_algorithm": "SHA256 of UTF8 JSON after recursive NFC of string values, sorted object keys, ensure_ascii=false, separators=(comma,colon), allow_nan=false; omit content_sha256 only; preserve array order",
+  "eligibility": "ACCEPT by opposite member for current content hash + all machine/content/rights gates; REJECT/REVISE retained in findings but never exported",
+  "required_future_checks": [
+    "cross_record_uniqueness",
+    "source_manifest_lookup",
+    "PDF_page_and_chunk_evidence",
+    "citation_position_and_semantic_support",
+    "COMPARE_distinct_labels",
+    "source_group_union",
+    "benchmark_near_duplicate_adjudication",
+    "tokenizer_chat_template_EOS_and_loss_mask"
+  ],
+  "pdf_library_reference": "pypdf==6.10.0"
+}

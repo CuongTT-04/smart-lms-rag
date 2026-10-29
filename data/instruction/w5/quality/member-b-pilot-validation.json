@@ -1,0 +1,35 @@
+{
+  "confirmed_pairs": [],
+  "contract_fingerprint": "6bb7ee2b0b458989c31769e25b548808d2cc3dbdce3acc84c285a9e287ef6615",
+  "counts_by_task": {
+    "hint": 1,
+    "insufficient_evidence": 1,
+    "qa": 6,
+    "summary": 2
+  },
+  "dataset_fingerprint": "8e77ad8342fce0af9442b9ce3915bf8902048c6e9cff9a63ca8db6e56d51dda5",
+  "eligible_ids": [],
+  "findings": [],
+  "fixture_mode": false,
+  "input_sha256": {
+    ".private\\w5\\pilot\\v0.2\\member_b.jsonl": "aa9f045304f86455fd96f0a7d08401ff39c5e9c4f09d41a4e540191f7213f2d2"
+  },
+  "near_duplicate_method": "character_5gram_jaccard; not semantic proof",
+  "passed": true,
+  "record_count": 10,
+  "schema_version": "w5-quality-v1",
+  "semantic_review": "REQUIRED_FROM_OPPOSITE_MEMBER",
+  "stage": "candidate",
+  "valid_ids": [
+    "W5_B_00001",
+    "W5_B_00002",
+    "W5_B_00003",
+    "W5_B_00004",
+    "W5_B_00005",
+    "W5_B_00006",
+    "W5_B_00007",
+    "W5_B_00008",
+    "W5_B_00009",
+    "W5_B_00010"
+  ]
+}

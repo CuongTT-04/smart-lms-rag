@@ -1,0 +1,64 @@
+{
+  "archive_integrity": {
+    "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+    "file_count": 163,
+    "final_b_review": "PENDING",
+    "group_release_ready": false,
+    "scope": "ARCHIVE_INTEGRITY_ONLY_NOT_CONTENT_APPROVAL",
+    "status": "PASSED"
+  },
+  "final_b_review": "PENDING",
+  "handoff_demo": {
+    "dependency_runtime": "existing isolated pinned CPU packages",
+    "fresh_extracted_inputs": true,
+    "gpu_used": false,
+    "model_loaded": false,
+    "new_machine_dependency_install_tested": false,
+    "reopened_records": 250,
+    "status": "PASSED"
+  },
+  "quality_verified": false,
+  "schema_version": 1,
+  "scope": "MEMBER_A_ONLY_NOT_GROUP_ACCEPTANCE",
+  "sft_demo": {
+    "b_data_review": "PENDING_INPUT",
+    "component_count": 14,
+    "contract_snapshot_bound": true,
+    "file_hashes_checked": 10,
+    "final_b_review": "PENDING",
+    "gpu_used": false,
+    "manifest_sha256": "3b8ff2c1c874ba42554d19327417d35e3d6441b43c477e5a956257880f975b31",
+    "model_loaded": false,
+    "reopened_records": 250,
+    "scope": "MEMBER_A_INTERNAL_RESEARCH_DATA_ONLY",
+    "source_and_current_hash_reviews_rechecked": true,
+    "split_counts": {
+      "instruction_holdout": 25,
+      "train": 193,
+      "validation": 32
+    },
+    "status": "PASSED",
+    "tokenizer_and_labels_recomputed": true,
+    "training": "NOT_RUN"
+  },
+  "status": "PASSED",
+  "suites": [
+    {
+      "log": ".private/instruction/tooling-test-results.txt",
+      "sha256": "c2e08aeffd1a0534885c49a3bc858ba10eeb91fb5be093ec7c545a82978516f9",
+      "size_bytes": 10851,
+      "status": "PASSED",
+      "suite": "tooling",
+      "tests_passed": 77
+    },
+    {
+      "log": ".private/instruction/runtime-test-results.txt",
+      "sha256": "2a12828ef25e9880adc0f6252c2ba3aa8f544bf2751508e1c197331eab4b16d0",
+      "size_bytes": 23982,
+      "status": "PASSED",
+      "suite": "runtime",
+      "tests_passed": 125
+    }
+  ],
+  "training_status": "NOT_RUN"
+}

@@ -56,3 +56,35 @@ class RemoteTests(SimpleTestCase):
             with self.assertRaises(DocumentError) as caught:self.call()
             self.assertEqual(caught.exception.code,expected)
             self.assertNotIn('PRIVATE',str(caught.exception))
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_conversation_requires_valid_memory_acknowledgment(self, build):
+        history = [dict(question='Previous question', answer='Previous answer [1]')]
+        memory = dict(protocol='chat_history_v1', turns_used=1, turns_dropped=0, history_tokens=40)
+        envelope = dict(output={'references': [{'source_id': 'S1'}]}, used_source_ids=['S1'], memory=memory)
+        def call():
+            return generate_answer(question='Follow up', mode='qa', contexts=[{'source_id': 'S1'}],
+                exercise=None, config={'timeout_seconds': 30}, history=history)
+        build.return_value.open.return_value = io.BytesIO(json.dumps(envelope).encode())
+        self.assertEqual(call()['_memory'], memory)
+        payload = json.loads(build.return_value.open.call_args.args[0].data)
+        self.assertEqual(payload['history'], history)
+        self.assertEqual(payload['history_protocol'], 'chat_history_v1')
+        for invalid in (None, {**memory, 'turns_used': 2}, {**memory, 'history_tokens': 769}, {**memory, 'turns_used': True}):
+            broken = {**envelope, 'memory': invalid}
+            if invalid is None: broken.pop('memory')
+            build.return_value.open.return_value = io.BytesIO(json.dumps(broken).encode())
+            with self.assertRaises(DocumentError): call()
+
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_validation_reason_becomes_safe_specific_error(self, build):
+        for reason, code in [('MISSING_CITATION','GENERATION_MISSING_CITATION'),
+                             ('UNKNOWN_CITATION','GENERATION_INVALID_CITATION'),
+                             ('PRIVATE text', 'INVALID_GENERATION'), ([], 'INVALID_GENERATION')]:
+            body=io.BytesIO(json.dumps({'code':'INVALID_GENERATION','reason':reason,'detail':'PRIVATE token'}).encode())
+            build.return_value.open.side_effect=HTTPError('https://example.test/generate',503,'error',{},body)
+            with self.assertRaises(DocumentError) as caught: self.call()
+            self.assertEqual(caught.exception.code,code)
+            self.assertNotIn('PRIVATE',str(caught.exception))

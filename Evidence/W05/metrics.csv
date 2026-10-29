@@ -17,3 +17,50 @@ runtime_tests_passed,125,tests,member_a_internal_research
 b_peer_approved,0,samples,member_a_internal_research
 model_calls,0,calls,member_a_internal_research
 gpu_used,0,boolean,member_a_internal_research
+draft_records,250,count,B drafts; not release
+multi_context_records,8,count,B drafts; not release
+unique_source_pages,120,count,B drafts; not release
+unit_tests_passed,27,count,B drafts; not release
+machine_findings,0,count,B drafts; not release
+human_peer_reviews,0,count,B drafts; not release
+release_eligible_records,0,count,B drafts; not release
+training_runs,0,runs,B drafts; not release
+by_task:qa,150,count,B drafts; not release
+by_task:summary,50,count,B drafts; not release
+by_task:hint,25,count,B drafts; not release
+by_task:insufficient_evidence,25,count,B drafts; not release
+by_course:THMLN,100,count,B drafts; not release
+by_course:KTCTMLN,75,count,B drafts; not release
+by_course:CNXHKH,75,count,B drafts; not release
+by_source:THMLN:ch02.pdf,15,count,B drafts; not release
+by_source:KTCTMLN:ch02.pdf,25,count,B drafts; not release
+by_source:CNXHKH:ch02.pdf,25,count,B drafts; not release
+by_source:CNXHKH:ch04.pdf,25,count,B drafts; not release
+by_source:CNXHKH:ch06.pdf,25,count,B drafts; not release
+by_source:KTCTMLN:ch04.pdf,25,count,B drafts; not release
+by_source:KTCTMLN:ch06.pdf,25,count,B drafts; not release
+by_source:THMLN:ch04.pdf,15,count,B drafts; not release
+by_source:THMLN:ch06.pdf,14,count,B drafts; not release
+by_source:THMLN:ch08.pdf,14,count,B drafts; not release
+by_source:THMLN:ch10.pdf,14,count,B drafts; not release
+by_source:THMLN:ch12.pdf,14,count,B drafts; not release
+by_source:THMLN:ch14.pdf,14,count,B drafts; not release
+hint_actions:READ,9,count,B drafts; not release
+hint_actions:OUTLINE,8,count,B drafts; not release
+hint_actions:COMPARE,8,count,B drafts; not release
+max_tokens:prompt_tokens,1091,tokens,B drafts; not release
+max_tokens:completion_tokens,91,tokens,B drafts; not release
+max_tokens:sequence_tokens,1152,tokens,B drafts; not release
+a_received_candidates,250,count,A intake 2026-10-29; not group acceptance
+a_payload_files_verified,163,count,A intake 2026-10-29; not group acceptance
+a_sft_file_hashes_checked,10,count,A intake 2026-10-29; not group acceptance
+a_ai_reviewed,250,count,A intake 2026-10-29; not group acceptance
+a_ai_proposed_revision,3,count,A intake 2026-10-29; not group acceptance
+a_human_peer_acceptances,0,count,A intake 2026-10-29; not group acceptance
+combined_candidates,500,count,group candidate 2026-10-29; not final acceptance
+combined_train,385,count,group candidate 2026-10-29; not final acceptance
+combined_validation,57,count,group candidate 2026-10-29; not final acceptance
+combined_holdout,58,count,group candidate 2026-10-29; not final acceptance
+combined_components,27,count,group candidate 2026-10-29; not final acceptance
+combined_source_machine_findings,0,count,group candidate 2026-10-29; not final acceptance
+combined_human_peer_acceptances,0,count,group candidate 2026-10-29; not final acceptance

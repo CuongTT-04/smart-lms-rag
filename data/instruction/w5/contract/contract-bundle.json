@@ -1,0 +1,88 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "status": "APPROVED_BY_USER_REPORT",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "prepared_on": "2026-10-27",
+  "locked": true,
+  "a_approved": true,
+  "files": [
+    {
+      "path": "data/instruction/w5/contract/benchmark-exclusion-manifest.json",
+      "sha256": "754faba8b48a6136decca4ca95b38afbd815d1ea8031aa326b3339bf2a9462b2",
+      "size_bytes": 143033
+    },
+    {
+      "path": "data/instruction/w5/contract/fixture-source.json",
+      "sha256": "4882e08f9dd06c84d813e08e4c19300f711d4e18b2ad0403854f15967eb3f582",
+      "size_bytes": 1071
+    },
+    {
+      "path": "data/instruction/w5/contract/quality-policy.json",
+      "sha256": "076e437a23fa89126c6bc561c4c5141b94f29f1607f5a7996d6ed90abfc10f63",
+      "size_bytes": 3363
+    },
+    {
+      "path": "data/instruction/w5/contract/review-status.json",
+      "sha256": "6b84178e016f8564a74ec6e505a285ead096aad1e00af253d5cd2aa53fa0a29f",
+      "size_bytes": 2378
+    },
+    {
+      "path": "data/instruction/w5/contract/review-template.csv",
+      "sha256": "f6367eb317f1bfe8ac93875fc0e12d8417a5ec8c4dfa9d5b5054fed4479df5ea",
+      "size_bytes": 179
+    },
+    {
+      "path": "data/instruction/w5/contract/schema.json",
+      "sha256": "1e73a7ffbd444a3d2ace6688e52b6e8243d44dc154cacd890d1979ea3a0cc739",
+      "size_bytes": 8695
+    },
+    {
+      "path": "data/instruction/w5/contract/source-manifest.json",
+      "sha256": "366d96d3a4d269000f8a55c219657c09788b32e4b51145c8a8e37ccc4432e222",
+      "size_bytes": 31661
+    },
+    {
+      "path": "data/instruction/w5/contract/source_allocation.csv",
+      "sha256": "9aac8c83160ea8341fda4941abed0533cac241ff3ac89914d7a4569826f9ccb3",
+      "size_bytes": 4561
+    },
+    {
+      "path": "data/instruction/w5/contract/split-policy.json",
+      "sha256": "1afd9cf1010101f3e0eb1a18be8387bf7ee7d44348195c28059069add6c2032e",
+      "size_bytes": 1182
+    },
+    {
+      "path": "data/instruction/w5/contract/training-format.json",
+      "sha256": "22d6070263bfb751c5d589e41c4e1e6638f64b7400c65b47a33193f8602a67d8",
+      "size_bytes": 2643
+    },
+    {
+      "path": "data/instruction/w5/contract/verification-report.json",
+      "sha256": "15cf4a5a451c4ccd7fa9dcb9e2761e4d4dfdf0edc364e7f0baff5af9e53842a0",
+      "size_bytes": 2127
+    },
+    {
+      "path": "data/fixtures/w5-instruction-contract.jsonl",
+      "sha256": "91a8d6dbd0b937ad2ac2039c28e6cf7d43ec7880855161b751d39528a34775b7",
+      "size_bytes": 6897
+    },
+    {
+      "path": "data/fixtures/w5-sft-contract-preview.jsonl",
+      "sha256": "ebde21ef462948062c3ba963003c39d8b72558d72d3957f0f2db3a3b473d21fc",
+      "size_bytes": 12910
+    },
+    {
+      "path": "docs/weekly/W5/chot-dau-vao-w5.md",
+      "sha256": "1ba13420778ccdad7fe65534248afe26eaec497ec55c42139bd2121bb9e2c57c",
+      "size_bytes": 18201
+    },
+    {
+      "path": "docs/weekly/W5/scope-decision.md",
+      "sha256": "14fb9eaa6d609886b0f05d2f1de8af765c1739ba5b49175f250fa3763159e266",
+      "size_bytes": 2662
+    }
+  ],
+  "approval_basis": "Reported by Cuong on 2026-10-28; no independent A review commit",
+  "refreshed_on": "2026-10-28",
+  "working_tree_base_commit": "371b67649c5b7b7680a82ae710fbb7330044f619"
+}

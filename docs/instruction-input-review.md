@@ -311,3 +311,11 @@ Kết quả hiện tại: **77/77 test công cụ, 125/125 test hồi quy đạt
 - Tích hợp và review PR qua milestone `Tuan5`. Chỉ chốt tag `w05` sau kiểm chung; bản này chưa tạo PR, tag, xác nhận B duyệt hoặc chạy training.
 
 **Phần việc sẵn sàng gửi B:** công cụ CPU, 250 mẫu A tự review, gói SFT đã audit, dataset card v2.0, gói chuyển riêng và minh chứng. **Phần chưa hoàn thành:** chuyển file thực tế cho B, B review cuối, review/tích hợp dữ liệu B, PR review/tag và huấn luyện (ngoài phạm vi chuẩn bị dữ liệu hiện tại).
+
+## Tiếp nhận trên máy B ngày29/10/2026
+
+Đã nhận ZIP và kiểm lại kỹ thuật trên CPU:250 mẫu,163 file bàn giao,10 file SFT và token/labels/padding đạt. Công cụ đã được kiểm lại với workspace hiện tại. Kết quả rà soát sơ bộ bằng công cụ đề nghị sửa W5_A_00116, W5_A_00139, W5_A_00146; chưa có human B approval hoặc group acceptance. Xem [báo cáo tiếp nhận](weekly/W5/tiep-nhan-member-a.md), receipt-verification và test-results trong Evidence/W05. Gói gốc và SELF_REVIEW giữ nguyên; cần A sửa/tái xuất rồi review lại hash mới. Chưa chia lại bộ500, chưa train.
+
+## Cập nhật bộ chung29/10/2026
+
+Đã tạo và audit CPU500 candidate, split385/57/58 đủ ba môn trong từng tập,3 bản sửa A có hash mới. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md. Gói gốc giữ nguyên; peer confirmations vẫn cần thật, chưa train hoặc nghiệm thu nhóm.

@@ -17,17 +17,17 @@ class ConfigureKaggleTests(unittest.TestCase):
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         return module
 
-    def run_config(self, replicas):
+    def run_config(self, replicas, memory=False, capabilities=None):
         module=self.module()
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             env=root/'.env';env.write_text('AI_INFERENCE_TOKEN='+'x'*40+'\nKEEP_ME=yes\n')
             before=env.read_bytes()
             config=json.loads((ROOT/'backend/config/ai/kaggle-dual-gpu.json').read_text())
-            response=io.BytesIO(json.dumps({'ready':True,'replicas':replicas,'config':config}).encode())
+            response=io.BytesIO(json.dumps({'ready':True,'replicas':replicas,'config':config,'capabilities':capabilities or []}).encode())
             output=io.StringIO()
             with patch.object(module,'ROOT',root), patch.object(module,'build_opener',return_value=SimpleNamespace(open=lambda *a,**kw:response)), \
-                    patch('sys.argv',['configure','--url','https://example.test','--dual-gpu','--use-env-token']),contextlib.redirect_stdout(output):
+                    patch('sys.argv',['configure','--url','https://example.test','--dual-gpu','--use-env-token']+(['--chat-memory'] if memory else [])),contextlib.redirect_stdout(output):
                 status=module.main()
             self.assertNotIn('x'*40,output.getvalue())
             return status,env.read_bytes(),before,(root/'backend/config/ai/kaggle-dual-gpu.json').exists()
@@ -45,3 +45,12 @@ class ConfigureKaggleTests(unittest.TestCase):
         self.assertEqual(status,1)
         self.assertEqual(env,before)
         self.assertFalse(exists)
+
+    def test_memory_requires_capability_before_writing_configuration(self):
+        status, env, before, exists = self.run_config(2, memory=True)
+        self.assertEqual(status,1)
+        self.assertEqual(env,before)
+        self.assertFalse(exists)
+        status, _, _, exists = self.run_config(2, memory=True, capabilities=['chat_history_v1'])
+        self.assertEqual(status,0)
+        self.assertTrue(exists)

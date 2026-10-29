@@ -105,7 +105,8 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                 if self.path == '/health':
                     count = busy_count()
                     self.reply(200, {'ready': not draining, 'busy': count == len(pipelines),
-                        'replicas': len(pipelines), 'in_flight': count, 'config': public_config})
+                        'replicas': len(pipelines), 'in_flight': count, 'config': public_config,
+                        'capabilities': ['chat_history_v1', 'validation_details_v1']})
                 else:
                     self.reply(404, {'code': 'NOT_FOUND'})
 
@@ -119,8 +120,18 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                 if self.headers.get('Transfer-Encoding') or not 0 < length <= 1024 * 1024:
                     return self.reply(413, {'code': 'REQUEST_TOO_LARGE'})
                 data = json.loads(self.rfile.read(length))
-                if not isinstance(data, dict) or set(data) != {'question', 'mode', 'contexts', 'exercise', 'config'}:
+                required = {'question', 'mode', 'contexts', 'exercise', 'config'}
+                if not isinstance(data, dict) or not required.issubset(data) or set(data)-required-{'history','history_protocol'}:
                     raise ValueError('Invalid fields')
+                has_history = 'history' in data or 'history_protocol' in data
+                if has_history:
+                    from apps.ai.rag.conversation import validate_history
+                    if data.get('history_protocol') != 'chat_history_v1' or data.get('mode') != 'qa' or data.get('exercise') is not None:
+                        raise ValueError('Invalid memory protocol')
+                    try:
+                        validate_history(data.get('history'))
+                    except Exception as exc:
+                        raise ValueError('Invalid history') from exc
                 if data['config'] != public_config:
                     return self.reply(409, {'code': 'CONFIG_MISMATCH'})
                 if (not isinstance(data['question'], str) or not 0 < len(data['question']) <= 8000
@@ -134,18 +145,33 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
             if index is None:
                 return self.reply(429, {'code': 'GENERATION_BUSY'})
             try:
-                result = pipelines[index].generate_answer(question=data['question'], mode=data['mode'],
-                    contexts=data['contexts'], exercise=exercise)
+                arguments = dict(question=data['question'], mode=data['mode'], contexts=data['contexts'], exercise=exercise)
+                if has_history:
+                    arguments['history'] = data['history']
+                result = pipelines[index].generate_answer(**arguments)
                 used = list(result.trace.used_source_ids)
                 output = result.to_dict()
                 if any(ref['source_id'] not in used for ref in output['references']):
-                    return self.reply(503, {'code': 'INVALID_GENERATION'})
-                self.reply(200, {'output': output, 'used_source_ids': used})
+                    return self.reply(503, {'code': 'INVALID_GENERATION', 'reason': 'UNKNOWN_CITATION'})
+                envelope = {'output': output, 'used_source_ids': used}
+                if has_history:
+                    memory = getattr(result.trace, 'memory', None)
+                    if not isinstance(memory, dict) or memory.get('protocol') != 'chat_history_v1':
+                        return self.reply(503, {'code': 'INVALID_GENERATION'})
+                    envelope['memory'] = memory
+                self.reply(200, envelope)
             except Exception as exc:
+                from apps.ai.rag.citations import VALIDATION_REASONS
                 code = getattr(exc, 'code', 'GENERATION_UNAVAILABLE')
+                reason = getattr(exc, 'validation_reason', None)
+                if code == 'EMPTY_OUTPUT':
+                    code, reason = 'INVALID_GENERATION', 'EMPTY_OUTPUT'
                 safe = code if code in {'INVALID_REQUEST', 'INVALID_GENERATION', 'GENERATION_TIMEOUT',
                     'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'OUT_OF_MEMORY'} else 'GENERATION_UNAVAILABLE'
-                self.reply(400 if safe == 'INVALID_REQUEST' else 503, {'code': safe})
+                payload = {'code': safe}
+                if safe == 'INVALID_GENERATION' and isinstance(reason, str) and reason in VALIDATION_REASONS:
+                    payload['reason'] = reason
+                self.reply(400 if safe == 'INVALID_REQUEST' else 503, payload)
             finally:
                 locks[index].release()
 

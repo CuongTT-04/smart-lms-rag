@@ -1,64 +1,105 @@
 {
-  "archive_integrity": {
-    "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
-    "file_count": 163,
-    "final_b_review": "PENDING",
-    "group_release_ready": false,
-    "scope": "ARCHIVE_INTEGRITY_ONLY_NOT_CONTENT_APPROVAL",
-    "status": "PASSED"
-  },
-  "final_b_review": "PENDING",
-  "handoff_demo": {
-    "dependency_runtime": "existing isolated pinned CPU packages",
-    "fresh_extracted_inputs": true,
-    "gpu_used": false,
-    "model_loaded": false,
-    "new_machine_dependency_install_tested": false,
-    "reopened_records": 250,
-    "status": "PASSED"
-  },
-  "quality_verified": false,
-  "schema_version": 1,
-  "scope": "MEMBER_A_ONLY_NOT_GROUP_ACCEPTANCE",
-  "sft_demo": {
-    "b_data_review": "PENDING_INPUT",
-    "component_count": 14,
-    "contract_snapshot_bound": true,
-    "file_hashes_checked": 10,
-    "final_b_review": "PENDING",
-    "gpu_used": false,
-    "manifest_sha256": "3b8ff2c1c874ba42554d19327417d35e3d6441b43c477e5a956257880f975b31",
-    "model_loaded": false,
-    "reopened_records": 250,
-    "scope": "MEMBER_A_INTERNAL_RESEARCH_DATA_ONLY",
-    "source_and_current_hash_reviews_rechecked": true,
-    "split_counts": {
-      "instruction_holdout": 25,
-      "train": 193,
-      "validation": 32
-    },
-    "status": "PASSED",
-    "tokenizer_and_labels_recomputed": true,
-    "training": "NOT_RUN"
-  },
-  "status": "PASSED",
+  "verified_on": "2026-10-29",
+  "scope": "COMBINED_CANDIDATE_TECHNICAL_AUDIT",
   "suites": [
     {
-      "log": ".private/instruction/tooling-test-results.txt",
-      "sha256": "c2e08aeffd1a0534885c49a3bc858ba10eeb91fb5be093ec7c545a82978516f9",
-      "size_bytes": 10851,
-      "status": "PASSED",
-      "suite": "tooling",
-      "tests_passed": 77
+      "suite": "a_tools",
+      "passed": 77,
+      "log": "Evidence/W05/group/a_tools.log"
     },
     {
-      "log": ".private/instruction/runtime-test-results.txt",
-      "sha256": "2a12828ef25e9880adc0f6252c2ba3aa8f544bf2751508e1c197331eab4b16d0",
-      "size_bytes": 23982,
-      "status": "PASSED",
+      "suite": "b_tools",
+      "passed": 36,
+      "log": "Evidence/W05/group/b_tools.log"
+    },
+    {
       "suite": "runtime",
-      "tests_passed": 125
+      "passed": 125,
+      "log": "Evidence/W05/group/runtime.log"
     }
   ],
-  "training_status": "NOT_RUN"
+  "group_readback": {
+    "status": "PASSED",
+    "reopened_records": 500,
+    "files_checked": 12,
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "split_counts": {
+      "train": 385,
+      "validation": 57,
+      "instruction_holdout": 58
+    },
+    "token_ids_labels_padding_recomputed": true,
+    "source_and_benchmark_checks_recomputed": true,
+    "group_release_ready": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "training": "NOT_RUN"
+  },
+  "training": "NOT_RUN",
+  "group_release_ready": false,
+  "report_origin": "B_BRANCH_RECORDED_RESULTS_NOT_RERUN_BY_MERGE",
+  "member_a_before_integration": {
+    "archive_integrity": {
+      "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+      "file_count": 163,
+      "final_b_review": "PENDING",
+      "group_release_ready": false,
+      "scope": "ARCHIVE_INTEGRITY_ONLY_NOT_CONTENT_APPROVAL",
+      "status": "PASSED"
+    },
+    "final_b_review": "PENDING",
+    "handoff_demo": {
+      "dependency_runtime": "existing isolated pinned CPU packages",
+      "fresh_extracted_inputs": true,
+      "gpu_used": false,
+      "model_loaded": false,
+      "new_machine_dependency_install_tested": false,
+      "reopened_records": 250,
+      "status": "PASSED"
+    },
+    "quality_verified": false,
+    "schema_version": 1,
+    "scope": "MEMBER_A_ONLY_NOT_GROUP_ACCEPTANCE",
+    "sft_demo": {
+      "b_data_review": "PENDING_INPUT",
+      "component_count": 14,
+      "contract_snapshot_bound": true,
+      "file_hashes_checked": 10,
+      "final_b_review": "PENDING",
+      "gpu_used": false,
+      "manifest_sha256": "3b8ff2c1c874ba42554d19327417d35e3d6441b43c477e5a956257880f975b31",
+      "model_loaded": false,
+      "reopened_records": 250,
+      "scope": "MEMBER_A_INTERNAL_RESEARCH_DATA_ONLY",
+      "source_and_current_hash_reviews_rechecked": true,
+      "split_counts": {
+        "instruction_holdout": 25,
+        "train": 193,
+        "validation": 32
+      },
+      "status": "PASSED",
+      "tokenizer_and_labels_recomputed": true,
+      "training": "NOT_RUN"
+    },
+    "status": "PASSED",
+    "suites": [
+      {
+        "log": ".private/instruction/tooling-test-results.txt",
+        "sha256": "c2e08aeffd1a0534885c49a3bc858ba10eeb91fb5be093ec7c545a82978516f9",
+        "size_bytes": 10851,
+        "status": "PASSED",
+        "suite": "tooling",
+        "tests_passed": 77
+      },
+      {
+        "log": ".private/instruction/runtime-test-results.txt",
+        "sha256": "2a12828ef25e9880adc0f6252c2ba3aa8f544bf2751508e1c197331eab4b16d0",
+        "size_bytes": 23982,
+        "status": "PASSED",
+        "suite": "runtime",
+        "tests_passed": 125
+      }
+    ],
+    "training_status": "NOT_RUN"
+  },
+  "merge_scope_note": "A historical audit retained separately; importing B reports is not rechecking the private 500-record artifact."
 }

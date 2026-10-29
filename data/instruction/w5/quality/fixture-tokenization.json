@@ -1,0 +1,61 @@
+{
+  "chat_template_sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+  "contract_fingerprint": "6bb7ee2b0b458989c31769e25b548808d2cc3dbdce3acc84c285a9e287ef6615",
+  "draft_mode": false,
+  "findings": [],
+  "fixture_mode": true,
+  "input_sha256": {
+    "data\\fixtures\\w5-instruction-contract.jsonl": "91a8d6dbd0b937ad2ac2039c28e6cf7d43ec7880855161b751d39528a34775b7",
+    "data\\fixtures\\w5-sft-contract-preview.jsonl": "ebde21ef462948062c3ba963003c39d8b72558d72d3957f0f2db3a3b473d21fc"
+  },
+  "mask_kind": "CPU reference completion-only labels; padding must be -100",
+  "model_weights_loaded": false,
+  "passed": true,
+  "record_count": 4,
+  "records": [
+    {
+      "completion_tokens": 23,
+      "content_sha256": "06f1a383ae78785276f2b4a39f4f3911ad2af4c1894abaaee4aedaa1032b1f2a",
+      "eos_supervised": true,
+      "prompt_tokens": 777,
+      "record_id": "FX_W5_00001",
+      "sequence_tokens": 800,
+      "sft_sha256": "28422f271fee99b5afd58ca50b008951dfe9a8ad098ec7e854594504b7479187",
+      "supervised_tokens": 23
+    },
+    {
+      "completion_tokens": 38,
+      "content_sha256": "d3db90153698a51f285d69d5be2df0783957baf0cd3b9c042f6a2983bd0ae64e",
+      "eos_supervised": true,
+      "prompt_tokens": 780,
+      "record_id": "FX_W5_00002",
+      "sequence_tokens": 818,
+      "sft_sha256": "b1a31f6359cfffbe34f454c7ac05a08e4621089c9d129aeebe384b24f52a38f5",
+      "supervised_tokens": 38
+    },
+    {
+      "completion_tokens": 6,
+      "content_sha256": "a989a0133ffa4bb2205118e364a709b13fdfe86c41febdf9514471fc602a0406",
+      "eos_supervised": true,
+      "prompt_tokens": 493,
+      "record_id": "FX_W5_00003",
+      "sequence_tokens": 499,
+      "sft_sha256": "7c53bb2c25635fd351b542ad640a4a2a86efc8611fee6cbc64e11b79c7b48883",
+      "supervised_tokens": 6
+    },
+    {
+      "completion_tokens": 8,
+      "content_sha256": "8bcfdabc78e5f15e41016afcd3c89c511fadb19dd794ea27a2e72de7fe55fd6f",
+      "eos_supervised": true,
+      "prompt_tokens": 782,
+      "record_id": "FX_W5_00004",
+      "sequence_tokens": 790,
+      "sft_sha256": "63dc7c9584ad04618e113bd3db66d71b2a66ee45df249d255637a9ae40a8fcc7",
+      "supervised_tokens": 8
+    }
+  ],
+  "schema_version": "w5-tokenization-v1",
+  "tokenizer_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "trainer_integration": "NOT_RUN_W6",
+  "training_ready": false
+}
