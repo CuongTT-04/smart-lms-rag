@@ -15,3 +15,7 @@ Gói .private/w5/handoff/member-b-drafts-v0.2.zip chứa trích đoạn nội b�
 ## Bộ chung đã chuẩn bị
 
 Evidence/W05/group có báo cáo500 candidate, source/group split/token readback và tests77/36/125. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md; peer acceptance chưa được cấp. Không đưa ZIP/token IDs/PDF/candidate riêng tư lên GitHub công khai.
+
+## Kiểm lại30/10/2026
+
+Đã sửa ràng buộc ID theo từng file split trong CLI audit; test tráo file và tráo mẫu kèm sidecar bị chặn. Kết quả mới:77 test A,40 test B,125 test runtime (242 tổng), exit0. Xem group/tests.json và các log group/*.txt; log tiếp nhận cũ được giữ nguyên nội dung dưới tên intake-a/*.txt để Git theo dõi. Không thay gói dữ liệu đóng băng.

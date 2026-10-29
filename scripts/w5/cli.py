@@ -79,15 +79,31 @@ def training_main():
         plan=read_json(args.split_plan)
         expected=build_split_plan(records,quality['eligible_ids'],quality['confirmed_pairs'],contract['split']['seed'])
         if plan.get('contract_fingerprint')!=contract['fingerprint'] or plan.get('splits')!=expected['splits'] or plan.get('dataset_fingerprint')!=expected['dataset_fingerprint']: raise ValueError('Split plan does not bind current candidates/contract')
-        sidecars=[r for path in args.sidecar for r in read_jsonl(path)]
-        if len(sidecars)!=len(records) or len(payload)!=len(records): raise ValueError('Sidecar/payload count mismatch')
-        lookup={r['record_id']:r for r in records};order=[];seen=set()
-        for s,item in zip(sidecars,payload):
-            rid=s['record_id']
-            if rid in seen or rid not in lookup: raise ValueError('Duplicate/unknown sidecar record')
-            seen.add(rid);row=lookup[rid]
-            if s['content_sha256']!=row['content_sha256'] or s['sft_sha256']!=digest(item) or rid not in plan['splits'].get(s['split'],[]): raise ValueError('Sidecar hash/split mismatch')
-            order.append(row)
+        split_names={'train','validation','instruction_holdout'}
+        if len(args.payload)!=3 or len(args.sidecar)!=3:
+            raise ValueError('Release audit requires one payload/sidecar pair for each split')
+        if {path.name for path in args.payload}!={name+'.jsonl' for name in split_names}:
+            raise ValueError('Duplicate or unknown payload split filename')
+        lookup={r['record_id']:r for r in records};order=[];seen=set();payload=[]
+        for payload_path,sidecar_path in zip(args.payload,args.sidecar):
+            split=payload_path.stem
+            if sidecar_path.name!=split+'.metadata.jsonl':
+                raise ValueError('Sidecar filename does not match payload split: '+split)
+            split_payload=read_jsonl(payload_path);sidecars=read_jsonl(sidecar_path)
+            payload.extend(split_payload)
+            if len(sidecars)!=len(split_payload):
+                raise ValueError('Sidecar/payload count mismatch for split: '+split)
+            expected_ids=set(plan['splits'][split])
+            if len(sidecars)!=len(expected_ids) or {s['record_id'] for s in sidecars}!=expected_ids:
+                raise ValueError('File record IDs do not match split plan: '+split)
+            for sidecar,item in zip(sidecars,split_payload):
+                rid=sidecar['record_id']
+                if rid in seen or rid not in lookup: raise ValueError('Duplicate/unknown sidecar record')
+                seen.add(rid);row=lookup[rid]
+                if sidecar['split']!=split or sidecar['content_sha256']!=row['content_sha256'] or sidecar['sft_sha256']!=digest(item):
+                    raise ValueError('Sidecar hash/split mismatch: '+split)
+                order.append(row)
+        if seen!=set(lookup): raise ValueError('Missing release records across split files')
         records=order
     from importlib.metadata import version
     from huggingface_hub import snapshot_download

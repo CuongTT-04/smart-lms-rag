@@ -1,6 +1,9 @@
-Pinned isolated runtime; python -B -m unittest discover -s scripts/w5/tests
-...........................
-----------------------------------------------------------------------
-Ran 27 tests in 3.074s
-
-OK
+W5 verification 2026-10-30; pinned isolated CPU runtime; no model weights.
+a_tools: 77 tests passed; exit=0; log=Evidence/W05/group/a_tools.txt
+Command: python -B -m unittest discover -s scripts/instruction/tests
+b_tools: 40 tests passed; exit=0; log=Evidence/W05/group/b_tools.txt
+Command: python -B -m unittest discover -s scripts/w5/tests
+runtime: 125 tests passed; exit=0; log=Evidence/W05/group/runtime.txt
+Command: PYTHONPATH=backend python -B -m unittest apps.ai.tests.test_generation_provider apps.ai.tests.test_rag_pipeline apps.ai.tests.test_generation_guardrails apps.ai.tests.test_generation_checks apps.ai.tests.test_generation_evaluation
+Total: 242 passed.
+Regression: swapped train/holdout files or rows with matching sidecars are rejected before tokenizer loading.

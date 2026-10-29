@@ -46,3 +46,6 @@ combined_holdout,58,group candidate 2026-10-29; not final acceptance
 combined_components,27,group candidate 2026-10-29; not final acceptance
 combined_source_machine_findings,0,group candidate 2026-10-29; not final acceptance
 combined_human_peer_acceptances,0,group candidate 2026-10-29; not final acceptance
+w5_revision_a_tests,77,reverified 2026-10-30
+w5_revision_b_tests,40,includes split-file regression 2026-10-30
+w5_revision_runtime_tests,125,reverified 2026-10-30

@@ -1,21 +1,33 @@
 {
-  "verified_on": "2026-10-29",
+  "verified_on": "2026-10-30",
   "scope": "COMBINED_CANDIDATE_TECHNICAL_AUDIT",
   "suites": [
     {
       "suite": "a_tools",
       "passed": 77,
-      "log": "Evidence/W05/group/a_tools.log"
+      "log": "Evidence/W05/group/a_tools.txt",
+      "command": "python -B -m unittest discover -s scripts/instruction/tests",
+      "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+      "verified_on": "2026-10-30",
+      "exit_code": 0
     },
     {
       "suite": "b_tools",
-      "passed": 36,
-      "log": "Evidence/W05/group/b_tools.log"
+      "passed": 40,
+      "log": "Evidence/W05/group/b_tools.txt",
+      "command": "python -B -m unittest discover -s scripts/w5/tests",
+      "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+      "verified_on": "2026-10-30",
+      "exit_code": 0
     },
     {
       "suite": "runtime",
       "passed": 125,
-      "log": "Evidence/W05/group/runtime.log"
+      "log": "Evidence/W05/group/runtime.txt",
+      "command": "PYTHONPATH=backend python -B -m unittest apps.ai.tests.test_generation_provider apps.ai.tests.test_rag_pipeline apps.ai.tests.test_generation_guardrails apps.ai.tests.test_generation_checks apps.ai.tests.test_generation_evaluation",
+      "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+      "verified_on": "2026-10-30",
+      "exit_code": 0
     }
   ],
   "group_readback": {
@@ -35,5 +47,6 @@
     "training": "NOT_RUN"
   },
   "training": "NOT_RUN",
-  "group_release_ready": false
+  "group_release_ready": false,
+  "regression_fix": "Release audit binds each named split file to its planned IDs and matching sidecar, rejects swapped files/rows."
 }

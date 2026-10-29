@@ -21,7 +21,7 @@ Cập nhật29/10/2026. Đã hoàn thành các đầu ra kỹ thuật trước n
 | Kiểm máy | Schema/hash/source/page/excerpt/citation/benchmark/duplicate:0 finding |
 | Tokenizer thật |500/500; prompt tối đa1533, completion kể format91, chuỗi1602 token |
 | Readback |12 checksum payload + manifest, metadata/payload/token IDs/labels/padding/source checks tái tính đạt |
-| Test |77 A +36 B +125 hồi quy đạt |
+| Test |77 A +40 B +125 hồi quy đạt (kiểm lại30/10/2026) |
 | Weights/GPU/training |Không tải weights, không dùng GPU, chưa train |
 
 Tỷ lệ77%/11,4%/11,6% là phương án ứng viên giữ nguyên nhóm nguồn và đảm bảo đủ môn ở cả ba tập; không tuyên bố80/10/10 chính xác hoặc tối ưu toàn cục. Không nối hai split riêng của A/B. Holdout không dùng chỉnh cấu hình, không thay benchmark QA độc lập.
@@ -52,3 +52,7 @@ Trần Tuấn Cường xác nhận chọn bộ đã audit làm baseline nghiên 
 ## Xác nhận của Vũ Nam Dương — cập nhật29/10/2026
 
 Theo thông tin Trần Tuấn Cường cung cấp, Vũ Nam Dương đã xác nhận kết quả thực hiện phù hợp. Người xác nhận: Vũ Nam Dương; người chuyển thông tin xác nhận: Trần Tuấn Cường. Xác nhận được ghi nhận ở mức kết quả kỹ thuật chung, không thay đổi người thực hiện theo phân công. Chưa có bảng điểm review theo từng ID/hash kèm theo xác nhận này; các biểu mẫu đó và trạng thái nghiệm thu trong gói đóng băng được theo dõi riêng.
+
+## Sửa audit split — 30/10/2026
+
+Checker release kiểm riêng ba cặp payload/sidecar theo tên split, số dòng và toàn bộ ID trong split plan; chặn tráo nguyên file hoặc từng mẫu kèm sidecar. Bổ sung4 test, bộ B đạt40 test. Log kiểm lại ở Evidence/W05/group/*.txt; gói dữ liệu đã bàn giao giữ nguyên.
