@@ -1,0 +1,77 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "review_status",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "prepared_by_member": "Tran Tuan Cuong B22DCVT073",
+  "requested_reviewer": "Vu Nam Duong B22DCVT119",
+  "a_approved_at": "2026-10-28",
+  "a_review_commit": null,
+  "b_final_confirmed_at": "2026-10-28",
+  "locked": true,
+  "decisions": [
+    {
+      "id": 1,
+      "decision": "W5 scope change and pilot size 500",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 2,
+      "decision": "Task/course quotas and document ownership",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 3,
+      "decision": "Source usage rights and evidence",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 4,
+      "decision": "Raw QA/hint/refusal output and SFT schema",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 5,
+      "decision": "Model/prompt/tokenizer and training token budgets",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 6,
+      "decision": "Rubric and full peer review",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 7,
+      "decision": "Grouped split and benchmark exclusion",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    },
+    {
+      "id": 8,
+      "decision": "File ownership, delivery and Evidence/W05",
+      "a_response": "APPROVE (reported by B)",
+      "b_response": "APPROVE",
+      "status": "APPROVED_BY_USER_REPORT"
+    }
+  ],
+  "approval_evidence": {
+    "kind": "user_report_in_chat",
+    "reported_by": "Tran Tuan Cuong",
+    "statement": "A đã đồng ý hãy tiếp tục làm"
+  }
+}

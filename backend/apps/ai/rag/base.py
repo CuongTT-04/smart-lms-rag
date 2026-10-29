@@ -116,6 +116,7 @@ class GenerationTrace:
     elapsed_seconds: float
     hint_review_required: bool
     answer_origin: str = "model_text"
+    memory: dict | None = None
 
 
 @dataclass(frozen=True)

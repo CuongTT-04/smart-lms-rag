@@ -1,0 +1,20 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "self_authored_fixture_source",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "source_identity_scope": "fixture_only",
+  "source_group_id": "FIXTURE:self-authored-w5",
+  "text": "Trong khóa học minh họa, sau khi đọc học liệu, học viên ghi lại một điều đã hiểu và một câu hỏi còn thắc mắc. Hai ghi chú này được dùng để chuẩn bị trao đổi trong buổi học tiếp theo.",
+  "text_sha256": "a20410e1a5bbb8b506664efd0ff61ebeeefebbf713f48b41951f1db346891228",
+  "document_id": "6d482082-ab87-5a14-a2fc-f9d8ac63cba2",
+  "version_id": "c51d7e76-f285-54cf-af16-fcebf5c91e5a",
+  "source_checksum": "a20410e1a5bbb8b506664efd0ff61ebeeefebbf713f48b41951f1db346891228",
+  "page_number": 1,
+  "page_unit": "virtual_fixture_page_not_PDF",
+  "author_member": "B",
+  "rights_status": "SELF_AUTHORED_FIXTURE",
+  "counts_toward_dataset": false
+}

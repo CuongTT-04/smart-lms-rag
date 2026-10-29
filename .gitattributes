@@ -1,1 +1,6 @@
 docker/backend/*.sh text eol=lf
+# Preserve the published byte-pinned instruction schema.
+data/instruction/record-schema.json -text
+
+# Evidence checksums bind exact file bytes, including test logs.
+Evidence/W05/** -text whitespace=cr-at-eol

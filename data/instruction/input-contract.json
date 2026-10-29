@@ -1,0 +1,747 @@
+{
+  "schema_version": 1,
+  "agreed_on": "2026-10-28",
+  "status": "TECHNICAL_INPUT_AGREED",
+  "dataset_status": "MEMBER_A_INTERNAL_RESEARCH_TECHNICALLY_AUDITED",
+  "participants": {
+    "implementation_owner": "A",
+    "self_review_owner": "A",
+    "final_reviewer": "B",
+    "revision_owner": "A",
+    "intermediate_b_approval_required": false,
+    "final_b_review_status": "PENDING"
+  },
+  "reference": {
+    "document": "docs/instruction-input-review.md",
+    "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+    "input_archive": "W5-Input-Review-Duong-2026-10-27.zip",
+    "input_archive_sha256": "0b1ffed823e29e7e9faed5ed052978f8d6387c02f70d2583fe4a7bf333f59f5f",
+    "private_archive_path": ".private/instruction/input.zip",
+    "archive_root": "W5-input-review",
+    "schema_path_in_archive": "data/instruction/w5/contract/schema.json",
+    "schema_sha256": "a50a06a80643c0d161db2380e9a8479bb7f8367ce2b79f617d6915f146ea3060",
+    "source_manifest_path_in_archive": "data/instruction/w5/contract/source-manifest.json",
+    "source_manifest_sha256": "cafdc2f0648225ae1fa03b912f735d354245b1fec9f2cfdfbdc34bf8acf7f72d",
+    "benchmark_exclusion_path_in_archive": "data/instruction/w5/contract/benchmark-exclusion-manifest.json",
+    "benchmark_exclusion_sha256": "41f432a9f4035a65213477141d0178ec62b4f291229f3b46581d199f3cd42b1f",
+    "working_rules_take_precedence": [
+      "review_workflow",
+      "implementation_paths",
+      "current_source_map_sha256",
+      "source_rights.private_research_drafts",
+      "source_rights.internal_research"
+    ],
+    "original_archive_unchanged": true
+  },
+  "decisions": {
+    "D1": "500 accepted records as the group pilot target; no adapter training or inference replacement in this scope",
+    "D2": "Retain task and course quotas; report actual accepted counts",
+    "D3": "Retain source allocation and unverified-rights markers; A accepts private internal research use as an explicit project exception, not verified permission; no public redistribution; retain quality, split, token audits and final B review",
+    "D4": "Retain candidate schema, IDs and raw QA/summary/hint/refusal targets",
+    "D5": "Use the pinned model/tokenizer and existing prompt builder; verify template, tokens, EOS and masks",
+    "D6": "A self-reviews during execution; B reviews at final handoff; retain rubric and hash binding",
+    "D7": "Exclude benchmark derivatives and split whole connected source/variant groups",
+    "D8": "A completes owned work without intermediate B waits and addresses B final findings"
+  },
+  "scope": {
+    "teacher_schedule_change_verified": false,
+    "training_required_now": false,
+    "online_profile_modified": false,
+    "benchmark_modified": false
+  },
+  "targets": {
+    "accepted_total": 500,
+    "accepted_by_member": {
+      "A": 250,
+      "B": 250
+    },
+    "a_task_quota": {
+      "qa": 150,
+      "summary": 50,
+      "hint": 25,
+      "insufficient_evidence": 25
+    },
+    "a_course_quota": {
+      "THMLN": 100,
+      "KTCTMLN": 75,
+      "CNXHKH": 75
+    },
+    "a_sources": [
+      {
+        "course": "THMLN",
+        "document": "ch01.pdf",
+        "page_start": 1,
+        "page_end": 12,
+        "target": 15
+      },
+      {
+        "course": "THMLN",
+        "document": "ch03.pdf",
+        "page_start": 1,
+        "page_end": 18,
+        "target": 15
+      },
+      {
+        "course": "THMLN",
+        "document": "ch05.pdf",
+        "page_start": 1,
+        "page_end": 18,
+        "target": 14
+      },
+      {
+        "course": "THMLN",
+        "document": "ch07.pdf",
+        "page_start": 1,
+        "page_end": 20,
+        "target": 14
+      },
+      {
+        "course": "THMLN",
+        "document": "ch09.pdf",
+        "page_start": 1,
+        "page_end": 12,
+        "target": 14
+      },
+      {
+        "course": "THMLN",
+        "document": "ch11.pdf",
+        "page_start": 1,
+        "page_end": 11,
+        "target": 14
+      },
+      {
+        "course": "THMLN",
+        "document": "ch13.pdf",
+        "page_start": 1,
+        "page_end": 16,
+        "target": 14
+      },
+      {
+        "course": "KTCTMLN",
+        "document": "ch01.pdf",
+        "page_start": 1,
+        "page_end": 29,
+        "target": 25
+      },
+      {
+        "course": "KTCTMLN",
+        "document": "ch03.pdf",
+        "page_start": 1,
+        "page_end": 37,
+        "target": 25
+      },
+      {
+        "course": "KTCTMLN",
+        "document": "ch05.pdf",
+        "page_start": 1,
+        "page_end": 49,
+        "target": 25
+      },
+      {
+        "course": "CNXHKH",
+        "document": "ch01.pdf",
+        "page_start": 1,
+        "page_end": 24,
+        "target": 19
+      },
+      {
+        "course": "CNXHKH",
+        "document": "ch03.pdf",
+        "page_start": 1,
+        "page_end": 20,
+        "target": 19
+      },
+      {
+        "course": "CNXHKH",
+        "document": "ch05.pdf",
+        "page_start": 1,
+        "page_end": 16,
+        "target": 19
+      },
+      {
+        "course": "CNXHKH",
+        "document": "ch07.pdf",
+        "page_start": 1,
+        "page_end": 17,
+        "target": 18
+      }
+    ]
+  },
+  "format": {
+    "candidate_schema_version": "w5-instruction-v1",
+    "production_id_pattern": "^W5_[AB]_[0-9]{5}$",
+    "fixture_id_pattern": "^FX_W5_[0-9]{5}$",
+    "fixture_in_release_allowed": false,
+    "language": "vi",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "tokenizer_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "transformers_reference": "4.57.6",
+    "trainer_version": null,
+    "prompt_version": "bounded_guidance",
+    "prompt_builder": "apps.ai.rag.context_builder.build_messages",
+    "sft_format": "conversational_prompt_completion",
+    "prompt_roles": [
+      "system",
+      "user"
+    ],
+    "completion_roles": [
+      "assistant"
+    ],
+    "raw_targets": {
+      "qa": {
+        "mode": "qa",
+        "target": "Vietnamese answer with evidence-position citations; no API JSON"
+      },
+      "summary": {
+        "mode": "qa",
+        "target": "Grounded Vietnamese summary with evidence-position citations"
+      },
+      "hint": {
+        "mode": "hint",
+        "target": [
+          "READ [n]",
+          "OUTLINE [n]",
+          "COMPARE [n] [m]"
+        ],
+        "compare_requires_distinct_labels": true
+      },
+      "insufficient_evidence": {
+        "mode": "qa",
+        "target": "INSUFFICIENT_EVIDENCE"
+      }
+    },
+    "evidence_context_projection": [
+      "source_id",
+      "chunk_id",
+      "text",
+      "document_id",
+      "version_id",
+      "document_title",
+      "page_number",
+      "section_title"
+    ],
+    "forbidden_prompt_fields": [
+      "target_text",
+      "ground_truth",
+      "expected_points",
+      "answer_key",
+      "rubric",
+      "reviews",
+      "private_user_data"
+    ],
+    "metadata_in_completion_allowed": false,
+    "max_sequence_tokens": 4096,
+    "max_prompt_tokens": 3072,
+    "max_completion_tokens": 768,
+    "count_after_chat_template": true,
+    "count_eos": true,
+    "silent_truncation_allowed": false,
+    "loss_scope": "completion_only",
+    "prompt_and_padding_label": -100,
+    "minimum_supervised_target_tokens": 1,
+    "assistant_only_loss_assumed_supported": false,
+    "tokenizer_validation_status": "PASSED_MEMBER_A_250",
+    "tokenizer_validation_report": ".private/instruction/releases/member_a/tokenization-audit.json",
+    "training_status": "NOT_RUN"
+  },
+  "review_workflow": {
+    "pilot_a_count": 10,
+    "pilot_self_review_required_before_expansion": true,
+    "batch_size_range": [
+      25,
+      50
+    ],
+    "self_reviewer": "A",
+    "final_reviewer": "B",
+    "final_b_review_status": "PENDING",
+    "current_self_reviewed_records": 250,
+    "current_peer_approved_records": 0,
+    "private_pilot_content_reviewed_records": 10,
+    "private_expansion_requires_content_review": true,
+    "rights_pending_review_decision": "REVISE_EXCEPT_EXPLICIT_INTERNAL_RESEARCH_SCOPE",
+    "review_fields": [
+      "record_id",
+      "content_sha256",
+      "reviewer_member",
+      "review_kind",
+      "reviewed_at",
+      "instruction_clarity",
+      "content_correctness",
+      "grounding_and_citation",
+      "task_behavior",
+      "language_and_format",
+      "decision",
+      "reason",
+      "re_review_of"
+    ],
+    "review_kinds": [
+      "SELF_REVIEW",
+      "PEER_REVIEW"
+    ],
+    "decisions": [
+      "ACCEPT",
+      "REVISE",
+      "REJECT"
+    ],
+    "score_values": [
+      0,
+      1,
+      2
+    ],
+    "minimum_total": 9,
+    "disallow_any_zero": true,
+    "required_score_2": [
+      "content_correctness",
+      "grounding_and_citation",
+      "task_behavior"
+    ],
+    "bind_review_to": "content_sha256",
+    "content_change_requires_re_review": true,
+    "hash_algorithm": "SHA256 of UTF8 JSON after recursive NFC of string values, sorted object keys, ensure_ascii=false, separators=(comma,colon), allow_nan=false; omit content_sha256 only; preserve array order",
+    "hard_reject": [
+      "fabricated_or_unsupported_claim",
+      "unsupported_citation",
+      "hint_discloses_final_answer",
+      "benchmark_or_derived_benchmark_sample",
+      "private_user_data_or_secret",
+      "unverified_source_rights_without_explicit_research_exception",
+      "invalid_target_format",
+      "fixture_in_production_release"
+    ]
+  },
+  "split": {
+    "seed": 42,
+    "ratio_targets": {
+      "train": 0.8,
+      "validation": 0.1,
+      "instruction_holdout": 0.1
+    },
+    "require_nonempty_splits": true,
+    "source_group_key": "course_code:source_doc; all document versions remain together",
+    "component_edges": [
+      "same_source_group",
+      "same_variant_family",
+      "confirmed_near_duplicate",
+      "multi_source_record"
+    ],
+    "whole_components_only": true,
+    "force_exact_counts": false,
+    "report_actual_course_task_distribution": true,
+    "candidate_plan_after_self_review": true,
+    "final_plan_requires_peer_acceptance": true,
+    "holdout_for_configuration_selection_allowed": false,
+    "instruction_holdout_replaces_independent_qa_test": false,
+    "benchmark_derivatives_allowed": false
+  },
+  "source_rights": {
+    "status": "DECLARED_NOT_VERIFIED",
+    "evidence_reference": null,
+    "real_pdf_candidate_generation_authorized": false,
+    "public_redistribution_authorized": false,
+    "internal_research": {
+      "enabled": true,
+      "decision_owner": "A",
+      "decision_date": "2026-10-28",
+      "decision_reference": "docs/instruction-input-review.md#8-pilot-nghien-cuu-rieng-tu",
+      "acknowledgement": "Proceed with private noncommercial research despite unverified source rights; this is not evidence of permission or a legal finding",
+      "training_experiment_allowed": true,
+      "technical_audits_required_before_training": true,
+      "redistribution_allowed": false,
+      "final_b_review_status": "PENDING"
+    },
+    "private_research_drafts": {
+      "allowed": true,
+      "decision_date": "2026-10-28",
+      "decision_reference": "docs/instruction-input-review.md#8-pilot-nghien-cuu-rieng-tu",
+      "authorization_scope": "Project workflow decision, not a copyright permission or legal finding",
+      "rights_marker_prefix": "UNVERIFIED:",
+      "output_root": ".private/instruction",
+      "training_allowed": false,
+      "redistribution_allowed": false,
+      "counts_as_accepted_dataset": false
+    }
+  },
+  "export": {
+    "candidate_status": "CANDIDATE_PENDING_B_REVIEW",
+    "candidate_requires": [
+      "verified_source_rights",
+      "valid_schema_and_provenance",
+      "leakage_and_duplicate_checks",
+      "self_review_accept_for_current_hash",
+      "valid_split_plan"
+    ],
+    "internal_research_requires": [
+      "explicit_internal_research_flag",
+      "recorded_a_research_decision",
+      "private_output_path",
+      "valid_schema_source_and_provenance",
+      "leakage_and_duplicate_checks",
+      "self_review_accept_for_current_hash",
+      "valid_split_plan"
+    ],
+    "internal_research_status": "INTERNAL_RESEARCH_CANDIDATE_PENDING_AUDIT",
+    "internal_research_is_verified_rights_or_final_release": false,
+    "final_release_requires": [
+      "candidate_checks_passed",
+      "b_peer_accept_for_a_records_current_hash",
+      "a_peer_accept_for_b_records_if_included",
+      "final_tokenizer_and_mask_checks",
+      "final_split_and_manifest_audit"
+    ],
+    "missing_b_records_may_be_counted_as_complete": false,
+    "payload_files": [
+      "train.jsonl",
+      "validation.jsonl",
+      "instruction_holdout.jsonl",
+      "metadata.jsonl",
+      "manifest.json"
+    ],
+    "manifest_hashes_itself": false
+  },
+  "implementation_paths": {
+    "record_schema": "data/instruction/record-schema.json",
+    "validator": "scripts/instruction/common.py",
+    "requirements": "scripts/instruction/requirements.txt",
+    "generator": "scripts/instruction/generate_candidates.py",
+    "exporter": "scripts/instruction/export_sft_dataset.py",
+    "sft_preparation": "scripts/instruction/prepare_sft.py",
+    "tests": "scripts/instruction/tests",
+    "candidate_a": ".private/instruction/candidates/member_a.jsonl",
+    "reviews": ".private/instruction/candidates/reviews.jsonl",
+    "release_root": ".private/instruction/releases",
+    "dataset_card": "docs/dataset-card-v2.0.md",
+    "weekly_evidence": "Evidence/W05"
+  },
+  "tooling_verification": {
+    "checked_on": "2026-10-28",
+    "status": "FIXTURE_TOOLING_TESTS_PASSED",
+    "tooling_tests_passed": 77,
+    "runtime_regression_tests_passed": 125,
+    "gpu_required": false,
+    "model_calls": 0,
+    "real_candidates_created": 0,
+    "final_release_supported": false,
+    "report_path": ".private/instruction/tooling-verification.json"
+  },
+  "private_pilot": {
+    "status": "INTERNAL_RESEARCH_PILOT_SELF_ACCEPTED_PENDING_AUDIT",
+    "record_count": 10,
+    "task_counts": {
+      "qa": 6,
+      "summary": 2,
+      "hint": 1,
+      "insufficient_evidence": 1
+    },
+    "course_counts": {
+      "THMLN": 4,
+      "KTCTMLN": 3,
+      "CNXHKH": 3
+    },
+    "content_review_pass_count": 10,
+    "content_score_distribution": {
+      "10": 10
+    },
+    "accepted_dataset_count": 0,
+    "accepted_for_internal_research_count": 10,
+    "peer_approved_count": 0,
+    "training_experiment_allowed_after_audit": true,
+    "training_ready": false,
+    "redistribution_allowed": false,
+    "records": ".private/instruction/pilot/pilot.jsonl",
+    "reviews": ".private/instruction/pilot/reviews.csv",
+    "report": ".private/instruction/pilot/review-report.json"
+  },
+  "member_a_dataset": {
+    "status": "MEMBER_A_INTERNAL_RESEARCH_TECHNICALLY_AUDITED",
+    "record_count": 250,
+    "pilot_included_unchanged": 10,
+    "additional_records": 240,
+    "batch_count": 6,
+    "authored_records_per_batch": 40,
+    "task_counts": {
+      "qa": 150,
+      "summary": 50,
+      "hint": 25,
+      "insufficient_evidence": 25
+    },
+    "course_counts": {
+      "THMLN": 100,
+      "KTCTMLN": 75,
+      "CNXHKH": 75
+    },
+    "assigned_source_count": 14,
+    "self_reviewed_current_hash_count": 250,
+    "accepted_for_internal_research_count": 250,
+    "final_b_approved_count": 0,
+    "training_ready": true,
+    "training_ready_scope": "DATA_ONLY_PRIVATE_INTERNAL_RESEARCH_NOT_TRAINER_OR_GROUP_APPROVAL",
+    "split_tokenizer_eos_mask_audit": "PASSED",
+    "public_redistribution_allowed": false,
+    "records": ".private/instruction/candidates/member_a.jsonl",
+    "reviews": ".private/instruction/candidates/reviews.jsonl",
+    "report": ".private/instruction/candidates/review-report.json"
+  },
+  "member_a_sft": {
+    "status": "MEMBER_A_INTERNAL_RESEARCH_TECHNICALLY_AUDITED",
+    "package": ".private/instruction/releases/member_a",
+    "manifest": ".private/instruction/releases/member_a/manifest.json",
+    "verification": ".private/instruction/sft-verification.json",
+    "input_contract_snapshot": ".private/instruction/releases/member_a/input-contract.snapshot.json",
+    "snapshot_note": "The package binds its original input contract snapshot; this live status update does not modify the audited package",
+    "record_count": 250,
+    "split_counts": {
+      "train": 193,
+      "validation": 32,
+      "instruction_holdout": 25
+    },
+    "source_component_count": 14,
+    "split_limitations": [
+      "validation has no KTCTMLN",
+      "instruction_holdout contains only KTCTMLN",
+      "combined A/B data require a new grouped split and audit, not concatenated member splits"
+    ],
+    "max_observed_tokens": {
+      "prompt": 1533,
+      "completion_with_formatting": 87,
+      "sequence": 1602
+    },
+    "tokenizer_eos_mask_and_padding_audit": "PASSED_250_OF_250",
+    "independent_reopen_verification": "PASSED",
+    "training_ready": true,
+    "training_ready_scope": "DATA_ONLY_PRIVATE_INTERNAL_RESEARCH_NOT_TRAINER_OR_GROUP_APPROVAL",
+    "training_status": "NOT_RUN",
+    "trainer_qlora_configuration_audited": false,
+    "model_loaded": false,
+    "gpu_used": false,
+    "source_rights_verified": false,
+    "public_redistribution_allowed": false,
+    "group_release_ready": false,
+    "b_data_review_status": "PENDING_INPUT",
+    "final_b_review_status": "PENDING"
+  },
+  "handoff": {
+    "status": "MEMBER_A_PACKAGE_PREPARED_PENDING_DELIVERY_AND_B_REVIEW",
+    "dataset_card": "docs/dataset-card-v2.0.md",
+    "archive": ".private/instruction/handoff/member-a-handoff.zip",
+    "receipt": ".private/instruction/handoff/receipt.json",
+    "archive_verifier": "scripts/instruction/verify_handoff.py",
+    "evidence": "Evidence/W05/manifest.json",
+    "delivery_status": "NOT_SENT",
+    "final_b_review_status": "PENDING",
+    "b_data_review_status": "PENDING_INPUT",
+    "group_release_ready": false,
+    "pr_created": false,
+    "tag_created": false,
+    "public_redistribution_allowed": false
+  },
+  "input_verification": {
+    "bundle_entries_checked": 15,
+    "bundle_checksum_and_size_mismatches": 0,
+    "runtime_source_hashes_matched": 6,
+    "fixture_previews_matched": 4,
+    "pdf_checksums_matched": 27,
+    "source_identities_matched": 27,
+    "current_source_map_sha256": "a0d4c0c4318cf7dc2b9618468957fdaacb8560ebc7123beb2d50ca3173031483",
+    "archived_source_manifest_declared_source_map_sha256": "7a1891644cef31191170019f3af38f144f120bb1ab50c680897efa203ed8eea3",
+    "source_map_hash_reference_corrected": true,
+    "source_map_bytes_modified": false
+  },
+  "reception_by_b": {
+    "status": "TECHNICAL_VERIFIED_AI_REVISIONS_PROPOSED",
+    "received_on": "2026-10-29",
+    "source_commit": "ce431c5a6d08ec303db90bc6cf0f06b469a70d1c",
+    "source_archive": "D:/OHAYO-Handover-Duong-2026-10-24/member-a-handoff.zip",
+    "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+    "payload_files_verified": 163,
+    "verified_copy": ".private/w5/intake-a/ce431c5/received",
+    "candidate_file": ".private/w5/intake-a/ce431c5/received/.private/instruction/candidates/member_a.jsonl",
+    "candidate_file_sha256": "b77d4a3f9ef38e33cb833d7baf28ff1186c538371b331a00c57ecdf85ea1b5a8",
+    "candidate_count": 250,
+    "raw_candidates_and_self_reviews_match_sft_metadata": true,
+    "sft_recomputed_on_cpu": true,
+    "sft_file_hashes_checked": 10,
+    "split_counts": {
+      "train": 193,
+      "validation": 32,
+      "instruction_holdout": 25
+    },
+    "source_components": 14,
+    "input_receipt_delivery_status": "NOT_SENT (historical sender receipt; now locally received)",
+    "ai_review_coverage": 250,
+    "ai_material_findings": 2,
+    "ai_records_proposed_revision": 3,
+    "ai_records_without_material_finding": 247,
+    "final_human_b_review": "PENDING",
+    "group_release_ready": false,
+    "training": "NOT_RUN",
+    "normalization_compatibility": {
+      "excerpts": 66,
+      "records": 62,
+      "non_whitespace_content_differences": 0,
+      "rule_A": "NFC then remove whitespace",
+      "rule_B": "casefold/NFC then collapse whitespace",
+      "resolution": "Classified as validator compatibility, not fabricated source text. Strict cross-member report retained; normalization must be explicit before group audit."
+    },
+    "tests_on_current_workspace": {
+      "a_tools": 77,
+      "b_tools": 27,
+      "runtime": 125
+    },
+    "files_originally_supplied_modified": false
+  },
+  "combined_candidate_preparation": {
+    "verified_on": "2026-10-29",
+    "status": "ALL_TECHNICAL_PREPARATION_COMPLETED_PEER_CONFIRMATIONS_PENDING",
+    "candidate_records": 500,
+    "by_task": {
+      "qa": 300,
+      "summary": 100,
+      "hint": 50,
+      "insufficient_evidence": 50
+    },
+    "by_course": {
+      "THMLN": 200,
+      "KTCTMLN": 150,
+      "CNXHKH": 150
+    },
+    "split_counts": {
+      "train": 385,
+      "validation": 57,
+      "instruction_holdout": 58
+    },
+    "split_stats": {
+      "train": {
+        "count": 385,
+        "courses": {
+          "THMLN": 172,
+          "KTCTMLN": 100,
+          "CNXHKH": 113
+        },
+        "tasks": {
+          "qa": 230,
+          "summary": 77,
+          "insufficient_evidence": 39,
+          "hint": 39
+        }
+      },
+      "validation": {
+        "count": 57,
+        "courses": {
+          "CNXHKH": 18,
+          "KTCTMLN": 25,
+          "THMLN": 14
+        },
+        "tasks": {
+          "qa": 33,
+          "hint": 6,
+          "summary": 12,
+          "insufficient_evidence": 6
+        }
+      },
+      "instruction_holdout": {
+        "count": 58,
+        "courses": {
+          "THMLN": 14,
+          "CNXHKH": 19,
+          "KTCTMLN": 25
+        },
+        "tasks": {
+          "qa": 37,
+          "summary": 11,
+          "hint": 5,
+          "insufficient_evidence": 5
+        }
+      }
+    },
+    "component_count": 27,
+    "max_tokens": {
+      "prompt_tokens": 1533,
+      "completion_tokens_with_formatting": 91,
+      "sequence_tokens": 1602
+    },
+    "proposed_A_revisions": 3,
+    "source_whitespace_policy": "NFC_REMOVE_WHITESPACE; all non-whitespace characters must match",
+    "cross_member_schema_source_citation_duplicate_benchmark_findings": 0,
+    "readback": {
+      "status": "PASSED",
+      "reopened_records": 500,
+      "files_checked": 12,
+      "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+      "split_counts": {
+        "train": 385,
+        "validation": 57,
+        "instruction_holdout": 58
+      },
+      "token_ids_labels_padding_recomputed": true,
+      "source_and_benchmark_checks_recomputed": true,
+      "group_release_ready": false,
+      "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+      "training": "NOT_RUN"
+    },
+    "tests": {
+      "a_tools": 77,
+      "b_tools": 36,
+      "runtime": 125
+    },
+    "weights_loaded": false,
+    "training": "NOT_RUN",
+    "human_peer_accepted_records": 0,
+    "group_release_ready": false,
+    "training_ready": false,
+    "private_package": ".private/w5/group-v0.2/package",
+    "package_manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044"
+  },
+  "owner_delegated_technical_decision": {
+    "schema_version": "w5-owner-delegated-decision-v1",
+    "decided_on": "2026-10-29",
+    "status": "TECHNICAL_BASELINE_ADOPTED_UNDER_USER_DELEGATION",
+    "decision_actor": "Codex acting under Cuong user delegation",
+    "authority": "User explicitly delegated decisions in the current conversation",
+    "scope": "Technical baseline selection and private internal research preparation; not another member signature or academic peer approval",
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "candidate_records": 500,
+    "split_counts": {
+      "train": 385,
+      "validation": 57,
+      "instruction_holdout": 58
+    },
+    "seed": 42,
+    "selected_revisions": [
+      "W5_A_00116",
+      "W5_A_00139",
+      "W5_A_00146"
+    ],
+    "source_policy": "NFC_REMOVE_WHITESPACE; source characters and page/checksum remain verified",
+    "rationale": [
+      "Preserve whole source/family components instead of forcing exact80/10/10",
+      "All three courses and all four tasks represented in every split",
+      "Adopt source/citation corrections with explicit provenance and new hashes",
+      "Use frozen tokenizer/revision/limits and keep original handed-off files immutable"
+    ],
+    "technical_work_can_proceed": true,
+    "technical_baseline_for_W6": true,
+    "original_A_acknowledgement": "GENERAL_TECHNICAL_CONFIRMATION_REPORTED_BY_CUONG",
+    "actual_member_peer_reviews": "NOT_ASSERTED",
+    "academic_group_acceptance": "NOT_ASSERTED",
+    "peer_gate_for_formal_group_acceptance": "RETAINED",
+    "public_redistribution_allowed": false,
+    "training": "NOT_RUN",
+    "trainer_configuration": "W6_PENDING",
+    "git_tag_created": false,
+    "published": false,
+    "decision_owner": "Trần Tuấn Cường",
+    "owner_ratification": {
+      "date": "2026-10-29",
+      "scope": "Technical choices in this decision, adopted by the project owner in the current conversation; does not assert independent authorship, peer review or academic acceptance."
+    },
+    "member_a_confirmation": {
+      "member": "Vũ Nam Dương",
+      "reported_by": "Trần Tuấn Cường",
+      "recorded_on": "2026-10-29",
+      "status": "TECHNICAL_RESULT_CONFIRMED_AS_REPORTED_BY_CUONG",
+      "scope": "General confirmation that the completed technical work is appropriate; does not transfer authorship or supply per-record rubric scores.",
+      "per_record_review_evidence": "NOT_SUPPLIED_IN_THIS_CONFIRMATION"
+    }
+  }
+}

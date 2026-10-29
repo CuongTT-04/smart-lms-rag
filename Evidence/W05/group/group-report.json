@@ -1,0 +1,102 @@
+{
+  "verified_on": "2026-10-29",
+  "status": "ALL_TECHNICAL_PREPARATION_COMPLETED_PEER_CONFIRMATIONS_PENDING",
+  "candidate_records": 500,
+  "by_task": {
+    "qa": 300,
+    "summary": 100,
+    "hint": 50,
+    "insufficient_evidence": 50
+  },
+  "by_course": {
+    "THMLN": 200,
+    "KTCTMLN": 150,
+    "CNXHKH": 150
+  },
+  "split_counts": {
+    "train": 385,
+    "validation": 57,
+    "instruction_holdout": 58
+  },
+  "split_stats": {
+    "train": {
+      "count": 385,
+      "courses": {
+        "THMLN": 172,
+        "KTCTMLN": 100,
+        "CNXHKH": 113
+      },
+      "tasks": {
+        "qa": 230,
+        "summary": 77,
+        "insufficient_evidence": 39,
+        "hint": 39
+      }
+    },
+    "validation": {
+      "count": 57,
+      "courses": {
+        "CNXHKH": 18,
+        "KTCTMLN": 25,
+        "THMLN": 14
+      },
+      "tasks": {
+        "qa": 33,
+        "hint": 6,
+        "summary": 12,
+        "insufficient_evidence": 6
+      }
+    },
+    "instruction_holdout": {
+      "count": 58,
+      "courses": {
+        "THMLN": 14,
+        "CNXHKH": 19,
+        "KTCTMLN": 25
+      },
+      "tasks": {
+        "qa": 37,
+        "summary": 11,
+        "hint": 5,
+        "insufficient_evidence": 5
+      }
+    }
+  },
+  "component_count": 27,
+  "max_tokens": {
+    "prompt_tokens": 1533,
+    "completion_tokens_with_formatting": 91,
+    "sequence_tokens": 1602
+  },
+  "proposed_A_revisions": 3,
+  "source_whitespace_policy": "NFC_REMOVE_WHITESPACE; all non-whitespace characters must match",
+  "cross_member_schema_source_citation_duplicate_benchmark_findings": 0,
+  "readback": {
+    "status": "PASSED",
+    "reopened_records": 500,
+    "files_checked": 12,
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "split_counts": {
+      "train": 385,
+      "validation": 57,
+      "instruction_holdout": 58
+    },
+    "token_ids_labels_padding_recomputed": true,
+    "source_and_benchmark_checks_recomputed": true,
+    "group_release_ready": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "training": "NOT_RUN"
+  },
+  "tests": {
+    "a_tools": 77,
+    "b_tools": 36,
+    "runtime": 125
+  },
+  "weights_loaded": false,
+  "training": "NOT_RUN",
+  "human_peer_accepted_records": 0,
+  "group_release_ready": false,
+  "training_ready": false,
+  "private_package": ".private/w5/group-v0.2/package",
+  "package_manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044"
+}

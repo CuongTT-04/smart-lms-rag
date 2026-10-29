@@ -1,0 +1,52 @@
+{
+  "schema_version": "w5-owner-delegated-decision-v1",
+  "decided_on": "2026-10-29",
+  "status": "TECHNICAL_BASELINE_ADOPTED_UNDER_USER_DELEGATION",
+  "decision_actor": "Codex acting under Cuong user delegation",
+  "authority": "User explicitly delegated decisions in the current conversation",
+  "scope": "Technical baseline selection and private internal research preparation; not another member signature or academic peer approval",
+  "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+  "candidate_records": 500,
+  "split_counts": {
+    "train": 385,
+    "validation": 57,
+    "instruction_holdout": 58
+  },
+  "seed": 42,
+  "selected_revisions": [
+    "W5_A_00116",
+    "W5_A_00139",
+    "W5_A_00146"
+  ],
+  "source_policy": "NFC_REMOVE_WHITESPACE; source characters and page/checksum remain verified",
+  "rationale": [
+    "Preserve whole source/family components instead of forcing exact80/10/10",
+    "All three courses and all four tasks represented in every split",
+    "Adopt source/citation corrections with explicit provenance and new hashes",
+    "Use frozen tokenizer/revision/limits and keep original handed-off files immutable"
+  ],
+  "technical_work_can_proceed": true,
+  "technical_baseline_for_W6": true,
+  "original_A_acknowledgement": "GENERAL_TECHNICAL_CONFIRMATION_REPORTED_BY_CUONG",
+  "actual_member_peer_reviews": "NOT_ASSERTED",
+  "academic_group_acceptance": "NOT_ASSERTED",
+  "peer_gate_for_formal_group_acceptance": "RETAINED",
+  "public_redistribution_allowed": false,
+  "training": "NOT_RUN",
+  "trainer_configuration": "W6_PENDING",
+  "git_tag_created": false,
+  "published": false,
+  "decision_owner": "Trần Tuấn Cường",
+  "owner_ratification": {
+    "date": "2026-10-29",
+    "scope": "Technical choices in this decision, adopted by the project owner in the current conversation; does not assert independent authorship, peer review or academic acceptance."
+  },
+  "member_a_confirmation": {
+    "member": "Vũ Nam Dương",
+    "reported_by": "Trần Tuấn Cường",
+    "recorded_on": "2026-10-29",
+    "status": "TECHNICAL_RESULT_CONFIRMED_AS_REPORTED_BY_CUONG",
+    "scope": "General confirmation that the completed technical work is appropriate; does not transfer authorship or supply per-record rubric scores.",
+    "per_record_review_evidence": "NOT_SUPPLIED_IN_THIS_CONFIRMATION"
+  }
+}

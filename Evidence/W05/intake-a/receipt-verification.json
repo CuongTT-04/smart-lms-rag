@@ -1,0 +1,43 @@
+{
+  "status": "TECHNICAL_VERIFIED_AI_REVISIONS_PROPOSED",
+  "received_on": "2026-10-29",
+  "source_commit": "ce431c5a6d08ec303db90bc6cf0f06b469a70d1c",
+  "source_archive": "D:/OHAYO-Handover-Duong-2026-10-24/member-a-handoff.zip",
+  "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
+  "payload_files_verified": 163,
+  "verified_copy": ".private/w5/intake-a/ce431c5/received",
+  "candidate_file": ".private/w5/intake-a/ce431c5/received/.private/instruction/candidates/member_a.jsonl",
+  "candidate_file_sha256": "b77d4a3f9ef38e33cb833d7baf28ff1186c538371b331a00c57ecdf85ea1b5a8",
+  "candidate_count": 250,
+  "raw_candidates_and_self_reviews_match_sft_metadata": true,
+  "sft_recomputed_on_cpu": true,
+  "sft_file_hashes_checked": 10,
+  "split_counts": {
+    "train": 193,
+    "validation": 32,
+    "instruction_holdout": 25
+  },
+  "source_components": 14,
+  "input_receipt_delivery_status": "NOT_SENT (historical sender receipt; now locally received)",
+  "ai_review_coverage": 250,
+  "ai_material_findings": 2,
+  "ai_records_proposed_revision": 3,
+  "ai_records_without_material_finding": 247,
+  "final_human_b_review": "PENDING",
+  "group_release_ready": false,
+  "training": "NOT_RUN",
+  "normalization_compatibility": {
+    "excerpts": 66,
+    "records": 62,
+    "non_whitespace_content_differences": 0,
+    "rule_A": "NFC then remove whitespace",
+    "rule_B": "casefold/NFC then collapse whitespace",
+    "resolution": "Classified as validator compatibility, not fabricated source text. Strict cross-member report retained; normalization must be explicit before group audit."
+  },
+  "tests_on_current_workspace": {
+    "a_tools": 77,
+    "b_tools": 27,
+    "runtime": 125
+  },
+  "files_originally_supplied_modified": false
+}

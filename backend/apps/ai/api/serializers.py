@@ -12,6 +12,8 @@ class ChatRequest(serializers.Serializer):
     document_ids = serializers.ListField(child=serializers.UUIDField(), required=False, allow_null=True, max_length=100)
     assessment_id = serializers.UUIDField(required=False, allow_null=True)
     question_id = serializers.UUIDField(required=False, allow_null=True)
+    conversation_id = serializers.UUIDField(required=False)
+    client_message_id = serializers.UUIDField(required=False)
 
     def to_internal_value(self, data):
         if not isinstance(data, dict) or set(data) - set(self.fields):
@@ -19,6 +21,10 @@ class ChatRequest(serializers.Serializer):
         return super().to_internal_value(data)
 
     def validate(self, data):
+        if bool(data.get('conversation_id')) != bool(data.get('client_message_id')):
+            raise serializers.ValidationError('Phiên chat cần mã lượt hỏi để tránh gửi trùng.')
+        if data.get('conversation_id') and data['mode'] != 'qa':
+            raise serializers.ValidationError('Phiên tài liệu chỉ hỗ trợ hỏi đáp học liệu.')
         if data['mode'] == 'hint' and not data.get('assessment_id'):
             raise serializers.ValidationError('Vui lòng chọn bài ôn tập cần gợi ý.')
         if data['mode'] == 'qa' and any(data.get(key) for key in ('assessment_id', 'question_id')):
@@ -28,6 +34,18 @@ class ChatRequest(serializers.Serializer):
         if data.get('document_ids') is not None:
             data['document_ids'] = sorted({str(value) for value in data['document_ids']})
         return data
+
+
+class ConversationSelector(serializers.Serializer):
+    course_id = serializers.UUIDField()
+    classroom_id = serializers.UUIDField(required=False, allow_null=True)
+    session_id = serializers.UUIDField(required=False, allow_null=True)
+    document_id = serializers.UUIDField()
+
+    def to_internal_value(self, data):
+        if not isinstance(data, dict) or set(data)-set(self.fields):
+            raise serializers.ValidationError({'non_field_errors': ['Phạm vi lịch sử không hợp lệ.']})
+        return super().to_internal_value(data)
 
 
 class CitationResponse(serializers.Serializer):
@@ -57,6 +75,45 @@ class ChatResponse(serializers.Serializer):
     answer = serializers.CharField()
     citations = CitationResponse(many=True)
     timing = serializers.DictField(child=serializers.FloatField(min_value=0))
+    conversation_id = serializers.UUIDField(required=False)
+    turn_id = serializers.UUIDField(required=False)
+    memory = serializers.DictField(required=False)
+    rating = serializers.ChoiceField(choices=['LIKE', 'DISLIKE'], required=False, allow_null=True)
+
+
+class ConversationPendingResponse(serializers.Serializer):
+    status = serializers.ChoiceField(choices=['PENDING'])
+    conversation_id = serializers.UUIDField()
+    turn_id = serializers.UUIDField()
+
+
+class ConversationMetadata(serializers.Serializer):
+    id = serializers.UUIDField()
+    document_id = serializers.UUIDField()
+    version_id = serializers.UUIDField()
+    title = serializers.CharField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
+class ConversationTurnResponse(serializers.Serializer):
+    id = serializers.UUIDField()
+    position = serializers.IntegerField(min_value=1)
+    question = serializers.CharField()
+    status = serializers.ChoiceField(choices=['PENDING', 'COMPLETED', 'FAILED'])
+    result = ChatResponse(allow_null=True)
+    error = serializers.DictField(allow_null=True)
+    created_at = serializers.DateTimeField()
+
+
+class ConversationPage(serializers.Serializer):
+    results = ConversationMetadata(many=True)
+    next_cursor = serializers.CharField(allow_null=True)
+
+
+class ConversationDetail(ConversationMetadata):
+    turns = ConversationTurnResponse(many=True)
+    next_before = serializers.IntegerField(min_value=1, allow_null=True)
 
 
 class ChatErrorResponse(serializers.Serializer):

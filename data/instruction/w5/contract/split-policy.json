@@ -1,0 +1,30 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "split_policy",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "seed": 42,
+  "ratio_targets": {
+    "train": 0.8,
+    "validation": 0.1,
+    "instruction_holdout": 0.1
+  },
+  "require_nonempty_splits": true,
+  "eligibility": "quality-policy.json",
+  "source_group_key": "course_code:source_doc; all document versions stay in the same group",
+  "connected_component_edges": [
+    "same_source_group",
+    "same_variant_family",
+    "confirmed_near_duplicate",
+    "multi_source_record"
+  ],
+  "assignment": "Whole connected components only; never split a group to force exact counts",
+  "balancing": "Seek representation by course/task subject to group constraints; report actual counts and component sizes",
+  "holdout_use": "Locked internal instruction holdout; not used to choose prompt, epoch, rubric or thresholds",
+  "not_equivalent_to": "Independent final QA test required by SRS",
+  "freeze_after_peer_review": true,
+  "split_plan_owner": "B",
+  "release_export_owner": "A"
+}

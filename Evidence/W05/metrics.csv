@@ -1,0 +1,51 @@
+metric,value,scope
+draft_records,250,B drafts; not release
+multi_context_records,8,B drafts; not release
+unique_source_pages,120,B drafts; not release
+unit_tests_passed,27,B drafts; not release
+machine_findings,0,B drafts; not release
+human_peer_reviews,0,B drafts; not release
+release_eligible_records,0,B drafts; not release
+training_runs,0,B drafts; not release
+by_task:qa,150,B drafts; not release
+by_task:summary,50,B drafts; not release
+by_task:hint,25,B drafts; not release
+by_task:insufficient_evidence,25,B drafts; not release
+by_course:THMLN,100,B drafts; not release
+by_course:KTCTMLN,75,B drafts; not release
+by_course:CNXHKH,75,B drafts; not release
+by_source:THMLN:ch02.pdf,15,B drafts; not release
+by_source:KTCTMLN:ch02.pdf,25,B drafts; not release
+by_source:CNXHKH:ch02.pdf,25,B drafts; not release
+by_source:CNXHKH:ch04.pdf,25,B drafts; not release
+by_source:CNXHKH:ch06.pdf,25,B drafts; not release
+by_source:KTCTMLN:ch04.pdf,25,B drafts; not release
+by_source:KTCTMLN:ch06.pdf,25,B drafts; not release
+by_source:THMLN:ch04.pdf,15,B drafts; not release
+by_source:THMLN:ch06.pdf,14,B drafts; not release
+by_source:THMLN:ch08.pdf,14,B drafts; not release
+by_source:THMLN:ch10.pdf,14,B drafts; not release
+by_source:THMLN:ch12.pdf,14,B drafts; not release
+by_source:THMLN:ch14.pdf,14,B drafts; not release
+hint_actions:READ,9,B drafts; not release
+hint_actions:OUTLINE,8,B drafts; not release
+hint_actions:COMPARE,8,B drafts; not release
+max_tokens:prompt_tokens,1091,B drafts; not release
+max_tokens:completion_tokens,91,B drafts; not release
+max_tokens:sequence_tokens,1152,B drafts; not release
+a_received_candidates,250,A intake 2026-10-29; not group acceptance
+a_payload_files_verified,163,A intake 2026-10-29; not group acceptance
+a_sft_file_hashes_checked,10,A intake 2026-10-29; not group acceptance
+a_ai_reviewed,250,A intake 2026-10-29; not group acceptance
+a_ai_proposed_revision,3,A intake 2026-10-29; not group acceptance
+a_human_peer_acceptances,0,A intake 2026-10-29; not group acceptance
+combined_candidates,500,group candidate 2026-10-29; not final acceptance
+combined_train,385,group candidate 2026-10-29; not final acceptance
+combined_validation,57,group candidate 2026-10-29; not final acceptance
+combined_holdout,58,group candidate 2026-10-29; not final acceptance
+combined_components,27,group candidate 2026-10-29; not final acceptance
+combined_source_machine_findings,0,group candidate 2026-10-29; not final acceptance
+combined_human_peer_acceptances,0,group candidate 2026-10-29; not final acceptance
+w5_revision_a_tests,77,reverified 2026-10-30
+w5_revision_b_tests,40,includes split-file regression 2026-10-30
+w5_revision_runtime_tests,125,reverified 2026-10-30

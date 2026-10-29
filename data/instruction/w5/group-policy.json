@@ -1,0 +1,9 @@
+{
+  "version": "w5-group-candidate-v1",
+  "scope": "INTERNAL_RESEARCH_ONLY",
+  "normalization": "NFC_REMOVE_WHITESPACE; all non-whitespace characters must match",
+  "references": "A UNVERIFIED and B user-instruction markers retained in original records; in-memory compatibility catalog only",
+  "training_configuration": "Frozen W5 training contract mapped to tokenizer interface; no dependency on mutable A format",
+  "source_families": "Whole components, seed42, all courses in all splits; ratios approximate",
+  "peer_gate": "Technical audit never supplies PEER_REVIEW scores or confirmation"
+}

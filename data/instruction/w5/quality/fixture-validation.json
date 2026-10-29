@@ -1,0 +1,29 @@
+{
+  "confirmed_pairs": [],
+  "contract_fingerprint": "6bb7ee2b0b458989c31769e25b548808d2cc3dbdce3acc84c285a9e287ef6615",
+  "counts_by_task": {
+    "hint": 1,
+    "insufficient_evidence": 1,
+    "qa": 1,
+    "summary": 1
+  },
+  "dataset_fingerprint": "50f09b7a7cd0f0860fbe5f7430f1a822883ff2a79005f6ac4d0debd0b1923a91",
+  "eligible_ids": [],
+  "findings": [],
+  "fixture_mode": true,
+  "input_sha256": {
+    "data\\fixtures\\w5-instruction-contract.jsonl": "91a8d6dbd0b937ad2ac2039c28e6cf7d43ec7880855161b751d39528a34775b7"
+  },
+  "near_duplicate_method": "character_5gram_jaccard; not semantic proof",
+  "passed": true,
+  "record_count": 4,
+  "schema_version": "w5-quality-v1",
+  "semantic_review": "REQUIRED_FROM_OPPOSITE_MEMBER",
+  "stage": "candidate",
+  "valid_ids": [
+    "FX_W5_00001",
+    "FX_W5_00002",
+    "FX_W5_00003",
+    "FX_W5_00004"
+  ]
+}

@@ -37,6 +37,16 @@ class ChatServiceTests(ScopeFixture):
         self.runtime.generate.assert_not_called()
         self.retrieval.assert_not_called()
 
+    def test_history_retrieval_stays_within_query_limit_and_preserves_current_question(self):
+        self.data['question'] = 'Q' * 8000
+        history = [dict(question='Old topic', answer='Previous answer is not evidence')]
+        self.runtime.generate.return_value = {**self.output, '_memory': dict(protocol='chat_history_v1')}
+        answer_chat(user=self.student, data=self.data, runtime=self.runtime, request_id=str(uuid4()), history=history)
+        query = self.retrieval.call_args.args[1]
+        self.assertLessEqual(len(query), 8000)
+        self.assertEqual(query, self.data['question'])
+        self.assertEqual(self.runtime.generate.call_args.kwargs['history'], history)
+
     def test_unknown_citation_and_invalid_schema_fail_closed(self):
         for output in ({**self.output, 'references':[{'label':1,'source_id':'S999'}]},
                        {**self.output, 'answer':'[2]'}, {**self.output, 'references':[]},
@@ -54,7 +64,7 @@ class ChatServiceTests(ScopeFixture):
         self.assertNotIn('secret',caught.exception.message)
 
     def test_model_limit_and_busy_errors_are_not_flattened_to_unavailable(self):
-        for code,status in [('OUTPUT_LIMIT_REACHED',503),('GENERATION_TIMEOUT',503),('GENERATION_BUSY',429),('GENERATION_CONFIG_MISMATCH',503)]:
+        for code,status in [('OUTPUT_LIMIT_REACHED',503),('GENERATION_TIMEOUT',503),('GENERATION_BUSY',429),('GENERATION_CONFIG_MISMATCH',503),('GENERATION_MISSING_CITATION',503)]:
             self.runtime.generate.side_effect=DocumentError(code,'Safe message',status)
             with self.assertRaises(DocumentError) as caught:self.call()
             self.assertEqual(caught.exception.code,code)
