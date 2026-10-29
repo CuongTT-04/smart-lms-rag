@@ -1,125 +1,132 @@
-# Dataset Card v2.0
+# OHAYO Instruction Dataset v2.0
 
 ## 1. Tổng quan
 
-| Nội dung | Thông tin |
-| --- | --- |
-| Tên | SmartLMS AI-RAG Course Corpus & Instruction Dataset |
-| Phiên bản / ngày cập nhật | v2.0 / 28/10/2026 |
-| Bản trước | [Dataset card v1.0](dataset-card.md), giữ nguyên |
-| Ngôn ngữ | Tiếng Việt |
-| Corpus kế thừa | 27 PDF: 14 THMLN, 6 KTCTMLN, 7 CNXHKH |
-| Instruction hiện có | 250 mẫu A, sử dụng 14 PDF được phân công |
-| Mục đích | Chuẩn bị dữ liệu SFT cho thử nghiệm QLoRA nội bộ, phục vụ trả lời có căn cứ, tóm tắt, gợi ý và từ chối khi thiếu căn cứ |
-| Trạng thái | A tự duyệt và kiểm kỹ thuật; B chưa duyệt cuối; chưa huấn luyện |
+OHAYO Instruction là bộ dữ liệu tiếng Việt của dự án SmartLMS AI-RAG, dùng để chuẩn bị huấn luyện có giám sát (SFT) và thử nghiệm QLoRA cho trợ lý học tập trả lời dựa trên tài liệu.
 
-v2.0 bổ sung lớp dữ liệu instruction và gói SFT trên corpus v1.0, không tuyên bố thay đổi hoặc cấp phép lại các PDF. Mục tiêu nhóm là 500 mẫu, nhưng bản hiện tại **chỉ có 250 mẫu A**, không tính dữ liệu B chưa bàn giao.
+| Thuộc tính | Thông tin |
+| --- | --- |
+| Phiên bản / cập nhật | v2.0 / 30/10/2026 |
+| Ngôn ngữ | Tiếng Việt |
+| Quy mô | 500 mẫu instruction từ 27 PDF |
+| Lĩnh vực | Triết học Mác – Lênin (THMLN), Kinh tế chính trị Mác – Lênin (KTCTMLN), Chủ nghĩa xã hội khoa học (CNXHKH) |
+| Model đích | `Qwen/Qwen2.5-7B-Instruct` |
+| Định dạng | JSONL, conversational prompt/completion |
+| Trạng thái | Bản ứng viên hoàn thiện kỹ thuật cho nghiên cứu nội bộ; chưa phải bản phát hành công khai |
+| Huấn luyện | Chưa huấn luyện QLoRA; chưa có kết quả sau fine-tune |
+
+v2.0 kế thừa corpus trong [dataset card v1.0](dataset-card.md), bổ sung instruction và bộ SFT đã chia tập. **500 mẫu instruction không phải benchmark 150 QA** dùng đánh giá mô hình.
 
 ## 2. Nguồn và phạm vi sử dụng
 
-Nguồn PDF sưu tầm từ các liên kết chia sẻ không chính thức. Quyền nội dung thuộc chủ sở hữu gốc; trạng thái quyền vẫn là `DECLARED_NOT_VERIFIED`. Khả năng truy cập liên kết và cam kết nghiên cứu phi thương mại không phải bằng chứng đã được chủ sở hữu cấp phép.
+Corpus gồm 14 PDF THMLN, 6 PDF KTCTMLN và 7 PDF CNXHKH, được sưu tầm từ các liên kết chia sẻ. Instruction được biên soạn dựa trên đoạn trích cụ thể, không bổ sung kiến thức ngoài để bù phần nguồn thiếu.
 
-A ghi nhận quyết định tiếp tục thử nghiệm nghiên cứu/học tập phi thương mại **nội bộ**, lưu dữ liệu trong `.private/instruction/`. Quyết định này không xác minh quyền nguồn; không cho phép phát hành công khai corpus, instruction hoặc adapter từ dữ liệu này. Nếu mở rộng phạm vi, cần xem xét lại căn cứ quyền trước khi sử dụng.
+Mỗi đoạn có định danh tài liệu/phiên bản, số trang vật lý trong PDF và SHA-256 để truy nguyên. Văn bản nguồn giữ dấu vết bản gốc; kiểm vị trí trang chỉ chuẩn hóa Unicode và khoảng trắng, không sửa nội dung để khớp nguồn.
 
-Nguồn A: THMLN các chương 01, 03, 05, 07, 09, 11, 13; KTCTMLN các chương 01, 03, 05; CNXHKH các chương 01, 03, 05, 07. Phạm vi trang và quota từng chương nằm trong [contract làm việc](../data/instruction/input-contract.json).
+**Quyền nguồn: `DECLARED_NOT_VERIFIED`.** Truy cập được liên kết không đồng nghĩa được cấp phép huấn luyện hoặc tái phân phối. Phạm vi dự án ghi nhận là nghiên cứu, học tập phi thương mại nội bộ; đây không phải giấy phép của chủ sở hữu tài liệu.
 
-## 3. Thành phần dữ liệu
+- Lưu và chia sẻ qua kho riêng tư có kiểm soát truy cập.
+- Không phát hành công khai corpus, instruction hoặc sản phẩm phái sinh khi chưa làm rõ quyền tương ứng.
+- Khi thay đổi mục đích hoặc phạm vi sử dụng, cần đánh giá lại căn cứ quyền nguồn.
 
-| Môn | QA | Tóm tắt | Gợi ý | Thiếu căn cứ | Tổng |
+## 3. Thành phần và hành vi đầu ra
+
+| Môn học | QA | Tóm tắt | Gợi ý | Thiếu căn cứ | Tổng |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| THMLN | 60 | 20 | 10 | 10 | 100 |
-| KTCTMLN | 45 | 15 | 8 | 7 | 75 |
-| CNXHKH | 45 | 15 | 7 | 8 | 75 |
-| **Tổng** | **150** | **50** | **25** | **25** | **250** |
+| THMLN | 120 | 40 | 20 | 20 | 200 |
+| KTCTMLN | 90 | 30 | 16 | 14 | 150 |
+| CNXHKH | 90 | 30 | 14 | 16 | 150 |
+| **Tổng** | **300** | **100** | **50** | **50** | **500** |
 
-Đây là 250 mẫu instruction gồm nhiều loại tác vụ, **không phải bộ benchmark 150 QA** đã dùng đánh giá model. ID giữ theo schema đã thống nhất: `W5_A_00001` đến `W5_A_00250`.
+- **QA:** trả lời trực tiếp bằng tiếng Việt, gắn `[1]`, `[2]` theo evidence thực sự hỗ trợ phát biểu.
+- **Tóm tắt:** giữ ý chính của nguồn, không thêm nhận định ngoài căn cứ; có citation tương ứng.
+- **Gợi ý:** target là `READ [n]`, `OUTLINE [n]` hoặc `COMPARE [n] [m]`, không chứa đáp án cuối. Đây là hành động cho pipeline, không phải đoạn gợi ý hoàn chỉnh để hiển thị trực tiếp.
+- **Thiếu căn cứ:** chỉ xuất `INSUFFICIENT_EVIDENCE`.
 
-Mỗi mẫu lưu câu hỏi/instruction, target, môn, tác giả, evidence, định danh tài liệu/phiên bản/trang, provenance và SHA-256 nội dung. Schema tại [record-schema.json](../data/instruction/record-schema.json). Review tách riêng và gắn với đúng hash; thay nội dung phải review lại.
+## 4. Cấu trúc và biên soạn
 
-## 4. Biên soạn và kiểm chất lượng
+Mỗi dòng SFT có hai trường:
 
-Quy trình: chọn đoạn PDF trong phân công, biên soạn câu hỏi và target, kiểm nguồn/trang/hash, kiểm định dạng và trùng, tự review nội dung rồi đóng gói. Giữ nguyên 10 pilot; bổ sung 240 mẫu theo sáu batch 40. Không dùng model/API để sinh các mẫu này.
-
-- QA và summary: tiếng Việt, có trích dẫn theo vị trí evidence; không xuất API JSON vào completion.
-- Hint: action `READ [n]`, `OUTLINE [n]` hoặc `COMPARE [n] [m]`, không đưa đáp án cuối vào target hint.
-- Thiếu căn cứ: target `INSUFFICIENT_EVIDENCE`.
-- 250 mẫu có SELF_REVIEW ACCEPT của A trên hash hiện tại. Rubric tối thiểu 9/10, không tiêu chí 0; nội dung, grounding/citation và hành vi task phải đạt 2/2.
-- Kiểm trùng chính xác/ngữ đoạn với 199 fingerprint câu hỏi được bảo vệ và rà ý hỏi liên quan. Không sử dụng gold benchmark làm nguyên liệu; kiểm này không chứng minh loại bỏ mọi paraphrase hoặc leakage ngữ nghĩa.
-
-Tự review và kiểm schema không phải xác nhận chất lượng model, quyền nguồn hoặc B nghiệm thu. Công cụ không tự cấp ACCEPT cho nội dung tùy ý.
-
-## 5. Chia tập
-
-Seed 42, mục tiêu 80/10/10. Chia nguyên component liên kết nguồn/tài liệu mọi phiên bản, biến thể và parent; không tách chương để ép số lượng.
-
-| Tập | THMLN | KTCTMLN | CNXHKH | Tổng |
-| --- | ---: | ---: | ---: | ---: |
-| Train | 86 | 50 | 57 | 193 |
-| Validation | 14 | 0 | 18 | 32 |
-| Instruction holdout | 0 | 25 | 0 | 25 |
-
-14 component không giao nhau giữa các tập. Tỷ lệ thực tế 77,2% / 12,8% / 10%. **Validation thiếu KTCTMLN; holdout chỉ có KTCTMLN**, nên không đại diện đánh giá cả ba môn. Holdout không dùng chọn cấu hình và không thay benchmark độc lập. Khi ghép dữ liệu A/B phải chia nhóm và audit lại toàn bộ, không nối các split riêng.
-
-## 6. Định dạng SFT và kiểm kỹ thuật
-
-Model/tokenizer đích `Qwen/Qwen2.5-7B-Instruct`, revision `a09a35458c702b33eeacc393d103063234e8bc28`; Transformers `4.57.6`. Prompt dùng builder hiện có với phiên bản `bounded_guidance`, roles system/user; completion là assistant. Không đưa target, rubric hoặc review vào prompt.
-
-| Kiểm tra bằng tokenizer thật | Kết quả |
+| Trường | Nội dung |
 | --- | --- |
-| Số mẫu đạt | 250/250 |
-| Prompt tối đa / ngân sách | 1.533 / 3.072 token |
-| Completion kể cả định dạng tối đa / ngân sách | 87 / 768 token |
-| Toàn chuỗi tối đa / ngân sách | 1.602 / 4.096 token |
-| Template / target | Khớp prefix token và giải mã ngược target |
-| EOS / loss | Một EOS trong completion; chỉ target và EOS được tính loss |
-| Prompt / padding | Labels `-100`; padding phải theo bội số 8, attention 0 |
+| `prompt` | Message `system` và `user`, chứa yêu cầu, evidence và thông tin bài tập công khai nếu có |
+| `completion` | Một message `assistant` chứa target mong đợi |
+
+Prompt sử dụng phiên bản `bounded_guidance`. Target, rubric, review và metadata quản lý không được thêm vào prompt như thông tin đầu vào.
+
+Quy trình: chọn đoạn PDF → viết yêu cầu/target → thử trên 20 mẫu pilot → mở rộng → kiểm nguồn và nội dung → sửa, cập nhật hash → chia tập → xuất và audit. Review gắn với hash; thay nội dung phải kiểm và review lại.
+
+Metadata tách riêng gồm ID, hash nội dung, split, vị trí dòng, hash SFT, môn/tác vụ và thông tin nguồn. ID có tiền tố lịch sử được giữ ổn định để truy nguyên, không phải dữ liệu cần đưa vào mô hình. Schema bản ghi đầy đủ: [record-schema.json](../data/instruction/record-schema.json).
+
+## 5. Chia tập và chống leakage
+
+Seed **42**; chia nguyên **27 component liên kết nguồn**, bao gồm quan hệ tài liệu/phiên bản, biến thể và mẫu cha. Không tách cùng nhóm sang nhiều tập để ép đúng tỷ lệ.
+
+| Tập | THMLN | KTCTMLN | CNXHKH | Tổng | Tỷ lệ |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Train | 172 | 100 | 113 | **385** | 77,0% |
+| Validation | 14 | 25 | 18 | **57** | 11,4% |
+| Instruction holdout | 14 | 25 | 19 | **58** | 11,6% |
+
+Mỗi tập có đủ ba môn và bốn loại tác vụ. 80/10/10 là mục tiêu gần đúng; ưu tiên không giao nhóm nguồn và duy trì độ phủ môn học.
+
+Validation dùng theo dõi và chọn cấu hình. Instruction holdout chỉ đánh giá sau cùng, không dùng train hoặc chọn cấu hình; không thay benchmark 150 QA độc lập.
+
+Kiểm chống leakage gồm ID, câu hỏi/target được bảo vệ và sàng lọc trùng/gần trùng; danh mục có 199 fingerprint câu hỏi được bảo vệ. Không sử dụng gold benchmark hoặc biến thể làm mẫu huấn luyện. Các kiểm tra này không bảo đảm phát hiện mọi trùng ngữ nghĩa hoặc mọi giao nhau về chủ đề/trang nguồn.
+
+## 6. Kiểm định
+
+| Hạng mục | Kết quả hiện có |
+| --- | --- |
+| Pilot nội dung | 20/20 mẫu hiện tại được đọc, đánh giá theo nguồn; không có yêu cầu sửa hoặc loại |
+| Cấu trúc, nguồn và benchmark screening | 500 mẫu được kiểm bằng công cụ trên gói đầy đủ |
+| Token hóa | 500/500 mẫu được audit bằng tokenizer thật đúng revision, kiểm lại token/EOS/labels |
+| Chia tập | 385/57/58 mẫu; 27 component không giao tập |
+| Đọc lại gói đầy đủ | Mở lại và kiểm 12 tệp payload |
+| ZIP rút gọn | 6 file; checksum, số mẫu, metadata và SFT khớp bản đã audit |
+| Kiểm thử công cụ/runtime | 248 test CPU đạt trong đợt kiểm tích hợp gần nhất |
+
+Rubric gồm độ rõ yêu cầu, độ đúng, grounding/citation, hành vi tác vụ và ngôn ngữ/định dạng. Ngưỡng chấp nhận: ít nhất 9/10, không tiêu chí 0; độ đúng, grounding/citation và hành vi phải đạt 2/2.
+
+Kiểm kỹ thuật không tự chấm chất lượng ngữ nghĩa. Đọc 20 mẫu pilot không được suy rộng thành nghiệm thu nội dung độc lập của cả 500 mẫu. Trạng thái nghiệm thu trong gói đóng băng được giữ nguyên; không suy ra chữ ký nghiệm thu từ kết quả máy kiểm.
+
+## 7. Chuẩn bị huấn luyện
+
+Model/tokenizer: `Qwen/Qwen2.5-7B-Instruct`, revision `a09a35458c702b33eeacc393d103063234e8bc28`. Môi trường token hóa tham chiếu: Transformers `4.57.6`, tokenizers `0.22.2`, huggingface-hub `0.36.2`.
+
+| Tham số dữ liệu | Giá trị |
+| --- | --- |
+| Ngân sách prompt / completion / toàn chuỗi | 3.072 / 768 / 4.096 token |
+| Chat template | Template tokenizer đúng revision |
+| Loss | Chỉ completion và EOS của completion |
+| Labels prompt, padding, định dạng sau EOS | `-100` |
+| EOS / PAD ID | `151645` / `151643` |
+| Padding | Bên phải, bội số 8; attention padding bằng 0 |
 | Cắt ngầm | Không cho phép |
 
-Đã kiểm bằng CPU, chỉ tải tokenizer/config, không tải trọng số hoặc nạp model. Sau bổ sung công cụ kiểm bàn giao: 77/77 test công cụ và 125/125 test hồi quy runtime đạt. Đã mở lại gói, kiểm checksum và tính lại token/labels của cả 250 mẫu. Chưa kiểm trainer/QLoRA thực chạy hoặc huấn luyện.
+Nạp JSONL bằng công cụ hỗ trợ conversational prompt/completion. Không nối nội dung message bằng tay, không tính loss trên prompt, không dịch labels hai lần. Nếu đổi tokenizer/collator hoặc bật packing, phải kiểm lại ranh giới mẫu và mask.
 
-## 7. Artifact và tái lập
+Gói rút gọn không kèm tokenized files vì có thể tạo lại. **Phải token hóa và kiểm token/EOS/mask trước huấn luyện.** Model weights, tokenizer assets, trainer và cấu hình QLoRA được chuẩn bị riêng; dataset không phải chương trình huấn luyện độc lập.
 
-Các đường dẫn dưới đây tính từ gốc dự án; dữ liệu riêng tư không đi theo Git.
+## 8. Phân phối và minh chứng
 
-| Artifact | Đường dẫn |
+Dữ liệu SFT của 500 mẫu sau khi xuất được phân phối qua các file sau::
+
+| File | Vai trò |
 | --- | --- |
-| Mẫu gốc / review / báo cáo | `.private/instruction/candidates/member_a.jsonl`, `reviews.jsonl`, `review-report.json` |
-| Gói SFT | `.private/instruction/releases/member_a/` |
-| Kết quả kiểm lại | `.private/instruction/sft-verification.json` |
-| Gói bàn giao riêng tư / checksum | `.private/instruction/handoff/member-a-handoff.zip`, `receipt.json` |
-| Minh chứng tóm tắt, không chứa mẫu | `Evidence/W05/` |
-| Log test | `.private/instruction/tooling-test-results.txt`, `.private/instruction/runtime-test-results.txt` |
-| Công cụ chuẩn bị | `scripts/instruction/prepare_sft.py` |
-| Quyết định và quy trình chi tiết | [instruction-input-review.md](instruction-input-review.md), mục 10 |
+| `train.jsonl` | 385 mẫu huấn luyện |
+| `validation.jsonl` | 57 mẫu validation |
+| `instruction_holdout.jsonl` | 58 mẫu đánh giá giữ riêng |
+| `metadata.jsonl` | 500 dòng metadata truy nguyên, không đưa vào prompt |
+| `dataset-config.json` | Tokenizer, ngân sách token, preprocessing và phạm vi sử dụng |
+| `manifest.json` | SHA-256 và kích thước các file còn lại, không tự hash chính nó |
 
-Gói SFT có 11 file: ba tập prompt/completion; ba tập tokenized chứa token IDs, attention mask và labels; `metadata.jsonl`; `split-plan.json`; `tokenization-audit.json`; `input-contract.snapshot.json`; `manifest.json`. Manifest ghi hash/kích thước 10 file còn lại, không hash chính nó. Kiểm gói theo snapshot contract đã lưu, không theo trạng thái cập nhật sau này của contract làm việc.
+Các file này được nén lại bằng 1 file ZIP nằm ngoài dự án, phục vụ cho việc tái sử dụng. ZIP không chứa PDF, model, bản nháp, review chi tiết hoặc log. Gói lưu trữ đầy đủ được giữ riêng để truy nguyên và tái kiểm nguồn.
 
-SHA-256 manifest hiện tại: `3b8ff2c1c874ba42554d19327417d35e3d6441b43c477e5a956257880f975b31`.
+## 9. Giới hạn
 
-Trên máy đã có đầy đủ đầu vào riêng tư, kiểm lại bằng `python -X utf8 .private/instruction/verify_sft.py`. Tái lập trên máy khác cần bàn giao riêng nguồn, ZIP đầu vào, mẫu/review và tokenizer đúng revision cùng metadata; cài dependency tại `scripts/instruction/requirements.txt`. Không ghi đè gói đã audit.
-
-## 8. Giới hạn và trạng thái bàn giao
-
-- `training_ready=true` chỉ là dữ liệu đạt audit kỹ thuật cho thử nghiệm nội bộ, không phải đã huấn luyện, trainer đã chạy đúng hoặc model tốt hơn.
-- Chưa có kết quả học, factuality sau fine-tune, hiệu quả QLoRA hay kiểm phân quyền DB/API từ bộ dữ liệu này.
-- Dữ liệu chọn từ phạm vi nguồn A, độ phủ và ngôn ngữ PDF có giới hạn; split hiện lệch môn như mục 5.
-- Quyền nguồn chưa xác minh; không phát hành công khai. B chưa duyệt cuối, review dữ liệu B đang chờ đầu vào; chưa nghiệm thu bộ 500 mẫu.
-- Gói bàn giao A đã chuẩn bị; hướng dẫn kiểm trên máy mới và checklist B nằm ở mục 11 của tài liệu tổng hợp. Chưa gửi gói, tạo PR hoặc tag. Tiếp theo: chuyển riêng gói cho B, sửa theo review, tích hợp dữ liệu nhóm rồi audit lại phần thay đổi trước thử nghiệm huấn luyện.
-
-## Tiếp nhận trên máy B ngày29/10/2026
-
-Đã nhận ZIP và kiểm lại kỹ thuật trên CPU:250 mẫu,163 file bàn giao,10 file SFT và token/labels/padding đạt. Công cụ đã được kiểm lại với workspace hiện tại. Kết quả rà soát sơ bộ bằng công cụ đề nghị sửa W5_A_00116, W5_A_00139, W5_A_00146; chưa có human B approval hoặc group acceptance. Xem [báo cáo tiếp nhận](weekly/W5/tiep-nhan-member-a.md), receipt-verification và test-results trong Evidence/W05. Gói gốc và SELF_REVIEW giữ nguyên; cần A sửa/tái xuất rồi review lại hash mới. Chưa chia lại bộ500, chưa train.
-
-## Cập nhật bộ chung29/10/2026
-
-Đã tạo và audit CPU500 candidate, split385/57/58 đủ ba môn trong từng tập,3 bản sửa A có hash mới. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md. Gói gốc giữ nguyên; peer confirmations vẫn cần thật, chưa train hoặc nghiệm thu nhóm.
-
-## Tiếp nhận và review phần A ngày 30/10/2026
-
-A đã nhận gói nhóm riêng tư, kiểm lại 500 mẫu, SELF_REVIEW ba bản sửa A và review 250 mẫu B. Bản làm việc mới chỉnh 9 mẫu B về OCR/diễn đạt/phạm vi câu hỏi; 250 review ACCEPT của A gắn đúng hash sau chỉnh. Gói nguồn giữ nguyên, không tự ghi B đã chấp nhận các chỉnh sửa.
-
-Gói mới tại `.private/instruction/group-reviewed/package/`, manifest `843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5`; split 385/57/58. Audit lại 500/500 mẫu đạt, vẫn chỉ là candidate nghiên cứu nội bộ. Log hiện hành 77 A + 42 B + 125 runtime tại `Evidence/W05/current-tests/`. Chi tiết bàn giao và cách kiểm lại ở mục 12 của [tài liệu tổng hợp](instruction-input-review.md).
-
-Các số liệu 193/32/25 và trạng thái chờ nhận B phía trên là lịch sử gói A. Hiện còn chờ B review phần A/chốt các bản chỉnh theo hash mới và nghiệm thu cuối; chưa training, commit, push, PR hoặc tag trong lượt tiếp nhận này. Quyền nguồn và giới hạn sử dụng không thay đổi.
-
-**Quyết định sau tích hợp bản sửa B:** theo yêu cầu A, review kỹ thuật hiện đã được hoàn tất theo ủy quyền, không cần đợi B phản hồi tiếp để chốt phần việc A. Kiểm mới 77/46/125 test đạt; xem mục 13 tài liệu tổng hợp và `Evidence/W05/integration-review.json`. Không suy ra B đã chấm từng mẫu hoặc gói đóng băng đã được nghiệm thu học thuật. Nội dung dữ liệu, quyền nguồn và trạng thái chưa huấn luyện giữ nguyên.
+- Dữ liệu nhỏ, chỉ bao phủ ba môn và tài liệu đã chọn; không đại diện mọi câu hỏi hoặc cách diễn đạt.
+- Độ đúng được đánh giá theo nguồn, không phải kiểm chứng độc lập mọi phát biểu ngoài thực tế. Nguồn có thể chứa lỗi OCR hoặc hạn chế của tài liệu gốc.
+- Citation hoặc khớp trang không đủ chứng minh mọi phát biểu được hỗ trợ; kiểm trùng không bảo đảm loại hết leakage ngữ nghĩa.
+- Chưa có kết quả trainer thực chạy, chất lượng sau QLoRA, factuality sau fine-tune hoặc tác động tới độ trễ. Dataset không chứng minh phân quyền DB/API hoặc khả năng chống prompt injection của ứng dụng.
+- Quyền nguồn chưa xác minh. Hoàn thiện kỹ thuật không tự biến dữ liệu thành bản được cấp phép hoặc nghiệm thu công khai.
