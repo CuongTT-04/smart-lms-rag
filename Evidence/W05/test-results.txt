@@ -1,0 +1,6 @@
+Pinned isolated runtime; python -B -m unittest discover -s scripts/w5/tests
+...........................
+----------------------------------------------------------------------
+Ran 27 tests in 3.074s
+
+OK

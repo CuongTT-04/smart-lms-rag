@@ -1,6 +1,6 @@
 # Chuông thông báo OHAYO
 
-Triển khai ngày 18/10/2026. Thiết kế và kế hoạch ở `docs/design/notifications-*.md`.
+Triển khai ngày 18/10/2026. Thiết kế ở [notifications-design.md](design/notifications-design.md); sơ đồ kiến trúc ở [notifications-architecture.md](design/notifications-architecture.md).
 
 ## Cách sử dụng
 

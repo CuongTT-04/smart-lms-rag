@@ -1,0 +1,3050 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "benchmark_exclusion",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "canonical_development_record_count": 150,
+  "canonical_qa_ids": [
+    "CNXHKH_QA_001",
+    "CNXHKH_QA_002",
+    "CNXHKH_QA_003",
+    "CNXHKH_QA_004",
+    "CNXHKH_QA_005",
+    "CNXHKH_QA_006",
+    "CNXHKH_QA_007",
+    "CNXHKH_QA_008",
+    "CNXHKH_QA_009",
+    "CNXHKH_QA_010",
+    "CNXHKH_QA_011",
+    "CNXHKH_QA_012",
+    "CNXHKH_QA_013",
+    "CNXHKH_QA_014",
+    "CNXHKH_QA_015",
+    "CNXHKH_QA_016",
+    "CNXHKH_QA_017",
+    "CNXHKH_QA_018",
+    "CNXHKH_QA_019",
+    "CNXHKH_QA_020",
+    "CNXHKH_QA_021",
+    "CNXHKH_QA_022",
+    "CNXHKH_QA_023",
+    "CNXHKH_QA_024",
+    "CNXHKH_QA_025",
+    "CNXHKH_QA_026",
+    "CNXHKH_QA_027",
+    "CNXHKH_QA_028",
+    "CNXHKH_QA_029",
+    "CNXHKH_QA_030",
+    "CNXHKH_QA_031",
+    "CNXHKH_QA_032",
+    "KTCTMLN_QA_001",
+    "KTCTMLN_QA_002",
+    "KTCTMLN_QA_003",
+    "KTCTMLN_QA_004",
+    "KTCTMLN_QA_005",
+    "KTCTMLN_QA_006",
+    "KTCTMLN_QA_007",
+    "KTCTMLN_QA_008",
+    "KTCTMLN_QA_009",
+    "KTCTMLN_QA_010",
+    "KTCTMLN_QA_011",
+    "KTCTMLN_QA_012",
+    "KTCTMLN_QA_013",
+    "KTCTMLN_QA_014",
+    "KTCTMLN_QA_015",
+    "KTCTMLN_QA_016",
+    "KTCTMLN_QA_017",
+    "KTCTMLN_QA_018",
+    "KTCTMLN_QA_019",
+    "KTCTMLN_QA_020",
+    "KTCTMLN_QA_021",
+    "KTCTMLN_QA_022",
+    "KTCTMLN_QA_023",
+    "KTCTMLN_QA_024",
+    "KTCTMLN_QA_025",
+    "KTCTMLN_QA_026",
+    "KTCTMLN_QA_027",
+    "KTCTMLN_QA_028",
+    "KTCTMLN_QA_029",
+    "KTCTMLN_QA_030",
+    "KTCTMLN_QA_031",
+    "KTCTMLN_QA_032",
+    "KTCTMLN_QA_033",
+    "KTCTMLN_QA_034",
+    "KTCTMLN_QA_035",
+    "KTCTMLN_QA_036",
+    "KTCTMLN_QA_037",
+    "KTCTMLN_QA_038",
+    "KTCTMLN_QA_039",
+    "KTCTMLN_QA_040",
+    "KTCTMLN_QA_041",
+    "KTCTMLN_QA_042",
+    "KTCTMLN_QA_043",
+    "KTCTMLN_QA_044",
+    "THMLN_QA_001",
+    "THMLN_QA_002",
+    "THMLN_QA_003",
+    "THMLN_QA_004",
+    "THMLN_QA_005",
+    "THMLN_QA_006",
+    "THMLN_QA_007",
+    "THMLN_QA_008",
+    "THMLN_QA_009",
+    "THMLN_QA_010",
+    "THMLN_QA_011",
+    "THMLN_QA_012",
+    "THMLN_QA_013",
+    "THMLN_QA_014",
+    "THMLN_QA_015",
+    "THMLN_QA_016",
+    "THMLN_QA_017",
+    "THMLN_QA_018",
+    "THMLN_QA_019",
+    "THMLN_QA_020",
+    "THMLN_QA_021",
+    "THMLN_QA_022",
+    "THMLN_QA_023",
+    "THMLN_QA_024",
+    "THMLN_QA_025",
+    "THMLN_QA_026",
+    "THMLN_QA_027",
+    "THMLN_QA_028",
+    "THMLN_QA_029",
+    "THMLN_QA_030",
+    "THMLN_QA_031",
+    "THMLN_QA_032",
+    "THMLN_QA_033",
+    "THMLN_QA_034",
+    "THMLN_QA_035",
+    "THMLN_QA_036",
+    "THMLN_QA_037",
+    "THMLN_QA_038",
+    "THMLN_QA_039",
+    "THMLN_QA_040",
+    "THMLN_QA_041",
+    "THMLN_QA_042",
+    "THMLN_QA_043",
+    "THMLN_QA_044",
+    "THMLN_QA_045",
+    "THMLN_QA_046",
+    "THMLN_QA_047",
+    "THMLN_QA_048",
+    "THMLN_QA_049",
+    "THMLN_QA_050",
+    "THMLN_QA_051",
+    "THMLN_QA_052",
+    "THMLN_QA_053",
+    "THMLN_QA_054",
+    "THMLN_QA_055",
+    "THMLN_QA_056",
+    "THMLN_QA_057",
+    "THMLN_QA_058",
+    "THMLN_QA_059",
+    "THMLN_QA_060",
+    "THMLN_QA_061",
+    "THMLN_QA_062",
+    "THMLN_QA_063",
+    "THMLN_QA_064",
+    "THMLN_QA_065",
+    "THMLN_QA_066",
+    "THMLN_QA_067",
+    "THMLN_QA_068",
+    "THMLN_QA_069",
+    "THMLN_QA_070",
+    "THMLN_QA_071",
+    "THMLN_QA_072",
+    "THMLN_QA_073",
+    "THMLN_QA_074"
+  ],
+  "canonical_role": "development_not_independent_test",
+  "protected_inputs": [
+    {
+      "path": "data/qa/qa_additions.json",
+      "sha256": "9c9b9ab0c38817377b8dbbd1e9feadf326f1ae837991259d5c468915e3225555",
+      "kind": "qa_cases",
+      "record_count": 50,
+      "records": [
+        {
+          "record_id": "THMLN_QA_050",
+          "question_sha256": "cae94d2d05fbe25c83c9268d3a4dd8fe57f1572ef3f4441b05fb75f4df326f55",
+          "target_sha256": "82de319e2a534208ef9e4de51a3939ab443fb19e672f5cf2bae06502af56d568"
+        },
+        {
+          "record_id": "THMLN_QA_051",
+          "question_sha256": "3df298ee4d40d345fa4cbf5d4f49c743a4a056574e7221a161d1c7d75e084883",
+          "target_sha256": "a2150ec3c11c6df710376f6545727544de7b82887fe23e2d398102c76ea27a32"
+        },
+        {
+          "record_id": "THMLN_QA_052",
+          "question_sha256": "ae8c71dcf024f3ad1d5e7bcbcbc91ba35653a6ac43e70b09f69d9449ba2fcc4e",
+          "target_sha256": "3e5c47883f3faaf4d9e796878e2eac432ecbc38e920a57e8011de84f6e11cb4d"
+        },
+        {
+          "record_id": "THMLN_QA_053",
+          "question_sha256": "af1e49be88514fe0972cc79f494a3597cc70106056c00edaa137bec775536a0d",
+          "target_sha256": "6c53369a756935054c43dad94aa867e14fbfd1ef2b25ec7a46f3feac80bf9c32"
+        },
+        {
+          "record_id": "THMLN_QA_054",
+          "question_sha256": "3f25f0e2c188b00101f2cec34e73cf5c9dd2781d4762a3d905dba6057f04546f",
+          "target_sha256": "7df545651f1ce51298ba04a084e2a3267011ffcaff43b19d07d187e973004db4"
+        },
+        {
+          "record_id": "THMLN_QA_055",
+          "question_sha256": "6f43e6554031cd83d6a02053f5794c7ef519c030535cf0db6cac703b6034e77a",
+          "target_sha256": "2bebb9df81ebbe285cef07b29a6d518e556ea338dc1018754ede2bdf01918659"
+        },
+        {
+          "record_id": "THMLN_QA_056",
+          "question_sha256": "052473f6c8da38db0a6f431910dd24436d4e185d0fa0223a8b7b2896cdf5197b",
+          "target_sha256": "2bfedc78e358b1d9aeea31ebb71e2e504dd753a9560183b978cba58eb7a8d3ce"
+        },
+        {
+          "record_id": "THMLN_QA_057",
+          "question_sha256": "0fa2b8d532bd1933495de8efb120369909e8cac09789f6f311bcb2427f50114b",
+          "target_sha256": "9b8c9ef5ef27571c48694699c788c7ea47441b442d4e07629bf46f41c4fd4bd5"
+        },
+        {
+          "record_id": "THMLN_QA_058",
+          "question_sha256": "7644a64a0e0ce07095bcecac91dec31d2da8c73a017f7e901a275bf62dff044c",
+          "target_sha256": "7609084e8145e88f36fe998ab1bd6f369c8aa433b319c09c7daf850e4636d2fa"
+        },
+        {
+          "record_id": "THMLN_QA_059",
+          "question_sha256": "6e53cb5ad33673cb491f67752c53498256a46bbb5c07e121ec0863b28ae5a487",
+          "target_sha256": "dfb04396c221d1e4d37173fbd2c4caf3e9efc39aad52a16f0640eb96d8fb3838"
+        },
+        {
+          "record_id": "THMLN_QA_060",
+          "question_sha256": "810a1ef793da9a18915dea94ae3054a863405c87bade77cbb0fd14d284c642f6",
+          "target_sha256": "39e42e7de47809cac9aa340e7a5f1377079d144aed6b3433f1c78c5b3295dc98"
+        },
+        {
+          "record_id": "THMLN_QA_061",
+          "question_sha256": "4b0bf15be122a1d66b349568eae34606cbf8b838ba0449f57851caabb5a28a75",
+          "target_sha256": "887ad5af9660a4a783e8a0c77a82a96ca8674ef8c4e38c9640233e7798ecadfe"
+        },
+        {
+          "record_id": "THMLN_QA_062",
+          "question_sha256": "d57f4ed5868c00718851e0659f487a70a9afe115ef600a36d307f9e0f9ae807b",
+          "target_sha256": "0e13dba4403acfcbc1cd4c970519dc11d0580c07255bb0476d08ab931cf585e9"
+        },
+        {
+          "record_id": "THMLN_QA_063",
+          "question_sha256": "b7f287f7a918e57dd50cef2b9a57013cca4dcf9d85d7bf821baf69ae69087938",
+          "target_sha256": "106d3c96c93edfea84359d254f4ce985292230e1272c519878625eb3788a18fc"
+        },
+        {
+          "record_id": "THMLN_QA_064",
+          "question_sha256": "6de8ccb5ee9ac0e37ffe54bb14fa3cc86dfe4561542743fdc9c0d1e881dbc6cb",
+          "target_sha256": "cc734dc941b900a4496603401b5de4a41b1958118b9fb2e80a6bb411f5588ecb"
+        },
+        {
+          "record_id": "THMLN_QA_065",
+          "question_sha256": "b29d7a0d74ddfa82de9a1003abb060a013d57e78bcff4906791d0a301ead0fb8",
+          "target_sha256": "99b52844a29a3cf3f670cc1cac293edb25a20f0f7782dee9cf580e85e633e68c"
+        },
+        {
+          "record_id": "THMLN_QA_066",
+          "question_sha256": "fb8b636fed66425927dd4519cd263848de60aad850b8d44e2bd272ca85766321",
+          "target_sha256": "37998333655c4e2edd19de2923f42daf45f41d91f7c73e04fd0d4ee4c7754e02"
+        },
+        {
+          "record_id": "THMLN_QA_067",
+          "question_sha256": "dece7b17d29fc4d51b7d7307ff1d87c1bb772a923908fa1a7b46f12d96843276",
+          "target_sha256": "004fb37dcfa734cf0cb38d629fb468f5f15e7163fa7a68c398658fc2fddb93b7"
+        },
+        {
+          "record_id": "THMLN_QA_068",
+          "question_sha256": "ac178dd2fb1e87848a8ebe7aa12b405f9139539402d0d5cfae76f430aa2323b9",
+          "target_sha256": "cff083303a0b731c24c31a726c7c6574f26fdd73dff8fbb4ea4b9a9158656b62"
+        },
+        {
+          "record_id": "THMLN_QA_069",
+          "question_sha256": "fad3fcf287c33fa51c29bc3bc9c69c4dd63cd8e5ca4238841361cd922383e39c",
+          "target_sha256": "110210f8fca453459997ed209250b3ac04af3cb4ed661a77010c59a49e4f2e09"
+        },
+        {
+          "record_id": "THMLN_QA_070",
+          "question_sha256": "de9aca8d5293f1c1d903a1228be2643e825b63a1bf70423f46ff39f0334c50e4",
+          "target_sha256": "31b6d321f58729425124d4a08393393dc69306f5fdf035b800db08a6fe2d59f2"
+        },
+        {
+          "record_id": "THMLN_QA_071",
+          "question_sha256": "265df6aa2d9326ddb49ca8b5c95d80ddc97faf3b4ad83d794d5bf7ede8e8c58e",
+          "target_sha256": "76b9dd55fbbee184f45831e4f468bc555881fa0245d2f440dd3f3d262ccbfdfe"
+        },
+        {
+          "record_id": "THMLN_QA_072",
+          "question_sha256": "096322686a3625ae061671a1eee28d1817840e0fcdce0ee591fc2ed3c7585942",
+          "target_sha256": "ba424a34bf7fad44638535d7290aa2027eb90dcb7867cca472e986bb481c95ed"
+        },
+        {
+          "record_id": "THMLN_QA_073",
+          "question_sha256": "5dec7b85959f71a6a0375601dd6c8a35daa05aacfcf61981ff6c066acdfc278e",
+          "target_sha256": "5426dbda4d2734c962411b74959cf330cc096d797ee57b0f6477ceaf3bbea60e"
+        },
+        {
+          "record_id": "THMLN_QA_074",
+          "question_sha256": "7c8ed1e98276b0fb1018b1de94ab139a66f6a6ae068ef518a56d80f963ac7a04",
+          "target_sha256": "f5df7067a3f2c4f199b9c23f7baccda42f086fc09a44b05be701ec650bb1d2dc"
+        },
+        {
+          "record_id": "KTCTMLN_QA_032",
+          "question_sha256": "b3f1c5ca796e6e53caf62e337b9e0cdd71ae1620991ce7d18c739c85e6ec9446",
+          "target_sha256": "02ae5eee1ba2a3786922c53e04a7283c81059ce982b9132565fcee34cf234c87"
+        },
+        {
+          "record_id": "KTCTMLN_QA_033",
+          "question_sha256": "5dc55a44cc90ea16e3d2df7e6a0e14b9637f48c476336ba2e9b0bbae86fccaef",
+          "target_sha256": "31a37210eaa5a6dd91b698b7a2e59b9cb361a7c3fc767398a51b5f6795aa160b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_034",
+          "question_sha256": "d7e13aa7233624d4e74026c60712750e2ec936a7a5ea7a598e2f3143bc3372d5",
+          "target_sha256": "a007eb0a2bf2cf81ac091bbdd1f7cd3cf67bd8fd3037b5665db0a6e170a7b256"
+        },
+        {
+          "record_id": "KTCTMLN_QA_035",
+          "question_sha256": "d0720a25780216727773b8c07771c79bc33571659959e6d126592f2db9fe0065",
+          "target_sha256": "4892db86eedf579e97293fccebc1efa50706b7af04df0222e607320ecffc5ed9"
+        },
+        {
+          "record_id": "KTCTMLN_QA_036",
+          "question_sha256": "bbca175f3f3c5650976d5b212595feba4708b4ef8551e2fcc3accbf8abf46a92",
+          "target_sha256": "82d0f67cfeef850218d2f4cb90b4481b990f8666fe8f6b23eaa894886e302f60"
+        },
+        {
+          "record_id": "KTCTMLN_QA_037",
+          "question_sha256": "debb201e24ed3d35b3454f653d3a53a93456a20c25200cb58d12ad2bafbfc036",
+          "target_sha256": "e301bb40dffd033711e3cfe5717ebb18d7744e041885e528b24f4adad7e71cdf"
+        },
+        {
+          "record_id": "KTCTMLN_QA_038",
+          "question_sha256": "e0d363a32acc116ee75f6153abecc40c57f0c87b619585ba5cac4df8fdcd40d8",
+          "target_sha256": "5f006b93010125da2db61de76d0c6d9b37773a0514c5fc14a2b298e16977b58f"
+        },
+        {
+          "record_id": "KTCTMLN_QA_039",
+          "question_sha256": "9b3d850945c8750356ce914fbfc049d65d03e0cf1bfbbdaa0161e490384c0761",
+          "target_sha256": "dcc49857fe55635cb0b25ae03331bd4f045207d7b2020c2ef299e994384f2ac5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_040",
+          "question_sha256": "92c27e1bf004faafe09eadda80169421aae73fbc1774ac1da2b0640e8de6fc9a",
+          "target_sha256": "47e8ebb878d497f1d7d494d468c070e63f1cd6c3d915615b7cdb62b69abaa44d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_041",
+          "question_sha256": "feff02913e7c6e54ebd8ca19c9214bdb6bc641ab0bf4392c73830255e4744a76",
+          "target_sha256": "4e8d435b57fb223c2d2d104226cdd631ae3bb5f56645cf1b48830326a4e9b6a3"
+        },
+        {
+          "record_id": "KTCTMLN_QA_042",
+          "question_sha256": "cb3f37f2908707eaf36fca28d34790ddd876fc8412a318e01b57d702ab9bd9de",
+          "target_sha256": "042dcfc2a42f525ca5a9ecdc0623dcdca84e8a565ba4b1058e1142fb92c4a450"
+        },
+        {
+          "record_id": "KTCTMLN_QA_043",
+          "question_sha256": "7c26be1d03d903da71c7a9618cc4487df660c8c451566fb97ce9d2d6a5d7fbae",
+          "target_sha256": "13a4bd5b3fda764d35680750337d1494713c6997bf9e8d5cd5a9608991524233"
+        },
+        {
+          "record_id": "KTCTMLN_QA_044",
+          "question_sha256": "966be26d88a5fb9edbb8e9ecf329f1fe5075ed165a5c5ff9a359732a4a3ba2bc",
+          "target_sha256": "195021435f2343ed628c8b329e255981b826f5b7633ca492661d64fe4db4552d"
+        },
+        {
+          "record_id": "CNXHKH_QA_021",
+          "question_sha256": "3a22ed3033c420f10eaabbc492210c419ec9961cd7bcdfaf10f1ac221eae1863",
+          "target_sha256": "9b48a1ba5c19b9557a2a00a4f5d51a60cb374ded47fccc477b20a4e57ceca67e"
+        },
+        {
+          "record_id": "CNXHKH_QA_022",
+          "question_sha256": "781f0bf6b53994b6dd27d7b72b50cfafaf28926c1598255af68f394dfec1ea46",
+          "target_sha256": "1dc6bca5a9ca4a9b91b7da8b57d7aff76e75bdf2abcfafddf97d019d0aa76780"
+        },
+        {
+          "record_id": "CNXHKH_QA_023",
+          "question_sha256": "fc07995b5582c951163bac0b55c943eddd0a665a8fd7f07ad829fc8df0e3491e",
+          "target_sha256": "3896e4acc8c9dd9615f66dc5d08a9419d5bba781c04ab7b1d14a3764ed7b6bc3"
+        },
+        {
+          "record_id": "CNXHKH_QA_024",
+          "question_sha256": "442d60b539aec6ec7970ab0dcdd0577f053d335f419348bba235bb02762f9ecc",
+          "target_sha256": "57ca76ef8dbd72bcb47607255b7aa509c346cbfa8d99e00a089fc6726005317f"
+        },
+        {
+          "record_id": "CNXHKH_QA_025",
+          "question_sha256": "833068127aa2e64c201ee29f60d227a61f2fa1a4117fe37903fa61eeda4b56ce",
+          "target_sha256": "b9a49dc094e4e0b579122356ab9ed1c116b83afce396247551df26c964375884"
+        },
+        {
+          "record_id": "CNXHKH_QA_026",
+          "question_sha256": "eca1700530c233074cc41fd5db1f925dd4b1f44ccb1e5502da8da9438cd7bd83",
+          "target_sha256": "44498975e04f576310c2023ac28a3e9018ba4cb5dbee166a8acda49914263ffb"
+        },
+        {
+          "record_id": "CNXHKH_QA_027",
+          "question_sha256": "aa7126fca05c95101af64c0d70af2eb0debd18bb47dc1e7c1e7d05d5bb6ef275",
+          "target_sha256": "eafb1a4b31e92f9b3b837e58dd68507bc5a2a5e6a4420b748fa1d31580609c5a"
+        },
+        {
+          "record_id": "CNXHKH_QA_028",
+          "question_sha256": "7a27b9b8eac5c7eb984ba25b2f25121bca04cd86b844c711d249acf769ac458c",
+          "target_sha256": "51f925203c9eb9e5f905fa318461ceb854897d73d391d4da00eb21a50895bc80"
+        },
+        {
+          "record_id": "CNXHKH_QA_029",
+          "question_sha256": "569eea659c12e88caccb0b20a1124aa3dbba2d57ed4787118cd524e4865fd416",
+          "target_sha256": "a9cffb4ee55c88408c78df3154334950820dcee60b8cec94e6a309ad4b29cc26"
+        },
+        {
+          "record_id": "CNXHKH_QA_030",
+          "question_sha256": "a95bdf4741898e1761fdbe9ce70304957b5ce43af7a22f717e60e8184cc56c34",
+          "target_sha256": "68b0adbb369483a4e1f03e9609e9a0c799269c78f4eeed23278ffbfe2efc70c8"
+        },
+        {
+          "record_id": "CNXHKH_QA_031",
+          "question_sha256": "7055319a5b9cfe14549897e5361e19ad7af41b8d1ce6da9bcdac08e7d85eeb87",
+          "target_sha256": "23b45c26585f238fcb2ea34fe9d8e9986c4f2d81ebd5bbe9e05b7bcc8cdb1161"
+        },
+        {
+          "record_id": "CNXHKH_QA_032",
+          "question_sha256": "f2081910b7f118faf5b7de04903cf3d5cb4dcc5fa6d6c0b0127ae7488d94010e",
+          "target_sha256": "63fc8270fea8ee4a006b30639f69e74dc38f970685df3a9021b770f5307c6df9"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_assistant_review.csv",
+      "sha256": "932b1514c482cd68419a2b957b724032ae2214b74135796d77b592f1812d8e59",
+      "kind": "qa_or_derived_question_table",
+      "record_count": 100,
+      "records": [
+        {
+          "record_id": "THMLN_QA_001",
+          "question_sha256": "15a0e0d566c1726ba17c625f77f30b954868c8ad2f9b96554c14ca2d25307c0d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_002",
+          "question_sha256": "df8cf8de0a87f0e0104e362c65085b87307efe075e3903970222ca048c1ea7cb",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_003",
+          "question_sha256": "cc5dc82dbff44f1a23552260d072a27d53c3341c2bb587798fcade29d609413f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_004",
+          "question_sha256": "e9addc3a0012ae438b4cb941743eb10f5135b30f3000fb2a7870b7ead93e55e2",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_005",
+          "question_sha256": "85884afb6e4f2aafeda6d4363ef7477ad28597bb6d951bb93f138a2781612560",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_006",
+          "question_sha256": "1c5ac52557c1900e964dc31135e317013cccf67b0c1600dc2fe0b43e8f9db7c9",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_007",
+          "question_sha256": "db71a1ebd48dcb0e82e95e0291a970bb6f5c3d2489df201923559f375cc787f6",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_008",
+          "question_sha256": "ef621a310d6ff50bc3a1942742cc3b52433c9802f4e6960bc3dad6f088d25f7c",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_009",
+          "question_sha256": "0fc7c08e854a55218886a8dc8120b04324770ee6c5d828e858a857bbe88d450f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_010",
+          "question_sha256": "c8e67c81640c48a3a3c69ef6c2e9e27692df859cf2a34834e4db3fd64c7c3f0a",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_011",
+          "question_sha256": "711d640ea8edf9cc695f07b24050e60843b0540136f8d73fd1f236d8b2f0f320",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_012",
+          "question_sha256": "de0eaeb69e1670a2164c3dd4eda2033a64386f353a4915be379c3e130607d288",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_013",
+          "question_sha256": "0b6f484a235fad2e2ccda7c20001bb325cb0cd7140419eb5e109e98a4d0e804e",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_014",
+          "question_sha256": "a88ef4bb135199466ec0c4f927c75b06315543ce5a1fb7504ad62c802a99790d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_015",
+          "question_sha256": "fc0423950f5e222d79d1a7ffd3eec5e9f8b54128b603f5bf5e436099a635bdc3",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_016",
+          "question_sha256": "bbcd9518a9e6701acb13d36072525cb24fa60163eea68e5f771bd8d6c7cc822d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_017",
+          "question_sha256": "5798855bebcd9b83365f5cf2b77b56424f1982bb737538d259fa9340c30ca5ce",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_018",
+          "question_sha256": "0276cb4a81e41dc6e9fd9e976d69c83796cde7f86747b87911466c42ed7ab713",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_019",
+          "question_sha256": "bc28b8801394086e3e7e3ae9c960094381e108e6b493f3770c12c69168a87842",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_020",
+          "question_sha256": "199466c6854c08b4ad4f6f2a3ac4067662cb4c2fe8f1d9b7f165c6d4ed6d899c",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_021",
+          "question_sha256": "540e77be5398ff78ec198ff639173e4151ee4b891885f90edbece7f1a828e5b9",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_022",
+          "question_sha256": "9df6ea8f2e69c2b5777bc5870be7db0ccc662e4987d78cfa6c4f298b8a2d03aa",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_023",
+          "question_sha256": "472180a7a26da3490326986bb10cc0b6ee818c65467fb177103ccfa1dc836b48",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_024",
+          "question_sha256": "a11114f2fd4741545d43332d963e8e832133a3021285e63590d2c021b827e13d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_001",
+          "question_sha256": "d3a8f28c7ec38aae30b49578b2ab11472f32f54d78e2ddb3dda8ff45d97826cf",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_025",
+          "question_sha256": "9e2d8dbd76fcc9476872d6101882581347d91bb4db43f493dad584ae3117e39f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_026",
+          "question_sha256": "11dc7006e0d11ce2ce0c8c2681a3f571116248fcbad7df6b5983207390bdb449",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_027",
+          "question_sha256": "a11435635f6e024ed39c2b13ecb9173e6154ebb8b406c9ba7520d9aa7031b0df",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_028",
+          "question_sha256": "5bdd0d943f055b552f4f7de5344e85481538548e7a72c89388ed241c82382c83",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_029",
+          "question_sha256": "9fdfbcb2b1439d1f657476338a59e318c7f0878f630c1783774cb37fa828198c",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_030",
+          "question_sha256": "47d8265c23784aedd18bf1034ac4b187182ad90f835dea5a5ec0d4d2e779088e",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_031",
+          "question_sha256": "97799835092c0d59beb1c64d87983d39abf5c6b3bc691f2df7c7c9d03966b89a",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_032",
+          "question_sha256": "3349b26653eea76acaebdbb36af75d9e0d89afcb160d5117b636733a5fd0c00c",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_033",
+          "question_sha256": "6803207f8ba0779fa7fa85a65583d9373bb6be76ddbe9206be2ca10ee45f04bc",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_034",
+          "question_sha256": "143696c769ee151312873c3d40ae5cee6e16c15fad230f5c30d1dbc27be510e5",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_035",
+          "question_sha256": "fc78d67dc926bc01a2b2410d8bfb5472093d6d9049eb4f48cae6aa0ca5d7f28d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_036",
+          "question_sha256": "9eba1133396e4a6739345863d2ab18eaa462b4316cae6f488d7fe46ce799cae4",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_037",
+          "question_sha256": "207169ef0f0a50b8edcce04c527190a77217e4f7a58bf00b6f5af58725c99ea9",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_038",
+          "question_sha256": "eb444a0b39193d2e95f9051929df7cdb19b7da0dd2c35ffd0850783803587177",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_039",
+          "question_sha256": "17f8fb00e1498f8115a8bb1f59f5f81c914621c4770dc60c1c2cb9627ee07b23",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_040",
+          "question_sha256": "b4de3cfaa57ea587a480e67e8bc27ae54bc76e8ab937e8aba7c07acedae9c913",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_041",
+          "question_sha256": "ee60bb12cdc890449299a65ea37c50fe2c87e2a4a464fa1bcd35db70e5414a64",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_042",
+          "question_sha256": "26f480f8a474f56fc5b276ae40f66b9f427eedd49ff91b95708efdd9c6dae68b",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_043",
+          "question_sha256": "667a1d77b2f501d5aa3766c139135f72732a97f05c75af76cc5b16317998bb32",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_044",
+          "question_sha256": "bf0b0856d4064abbd568bb74cd4885e37fe0160973cb04705bbe50066fbed366",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_045",
+          "question_sha256": "70658b61bbc1ca848de19bd6d8bf713318682467b94a57b86b6bc1eb835e8bb8",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_046",
+          "question_sha256": "d317e9ae2c94a8239ceaedeba00d1a68126f85f2342ac4b6f787ffed89954322",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_047",
+          "question_sha256": "7960d4ad97225b0ec8efa51087e4d525b4cdb2db2abe2123e090ae6d3e3f56e3",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_048",
+          "question_sha256": "cfd993e54f95c82d12d1ba4b0a0ecd4a525156a96db56dd6db81504f6c354f14",
+          "target_sha256": null
+        },
+        {
+          "record_id": "THMLN_QA_049",
+          "question_sha256": "f9be95aa4395b298bf66595dfb03f479dd3ec0bd79a1dbb1d600f698a68f8331",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_014",
+          "question_sha256": "b2b7a3f27a2222bc3d24671b80d1d253c536c444647e97cf039d53098c1506de",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_015",
+          "question_sha256": "e21ed9ccc928ea4453740ed45cc50f7ed9ed65bf139175bc703f34cfb7d24f46",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_016",
+          "question_sha256": "54a65468ea32a0911585eb37a0da41c42d01607a8fea52377c4b0493c597bf9b",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_017",
+          "question_sha256": "681a52f09332f257bd6b5fac8094d7bd788f4defa2e249c557d9e04f6915722f",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_018",
+          "question_sha256": "c601d45f7e26eefc0fe09a912a671d554b303e0c9aaa905e3bc02944104acb13",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_019",
+          "question_sha256": "c16a8cb75760fa8523067c64352333d2d4ca635b8a4cb607fc8ec36e011e067d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_020",
+          "question_sha256": "f771690e43ab592cd079da078fa37c306bb280304b310d5a5ca57eb776884068",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_021",
+          "question_sha256": "c20df33ae91e37b667c45950a3dec924cf540014e0b7addcb8d579a9b70ddb86",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_022",
+          "question_sha256": "5b051b7b14838e9645596d6b691c0781ec49dbf187fbfce946c555ca1ecc1c28",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_023",
+          "question_sha256": "ef44b5d77cd07c95b01b91b480bc8c3a55b2c0db5f13099380a76e96cc9c6bb2",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_024",
+          "question_sha256": "bb906d49cdade3589fa105a2c667e298e8400dade49d8e96fef8fb6cc29d84b0",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_025",
+          "question_sha256": "969dc46ad362628bc31e6108e8b6ba8ab48e4bdb44fa6ec91041811c33d49594",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_026",
+          "question_sha256": "aca0017e299d25491e917220ac48b3fa63141b5998fa52cf1034e10ca64d8021",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_027",
+          "question_sha256": "127d36c23d85358cee41ef335d6b44414ce2809703cd3bf9b5a60fe7d88fcb14",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_028",
+          "question_sha256": "55ab45c5d737ef7efa8104f5c694260f30a749f4aa062959ac7306e737aece56",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_029",
+          "question_sha256": "0d9bbd7e46fcb907811c25bd622321eb7dd380e1c526fe6dc9e119ebe35d19ee",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_030",
+          "question_sha256": "7614e9af932025a1de1ebaa3ba155b5899635056fb5dbab2c5c5a2a46ae3b4dd",
+          "target_sha256": null
+        },
+        {
+          "record_id": "KTCTMLN_QA_031",
+          "question_sha256": "d32606e28f977dc3a1b74a3f55f7ac4eeabc53c68a4613855f271a917609b117",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_014",
+          "question_sha256": "6b6f3bc87b67f3f93ed6accc267e6e5b4d7e59f7959361f2e2f7c84dd02609f3",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_015",
+          "question_sha256": "9d6468556d09f00d9b065d6cab52869514c7029dae470d4266c78f8cf670027d",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_016",
+          "question_sha256": "2751196dbdc46d062385ade689761ee870ef1f6a7024faa2eca871ed043266b3",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_017",
+          "question_sha256": "9cb632f2b792e531f71d74ed10bd4a678b4cc4aa8ca7cc2ba56b5f9229b860fe",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_018",
+          "question_sha256": "3a509b8969d9f18e05dc01afc020ceb502e8a71f8aae1c31e00864889fcc9d20",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_019",
+          "question_sha256": "1c60d4e5ea4fec18988c3b901493d703426e3b8a9294c407e6c8770a675a2283",
+          "target_sha256": null
+        },
+        {
+          "record_id": "CNXHKH_QA_020",
+          "question_sha256": "2065c49068cc571685fe1229751f8f5175fdf0f155c22ab594b36f2ee1c1a654",
+          "target_sha256": null
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_baseline.csv",
+      "sha256": "772260af38d634dfae7d01f3b719ba214f6d65266988cd969e123768a442f539",
+      "kind": "qa_or_derived_question_table",
+      "record_count": 100,
+      "records": [
+        {
+          "record_id": "THMLN_QA_001",
+          "question_sha256": "15a0e0d566c1726ba17c625f77f30b954868c8ad2f9b96554c14ca2d25307c0d",
+          "target_sha256": "39726fa2e9349879bad8a648a0c08e143abda1e12054cddfd9a2ba19ebdb12f3"
+        },
+        {
+          "record_id": "THMLN_QA_002",
+          "question_sha256": "df8cf8de0a87f0e0104e362c65085b87307efe075e3903970222ca048c1ea7cb",
+          "target_sha256": "17a9aabcaa73c1b8622dc534d71bb610d76ef0f7ead49e674019b1d10d31296e"
+        },
+        {
+          "record_id": "THMLN_QA_003",
+          "question_sha256": "cc5dc82dbff44f1a23552260d072a27d53c3341c2bb587798fcade29d609413f",
+          "target_sha256": "6fc6867c38234c3790cc40f1691b7d9aa9d2536229877910af82e2c0f26a3577"
+        },
+        {
+          "record_id": "THMLN_QA_004",
+          "question_sha256": "e9addc3a0012ae438b4cb941743eb10f5135b30f3000fb2a7870b7ead93e55e2",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_005",
+          "question_sha256": "85884afb6e4f2aafeda6d4363ef7477ad28597bb6d951bb93f138a2781612560",
+          "target_sha256": "bdbff7fb71bfbc22cffa1c50a48b8acd7bd127a49f8fc1a9dff057cab0bcd0d7"
+        },
+        {
+          "record_id": "THMLN_QA_006",
+          "question_sha256": "1c5ac52557c1900e964dc31135e317013cccf67b0c1600dc2fe0b43e8f9db7c9",
+          "target_sha256": "91f3cc418f3e3dff5cd4b5baa210166b31406a7086b235b79f3d98cccabef0ce"
+        },
+        {
+          "record_id": "THMLN_QA_007",
+          "question_sha256": "db71a1ebd48dcb0e82e95e0291a970bb6f5c3d2489df201923559f375cc787f6",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_008",
+          "question_sha256": "ef621a310d6ff50bc3a1942742cc3b52433c9802f4e6960bc3dad6f088d25f7c",
+          "target_sha256": "f1ba93ffc487ea461504426cf8764a7c64d9311c4faf50040d1f191d258db964"
+        },
+        {
+          "record_id": "THMLN_QA_009",
+          "question_sha256": "0fc7c08e854a55218886a8dc8120b04324770ee6c5d828e858a857bbe88d450f",
+          "target_sha256": "4a1c02710bb914c7ded681fe606abfa634561f49c2cc1e04ddae92f688cee80e"
+        },
+        {
+          "record_id": "THMLN_QA_010",
+          "question_sha256": "c8e67c81640c48a3a3c69ef6c2e9e27692df859cf2a34834e4db3fd64c7c3f0a",
+          "target_sha256": "5f9f24fe7a6709f7d63d155074bafecec620d99754ae6b2884e2948ad9888d7d"
+        },
+        {
+          "record_id": "THMLN_QA_011",
+          "question_sha256": "711d640ea8edf9cc695f07b24050e60843b0540136f8d73fd1f236d8b2f0f320",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_012",
+          "question_sha256": "de0eaeb69e1670a2164c3dd4eda2033a64386f353a4915be379c3e130607d288",
+          "target_sha256": "fa24a9a5eb6b9dd309dc7788a169192bcf61afa0a7adbd7a1cbbe6f96653dd97"
+        },
+        {
+          "record_id": "THMLN_QA_013",
+          "question_sha256": "0b6f484a235fad2e2ccda7c20001bb325cb0cd7140419eb5e109e98a4d0e804e",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_014",
+          "question_sha256": "a88ef4bb135199466ec0c4f927c75b06315543ce5a1fb7504ad62c802a99790d",
+          "target_sha256": "513030d63811fbc376f1a022abd0103dd22d6831922fb4b955deaf525ce2621d"
+        },
+        {
+          "record_id": "THMLN_QA_015",
+          "question_sha256": "fc0423950f5e222d79d1a7ffd3eec5e9f8b54128b603f5bf5e436099a635bdc3",
+          "target_sha256": "0e1a8fb0b533af51cac74b416c3cf7d56a85249e20d7504025382f95420f4504"
+        },
+        {
+          "record_id": "THMLN_QA_016",
+          "question_sha256": "bbcd9518a9e6701acb13d36072525cb24fa60163eea68e5f771bd8d6c7cc822d",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_017",
+          "question_sha256": "5798855bebcd9b83365f5cf2b77b56424f1982bb737538d259fa9340c30ca5ce",
+          "target_sha256": "440cef4d43f587d5b2a4cfaeb573b1aa2fea643198e5fda04c8af3374b146539"
+        },
+        {
+          "record_id": "THMLN_QA_018",
+          "question_sha256": "0276cb4a81e41dc6e9fd9e976d69c83796cde7f86747b87911466c42ed7ab713",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_019",
+          "question_sha256": "bc28b8801394086e3e7e3ae9c960094381e108e6b493f3770c12c69168a87842",
+          "target_sha256": "c5099a069159a0494acdb52f7ed243db89376f4f7ceda30736f742e11f7c9f3c"
+        },
+        {
+          "record_id": "THMLN_QA_020",
+          "question_sha256": "199466c6854c08b4ad4f6f2a3ac4067662cb4c2fe8f1d9b7f165c6d4ed6d899c",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_021",
+          "question_sha256": "540e77be5398ff78ec198ff639173e4151ee4b891885f90edbece7f1a828e5b9",
+          "target_sha256": "49618d46b8cbd4a132b29e3edffef33932e4b3a7dd98a3a6e088794ca977eb4c"
+        },
+        {
+          "record_id": "THMLN_QA_022",
+          "question_sha256": "9df6ea8f2e69c2b5777bc5870be7db0ccc662e4987d78cfa6c4f298b8a2d03aa",
+          "target_sha256": "b334f1095c2c0c54444faba7040b3e9fae7406c0da79df141d2825a81800c984"
+        },
+        {
+          "record_id": "THMLN_QA_023",
+          "question_sha256": "472180a7a26da3490326986bb10cc0b6ee818c65467fb177103ccfa1dc836b48",
+          "target_sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+        },
+        {
+          "record_id": "THMLN_QA_024",
+          "question_sha256": "a11114f2fd4741545d43332d963e8e832133a3021285e63590d2c021b827e13d",
+          "target_sha256": "11a8aec6b50aab636c92c45c9e9347346231cea9291316a6eb6a0f0e65ba504a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_001",
+          "question_sha256": "d3a8f28c7ec38aae30b49578b2ab11472f32f54d78e2ddb3dda8ff45d97826cf",
+          "target_sha256": "2475794e2c0f457120017859d1581a2815b350fa27e5f9b3cf003d2b342e8988"
+        },
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": "51074b33bada5beafee88c40e7bd3e8f747520cc96f75964cdab136858d10af0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": "adf667b99e5e217696963db71a3b92d06303a72f7b6592e5e5191029c541a37e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": "97fee3e7f61305091340b5d4ce899a35aa1feb87e38309bb68353ab46927204a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": "b8563608d5eece2c386d7fc87727ddcafca0796c5d1c86b8f01e430ab1dd238b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": "6e3bbb27497f0620cc542049e350fcf3c2ea37e6c65501003245c2b11cb19b8c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": "a7eadde7de3c59ec5dcf61319117e06b1793ad36bca53f6965ea87b8daca85a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": "943e06b24b66fda8da055f2e90894c834b6fe2de3c7cf0ac21ed45f79a46abec"
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": "337408c93f53bf926ca227e3b7566916a81b0d7044551766feac0ed4312f1e0c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": "c39842dc5ecfb8c6343e129755774b5d92c6078fea36417c2a6a78873a49895d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": "aa39d7b5b47a82a23ae2f32a6123906f81c9d0b3c8f68f478ad5b6852ffcea86"
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": "ab8d30c521157acb644f3d93a602b21204dd98310e8df6b03fe5fc4fa30a5557"
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": "2611ec9c847b84b2ad2c357a22bd1d51809fa0efdb1406394c32fe500bc8503c"
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": "118c76dd60782554e4dc0fd54ffda3dd5872a45b196c66241351cd457ac482d2"
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": "8e658e9a6839a220768d605b05f143a1a1cb49b1c595e0ce9618b3dffad5df26"
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": "089ac006e0a4db53c45188c8266cf70da4bb91bc5a42d77f59d83307005c1c73"
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": "7ac108d48c3a29423e9cb7df3166e2a1084ad3d1c43a21da9bfb085395b3b9c9"
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": "75bd89fdfb422f11ead76a0702707de8098f22ceefe22d936e68e0c0266a0179"
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": "d6ba15daab6b92f80f909d074d68c4153acf810d87dbafc8db77bd37b7ef7539"
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": "af12ebb8934fbffc0a17d2560fe2c970c34ec06bbec4f2e1a5fc29714ae1be7a"
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": "c3651ffe18b2a000d8d3d419ef60afd9bbceacb861965b87128e0337f45db515"
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": "2e1ba3b0a851de5215a6b4ae2e440d5828c66e43ee855cbaca2ac7e6bc9ccdbc"
+        },
+        {
+          "record_id": "THMLN_QA_025",
+          "question_sha256": "9e2d8dbd76fcc9476872d6101882581347d91bb4db43f493dad584ae3117e39f",
+          "target_sha256": "b5edd25ea891f29c14d8352c96c2b17d4feac9ada2eee8f74dfb9b28933728f6"
+        },
+        {
+          "record_id": "THMLN_QA_026",
+          "question_sha256": "11dc7006e0d11ce2ce0c8c2681a3f571116248fcbad7df6b5983207390bdb449",
+          "target_sha256": "127f34c6f43d1d1e4742b4d2256114084e4e810baac09a5215a3e5ebce06f6fd"
+        },
+        {
+          "record_id": "THMLN_QA_027",
+          "question_sha256": "a11435635f6e024ed39c2b13ecb9173e6154ebb8b406c9ba7520d9aa7031b0df",
+          "target_sha256": "57753a685904298cdd3edccf3abe7f0d1b57864ec93bbe72e8c9f5dd5d756326"
+        },
+        {
+          "record_id": "THMLN_QA_028",
+          "question_sha256": "5bdd0d943f055b552f4f7de5344e85481538548e7a72c89388ed241c82382c83",
+          "target_sha256": "368118c20677835f9ac5a913e8a9807bfff6a4846f6554984e3843b2cfa99b0b"
+        },
+        {
+          "record_id": "THMLN_QA_029",
+          "question_sha256": "9fdfbcb2b1439d1f657476338a59e318c7f0878f630c1783774cb37fa828198c",
+          "target_sha256": "5b4b5be66ff4638049093e0c843c24b5e4c086154c85350b3e24a9bef85b5270"
+        },
+        {
+          "record_id": "THMLN_QA_030",
+          "question_sha256": "47d8265c23784aedd18bf1034ac4b187182ad90f835dea5a5ec0d4d2e779088e",
+          "target_sha256": "d1a2f58c24c3fa94e72e70e14b166d7a316185c4f371582e89d1a185362507c3"
+        },
+        {
+          "record_id": "THMLN_QA_031",
+          "question_sha256": "97799835092c0d59beb1c64d87983d39abf5c6b3bc691f2df7c7c9d03966b89a",
+          "target_sha256": "34d9700c3341a607896938a3f72d4c69b1f32099b0013b87c3954a3d65e84bc8"
+        },
+        {
+          "record_id": "THMLN_QA_032",
+          "question_sha256": "3349b26653eea76acaebdbb36af75d9e0d89afcb160d5117b636733a5fd0c00c",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_033",
+          "question_sha256": "6803207f8ba0779fa7fa85a65583d9373bb6be76ddbe9206be2ca10ee45f04bc",
+          "target_sha256": "e56ca4cd4a9cd0074072992af12ba2b441c5b45ab475b6ff1ab75ec8d27bc5a7"
+        },
+        {
+          "record_id": "THMLN_QA_034",
+          "question_sha256": "143696c769ee151312873c3d40ae5cee6e16c15fad230f5c30d1dbc27be510e5",
+          "target_sha256": "39b9069059e975e225141a78c9e8fa71e283a7d96fd86233896aadb56fafe4b3"
+        },
+        {
+          "record_id": "THMLN_QA_035",
+          "question_sha256": "fc78d67dc926bc01a2b2410d8bfb5472093d6d9049eb4f48cae6aa0ca5d7f28d",
+          "target_sha256": "c297d2816174b7a65fbe7966866a8b16d7128bfa8bb33c6d6545fb7eb4222284"
+        },
+        {
+          "record_id": "THMLN_QA_036",
+          "question_sha256": "9eba1133396e4a6739345863d2ab18eaa462b4316cae6f488d7fe46ce799cae4",
+          "target_sha256": "760143f1f146ccc15b1a66f67b65cd6281eed19b70fc20be4f33e3e53d0dcd41"
+        },
+        {
+          "record_id": "THMLN_QA_037",
+          "question_sha256": "207169ef0f0a50b8edcce04c527190a77217e4f7a58bf00b6f5af58725c99ea9",
+          "target_sha256": "d11b958e3bcef04a5a2e8405f19a2d37299caa0d64d17efce834e10036a5e2e5"
+        },
+        {
+          "record_id": "THMLN_QA_038",
+          "question_sha256": "eb444a0b39193d2e95f9051929df7cdb19b7da0dd2c35ffd0850783803587177",
+          "target_sha256": "4ba71d78d9cbb20a85dc49a3faddec1e25599a0f2c00594c774937c860764cd8"
+        },
+        {
+          "record_id": "THMLN_QA_039",
+          "question_sha256": "17f8fb00e1498f8115a8bb1f59f5f81c914621c4770dc60c1c2cb9627ee07b23",
+          "target_sha256": "8f99733866499e65bce9d95acf44a6bc7c79009644b351dc643f5c20a703f05d"
+        },
+        {
+          "record_id": "THMLN_QA_040",
+          "question_sha256": "b4de3cfaa57ea587a480e67e8bc27ae54bc76e8ab937e8aba7c07acedae9c913",
+          "target_sha256": "b1b524da07f7b793b2f796f86a0a2aa78d94dfca0eff5dab8108ce7a9f07aefd"
+        },
+        {
+          "record_id": "THMLN_QA_041",
+          "question_sha256": "ee60bb12cdc890449299a65ea37c50fe2c87e2a4a464fa1bcd35db70e5414a64",
+          "target_sha256": "4647a92964c615e80c910d100479654a6b17291873a561bd78d33a81a5d320cc"
+        },
+        {
+          "record_id": "THMLN_QA_042",
+          "question_sha256": "26f480f8a474f56fc5b276ae40f66b9f427eedd49ff91b95708efdd9c6dae68b",
+          "target_sha256": "fa6d15ba3b29cfc1fdd06085d7e8a7c4f6b3d56566406b774c8e45e4285328eb"
+        },
+        {
+          "record_id": "THMLN_QA_043",
+          "question_sha256": "667a1d77b2f501d5aa3766c139135f72732a97f05c75af76cc5b16317998bb32",
+          "target_sha256": "3f5fde1f7dbda896f901b8d1430ebba954ec3c08b01641a0b86672d3e9128961"
+        },
+        {
+          "record_id": "THMLN_QA_044",
+          "question_sha256": "bf0b0856d4064abbd568bb74cd4885e37fe0160973cb04705bbe50066fbed366",
+          "target_sha256": "c91a48f4ade34368c48fbca745b435bf27f0eb9965eb3ccd56c4d030788ff00b"
+        },
+        {
+          "record_id": "THMLN_QA_045",
+          "question_sha256": "70658b61bbc1ca848de19bd6d8bf713318682467b94a57b86b6bc1eb835e8bb8",
+          "target_sha256": "a42b55e95e4e5d8c031149477ebb3fe624ce1fd9557d36c8736b76ebc1572404"
+        },
+        {
+          "record_id": "THMLN_QA_046",
+          "question_sha256": "d317e9ae2c94a8239ceaedeba00d1a68126f85f2342ac4b6f787ffed89954322",
+          "target_sha256": "2c2d5d1383d4a1bbef426a560ab39939b0b935d9681ec33b39994ff0778ab0e6"
+        },
+        {
+          "record_id": "THMLN_QA_047",
+          "question_sha256": "7960d4ad97225b0ec8efa51087e4d525b4cdb2db2abe2123e090ae6d3e3f56e3",
+          "target_sha256": "0513ac3343e0566b3f1fc5e8eb6b5da324cb0a37b10b0e36cde2a2e05099d227"
+        },
+        {
+          "record_id": "THMLN_QA_048",
+          "question_sha256": "cfd993e54f95c82d12d1ba4b0a0ecd4a525156a96db56dd6db81504f6c354f14",
+          "target_sha256": "ced48ef4a7fc899c07341fa0a629645c836ade4067937fa9588c44fb2ae1841b"
+        },
+        {
+          "record_id": "THMLN_QA_049",
+          "question_sha256": "f9be95aa4395b298bf66595dfb03f479dd3ec0bd79a1dbb1d600f698a68f8331",
+          "target_sha256": "8a1bd0cbee1eb4c7f6be5ce9625ce67e93f116097941c7f71b7c140685ac29a0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_014",
+          "question_sha256": "b2b7a3f27a2222bc3d24671b80d1d253c536c444647e97cf039d53098c1506de",
+          "target_sha256": "77ebd8c46641b4ccd4881ddd834c60e304d040ddd462c397eca9ceb2a939c223"
+        },
+        {
+          "record_id": "KTCTMLN_QA_015",
+          "question_sha256": "e21ed9ccc928ea4453740ed45cc50f7ed9ed65bf139175bc703f34cfb7d24f46",
+          "target_sha256": "63e1e725453134df9b4ed3e60aebcceb0d8ea8eb0a56b04e177b5a81ce72447e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_016",
+          "question_sha256": "54a65468ea32a0911585eb37a0da41c42d01607a8fea52377c4b0493c597bf9b",
+          "target_sha256": "231646a75de369525fa25eb7ae90d933307117d5ea935278d298bb6887719f59"
+        },
+        {
+          "record_id": "KTCTMLN_QA_017",
+          "question_sha256": "681a52f09332f257bd6b5fac8094d7bd788f4defa2e249c557d9e04f6915722f",
+          "target_sha256": "1c4ea0e7659290ebaf0f4afb11305f34c92f7021e46928937ff621fc12a358a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_018",
+          "question_sha256": "c601d45f7e26eefc0fe09a912a671d554b303e0c9aaa905e3bc02944104acb13",
+          "target_sha256": "1d30159f8dcd17ff52d4f5429e6c720cf222fedcca347f26d897a5f2436b46b0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_019",
+          "question_sha256": "c16a8cb75760fa8523067c64352333d2d4ca635b8a4cb607fc8ec36e011e067d",
+          "target_sha256": "d322617b9361b45810574a3b9ec2ad643a959e3bb5fee6a9eeb70611105e14c5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_020",
+          "question_sha256": "f771690e43ab592cd079da078fa37c306bb280304b310d5a5ca57eb776884068",
+          "target_sha256": "04e64fb06b8618a584f18defb88d3735dad5aff886d9dc190167cf13f2411b9d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_021",
+          "question_sha256": "c20df33ae91e37b667c45950a3dec924cf540014e0b7addcb8d579a9b70ddb86",
+          "target_sha256": "077fed3ac350d207f4d686a0f6f1cb863a719d5b2161003d8b20380cedca7688"
+        },
+        {
+          "record_id": "KTCTMLN_QA_022",
+          "question_sha256": "5b051b7b14838e9645596d6b691c0781ec49dbf187fbfce946c555ca1ecc1c28",
+          "target_sha256": "71b91d38de2b248e79f56af635054fefc7f83c1eeaac48e4c7dfb2a07c16d72d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_023",
+          "question_sha256": "ef44b5d77cd07c95b01b91b480bc8c3a55b2c0db5f13099380a76e96cc9c6bb2",
+          "target_sha256": "9fd012a34d44cbc07b4665a332c02055fc18c65406fe71c0fb4af4c73d1d275e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_024",
+          "question_sha256": "bb906d49cdade3589fa105a2c667e298e8400dade49d8e96fef8fb6cc29d84b0",
+          "target_sha256": "9a4c1ea5fb1619b5a7c33d2edd62dbd7b4f596b7291fd3f27793f795067e7b78"
+        },
+        {
+          "record_id": "KTCTMLN_QA_025",
+          "question_sha256": "969dc46ad362628bc31e6108e8b6ba8ab48e4bdb44fa6ec91041811c33d49594",
+          "target_sha256": "cbbcfdbee026d6becc9fb9a7bb2a8af11d150a6fcf53b479c9399de67cc89343"
+        },
+        {
+          "record_id": "KTCTMLN_QA_026",
+          "question_sha256": "aca0017e299d25491e917220ac48b3fa63141b5998fa52cf1034e10ca64d8021",
+          "target_sha256": "9f9d09556d8e6cbab9715ebb15df93386977e78b10e3fde3e59d8e86792166b9"
+        },
+        {
+          "record_id": "KTCTMLN_QA_027",
+          "question_sha256": "127d36c23d85358cee41ef335d6b44414ce2809703cd3bf9b5a60fe7d88fcb14",
+          "target_sha256": "e421c8c83dc8aa54964c3a1aeaae277c6d5d7cfca82b9c65e6d19b001eb4f0a5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_028",
+          "question_sha256": "55ab45c5d737ef7efa8104f5c694260f30a749f4aa062959ac7306e737aece56",
+          "target_sha256": "2d9f1198264f962ba34af12bffdc068e3fa5c677fd15ccf4cdb15fc27f438792"
+        },
+        {
+          "record_id": "KTCTMLN_QA_029",
+          "question_sha256": "0d9bbd7e46fcb907811c25bd622321eb7dd380e1c526fe6dc9e119ebe35d19ee",
+          "target_sha256": "2b76b693c249d3d96d27ecdc630ba6ea7e704cdae27e8debd89b7c7ff7daaf27"
+        },
+        {
+          "record_id": "KTCTMLN_QA_030",
+          "question_sha256": "7614e9af932025a1de1ebaa3ba155b5899635056fb5dbab2c5c5a2a46ae3b4dd",
+          "target_sha256": "6751b13e53babfcd44a854f1c1df82aff314e4e9941626e912c01d76b2d7905f"
+        },
+        {
+          "record_id": "KTCTMLN_QA_031",
+          "question_sha256": "d32606e28f977dc3a1b74a3f55f7ac4eeabc53c68a4613855f271a917609b117",
+          "target_sha256": "ae149e827cb0c4fd17c0580d3bd83aa2de5400090a4b2da8d417deca2ebe889e"
+        },
+        {
+          "record_id": "CNXHKH_QA_014",
+          "question_sha256": "6b6f3bc87b67f3f93ed6accc267e6e5b4d7e59f7959361f2e2f7c84dd02609f3",
+          "target_sha256": "c90001261c9b78b187d3a218b0f300a0f80e4f7394043c730178db128b5e8fb2"
+        },
+        {
+          "record_id": "CNXHKH_QA_015",
+          "question_sha256": "9d6468556d09f00d9b065d6cab52869514c7029dae470d4266c78f8cf670027d",
+          "target_sha256": "e77f429bbc8578b9b4fef281ba71c122f90f019881464466cb345d4db6304e81"
+        },
+        {
+          "record_id": "CNXHKH_QA_016",
+          "question_sha256": "2751196dbdc46d062385ade689761ee870ef1f6a7024faa2eca871ed043266b3",
+          "target_sha256": "ffbbd13121437eefc19d1c63ecf1d544f5a50c126b3b07c19e5c0ea18c49f653"
+        },
+        {
+          "record_id": "CNXHKH_QA_017",
+          "question_sha256": "9cb632f2b792e531f71d74ed10bd4a678b4cc4aa8ca7cc2ba56b5f9229b860fe",
+          "target_sha256": "6cc30524c3761b2819b3b4f2a8a74345f5571c045d3a297b8521f470fc780bc1"
+        },
+        {
+          "record_id": "CNXHKH_QA_018",
+          "question_sha256": "3a509b8969d9f18e05dc01afc020ceb502e8a71f8aae1c31e00864889fcc9d20",
+          "target_sha256": "b5c4385a99c14814bd72ca36d94a4178e0b7c8ab6e603175c3db24e7c0f4dd72"
+        },
+        {
+          "record_id": "CNXHKH_QA_019",
+          "question_sha256": "1c60d4e5ea4fec18988c3b901493d703426e3b8a9294c407e6c8770a675a2283",
+          "target_sha256": "052304875f93c134d478fcead2628ca734ce993bb4467393cd36cbb23d1d72a0"
+        },
+        {
+          "record_id": "CNXHKH_QA_020",
+          "question_sha256": "2065c49068cc571685fe1229751f8f5175fdf0f155c22ab594b36f2ee1c1a654",
+          "target_sha256": "1220571d2a8aa55ae4b2738db03dc60e37c256b3f623acbe21e17fd8eddd8084"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_baseline.json",
+      "sha256": "eda82988b5b347d906416be245e7ccf3e432ad830715865785235298801b4529",
+      "kind": "qa_cases",
+      "record_count": 100,
+      "records": [
+        {
+          "record_id": "THMLN_QA_001",
+          "question_sha256": "15a0e0d566c1726ba17c625f77f30b954868c8ad2f9b96554c14ca2d25307c0d",
+          "target_sha256": "39726fa2e9349879bad8a648a0c08e143abda1e12054cddfd9a2ba19ebdb12f3"
+        },
+        {
+          "record_id": "THMLN_QA_002",
+          "question_sha256": "df8cf8de0a87f0e0104e362c65085b87307efe075e3903970222ca048c1ea7cb",
+          "target_sha256": "17a9aabcaa73c1b8622dc534d71bb610d76ef0f7ead49e674019b1d10d31296e"
+        },
+        {
+          "record_id": "THMLN_QA_003",
+          "question_sha256": "cc5dc82dbff44f1a23552260d072a27d53c3341c2bb587798fcade29d609413f",
+          "target_sha256": "6fc6867c38234c3790cc40f1691b7d9aa9d2536229877910af82e2c0f26a3577"
+        },
+        {
+          "record_id": "THMLN_QA_004",
+          "question_sha256": "e9addc3a0012ae438b4cb941743eb10f5135b30f3000fb2a7870b7ead93e55e2",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_005",
+          "question_sha256": "85884afb6e4f2aafeda6d4363ef7477ad28597bb6d951bb93f138a2781612560",
+          "target_sha256": "bdbff7fb71bfbc22cffa1c50a48b8acd7bd127a49f8fc1a9dff057cab0bcd0d7"
+        },
+        {
+          "record_id": "THMLN_QA_006",
+          "question_sha256": "1c5ac52557c1900e964dc31135e317013cccf67b0c1600dc2fe0b43e8f9db7c9",
+          "target_sha256": "91f3cc418f3e3dff5cd4b5baa210166b31406a7086b235b79f3d98cccabef0ce"
+        },
+        {
+          "record_id": "THMLN_QA_007",
+          "question_sha256": "db71a1ebd48dcb0e82e95e0291a970bb6f5c3d2489df201923559f375cc787f6",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_008",
+          "question_sha256": "ef621a310d6ff50bc3a1942742cc3b52433c9802f4e6960bc3dad6f088d25f7c",
+          "target_sha256": "f1ba93ffc487ea461504426cf8764a7c64d9311c4faf50040d1f191d258db964"
+        },
+        {
+          "record_id": "THMLN_QA_009",
+          "question_sha256": "0fc7c08e854a55218886a8dc8120b04324770ee6c5d828e858a857bbe88d450f",
+          "target_sha256": "4a1c02710bb914c7ded681fe606abfa634561f49c2cc1e04ddae92f688cee80e"
+        },
+        {
+          "record_id": "THMLN_QA_010",
+          "question_sha256": "c8e67c81640c48a3a3c69ef6c2e9e27692df859cf2a34834e4db3fd64c7c3f0a",
+          "target_sha256": "5f9f24fe7a6709f7d63d155074bafecec620d99754ae6b2884e2948ad9888d7d"
+        },
+        {
+          "record_id": "THMLN_QA_011",
+          "question_sha256": "711d640ea8edf9cc695f07b24050e60843b0540136f8d73fd1f236d8b2f0f320",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_012",
+          "question_sha256": "de0eaeb69e1670a2164c3dd4eda2033a64386f353a4915be379c3e130607d288",
+          "target_sha256": "fa24a9a5eb6b9dd309dc7788a169192bcf61afa0a7adbd7a1cbbe6f96653dd97"
+        },
+        {
+          "record_id": "THMLN_QA_013",
+          "question_sha256": "0b6f484a235fad2e2ccda7c20001bb325cb0cd7140419eb5e109e98a4d0e804e",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_014",
+          "question_sha256": "a88ef4bb135199466ec0c4f927c75b06315543ce5a1fb7504ad62c802a99790d",
+          "target_sha256": "513030d63811fbc376f1a022abd0103dd22d6831922fb4b955deaf525ce2621d"
+        },
+        {
+          "record_id": "THMLN_QA_015",
+          "question_sha256": "fc0423950f5e222d79d1a7ffd3eec5e9f8b54128b603f5bf5e436099a635bdc3",
+          "target_sha256": "0e1a8fb0b533af51cac74b416c3cf7d56a85249e20d7504025382f95420f4504"
+        },
+        {
+          "record_id": "THMLN_QA_016",
+          "question_sha256": "bbcd9518a9e6701acb13d36072525cb24fa60163eea68e5f771bd8d6c7cc822d",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_017",
+          "question_sha256": "5798855bebcd9b83365f5cf2b77b56424f1982bb737538d259fa9340c30ca5ce",
+          "target_sha256": "440cef4d43f587d5b2a4cfaeb573b1aa2fea643198e5fda04c8af3374b146539"
+        },
+        {
+          "record_id": "THMLN_QA_018",
+          "question_sha256": "0276cb4a81e41dc6e9fd9e976d69c83796cde7f86747b87911466c42ed7ab713",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_019",
+          "question_sha256": "bc28b8801394086e3e7e3ae9c960094381e108e6b493f3770c12c69168a87842",
+          "target_sha256": "c5099a069159a0494acdb52f7ed243db89376f4f7ceda30736f742e11f7c9f3c"
+        },
+        {
+          "record_id": "THMLN_QA_020",
+          "question_sha256": "199466c6854c08b4ad4f6f2a3ac4067662cb4c2fe8f1d9b7f165c6d4ed6d899c",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_021",
+          "question_sha256": "540e77be5398ff78ec198ff639173e4151ee4b891885f90edbece7f1a828e5b9",
+          "target_sha256": "49618d46b8cbd4a132b29e3edffef33932e4b3a7dd98a3a6e088794ca977eb4c"
+        },
+        {
+          "record_id": "THMLN_QA_022",
+          "question_sha256": "9df6ea8f2e69c2b5777bc5870be7db0ccc662e4987d78cfa6c4f298b8a2d03aa",
+          "target_sha256": "b334f1095c2c0c54444faba7040b3e9fae7406c0da79df141d2825a81800c984"
+        },
+        {
+          "record_id": "THMLN_QA_023",
+          "question_sha256": "472180a7a26da3490326986bb10cc0b6ee818c65467fb177103ccfa1dc836b48",
+          "target_sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+        },
+        {
+          "record_id": "THMLN_QA_024",
+          "question_sha256": "a11114f2fd4741545d43332d963e8e832133a3021285e63590d2c021b827e13d",
+          "target_sha256": "11a8aec6b50aab636c92c45c9e9347346231cea9291316a6eb6a0f0e65ba504a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_001",
+          "question_sha256": "d3a8f28c7ec38aae30b49578b2ab11472f32f54d78e2ddb3dda8ff45d97826cf",
+          "target_sha256": "2475794e2c0f457120017859d1581a2815b350fa27e5f9b3cf003d2b342e8988"
+        },
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": "51074b33bada5beafee88c40e7bd3e8f747520cc96f75964cdab136858d10af0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": "adf667b99e5e217696963db71a3b92d06303a72f7b6592e5e5191029c541a37e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": "97fee3e7f61305091340b5d4ce899a35aa1feb87e38309bb68353ab46927204a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": "b8563608d5eece2c386d7fc87727ddcafca0796c5d1c86b8f01e430ab1dd238b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": "6e3bbb27497f0620cc542049e350fcf3c2ea37e6c65501003245c2b11cb19b8c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": "a7eadde7de3c59ec5dcf61319117e06b1793ad36bca53f6965ea87b8daca85a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": "943e06b24b66fda8da055f2e90894c834b6fe2de3c7cf0ac21ed45f79a46abec"
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": "337408c93f53bf926ca227e3b7566916a81b0d7044551766feac0ed4312f1e0c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": "c39842dc5ecfb8c6343e129755774b5d92c6078fea36417c2a6a78873a49895d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": "aa39d7b5b47a82a23ae2f32a6123906f81c9d0b3c8f68f478ad5b6852ffcea86"
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": "ab8d30c521157acb644f3d93a602b21204dd98310e8df6b03fe5fc4fa30a5557"
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": "2611ec9c847b84b2ad2c357a22bd1d51809fa0efdb1406394c32fe500bc8503c"
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": "118c76dd60782554e4dc0fd54ffda3dd5872a45b196c66241351cd457ac482d2"
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": "8e658e9a6839a220768d605b05f143a1a1cb49b1c595e0ce9618b3dffad5df26"
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": "089ac006e0a4db53c45188c8266cf70da4bb91bc5a42d77f59d83307005c1c73"
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": "7ac108d48c3a29423e9cb7df3166e2a1084ad3d1c43a21da9bfb085395b3b9c9"
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": "75bd89fdfb422f11ead76a0702707de8098f22ceefe22d936e68e0c0266a0179"
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": "d6ba15daab6b92f80f909d074d68c4153acf810d87dbafc8db77bd37b7ef7539"
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": "af12ebb8934fbffc0a17d2560fe2c970c34ec06bbec4f2e1a5fc29714ae1be7a"
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": "c3651ffe18b2a000d8d3d419ef60afd9bbceacb861965b87128e0337f45db515"
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": "2e1ba3b0a851de5215a6b4ae2e440d5828c66e43ee855cbaca2ac7e6bc9ccdbc"
+        },
+        {
+          "record_id": "THMLN_QA_025",
+          "question_sha256": "9e2d8dbd76fcc9476872d6101882581347d91bb4db43f493dad584ae3117e39f",
+          "target_sha256": "b5edd25ea891f29c14d8352c96c2b17d4feac9ada2eee8f74dfb9b28933728f6"
+        },
+        {
+          "record_id": "THMLN_QA_026",
+          "question_sha256": "11dc7006e0d11ce2ce0c8c2681a3f571116248fcbad7df6b5983207390bdb449",
+          "target_sha256": "127f34c6f43d1d1e4742b4d2256114084e4e810baac09a5215a3e5ebce06f6fd"
+        },
+        {
+          "record_id": "THMLN_QA_027",
+          "question_sha256": "a11435635f6e024ed39c2b13ecb9173e6154ebb8b406c9ba7520d9aa7031b0df",
+          "target_sha256": "57753a685904298cdd3edccf3abe7f0d1b57864ec93bbe72e8c9f5dd5d756326"
+        },
+        {
+          "record_id": "THMLN_QA_028",
+          "question_sha256": "5bdd0d943f055b552f4f7de5344e85481538548e7a72c89388ed241c82382c83",
+          "target_sha256": "368118c20677835f9ac5a913e8a9807bfff6a4846f6554984e3843b2cfa99b0b"
+        },
+        {
+          "record_id": "THMLN_QA_029",
+          "question_sha256": "9fdfbcb2b1439d1f657476338a59e318c7f0878f630c1783774cb37fa828198c",
+          "target_sha256": "5b4b5be66ff4638049093e0c843c24b5e4c086154c85350b3e24a9bef85b5270"
+        },
+        {
+          "record_id": "THMLN_QA_030",
+          "question_sha256": "47d8265c23784aedd18bf1034ac4b187182ad90f835dea5a5ec0d4d2e779088e",
+          "target_sha256": "d1a2f58c24c3fa94e72e70e14b166d7a316185c4f371582e89d1a185362507c3"
+        },
+        {
+          "record_id": "THMLN_QA_031",
+          "question_sha256": "97799835092c0d59beb1c64d87983d39abf5c6b3bc691f2df7c7c9d03966b89a",
+          "target_sha256": "34d9700c3341a607896938a3f72d4c69b1f32099b0013b87c3954a3d65e84bc8"
+        },
+        {
+          "record_id": "THMLN_QA_032",
+          "question_sha256": "3349b26653eea76acaebdbb36af75d9e0d89afcb160d5117b636733a5fd0c00c",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_033",
+          "question_sha256": "6803207f8ba0779fa7fa85a65583d9373bb6be76ddbe9206be2ca10ee45f04bc",
+          "target_sha256": "e56ca4cd4a9cd0074072992af12ba2b441c5b45ab475b6ff1ab75ec8d27bc5a7"
+        },
+        {
+          "record_id": "THMLN_QA_034",
+          "question_sha256": "143696c769ee151312873c3d40ae5cee6e16c15fad230f5c30d1dbc27be510e5",
+          "target_sha256": "39b9069059e975e225141a78c9e8fa71e283a7d96fd86233896aadb56fafe4b3"
+        },
+        {
+          "record_id": "THMLN_QA_035",
+          "question_sha256": "fc78d67dc926bc01a2b2410d8bfb5472093d6d9049eb4f48cae6aa0ca5d7f28d",
+          "target_sha256": "c297d2816174b7a65fbe7966866a8b16d7128bfa8bb33c6d6545fb7eb4222284"
+        },
+        {
+          "record_id": "THMLN_QA_036",
+          "question_sha256": "9eba1133396e4a6739345863d2ab18eaa462b4316cae6f488d7fe46ce799cae4",
+          "target_sha256": "760143f1f146ccc15b1a66f67b65cd6281eed19b70fc20be4f33e3e53d0dcd41"
+        },
+        {
+          "record_id": "THMLN_QA_037",
+          "question_sha256": "207169ef0f0a50b8edcce04c527190a77217e4f7a58bf00b6f5af58725c99ea9",
+          "target_sha256": "d11b958e3bcef04a5a2e8405f19a2d37299caa0d64d17efce834e10036a5e2e5"
+        },
+        {
+          "record_id": "THMLN_QA_038",
+          "question_sha256": "eb444a0b39193d2e95f9051929df7cdb19b7da0dd2c35ffd0850783803587177",
+          "target_sha256": "4ba71d78d9cbb20a85dc49a3faddec1e25599a0f2c00594c774937c860764cd8"
+        },
+        {
+          "record_id": "THMLN_QA_039",
+          "question_sha256": "17f8fb00e1498f8115a8bb1f59f5f81c914621c4770dc60c1c2cb9627ee07b23",
+          "target_sha256": "8f99733866499e65bce9d95acf44a6bc7c79009644b351dc643f5c20a703f05d"
+        },
+        {
+          "record_id": "THMLN_QA_040",
+          "question_sha256": "b4de3cfaa57ea587a480e67e8bc27ae54bc76e8ab937e8aba7c07acedae9c913",
+          "target_sha256": "b1b524da07f7b793b2f796f86a0a2aa78d94dfca0eff5dab8108ce7a9f07aefd"
+        },
+        {
+          "record_id": "THMLN_QA_041",
+          "question_sha256": "ee60bb12cdc890449299a65ea37c50fe2c87e2a4a464fa1bcd35db70e5414a64",
+          "target_sha256": "4647a92964c615e80c910d100479654a6b17291873a561bd78d33a81a5d320cc"
+        },
+        {
+          "record_id": "THMLN_QA_042",
+          "question_sha256": "26f480f8a474f56fc5b276ae40f66b9f427eedd49ff91b95708efdd9c6dae68b",
+          "target_sha256": "fa6d15ba3b29cfc1fdd06085d7e8a7c4f6b3d56566406b774c8e45e4285328eb"
+        },
+        {
+          "record_id": "THMLN_QA_043",
+          "question_sha256": "667a1d77b2f501d5aa3766c139135f72732a97f05c75af76cc5b16317998bb32",
+          "target_sha256": "3f5fde1f7dbda896f901b8d1430ebba954ec3c08b01641a0b86672d3e9128961"
+        },
+        {
+          "record_id": "THMLN_QA_044",
+          "question_sha256": "bf0b0856d4064abbd568bb74cd4885e37fe0160973cb04705bbe50066fbed366",
+          "target_sha256": "c91a48f4ade34368c48fbca745b435bf27f0eb9965eb3ccd56c4d030788ff00b"
+        },
+        {
+          "record_id": "THMLN_QA_045",
+          "question_sha256": "70658b61bbc1ca848de19bd6d8bf713318682467b94a57b86b6bc1eb835e8bb8",
+          "target_sha256": "a42b55e95e4e5d8c031149477ebb3fe624ce1fd9557d36c8736b76ebc1572404"
+        },
+        {
+          "record_id": "THMLN_QA_046",
+          "question_sha256": "d317e9ae2c94a8239ceaedeba00d1a68126f85f2342ac4b6f787ffed89954322",
+          "target_sha256": "2c2d5d1383d4a1bbef426a560ab39939b0b935d9681ec33b39994ff0778ab0e6"
+        },
+        {
+          "record_id": "THMLN_QA_047",
+          "question_sha256": "7960d4ad97225b0ec8efa51087e4d525b4cdb2db2abe2123e090ae6d3e3f56e3",
+          "target_sha256": "0513ac3343e0566b3f1fc5e8eb6b5da324cb0a37b10b0e36cde2a2e05099d227"
+        },
+        {
+          "record_id": "THMLN_QA_048",
+          "question_sha256": "cfd993e54f95c82d12d1ba4b0a0ecd4a525156a96db56dd6db81504f6c354f14",
+          "target_sha256": "ced48ef4a7fc899c07341fa0a629645c836ade4067937fa9588c44fb2ae1841b"
+        },
+        {
+          "record_id": "THMLN_QA_049",
+          "question_sha256": "f9be95aa4395b298bf66595dfb03f479dd3ec0bd79a1dbb1d600f698a68f8331",
+          "target_sha256": "8a1bd0cbee1eb4c7f6be5ce9625ce67e93f116097941c7f71b7c140685ac29a0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_014",
+          "question_sha256": "b2b7a3f27a2222bc3d24671b80d1d253c536c444647e97cf039d53098c1506de",
+          "target_sha256": "77ebd8c46641b4ccd4881ddd834c60e304d040ddd462c397eca9ceb2a939c223"
+        },
+        {
+          "record_id": "KTCTMLN_QA_015",
+          "question_sha256": "e21ed9ccc928ea4453740ed45cc50f7ed9ed65bf139175bc703f34cfb7d24f46",
+          "target_sha256": "63e1e725453134df9b4ed3e60aebcceb0d8ea8eb0a56b04e177b5a81ce72447e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_016",
+          "question_sha256": "54a65468ea32a0911585eb37a0da41c42d01607a8fea52377c4b0493c597bf9b",
+          "target_sha256": "231646a75de369525fa25eb7ae90d933307117d5ea935278d298bb6887719f59"
+        },
+        {
+          "record_id": "KTCTMLN_QA_017",
+          "question_sha256": "681a52f09332f257bd6b5fac8094d7bd788f4defa2e249c557d9e04f6915722f",
+          "target_sha256": "1c4ea0e7659290ebaf0f4afb11305f34c92f7021e46928937ff621fc12a358a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_018",
+          "question_sha256": "c601d45f7e26eefc0fe09a912a671d554b303e0c9aaa905e3bc02944104acb13",
+          "target_sha256": "1d30159f8dcd17ff52d4f5429e6c720cf222fedcca347f26d897a5f2436b46b0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_019",
+          "question_sha256": "c16a8cb75760fa8523067c64352333d2d4ca635b8a4cb607fc8ec36e011e067d",
+          "target_sha256": "d322617b9361b45810574a3b9ec2ad643a959e3bb5fee6a9eeb70611105e14c5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_020",
+          "question_sha256": "f771690e43ab592cd079da078fa37c306bb280304b310d5a5ca57eb776884068",
+          "target_sha256": "04e64fb06b8618a584f18defb88d3735dad5aff886d9dc190167cf13f2411b9d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_021",
+          "question_sha256": "c20df33ae91e37b667c45950a3dec924cf540014e0b7addcb8d579a9b70ddb86",
+          "target_sha256": "077fed3ac350d207f4d686a0f6f1cb863a719d5b2161003d8b20380cedca7688"
+        },
+        {
+          "record_id": "KTCTMLN_QA_022",
+          "question_sha256": "5b051b7b14838e9645596d6b691c0781ec49dbf187fbfce946c555ca1ecc1c28",
+          "target_sha256": "71b91d38de2b248e79f56af635054fefc7f83c1eeaac48e4c7dfb2a07c16d72d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_023",
+          "question_sha256": "ef44b5d77cd07c95b01b91b480bc8c3a55b2c0db5f13099380a76e96cc9c6bb2",
+          "target_sha256": "9fd012a34d44cbc07b4665a332c02055fc18c65406fe71c0fb4af4c73d1d275e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_024",
+          "question_sha256": "bb906d49cdade3589fa105a2c667e298e8400dade49d8e96fef8fb6cc29d84b0",
+          "target_sha256": "9a4c1ea5fb1619b5a7c33d2edd62dbd7b4f596b7291fd3f27793f795067e7b78"
+        },
+        {
+          "record_id": "KTCTMLN_QA_025",
+          "question_sha256": "969dc46ad362628bc31e6108e8b6ba8ab48e4bdb44fa6ec91041811c33d49594",
+          "target_sha256": "cbbcfdbee026d6becc9fb9a7bb2a8af11d150a6fcf53b479c9399de67cc89343"
+        },
+        {
+          "record_id": "KTCTMLN_QA_026",
+          "question_sha256": "aca0017e299d25491e917220ac48b3fa63141b5998fa52cf1034e10ca64d8021",
+          "target_sha256": "9f9d09556d8e6cbab9715ebb15df93386977e78b10e3fde3e59d8e86792166b9"
+        },
+        {
+          "record_id": "KTCTMLN_QA_027",
+          "question_sha256": "127d36c23d85358cee41ef335d6b44414ce2809703cd3bf9b5a60fe7d88fcb14",
+          "target_sha256": "e421c8c83dc8aa54964c3a1aeaae277c6d5d7cfca82b9c65e6d19b001eb4f0a5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_028",
+          "question_sha256": "55ab45c5d737ef7efa8104f5c694260f30a749f4aa062959ac7306e737aece56",
+          "target_sha256": "2d9f1198264f962ba34af12bffdc068e3fa5c677fd15ccf4cdb15fc27f438792"
+        },
+        {
+          "record_id": "KTCTMLN_QA_029",
+          "question_sha256": "0d9bbd7e46fcb907811c25bd622321eb7dd380e1c526fe6dc9e119ebe35d19ee",
+          "target_sha256": "2b76b693c249d3d96d27ecdc630ba6ea7e704cdae27e8debd89b7c7ff7daaf27"
+        },
+        {
+          "record_id": "KTCTMLN_QA_030",
+          "question_sha256": "7614e9af932025a1de1ebaa3ba155b5899635056fb5dbab2c5c5a2a46ae3b4dd",
+          "target_sha256": "6751b13e53babfcd44a854f1c1df82aff314e4e9941626e912c01d76b2d7905f"
+        },
+        {
+          "record_id": "KTCTMLN_QA_031",
+          "question_sha256": "d32606e28f977dc3a1b74a3f55f7ac4eeabc53c68a4613855f271a917609b117",
+          "target_sha256": "ae149e827cb0c4fd17c0580d3bd83aa2de5400090a4b2da8d417deca2ebe889e"
+        },
+        {
+          "record_id": "CNXHKH_QA_014",
+          "question_sha256": "6b6f3bc87b67f3f93ed6accc267e6e5b4d7e59f7959361f2e2f7c84dd02609f3",
+          "target_sha256": "c90001261c9b78b187d3a218b0f300a0f80e4f7394043c730178db128b5e8fb2"
+        },
+        {
+          "record_id": "CNXHKH_QA_015",
+          "question_sha256": "9d6468556d09f00d9b065d6cab52869514c7029dae470d4266c78f8cf670027d",
+          "target_sha256": "e77f429bbc8578b9b4fef281ba71c122f90f019881464466cb345d4db6304e81"
+        },
+        {
+          "record_id": "CNXHKH_QA_016",
+          "question_sha256": "2751196dbdc46d062385ade689761ee870ef1f6a7024faa2eca871ed043266b3",
+          "target_sha256": "ffbbd13121437eefc19d1c63ecf1d544f5a50c126b3b07c19e5c0ea18c49f653"
+        },
+        {
+          "record_id": "CNXHKH_QA_017",
+          "question_sha256": "9cb632f2b792e531f71d74ed10bd4a678b4cc4aa8ca7cc2ba56b5f9229b860fe",
+          "target_sha256": "6cc30524c3761b2819b3b4f2a8a74345f5571c045d3a297b8521f470fc780bc1"
+        },
+        {
+          "record_id": "CNXHKH_QA_018",
+          "question_sha256": "3a509b8969d9f18e05dc01afc020ceb502e8a71f8aae1c31e00864889fcc9d20",
+          "target_sha256": "b5c4385a99c14814bd72ca36d94a4178e0b7c8ab6e603175c3db24e7c0f4dd72"
+        },
+        {
+          "record_id": "CNXHKH_QA_019",
+          "question_sha256": "1c60d4e5ea4fec18988c3b901493d703426e3b8a9294c407e6c8770a675a2283",
+          "target_sha256": "052304875f93c134d478fcead2628ca734ce993bb4467393cd36cbb23d1d72a0"
+        },
+        {
+          "record_id": "CNXHKH_QA_020",
+          "question_sha256": "2065c49068cc571685fe1229751f8f5175fdf0f155c22ab594b36f2ee1c1a654",
+          "target_sha256": "1220571d2a8aa55ae4b2738db03dc60e37c256b3f623acbe21e17fd8eddd8084"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_contributions.csv",
+      "sha256": "b0ded509e34c5030f30fe43d57f55d782a60f3a4dba597aec256aa785caa2c30",
+      "kind": "qa_or_derived_question_table",
+      "record_count": 50,
+      "records": [
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": "51074b33bada5beafee88c40e7bd3e8f747520cc96f75964cdab136858d10af0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": "adf667b99e5e217696963db71a3b92d06303a72f7b6592e5e5191029c541a37e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": "97fee3e7f61305091340b5d4ce899a35aa1feb87e38309bb68353ab46927204a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": "b8563608d5eece2c386d7fc87727ddcafca0796c5d1c86b8f01e430ab1dd238b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": "6e3bbb27497f0620cc542049e350fcf3c2ea37e6c65501003245c2b11cb19b8c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": "a7eadde7de3c59ec5dcf61319117e06b1793ad36bca53f6965ea87b8daca85a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": "943e06b24b66fda8da055f2e90894c834b6fe2de3c7cf0ac21ed45f79a46abec"
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": "337408c93f53bf926ca227e3b7566916a81b0d7044551766feac0ed4312f1e0c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": "c39842dc5ecfb8c6343e129755774b5d92c6078fea36417c2a6a78873a49895d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": "aa39d7b5b47a82a23ae2f32a6123906f81c9d0b3c8f68f478ad5b6852ffcea86"
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": "ab8d30c521157acb644f3d93a602b21204dd98310e8df6b03fe5fc4fa30a5557"
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": "2611ec9c847b84b2ad2c357a22bd1d51809fa0efdb1406394c32fe500bc8503c"
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": "118c76dd60782554e4dc0fd54ffda3dd5872a45b196c66241351cd457ac482d2"
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": "8e658e9a6839a220768d605b05f143a1a1cb49b1c595e0ce9618b3dffad5df26"
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": "089ac006e0a4db53c45188c8266cf70da4bb91bc5a42d77f59d83307005c1c73"
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": "7ac108d48c3a29423e9cb7df3166e2a1084ad3d1c43a21da9bfb085395b3b9c9"
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": "75bd89fdfb422f11ead76a0702707de8098f22ceefe22d936e68e0c0266a0179"
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": "d6ba15daab6b92f80f909d074d68c4153acf810d87dbafc8db77bd37b7ef7539"
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": "af12ebb8934fbffc0a17d2560fe2c970c34ec06bbec4f2e1a5fc29714ae1be7a"
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": "c3651ffe18b2a000d8d3d419ef60afd9bbceacb861965b87128e0337f45db515"
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": "2e1ba3b0a851de5215a6b4ae2e440d5828c66e43ee855cbaca2ac7e6bc9ccdbc"
+        },
+        {
+          "record_id": "KTCTMLN_QA_014",
+          "question_sha256": "b2b7a3f27a2222bc3d24671b80d1d253c536c444647e97cf039d53098c1506de",
+          "target_sha256": "77ebd8c46641b4ccd4881ddd834c60e304d040ddd462c397eca9ceb2a939c223"
+        },
+        {
+          "record_id": "KTCTMLN_QA_015",
+          "question_sha256": "e21ed9ccc928ea4453740ed45cc50f7ed9ed65bf139175bc703f34cfb7d24f46",
+          "target_sha256": "63e1e725453134df9b4ed3e60aebcceb0d8ea8eb0a56b04e177b5a81ce72447e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_016",
+          "question_sha256": "54a65468ea32a0911585eb37a0da41c42d01607a8fea52377c4b0493c597bf9b",
+          "target_sha256": "231646a75de369525fa25eb7ae90d933307117d5ea935278d298bb6887719f59"
+        },
+        {
+          "record_id": "KTCTMLN_QA_017",
+          "question_sha256": "681a52f09332f257bd6b5fac8094d7bd788f4defa2e249c557d9e04f6915722f",
+          "target_sha256": "1c4ea0e7659290ebaf0f4afb11305f34c92f7021e46928937ff621fc12a358a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_018",
+          "question_sha256": "c601d45f7e26eefc0fe09a912a671d554b303e0c9aaa905e3bc02944104acb13",
+          "target_sha256": "1d30159f8dcd17ff52d4f5429e6c720cf222fedcca347f26d897a5f2436b46b0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_019",
+          "question_sha256": "c16a8cb75760fa8523067c64352333d2d4ca635b8a4cb607fc8ec36e011e067d",
+          "target_sha256": "d322617b9361b45810574a3b9ec2ad643a959e3bb5fee6a9eeb70611105e14c5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_020",
+          "question_sha256": "f771690e43ab592cd079da078fa37c306bb280304b310d5a5ca57eb776884068",
+          "target_sha256": "04e64fb06b8618a584f18defb88d3735dad5aff886d9dc190167cf13f2411b9d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_021",
+          "question_sha256": "c20df33ae91e37b667c45950a3dec924cf540014e0b7addcb8d579a9b70ddb86",
+          "target_sha256": "077fed3ac350d207f4d686a0f6f1cb863a719d5b2161003d8b20380cedca7688"
+        },
+        {
+          "record_id": "KTCTMLN_QA_022",
+          "question_sha256": "5b051b7b14838e9645596d6b691c0781ec49dbf187fbfce946c555ca1ecc1c28",
+          "target_sha256": "71b91d38de2b248e79f56af635054fefc7f83c1eeaac48e4c7dfb2a07c16d72d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_023",
+          "question_sha256": "ef44b5d77cd07c95b01b91b480bc8c3a55b2c0db5f13099380a76e96cc9c6bb2",
+          "target_sha256": "9fd012a34d44cbc07b4665a332c02055fc18c65406fe71c0fb4af4c73d1d275e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_024",
+          "question_sha256": "bb906d49cdade3589fa105a2c667e298e8400dade49d8e96fef8fb6cc29d84b0",
+          "target_sha256": "9a4c1ea5fb1619b5a7c33d2edd62dbd7b4f596b7291fd3f27793f795067e7b78"
+        },
+        {
+          "record_id": "KTCTMLN_QA_025",
+          "question_sha256": "969dc46ad362628bc31e6108e8b6ba8ab48e4bdb44fa6ec91041811c33d49594",
+          "target_sha256": "cbbcfdbee026d6becc9fb9a7bb2a8af11d150a6fcf53b479c9399de67cc89343"
+        },
+        {
+          "record_id": "KTCTMLN_QA_026",
+          "question_sha256": "aca0017e299d25491e917220ac48b3fa63141b5998fa52cf1034e10ca64d8021",
+          "target_sha256": "9f9d09556d8e6cbab9715ebb15df93386977e78b10e3fde3e59d8e86792166b9"
+        },
+        {
+          "record_id": "KTCTMLN_QA_027",
+          "question_sha256": "127d36c23d85358cee41ef335d6b44414ce2809703cd3bf9b5a60fe7d88fcb14",
+          "target_sha256": "e421c8c83dc8aa54964c3a1aeaae277c6d5d7cfca82b9c65e6d19b001eb4f0a5"
+        },
+        {
+          "record_id": "KTCTMLN_QA_028",
+          "question_sha256": "55ab45c5d737ef7efa8104f5c694260f30a749f4aa062959ac7306e737aece56",
+          "target_sha256": "2d9f1198264f962ba34af12bffdc068e3fa5c677fd15ccf4cdb15fc27f438792"
+        },
+        {
+          "record_id": "KTCTMLN_QA_029",
+          "question_sha256": "0d9bbd7e46fcb907811c25bd622321eb7dd380e1c526fe6dc9e119ebe35d19ee",
+          "target_sha256": "2b76b693c249d3d96d27ecdc630ba6ea7e704cdae27e8debd89b7c7ff7daaf27"
+        },
+        {
+          "record_id": "KTCTMLN_QA_030",
+          "question_sha256": "7614e9af932025a1de1ebaa3ba155b5899635056fb5dbab2c5c5a2a46ae3b4dd",
+          "target_sha256": "6751b13e53babfcd44a854f1c1df82aff314e4e9941626e912c01d76b2d7905f"
+        },
+        {
+          "record_id": "KTCTMLN_QA_031",
+          "question_sha256": "d32606e28f977dc3a1b74a3f55f7ac4eeabc53c68a4613855f271a917609b117",
+          "target_sha256": "ae149e827cb0c4fd17c0580d3bd83aa2de5400090a4b2da8d417deca2ebe889e"
+        },
+        {
+          "record_id": "CNXHKH_QA_014",
+          "question_sha256": "6b6f3bc87b67f3f93ed6accc267e6e5b4d7e59f7959361f2e2f7c84dd02609f3",
+          "target_sha256": "c90001261c9b78b187d3a218b0f300a0f80e4f7394043c730178db128b5e8fb2"
+        },
+        {
+          "record_id": "CNXHKH_QA_015",
+          "question_sha256": "9d6468556d09f00d9b065d6cab52869514c7029dae470d4266c78f8cf670027d",
+          "target_sha256": "e77f429bbc8578b9b4fef281ba71c122f90f019881464466cb345d4db6304e81"
+        },
+        {
+          "record_id": "CNXHKH_QA_016",
+          "question_sha256": "2751196dbdc46d062385ade689761ee870ef1f6a7024faa2eca871ed043266b3",
+          "target_sha256": "ffbbd13121437eefc19d1c63ecf1d544f5a50c126b3b07c19e5c0ea18c49f653"
+        },
+        {
+          "record_id": "CNXHKH_QA_017",
+          "question_sha256": "9cb632f2b792e531f71d74ed10bd4a678b4cc4aa8ca7cc2ba56b5f9229b860fe",
+          "target_sha256": "6cc30524c3761b2819b3b4f2a8a74345f5571c045d3a297b8521f470fc780bc1"
+        },
+        {
+          "record_id": "CNXHKH_QA_018",
+          "question_sha256": "3a509b8969d9f18e05dc01afc020ceb502e8a71f8aae1c31e00864889fcc9d20",
+          "target_sha256": "306505b5dfeb2c03d49804d6ce268dcdf154ecbde250e8e65450263fabe8983f"
+        },
+        {
+          "record_id": "CNXHKH_QA_019",
+          "question_sha256": "1c60d4e5ea4fec18988c3b901493d703426e3b8a9294c407e6c8770a675a2283",
+          "target_sha256": "052304875f93c134d478fcead2628ca734ce993bb4467393cd36cbb23d1d72a0"
+        },
+        {
+          "record_id": "CNXHKH_QA_020",
+          "question_sha256": "2065c49068cc571685fe1229751f8f5175fdf0f155c22ab594b36f2ee1c1a654",
+          "target_sha256": "1220571d2a8aa55ae4b2738db03dc60e37c256b3f623acbe21e17fd8eddd8084"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_pilot_v1.0.csv",
+      "sha256": "cae561e16823f72e2b1573928263b563f710fb7903d9eb8bf6cf3395531bb49f",
+      "kind": "qa_or_derived_question_table",
+      "record_count": 50,
+      "records": [
+        {
+          "record_id": "THMLN_QA_001",
+          "question_sha256": "9fe1f57a127e338a967d770dbc595bfcf54bd76a858591ee4891e47c8a2bf3c6",
+          "target_sha256": "3975534659ac7eb2d0f808302ab0b8c63b8f675c6430c0fb62ffb888ca12afb2"
+        },
+        {
+          "record_id": "THMLN_QA_002",
+          "question_sha256": "9347d8157851a83e01e49ce07aab68f96ea51d5176aac44c6fe306e4dfb24740",
+          "target_sha256": "7a3b6094331568c3ddbf1c1df87d68f9f03b437df1ea9c09c6f470069871ed94"
+        },
+        {
+          "record_id": "THMLN_QA_003",
+          "question_sha256": "cabf9e9ab17e6df63dea6fd823b42c1c900fa7e387e712491a21490f153d058d",
+          "target_sha256": "67270e2db57ac20068415bfd7145b4777acb79d7e9d716e9b3c096c926017a06"
+        },
+        {
+          "record_id": "THMLN_QA_004",
+          "question_sha256": "d3efc5247c93cfb24f6aa6c885491c378227aa92bc485012b0445167d4e18e9b",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_005",
+          "question_sha256": "95514b6e0af1f9a74e17212034229b6e3fcbce75c51fd8230836e91a219f9692",
+          "target_sha256": "bde9e13d0c5259ceaeb0e0dd3d1aeeb9f9a192b96c223e9bb7ecd1f9d1240415"
+        },
+        {
+          "record_id": "THMLN_QA_006",
+          "question_sha256": "e82da2a395e3931dae05b3f711ea92a878f8e7916da132e6402418d7600916da",
+          "target_sha256": "eddb4c3430be0ca2429375079df191364e5820e7651b116c4c5c7a0566a40534"
+        },
+        {
+          "record_id": "THMLN_QA_007",
+          "question_sha256": "44339b4c2e6df42ffd5f771f7d50f873a6de750d07778914f0aa513fb990048c",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_008",
+          "question_sha256": "056cb8201649656953ba59125c7be8c29f03b2c6133fe45728b69291db078579",
+          "target_sha256": "94b42d5e0c5f6b3b64d96401a1cb62c1ed7cf9ef242891b88fc993ae96588094"
+        },
+        {
+          "record_id": "THMLN_QA_009",
+          "question_sha256": "40e70b5a2630b6fa19cc6ac3b755fb594d811a585cd44648973bde215677deb6",
+          "target_sha256": "72ff005563417d5641a947afdbcf98064b701f0e20d0935e9f6cd96eec2f77fb"
+        },
+        {
+          "record_id": "THMLN_QA_010",
+          "question_sha256": "383d963efd9595cac566eded7ba9c9d4c504f573c122b247d634078bf6d0a8c2",
+          "target_sha256": "2f07f8980f32b04890b7820dabc2db56993f0855e067167fd1baba37a52e220a"
+        },
+        {
+          "record_id": "THMLN_QA_011",
+          "question_sha256": "bd8fc9fcc50f34bf5bef8a462de7495d86a70ef2e3fb05ba1fec01774c5bb8db",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_012",
+          "question_sha256": "4d7880c931e9ae59f00889131d1a4db2d3268f150e4af76df575b77ae7d1bdf9",
+          "target_sha256": "80214e25ac904ac877249516da3c91431a3fd3a2c3bf33262489cc5d70dbf772"
+        },
+        {
+          "record_id": "THMLN_QA_013",
+          "question_sha256": "e44190610310da37ff181ac10a877047141321753ace50500feac75986e71121",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_014",
+          "question_sha256": "844b9027de4357dd53928157386ac9abfb86d7210b53476fd80b5c99f016b52a",
+          "target_sha256": "2e73c89586817066d992e599f398bcb1247c3157e782df359f838c57d84d6729"
+        },
+        {
+          "record_id": "THMLN_QA_015",
+          "question_sha256": "e4409d942e265af22f1c4bfca674d938b00dbff30446442fd3ccd021c89ff978",
+          "target_sha256": "213a48b045fd36709949c5a204ca206cba6924415321100a9e5134ac9890d4d4"
+        },
+        {
+          "record_id": "THMLN_QA_016",
+          "question_sha256": "bb6d3b1cc9e3d7ea7f1babc59114983ef7b49ebbad1a123b18c21da009747738",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_017",
+          "question_sha256": "cee7a6094e3d86412ea9c3e92d23330028dc28727e72b39116e50468df3276b3",
+          "target_sha256": "15e1929fe8f180871a92e9fae81f24fc06fab3551a42b893d62baade7239d088"
+        },
+        {
+          "record_id": "THMLN_QA_018",
+          "question_sha256": "cc427b20ef446da00ae7b65902697cafa28176a208832198c8b24bf78c495d32",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_019",
+          "question_sha256": "bcd367e1b904771415339af6a86840c45d5c2a81f5627a8514f82b35d29854f1",
+          "target_sha256": "faa312a233d502e382d5a24082cabe329f19b8bad1b5bfe3f8ab2de62c0cbcd1"
+        },
+        {
+          "record_id": "THMLN_QA_020",
+          "question_sha256": "29fdcb9284aaca6ec83d8fffe78991107e78334c2d1aab24b01fc38a24a02b4f",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_021",
+          "question_sha256": "e6b63f879d1620eaba7603a96c7d60817a2c1c4bf79a39a6b69351a00445cdcf",
+          "target_sha256": "99e596a0284a1de9f2fb273970f1acf16648dbe2ab75b817bd15c64d975e70e6"
+        },
+        {
+          "record_id": "THMLN_QA_022",
+          "question_sha256": "a5c02c767ffcbd31318645b052a35d6bfc188c84f8a1db5cff9aac4a4ac3eb97",
+          "target_sha256": "39a60fb78691e22515e7db46f2ef80f5549abd86cddf083e260c3a1446d082a9"
+        },
+        {
+          "record_id": "THMLN_QA_023",
+          "question_sha256": "dc0e2032309247457969bae63c185100866e1ef241ac3b9ff49b5bec4b154986",
+          "target_sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+        },
+        {
+          "record_id": "THMLN_QA_024",
+          "question_sha256": "6af5cec6c750bc529fd233bff927e0c0859da7242ac60e5ca61e8144c72a51a4",
+          "target_sha256": "89a6372efedd991f688e5dbc9b2dfcf7f22f46d2ac3c82c42a7c45a7ca1233cf"
+        },
+        {
+          "record_id": "KTCTMLN_QA_001",
+          "question_sha256": "d3a8f28c7ec38aae30b49578b2ab11472f32f54d78e2ddb3dda8ff45d97826cf",
+          "target_sha256": "2475794e2c0f457120017859d1581a2815b350fa27e5f9b3cf003d2b342e8988"
+        },
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": "51074b33bada5beafee88c40e7bd3e8f747520cc96f75964cdab136858d10af0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": "adf667b99e5e217696963db71a3b92d06303a72f7b6592e5e5191029c541a37e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": "97fee3e7f61305091340b5d4ce899a35aa1feb87e38309bb68353ab46927204a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": "b8563608d5eece2c386d7fc87727ddcafca0796c5d1c86b8f01e430ab1dd238b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": "6e3bbb27497f0620cc542049e350fcf3c2ea37e6c65501003245c2b11cb19b8c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": "a7eadde7de3c59ec5dcf61319117e06b1793ad36bca53f6965ea87b8daca85a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": "943e06b24b66fda8da055f2e90894c834b6fe2de3c7cf0ac21ed45f79a46abec"
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": "337408c93f53bf926ca227e3b7566916a81b0d7044551766feac0ed4312f1e0c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": "c39842dc5ecfb8c6343e129755774b5d92c6078fea36417c2a6a78873a49895d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": "aa39d7b5b47a82a23ae2f32a6123906f81c9d0b3c8f68f478ad5b6852ffcea86"
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": "ab8d30c521157acb644f3d93a602b21204dd98310e8df6b03fe5fc4fa30a5557"
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": "2611ec9c847b84b2ad2c357a22bd1d51809fa0efdb1406394c32fe500bc8503c"
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": "118c76dd60782554e4dc0fd54ffda3dd5872a45b196c66241351cd457ac482d2"
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": "8e658e9a6839a220768d605b05f143a1a1cb49b1c595e0ce9618b3dffad5df26"
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": "089ac006e0a4db53c45188c8266cf70da4bb91bc5a42d77f59d83307005c1c73"
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": "7ac108d48c3a29423e9cb7df3166e2a1084ad3d1c43a21da9bfb085395b3b9c9"
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": "75bd89fdfb422f11ead76a0702707de8098f22ceefe22d936e68e0c0266a0179"
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": "d6ba15daab6b92f80f909d074d68c4153acf810d87dbafc8db77bd37b7ef7539"
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": "af12ebb8934fbffc0a17d2560fe2c970c34ec06bbec4f2e1a5fc29714ae1be7a"
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": "c3651ffe18b2a000d8d3d419ef60afd9bbceacb861965b87128e0337f45db515"
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": "2e1ba3b0a851de5215a6b4ae2e440d5828c66e43ee855cbaca2ac7e6bc9ccdbc"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_pilot_v2.0.csv",
+      "sha256": "8cff158617484517b7a02b8246e2051848153611ba90b34dfd954652c1389458",
+      "kind": "qa_or_derived_question_table",
+      "record_count": 75,
+      "records": [
+        {
+          "record_id": "THMLN_QA_001",
+          "question_sha256": "15a0e0d566c1726ba17c625f77f30b954868c8ad2f9b96554c14ca2d25307c0d",
+          "target_sha256": "39726fa2e9349879bad8a648a0c08e143abda1e12054cddfd9a2ba19ebdb12f3"
+        },
+        {
+          "record_id": "THMLN_QA_002",
+          "question_sha256": "df8cf8de0a87f0e0104e362c65085b87307efe075e3903970222ca048c1ea7cb",
+          "target_sha256": "17a9aabcaa73c1b8622dc534d71bb610d76ef0f7ead49e674019b1d10d31296e"
+        },
+        {
+          "record_id": "THMLN_QA_003",
+          "question_sha256": "cc5dc82dbff44f1a23552260d072a27d53c3341c2bb587798fcade29d609413f",
+          "target_sha256": "6fc6867c38234c3790cc40f1691b7d9aa9d2536229877910af82e2c0f26a3577"
+        },
+        {
+          "record_id": "THMLN_QA_004",
+          "question_sha256": "e9addc3a0012ae438b4cb941743eb10f5135b30f3000fb2a7870b7ead93e55e2",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_005",
+          "question_sha256": "85884afb6e4f2aafeda6d4363ef7477ad28597bb6d951bb93f138a2781612560",
+          "target_sha256": "bdbff7fb71bfbc22cffa1c50a48b8acd7bd127a49f8fc1a9dff057cab0bcd0d7"
+        },
+        {
+          "record_id": "THMLN_QA_006",
+          "question_sha256": "1c5ac52557c1900e964dc31135e317013cccf67b0c1600dc2fe0b43e8f9db7c9",
+          "target_sha256": "91f3cc418f3e3dff5cd4b5baa210166b31406a7086b235b79f3d98cccabef0ce"
+        },
+        {
+          "record_id": "THMLN_QA_007",
+          "question_sha256": "db71a1ebd48dcb0e82e95e0291a970bb6f5c3d2489df201923559f375cc787f6",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_008",
+          "question_sha256": "ef621a310d6ff50bc3a1942742cc3b52433c9802f4e6960bc3dad6f088d25f7c",
+          "target_sha256": "f1ba93ffc487ea461504426cf8764a7c64d9311c4faf50040d1f191d258db964"
+        },
+        {
+          "record_id": "THMLN_QA_009",
+          "question_sha256": "0fc7c08e854a55218886a8dc8120b04324770ee6c5d828e858a857bbe88d450f",
+          "target_sha256": "4a1c02710bb914c7ded681fe606abfa634561f49c2cc1e04ddae92f688cee80e"
+        },
+        {
+          "record_id": "THMLN_QA_010",
+          "question_sha256": "c8e67c81640c48a3a3c69ef6c2e9e27692df859cf2a34834e4db3fd64c7c3f0a",
+          "target_sha256": "5f9f24fe7a6709f7d63d155074bafecec620d99754ae6b2884e2948ad9888d7d"
+        },
+        {
+          "record_id": "THMLN_QA_011",
+          "question_sha256": "711d640ea8edf9cc695f07b24050e60843b0540136f8d73fd1f236d8b2f0f320",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_012",
+          "question_sha256": "de0eaeb69e1670a2164c3dd4eda2033a64386f353a4915be379c3e130607d288",
+          "target_sha256": "fa24a9a5eb6b9dd309dc7788a169192bcf61afa0a7adbd7a1cbbe6f96653dd97"
+        },
+        {
+          "record_id": "THMLN_QA_013",
+          "question_sha256": "0b6f484a235fad2e2ccda7c20001bb325cb0cd7140419eb5e109e98a4d0e804e",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_014",
+          "question_sha256": "a88ef4bb135199466ec0c4f927c75b06315543ce5a1fb7504ad62c802a99790d",
+          "target_sha256": "513030d63811fbc376f1a022abd0103dd22d6831922fb4b955deaf525ce2621d"
+        },
+        {
+          "record_id": "THMLN_QA_015",
+          "question_sha256": "fc0423950f5e222d79d1a7ffd3eec5e9f8b54128b603f5bf5e436099a635bdc3",
+          "target_sha256": "0e1a8fb0b533af51cac74b416c3cf7d56a85249e20d7504025382f95420f4504"
+        },
+        {
+          "record_id": "THMLN_QA_016",
+          "question_sha256": "bbcd9518a9e6701acb13d36072525cb24fa60163eea68e5f771bd8d6c7cc822d",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_017",
+          "question_sha256": "5798855bebcd9b83365f5cf2b77b56424f1982bb737538d259fa9340c30ca5ce",
+          "target_sha256": "440cef4d43f587d5b2a4cfaeb573b1aa2fea643198e5fda04c8af3374b146539"
+        },
+        {
+          "record_id": "THMLN_QA_018",
+          "question_sha256": "0276cb4a81e41dc6e9fd9e976d69c83796cde7f86747b87911466c42ed7ab713",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_019",
+          "question_sha256": "bc28b8801394086e3e7e3ae9c960094381e108e6b493f3770c12c69168a87842",
+          "target_sha256": "c5099a069159a0494acdb52f7ed243db89376f4f7ceda30736f742e11f7c9f3c"
+        },
+        {
+          "record_id": "THMLN_QA_020",
+          "question_sha256": "199466c6854c08b4ad4f6f2a3ac4067662cb4c2fe8f1d9b7f165c6d4ed6d899c",
+          "target_sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"
+        },
+        {
+          "record_id": "THMLN_QA_021",
+          "question_sha256": "540e77be5398ff78ec198ff639173e4151ee4b891885f90edbece7f1a828e5b9",
+          "target_sha256": "49618d46b8cbd4a132b29e3edffef33932e4b3a7dd98a3a6e088794ca977eb4c"
+        },
+        {
+          "record_id": "THMLN_QA_022",
+          "question_sha256": "9df6ea8f2e69c2b5777bc5870be7db0ccc662e4987d78cfa6c4f298b8a2d03aa",
+          "target_sha256": "b334f1095c2c0c54444faba7040b3e9fae7406c0da79df141d2825a81800c984"
+        },
+        {
+          "record_id": "THMLN_QA_023",
+          "question_sha256": "472180a7a26da3490326986bb10cc0b6ee818c65467fb177103ccfa1dc836b48",
+          "target_sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+        },
+        {
+          "record_id": "THMLN_QA_024",
+          "question_sha256": "a11114f2fd4741545d43332d963e8e832133a3021285e63590d2c021b827e13d",
+          "target_sha256": "11a8aec6b50aab636c92c45c9e9347346231cea9291316a6eb6a0f0e65ba504a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_001",
+          "question_sha256": "d3a8f28c7ec38aae30b49578b2ab11472f32f54d78e2ddb3dda8ff45d97826cf",
+          "target_sha256": "2475794e2c0f457120017859d1581a2815b350fa27e5f9b3cf003d2b342e8988"
+        },
+        {
+          "record_id": "KTCTMLN_QA_002",
+          "question_sha256": "21a7cb05ae763cf6a235891f397ffeaf270217a568b7ad998c10e7a69de4a0db",
+          "target_sha256": "51074b33bada5beafee88c40e7bd3e8f747520cc96f75964cdab136858d10af0"
+        },
+        {
+          "record_id": "KTCTMLN_QA_003",
+          "question_sha256": "ddfedafd07ed22d73332ef54c8ced6f632598bff0a7b53c10f46828b0ae32b59",
+          "target_sha256": "adf667b99e5e217696963db71a3b92d06303a72f7b6592e5e5191029c541a37e"
+        },
+        {
+          "record_id": "KTCTMLN_QA_004",
+          "question_sha256": "f16f053bb408773dc783efbde1c9d1b17d9e3bf43d6b7821d57eadcc2511e142",
+          "target_sha256": "97fee3e7f61305091340b5d4ce899a35aa1feb87e38309bb68353ab46927204a"
+        },
+        {
+          "record_id": "KTCTMLN_QA_005",
+          "question_sha256": "8e927f814cc0c22b1c5c62059e63de6a340f120938cf3d861a13dc4889328984",
+          "target_sha256": "b8563608d5eece2c386d7fc87727ddcafca0796c5d1c86b8f01e430ab1dd238b"
+        },
+        {
+          "record_id": "KTCTMLN_QA_006",
+          "question_sha256": "eb8ab5c4b237a8536722073edc37e3de316dde170a40b73c73c63a6d83af03a2",
+          "target_sha256": "6e3bbb27497f0620cc542049e350fcf3c2ea37e6c65501003245c2b11cb19b8c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_007",
+          "question_sha256": "a48c6ad4d8ef43b3dd2bc63c09591e4c6e8afb3a265c13dba71f47306d854767",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "KTCTMLN_QA_008",
+          "question_sha256": "545ab90a3df17590b2aa555d052b2018a24a503b4be34cb2a2d3a38398e57c42",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "KTCTMLN_QA_009",
+          "question_sha256": "024d32a830a1d33ea97f8f5989af547fbed505bb4ee8f7c26d2b70aecd51c555",
+          "target_sha256": "a7eadde7de3c59ec5dcf61319117e06b1793ad36bca53f6965ea87b8daca85a7"
+        },
+        {
+          "record_id": "KTCTMLN_QA_010",
+          "question_sha256": "9753e34f40bc2eb4959a61d9ba7173247299e954af195960cd47f835e68c9cd3",
+          "target_sha256": "943e06b24b66fda8da055f2e90894c834b6fe2de3c7cf0ac21ed45f79a46abec"
+        },
+        {
+          "record_id": "KTCTMLN_QA_011",
+          "question_sha256": "621854ad020e521ec3579540102ba9bfe29d081279c0c3c5a6b2c977940c4023",
+          "target_sha256": "337408c93f53bf926ca227e3b7566916a81b0d7044551766feac0ed4312f1e0c"
+        },
+        {
+          "record_id": "KTCTMLN_QA_012",
+          "question_sha256": "f0c48041494171bcb7759d09bfb8dc02a98d1502266ac3c7c39906d8375e5462",
+          "target_sha256": "c39842dc5ecfb8c6343e129755774b5d92c6078fea36417c2a6a78873a49895d"
+        },
+        {
+          "record_id": "KTCTMLN_QA_013",
+          "question_sha256": "ad1df28a447e7810b5172a6b246cb33db3f3e0325b9ff5d411e41f9d53d8001a",
+          "target_sha256": "aa39d7b5b47a82a23ae2f32a6123906f81c9d0b3c8f68f478ad5b6852ffcea86"
+        },
+        {
+          "record_id": "CNXHKH_QA_001",
+          "question_sha256": "6d12abeb8f98234bc16d0380694c938ec9d2990d0777171be6d4dc40dfa412f5",
+          "target_sha256": "ab8d30c521157acb644f3d93a602b21204dd98310e8df6b03fe5fc4fa30a5557"
+        },
+        {
+          "record_id": "CNXHKH_QA_002",
+          "question_sha256": "2f44e7c7d571f160f071f5b7da009204772545269cf4490245c8181c6ba2597e",
+          "target_sha256": "2611ec9c847b84b2ad2c357a22bd1d51809fa0efdb1406394c32fe500bc8503c"
+        },
+        {
+          "record_id": "CNXHKH_QA_003",
+          "question_sha256": "abbb979805faddfa72b18d9a7801ac27234ff50dc582d78d5eb76574c78bb2f5",
+          "target_sha256": "118c76dd60782554e4dc0fd54ffda3dd5872a45b196c66241351cd457ac482d2"
+        },
+        {
+          "record_id": "CNXHKH_QA_004",
+          "question_sha256": "8da39b30537984abd55834d96f5b97e939eca5f3d1889f300031b232be06a960",
+          "target_sha256": "2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6"
+        },
+        {
+          "record_id": "CNXHKH_QA_005",
+          "question_sha256": "f7b6c989a1578f63727e5d3fa8439c19a145efb9ad249210669a99806dde9b94",
+          "target_sha256": "8e658e9a6839a220768d605b05f143a1a1cb49b1c595e0ce9618b3dffad5df26"
+        },
+        {
+          "record_id": "CNXHKH_QA_006",
+          "question_sha256": "5ca877084ce4ae36fc34e3e4bcfe6d57fd29dec38d7d2ac3ad073c6413664ef1",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "CNXHKH_QA_007",
+          "question_sha256": "1722ab43e46df5dde3a2ea454780dc217eeb1545cf40ab8b32d9f2d45b606251",
+          "target_sha256": "089ac006e0a4db53c45188c8266cf70da4bb91bc5a42d77f59d83307005c1c73"
+        },
+        {
+          "record_id": "CNXHKH_QA_008",
+          "question_sha256": "368c1c900d6efebe2f3ee16b9ae05b28b81b0c8c578bf86606395270414f465f",
+          "target_sha256": "7ac108d48c3a29423e9cb7df3166e2a1084ad3d1c43a21da9bfb085395b3b9c9"
+        },
+        {
+          "record_id": "CNXHKH_QA_009",
+          "question_sha256": "9b9a20413ed06de48e6f2939448ff1155d5bc8341a12f9953ba6c733dd647e60",
+          "target_sha256": "75bd89fdfb422f11ead76a0702707de8098f22ceefe22d936e68e0c0266a0179"
+        },
+        {
+          "record_id": "CNXHKH_QA_010",
+          "question_sha256": "070b039653554a4dba2db1d539efe9bd56693433b59c54daab21ab5749f0af0f",
+          "target_sha256": "d6ba15daab6b92f80f909d074d68c4153acf810d87dbafc8db77bd37b7ef7539"
+        },
+        {
+          "record_id": "CNXHKH_QA_011",
+          "question_sha256": "0dd91560a07cf2ebe50afd93704703d94d838eba8e6495b3b85eedd8851c3891",
+          "target_sha256": "af12ebb8934fbffc0a17d2560fe2c970c34ec06bbec4f2e1a5fc29714ae1be7a"
+        },
+        {
+          "record_id": "CNXHKH_QA_012",
+          "question_sha256": "1f8eb92715c2f9cd1e3b56ce4aa40369035dda6bf6462b51a877d7f93e316cc5",
+          "target_sha256": "c3651ffe18b2a000d8d3d419ef60afd9bbceacb861965b87128e0337f45db515"
+        },
+        {
+          "record_id": "CNXHKH_QA_013",
+          "question_sha256": "d35d017757f56330d7615e53d2b115a51ddd4e2b9a519e4e831724809dcdcbb2",
+          "target_sha256": "2e1ba3b0a851de5215a6b4ae2e440d5828c66e43ee855cbaca2ac7e6bc9ccdbc"
+        },
+        {
+          "record_id": "THMLN_QA_025",
+          "question_sha256": "9e2d8dbd76fcc9476872d6101882581347d91bb4db43f493dad584ae3117e39f",
+          "target_sha256": "b5edd25ea891f29c14d8352c96c2b17d4feac9ada2eee8f74dfb9b28933728f6"
+        },
+        {
+          "record_id": "THMLN_QA_026",
+          "question_sha256": "11dc7006e0d11ce2ce0c8c2681a3f571116248fcbad7df6b5983207390bdb449",
+          "target_sha256": "127f34c6f43d1d1e4742b4d2256114084e4e810baac09a5215a3e5ebce06f6fd"
+        },
+        {
+          "record_id": "THMLN_QA_027",
+          "question_sha256": "a11435635f6e024ed39c2b13ecb9173e6154ebb8b406c9ba7520d9aa7031b0df",
+          "target_sha256": "57753a685904298cdd3edccf3abe7f0d1b57864ec93bbe72e8c9f5dd5d756326"
+        },
+        {
+          "record_id": "THMLN_QA_028",
+          "question_sha256": "5bdd0d943f055b552f4f7de5344e85481538548e7a72c89388ed241c82382c83",
+          "target_sha256": "368118c20677835f9ac5a913e8a9807bfff6a4846f6554984e3843b2cfa99b0b"
+        },
+        {
+          "record_id": "THMLN_QA_029",
+          "question_sha256": "9fdfbcb2b1439d1f657476338a59e318c7f0878f630c1783774cb37fa828198c",
+          "target_sha256": "5b4b5be66ff4638049093e0c843c24b5e4c086154c85350b3e24a9bef85b5270"
+        },
+        {
+          "record_id": "THMLN_QA_030",
+          "question_sha256": "47d8265c23784aedd18bf1034ac4b187182ad90f835dea5a5ec0d4d2e779088e",
+          "target_sha256": "d1a2f58c24c3fa94e72e70e14b166d7a316185c4f371582e89d1a185362507c3"
+        },
+        {
+          "record_id": "THMLN_QA_031",
+          "question_sha256": "97799835092c0d59beb1c64d87983d39abf5c6b3bc691f2df7c7c9d03966b89a",
+          "target_sha256": "34d9700c3341a607896938a3f72d4c69b1f32099b0013b87c3954a3d65e84bc8"
+        },
+        {
+          "record_id": "THMLN_QA_032",
+          "question_sha256": "3349b26653eea76acaebdbb36af75d9e0d89afcb160d5117b636733a5fd0c00c",
+          "target_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+        },
+        {
+          "record_id": "THMLN_QA_033",
+          "question_sha256": "6803207f8ba0779fa7fa85a65583d9373bb6be76ddbe9206be2ca10ee45f04bc",
+          "target_sha256": "e56ca4cd4a9cd0074072992af12ba2b441c5b45ab475b6ff1ab75ec8d27bc5a7"
+        },
+        {
+          "record_id": "THMLN_QA_034",
+          "question_sha256": "143696c769ee151312873c3d40ae5cee6e16c15fad230f5c30d1dbc27be510e5",
+          "target_sha256": "39b9069059e975e225141a78c9e8fa71e283a7d96fd86233896aadb56fafe4b3"
+        },
+        {
+          "record_id": "THMLN_QA_035",
+          "question_sha256": "fc78d67dc926bc01a2b2410d8bfb5472093d6d9049eb4f48cae6aa0ca5d7f28d",
+          "target_sha256": "c297d2816174b7a65fbe7966866a8b16d7128bfa8bb33c6d6545fb7eb4222284"
+        },
+        {
+          "record_id": "THMLN_QA_036",
+          "question_sha256": "9eba1133396e4a6739345863d2ab18eaa462b4316cae6f488d7fe46ce799cae4",
+          "target_sha256": "760143f1f146ccc15b1a66f67b65cd6281eed19b70fc20be4f33e3e53d0dcd41"
+        },
+        {
+          "record_id": "THMLN_QA_037",
+          "question_sha256": "207169ef0f0a50b8edcce04c527190a77217e4f7a58bf00b6f5af58725c99ea9",
+          "target_sha256": "d11b958e3bcef04a5a2e8405f19a2d37299caa0d64d17efce834e10036a5e2e5"
+        },
+        {
+          "record_id": "THMLN_QA_038",
+          "question_sha256": "eb444a0b39193d2e95f9051929df7cdb19b7da0dd2c35ffd0850783803587177",
+          "target_sha256": "4ba71d78d9cbb20a85dc49a3faddec1e25599a0f2c00594c774937c860764cd8"
+        },
+        {
+          "record_id": "THMLN_QA_039",
+          "question_sha256": "17f8fb00e1498f8115a8bb1f59f5f81c914621c4770dc60c1c2cb9627ee07b23",
+          "target_sha256": "8f99733866499e65bce9d95acf44a6bc7c79009644b351dc643f5c20a703f05d"
+        },
+        {
+          "record_id": "THMLN_QA_040",
+          "question_sha256": "b4de3cfaa57ea587a480e67e8bc27ae54bc76e8ab937e8aba7c07acedae9c913",
+          "target_sha256": "b1b524da07f7b793b2f796f86a0a2aa78d94dfca0eff5dab8108ce7a9f07aefd"
+        },
+        {
+          "record_id": "THMLN_QA_041",
+          "question_sha256": "ee60bb12cdc890449299a65ea37c50fe2c87e2a4a464fa1bcd35db70e5414a64",
+          "target_sha256": "4647a92964c615e80c910d100479654a6b17291873a561bd78d33a81a5d320cc"
+        },
+        {
+          "record_id": "THMLN_QA_042",
+          "question_sha256": "26f480f8a474f56fc5b276ae40f66b9f427eedd49ff91b95708efdd9c6dae68b",
+          "target_sha256": "fa6d15ba3b29cfc1fdd06085d7e8a7c4f6b3d56566406b774c8e45e4285328eb"
+        },
+        {
+          "record_id": "THMLN_QA_043",
+          "question_sha256": "667a1d77b2f501d5aa3766c139135f72732a97f05c75af76cc5b16317998bb32",
+          "target_sha256": "3f5fde1f7dbda896f901b8d1430ebba954ec3c08b01641a0b86672d3e9128961"
+        },
+        {
+          "record_id": "THMLN_QA_044",
+          "question_sha256": "bf0b0856d4064abbd568bb74cd4885e37fe0160973cb04705bbe50066fbed366",
+          "target_sha256": "c91a48f4ade34368c48fbca745b435bf27f0eb9965eb3ccd56c4d030788ff00b"
+        },
+        {
+          "record_id": "THMLN_QA_045",
+          "question_sha256": "70658b61bbc1ca848de19bd6d8bf713318682467b94a57b86b6bc1eb835e8bb8",
+          "target_sha256": "a42b55e95e4e5d8c031149477ebb3fe624ce1fd9557d36c8736b76ebc1572404"
+        },
+        {
+          "record_id": "THMLN_QA_046",
+          "question_sha256": "d317e9ae2c94a8239ceaedeba00d1a68126f85f2342ac4b6f787ffed89954322",
+          "target_sha256": "2c2d5d1383d4a1bbef426a560ab39939b0b935d9681ec33b39994ff0778ab0e6"
+        },
+        {
+          "record_id": "THMLN_QA_047",
+          "question_sha256": "7960d4ad97225b0ec8efa51087e4d525b4cdb2db2abe2123e090ae6d3e3f56e3",
+          "target_sha256": "0513ac3343e0566b3f1fc5e8eb6b5da324cb0a37b10b0e36cde2a2e05099d227"
+        },
+        {
+          "record_id": "THMLN_QA_048",
+          "question_sha256": "cfd993e54f95c82d12d1ba4b0a0ecd4a525156a96db56dd6db81504f6c354f14",
+          "target_sha256": "ced48ef4a7fc899c07341fa0a629645c836ade4067937fa9588c44fb2ae1841b"
+        },
+        {
+          "record_id": "THMLN_QA_049",
+          "question_sha256": "f9be95aa4395b298bf66595dfb03f479dd3ec0bd79a1dbb1d600f698a68f8331",
+          "target_sha256": "8a1bd0cbee1eb4c7f6be5ce9625ce67e93f116097941c7f71b7c140685ac29a0"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/qa_w4_cuong_v1.0.json",
+      "sha256": "7bd2f386b8aa73420ae0c259936510eaa8f33bdbcc10472b037716b2ebcf9373",
+      "kind": "qa_cases",
+      "record_count": 25,
+      "records": [
+        {
+          "record_id": "CUONG_W4_QA_001",
+          "question_sha256": "06d0cd5619d2b82438f25e5ff560f87f84a93a28505ea64c3fd05a248430f681",
+          "target_sha256": "376416ac22479fb22dcedce7c4f8e92531df1534ef781ed968d1cfa29c3833ff"
+        },
+        {
+          "record_id": "CUONG_W4_QA_002",
+          "question_sha256": "78a51ab13ca2684056fa0e68942c5d0b70129072f7591c1c9c33ba00fc69414e",
+          "target_sha256": "f14e8bfeca6b33a99a84647acbfd3e3bea689bbc3c8dfef668f7f1d6f991ac49"
+        },
+        {
+          "record_id": "CUONG_W4_QA_003",
+          "question_sha256": "58480104e4941feef108978546143ba90c1cf3d5a60862b1335b4576d3815445",
+          "target_sha256": "5d08cb5afcb58d677433ea9fc3347681b9b0234d40b6cc7e8576d4bc8b9ecb0c"
+        },
+        {
+          "record_id": "CUONG_W4_QA_004",
+          "question_sha256": "b6faae924e671279734bdb8f1ece9d69f9c3a98f34df972c8a4346656006c069",
+          "target_sha256": "d4092584f8b093f21537b9e6f65c340a9634b1fba1774226b01f68bdf1666aa3"
+        },
+        {
+          "record_id": "CUONG_W4_QA_005",
+          "question_sha256": "464190524bef31260392db4bd9d88a082b2d41d1b0eddfe1a02bc4230c96081d",
+          "target_sha256": "c095a340c2fd1b915f93976d6395948feacd4985b997536d9edf4e65454c8a70"
+        },
+        {
+          "record_id": "CUONG_W4_QA_006",
+          "question_sha256": "281a2bb613793ced1ba9018fb3e7ce7eeabd1f806b28a2a0ff0e837267f5aab0",
+          "target_sha256": "43fae27e3027ea45e339b7a4c4cb55acf40a4d47d2785b1fb223d6d0447c4f0a"
+        },
+        {
+          "record_id": "CUONG_W4_QA_007",
+          "question_sha256": "cc9192120a558a45fa213d7d5161c87b5b8d7c6cd68832b84c4038e76736e58f",
+          "target_sha256": "70853e74ebd1227c563be1f5aedec70980f7fc5131a502af1782a2f66dce20da"
+        },
+        {
+          "record_id": "CUONG_W4_QA_008",
+          "question_sha256": "6543a1c55e193334175638f091ab830845d80289515f7d6b7084eca7e9d736f7",
+          "target_sha256": "22bef9e34f8a2f221045793c81eb7eb5bfb016a1bb54503ece5a0ec17edb88f8"
+        },
+        {
+          "record_id": "CUONG_W4_QA_009",
+          "question_sha256": "82630ceebdb1e27b00b58ee1666709939a8dbc2d7d90644efeb142a05bbc6f22",
+          "target_sha256": "d4ca450429c3a94de25b76710024fcfc03568799aa2b194577de8308a9025363"
+        },
+        {
+          "record_id": "CUONG_W4_QA_010",
+          "question_sha256": "a69722cc26ca0b235af7dcf85fa5a51b0be24966155544a2a8d84ef1f9ea943e",
+          "target_sha256": "8a4a4f8cd59f9294dabfdbb822a7dd779adbaed53dbbab50aee5a66fab867072"
+        },
+        {
+          "record_id": "CUONG_W4_QA_011",
+          "question_sha256": "1ad7fa5dad937e0ae8838c912faa5ff0ee4d8db19abdc8bdfaafa78d3c408d95",
+          "target_sha256": "f879528c8704ffd75e8743d7de757d6f095b9b708b1dbd2bf50d9abed8f77621"
+        },
+        {
+          "record_id": "CUONG_W4_QA_012",
+          "question_sha256": "6c3ada5ee55a3a45573f3d98c05aeb9bc2ae0f471586e97b2945e5a63ebdc7fa",
+          "target_sha256": "2bda03665925e8e78ef8cdc24971a9343b9c71970fcba7b5bacfd75419259703"
+        },
+        {
+          "record_id": "CUONG_W4_QA_013",
+          "question_sha256": "d23e17111b532c1d8bd44327151a2e15a907ee143fbe8e676fedab333d25320e",
+          "target_sha256": "28d2e7158986c75b15c5ef31288f57985bb0c9a1f9b8a0591028664e26102e95"
+        },
+        {
+          "record_id": "CUONG_W4_QA_014",
+          "question_sha256": "d26804a153a2758193fc7d1a8ef89c4026e82372410b1f79275d4c71889af643",
+          "target_sha256": "c4a92302246c122e4fb3bd0646816cdcf307fae1c1cbd658f4171335983c4259"
+        },
+        {
+          "record_id": "CUONG_W4_QA_015",
+          "question_sha256": "e989df7bdbe94f417cfc2bf25e799ca6e3b8c9400cf37e3b30828e3fc20acf5f",
+          "target_sha256": "5fd4de5cf1b6323ff9ccfd2103b32669c0b0467953e3b16ff7eef0561c923c8b"
+        },
+        {
+          "record_id": "CUONG_W4_QA_016",
+          "question_sha256": "c57227700a491980a4f95e60770d3cc0bd7ccc6d657f4d309bfd5c91d7552ce0",
+          "target_sha256": "642f6b0ad99bf7dd72eca5ba60c621cf02e51f937da866a53c883542a052dd85"
+        },
+        {
+          "record_id": "CUONG_W4_QA_017",
+          "question_sha256": "a9be38365f24f75ccddfdf6bd86f1fcb15e31dac240bd38e35850c0404136eae",
+          "target_sha256": "b3812d23c5c57f84a029431d7ab36a2d6f31f4f82dc1a4a329931b621bf69da6"
+        },
+        {
+          "record_id": "CUONG_W4_QA_018",
+          "question_sha256": "79c46e9a787756388957bb7dcaab51781594e17ecee158efa5f6ab855097320b",
+          "target_sha256": "c75376a36d80c4774fb003ebd23040a17e8cea7b90796ed46c7ce757c420565b"
+        },
+        {
+          "record_id": "CUONG_W4_QA_019",
+          "question_sha256": "230fad55293ef4c580d63cc9c8e41c3ecfdbb43e628e4d3e74178b9ba4482ec1",
+          "target_sha256": "46c1bbb16419fd0bfc2dff640ec23d772f4ed8b2532eaa7f10c61983aa8f06d1"
+        },
+        {
+          "record_id": "CUONG_W4_QA_020",
+          "question_sha256": "7a5acd37f1ab21ca8b321b4bb60dc77664e56e9642df248c87cafc7b29fc31fc",
+          "target_sha256": "b127db316fd0850a76bb5a02a058a3a06e0338c423422a0e3632b7cad4b43753"
+        },
+        {
+          "record_id": "CUONG_W4_QA_021",
+          "question_sha256": "2fe7f9f211aa31ddd3ebac065c3f92d70836d558baf796dd4003ae739d5e2ff9",
+          "target_sha256": "f75ac88dd37405e030f14f8487adcbfa0935fced52935c18200426c4a1a0de90"
+        },
+        {
+          "record_id": "CUONG_W4_QA_022",
+          "question_sha256": "451a632013beb2c913809bad11898f89698d79e4569d5f06d1db02311b0426c4",
+          "target_sha256": "b7ed4d819ab1ee2083e1bb10634143ec9e3571e45603426c449de31de568472a"
+        },
+        {
+          "record_id": "CUONG_W4_QA_023",
+          "question_sha256": "31e78c59998b788231a6fb23edafe45529c29e00fb9c9a1e84628e4992918ed5",
+          "target_sha256": "9342b4cddd665d2bdf2270c200e92060c0a5ceb0b1b8155d159a79013f8d707e"
+        },
+        {
+          "record_id": "CUONG_W4_QA_024",
+          "question_sha256": "314108775b6139533f2d41605c3b809b96212969193aaa8ce7fc6c83d4f7baf8",
+          "target_sha256": "184db3e3e59086d5dc496edc9066f3e107295d442cb4de4db8015ee43655650b"
+        },
+        {
+          "record_id": "CUONG_W4_QA_025",
+          "question_sha256": "4d9ca34182612993c5d105e42d75732c5bbc1301290820889e31fce7e4611af5",
+          "target_sha256": "b8dd398472471f17c6ed2bd7d815dd20c0e6af68971fd631d4e88f054c055f02"
+        }
+      ]
+    },
+    {
+      "path": "data/qa/w4_guardrail_cases.json",
+      "sha256": "09ff2a8b7031fec3cdbe667aebe358564dc46d1ddaf8d9a5e53ba4354591e659",
+      "kind": "application_guardrail_cases",
+      "record_count": 12,
+      "records": [
+        {
+          "record_id": "empty-scope",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "wrong-enrollment",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "catalog-drift",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "citation-fabrication",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "provider-timeout",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "source-withdrawal-during-generation",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "test-starts-during-generation",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "test-expiry",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "practice-answer-key-exclusion",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "source-instruction-injection",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "hint-answer-leakage",
+          "question_sha256": null,
+          "target_sha256": null
+        },
+        {
+          "record_id": "citation-exact-page",
+          "question_sha256": null,
+          "target_sha256": null
+        }
+      ]
+    }
+  ],
+  "policy": "Never use protected questions, labels, paraphrases or synthetic derivatives as instruction seeds or targets",
+  "label_access": "Quality/leakage tools only; generation/export input must not expose protected labels to LLM",
+  "semantic_check_status": "NOT_RUN",
+  "warning": "Hashes detect exact normalized matches only; near-duplicate review is still required"
+}

@@ -1,0 +1,67 @@
+{
+  "status": "B_DRAFTS_MACHINE_CHECKED_PEER_REVIEW_PENDING",
+  "verified_on": "2026-10-28",
+  "working_tree_base_commit": "371b67649c5b7b7680a82ae710fbb7330044f619",
+  "contract_fingerprint": "6bb7ee2b0b458989c31769e25b548808d2cc3dbdce3acc84c285a9e287ef6615",
+  "draft_records": 250,
+  "by_task": {
+    "qa": 150,
+    "summary": 50,
+    "hint": 25,
+    "insufficient_evidence": 25
+  },
+  "by_course": {
+    "THMLN": 100,
+    "KTCTMLN": 75,
+    "CNXHKH": 75
+  },
+  "by_source": {
+    "THMLN:ch02.pdf": 15,
+    "KTCTMLN:ch02.pdf": 25,
+    "CNXHKH:ch02.pdf": 25,
+    "CNXHKH:ch04.pdf": 25,
+    "CNXHKH:ch06.pdf": 25,
+    "KTCTMLN:ch04.pdf": 25,
+    "KTCTMLN:ch06.pdf": 25,
+    "THMLN:ch04.pdf": 15,
+    "THMLN:ch06.pdf": 14,
+    "THMLN:ch08.pdf": 14,
+    "THMLN:ch10.pdf": 14,
+    "THMLN:ch12.pdf": 14,
+    "THMLN:ch14.pdf": 14
+  },
+  "hint_actions": {
+    "READ": 9,
+    "OUTLINE": 8,
+    "COMPARE": 8
+  },
+  "multi_context_records": 8,
+  "unique_source_pages": 120,
+  "max_tokens": {
+    "prompt_tokens": 1091,
+    "completion_tokens": 91,
+    "sequence_tokens": 1152
+  },
+  "unit_tests_passed": 27,
+  "machine_findings": 0,
+  "human_peer_reviews": 0,
+  "release_eligible_records": 0,
+  "training_runs": 0,
+  "actual_qwen_generation": false,
+  "actual_qwen_tokenizer": true,
+  "model_weights_loaded": false,
+  "expansion_before_A_pilot_review": true,
+  "expansion_basis": "User requested continuing remaining B work; provisional drafts only, no waiver of acceptance/release peer gates",
+  "drafting_method": "Codex-authored questions and summaries; many QA targets extractive with orthographic edits; see private assembly provenance",
+  "semantic_review": "REQUIRED_FROM_OPPOSITE_MEMBER",
+  "trainer_integration": "NOT_RUN_W6",
+  "source_permission": "USER_AUTHORIZED_INTERNAL_RESEARCH",
+  "public_redistribution_authorized": false,
+  "pending": [
+    "A actual pilot review/calibration",
+    "reciprocal review of A candidates after handoff",
+    "full500 grouped split",
+    "A exporter/card/manifest and B release audit",
+    "W6 trainer integration"
+  ]
+}

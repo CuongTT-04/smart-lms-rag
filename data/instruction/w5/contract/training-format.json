@@ -1,0 +1,58 @@
+{
+  "contract_revision": "w5-input-v0.2",
+  "artifact_kind": "training_format",
+  "status": "APPROVED_BY_USER_REPORT",
+  "prepared_by": "B",
+  "prepared_on": "2026-10-27",
+  "base_commit": "5c5bdef200fc839cfa1e5aa3d3fa609c7f5d20ba",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "tokenizer_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "tokenizer_library_reference": "transformers==4.57.6",
+  "trainer_version": null,
+  "trainer_version_status": "To be selected and verified in W6 before training; no training executed in M0",
+  "prompt_version": "bounded_guidance",
+  "prompt_builder": "apps.ai.rag.context_builder.build_messages",
+  "source_hashes": {
+    "backend/apps/ai/rag/context_builder.py": "8932af50dd10f3a222b93faf82b686331bbb2b49eed89e4931c7efd5f6dba91b",
+    "backend/apps/ai/rag/base.py": "a357faa876a74874b1815836c39c4f2079965b949081da435a5182f101f3e29c",
+    "backend/apps/ai/rag/citations.py": "3c6fdb1e60459561d5f9c144f1a2f840115db55c62643f15ac57ed089704f76d",
+    "backend/apps/ai/rag/guardrails.py": "0b031fc1205477de70b1c12bc1d3a864c124756ba8bb303276cba7652388f24a",
+    "backend/apps/ai/prompts/guarded.py": "bd37e4403c3f2db918784ef3fcc8b87d57f76a4f579476f62d1d9bbb4e2da49e",
+    "backend/apps/ai/providers/base.py": "69e623a477395f80fcf07e05761f11c6df747da04834b264b8b7798bfd43e31f"
+  },
+  "sft_format": "conversational_prompt_completion",
+  "prompt_roles": [
+    "system",
+    "user"
+  ],
+  "completion_roles": [
+    "assistant"
+  ],
+  "max_sequence_tokens": 4096,
+  "max_prompt_tokens": 3072,
+  "max_completion_tokens": 768,
+  "count_after_chat_template": true,
+  "count_eos": true,
+  "silent_truncation_allowed": false,
+  "loss_scope": "completion_only",
+  "prompt_and_padding_label": -100,
+  "minimum_supervised_target_tokens": 1,
+  "assistant_only_loss_assumed_supported": false,
+  "raw_output_contract": {
+    "qa": "Vietnamese text with evidence position citations; no API JSON",
+    "summary": "mode=qa; Vietnamese grounded summary with evidence position citations",
+    "hint": [
+      "READ [n]",
+      "OUTLINE [n]",
+      "COMPARE [n] [m]"
+    ],
+    "insufficient_evidence": "INSUFFICIENT_EVIDENCE"
+  },
+  "inference_profile_modified": false,
+  "tokenizer_validation_status": "NOT_RUN",
+  "training_status": "NOT_RUN",
+  "source_hash_refresh_reason": "Pin current post-Ayo code; baseline prompt builder and prompt behavior remain unchanged.",
+  "source_hash_basis": "git_lf_utf8",
+  "chat_template_sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f"
+}

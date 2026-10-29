@@ -1,0 +1,17 @@
+[
+  {
+    "suite": "a_tools",
+    "passed": 77,
+    "log": "Evidence/W05/group/a_tools.log"
+  },
+  {
+    "suite": "b_tools",
+    "passed": 36,
+    "log": "Evidence/W05/group/b_tools.log"
+  },
+  {
+    "suite": "runtime",
+    "passed": 125,
+    "log": "Evidence/W05/group/runtime.log"
+  }
+]
