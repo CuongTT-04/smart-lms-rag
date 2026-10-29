@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-10-30",
+  "status": "TECHNICAL_INTEGRATION_REVIEW_PASSED_OWNER_ACCEPTED",
+  "review_scope": "MERGED_CODE_EVIDENCE_AND_PRIVATE_CANDIDATE_TECHNICAL_READBACK",
+  "reviewer_role": "DELEGATED_INTEGRATION_REVIEW",
+  "authorized_by": "A",
+  "additional_b_response_required_for_current_A_work": false,
+  "b_signature_recorded": false,
+  "b_per_record_scores_created": false,
+  "blocking_findings": [],
+  "source_branch": "TranTuanCuong_B22DCVT073_W5Tasks",
+  "source_commit": "2c142a3903fafa26fcc9993d27f5fd941bb1d3d6",
+  "source_is_ancestor_of_main": true,
+  "main_commit": "f0922f66f09b3dfbde5af3e624699c3adee002b3",
+  "main_merge_pr": 10,
+  "backup_stash": "45afd0c2620b6e695bcd42e7ebd4b52a7d1e43e3",
+  "backup_stash_retained": true,
+  "resolution": {
+    "initial_branch_conflicts": 4,
+    "restored_work_additional_conflicts": 2,
+    "a_reviews_retained": 250,
+    "a_self_review_changes_retained": 3,
+    "b_editorial_changes_retained": 9,
+    "cli": "One shared physical-file binding checker; retain B CLI tests and A helper tests",
+    "upstream_log_files_retained": true
+  },
+  "tests": {
+    "verified_on": "2026-10-30",
+    "status": "PASSED",
+    "suites": [
+      {
+        "suite": "a_tools",
+        "exit_code": 0,
+        "passed": 77,
+        "log": "Evidence/W05/integration-tests/a_tools.txt",
+        "sha256": "dbb12946a85a8ac1381f9ebf46a5153f0161df04c949312a74faf0b4acc77cc4",
+        "size_bytes": 10851
+      },
+      {
+        "suite": "b_tools",
+        "exit_code": 0,
+        "passed": 46,
+        "log": "Evidence/W05/integration-tests/b_tools.txt",
+        "sha256": "3885b5e9941ca32f4584141dbfc7a1f1129e7c77f25b72c685ef1c4a5efcf84e",
+        "size_bytes": 7163
+      },
+      {
+        "suite": "runtime",
+        "exit_code": 0,
+        "passed": 125,
+        "log": "Evidence/W05/integration-tests/runtime.txt",
+        "sha256": "50f028d54461f3ab06ca8f9ef515feb85c63405db25d1b83ed0179410be3b7c6",
+        "size_bytes": 23983
+      }
+    ],
+    "scope": "SECOND_BRANCH_INTEGRATION",
+    "gpu_used": false,
+    "model_loaded": false
+  },
+  "readback": {
+    "status": "PASSED",
+    "reopened_records": 500,
+    "files_checked": 12,
+    "manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+    "split_counts": {
+      "train": 385,
+      "validation": 57,
+      "instruction_holdout": 58
+    },
+    "token_ids_labels_padding_recomputed": true,
+    "source_and_benchmark_checks_recomputed": true,
+    "group_release_ready": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "training": "NOT_RUN",
+    "a_reviewed_b": 250,
+    "final_b_peer_review": "PENDING",
+    "tool_line_endings_equivalence_verified": [],
+    "model_loaded": false,
+    "gpu_used": false
+  },
+  "upstream_b_recorded_tests": {
+    "verified_on": "2026-10-30",
+    "scope": "COMBINED_CANDIDATE_TECHNICAL_AUDIT",
+    "suites": [
+      {
+        "suite": "a_tools",
+        "passed": 77,
+        "log": "Evidence/W05/group/a_tools.txt",
+        "command": "python -B -m unittest discover -s scripts/instruction/tests",
+        "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+        "verified_on": "2026-10-30",
+        "exit_code": 0
+      },
+      {
+        "suite": "b_tools",
+        "passed": 40,
+        "log": "Evidence/W05/group/b_tools.txt",
+        "command": "python -B -m unittest discover -s scripts/w5/tests",
+        "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+        "verified_on": "2026-10-30",
+        "exit_code": 0
+      },
+      {
+        "suite": "runtime",
+        "passed": 125,
+        "log": "Evidence/W05/group/runtime.txt",
+        "command": "PYTHONPATH=backend python -B -m unittest apps.ai.tests.test_generation_provider apps.ai.tests.test_rag_pipeline apps.ai.tests.test_generation_guardrails apps.ai.tests.test_generation_checks apps.ai.tests.test_generation_evaluation",
+        "runtime": ".private/w5/tokenizer-runtime/Scripts/python.exe",
+        "verified_on": "2026-10-30",
+        "exit_code": 0
+      }
+    ],
+    "group_readback": {
+      "status": "PASSED",
+      "reopened_records": 500,
+      "files_checked": 12,
+      "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+      "split_counts": {
+        "train": 385,
+        "validation": 57,
+        "instruction_holdout": 58
+      },
+      "token_ids_labels_padding_recomputed": true,
+      "source_and_benchmark_checks_recomputed": true,
+      "group_release_ready": false,
+      "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+      "training": "NOT_RUN"
+    },
+    "training": "NOT_RUN",
+    "group_release_ready": false,
+    "regression_fix": "Release audit binds each named split file to its planned IDs and matching sidecar, rejects swapped files/rows."
+  },
+  "formal_per_record_b_review": "NOT_ASSERTED",
+  "group_release_ready": false,
+  "training": "NOT_RUN",
+  "commit_created": false,
+  "push_performed": false,
+  "pr_created": false,
+  "tag_created": false
+}

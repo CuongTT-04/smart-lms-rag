@@ -113,3 +113,13 @@ Trên máy đã có đầy đủ đầu vào riêng tư, kiểm lại bằng `py
 ## Cập nhật bộ chung29/10/2026
 
 Đã tạo và audit CPU500 candidate, split385/57/58 đủ ba môn trong từng tập,3 bản sửa A có hash mới. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md. Gói gốc giữ nguyên; peer confirmations vẫn cần thật, chưa train hoặc nghiệm thu nhóm.
+
+## Tiếp nhận và review phần A ngày 30/10/2026
+
+A đã nhận gói nhóm riêng tư, kiểm lại 500 mẫu, SELF_REVIEW ba bản sửa A và review 250 mẫu B. Bản làm việc mới chỉnh 9 mẫu B về OCR/diễn đạt/phạm vi câu hỏi; 250 review ACCEPT của A gắn đúng hash sau chỉnh. Gói nguồn giữ nguyên, không tự ghi B đã chấp nhận các chỉnh sửa.
+
+Gói mới tại `.private/instruction/group-reviewed/package/`, manifest `843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5`; split 385/57/58. Audit lại 500/500 mẫu đạt, vẫn chỉ là candidate nghiên cứu nội bộ. Log hiện hành 77 A + 42 B + 125 runtime tại `Evidence/W05/current-tests/`. Chi tiết bàn giao và cách kiểm lại ở mục 12 của [tài liệu tổng hợp](instruction-input-review.md).
+
+Các số liệu 193/32/25 và trạng thái chờ nhận B phía trên là lịch sử gói A. Hiện còn chờ B review phần A/chốt các bản chỉnh theo hash mới và nghiệm thu cuối; chưa training, commit, push, PR hoặc tag trong lượt tiếp nhận này. Quyền nguồn và giới hạn sử dụng không thay đổi.
+
+**Quyết định sau tích hợp bản sửa B:** theo yêu cầu A, review kỹ thuật hiện đã được hoàn tất theo ủy quyền, không cần đợi B phản hồi tiếp để chốt phần việc A. Kiểm mới 77/46/125 test đạt; xem mục 13 tài liệu tổng hợp và `Evidence/W05/integration-review.json`. Không suy ra B đã chấm từng mẫu hoặc gói đóng băng đã được nghiệm thu học thuật. Nội dung dữ liệu, quyền nguồn và trạng thái chưa huấn luyện giữ nguyên.

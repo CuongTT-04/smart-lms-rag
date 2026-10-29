@@ -1,42 +1,75 @@
 {
-  "verified_on": "2026-10-29",
-  "scope": "COMBINED_CANDIDATE_TECHNICAL_AUDIT",
-  "suites": [
-    {
-      "suite": "a_tools",
-      "passed": 77,
-      "log": "Evidence/W05/group/a_tools.log"
+  "current_member_a_review": {
+    "readback": {
+      "a_reviewed_b": 250,
+      "a_revised_self_reviewed": 3,
+      "b_editorial_revisions": 9,
+      "files_checked": 12,
+      "final_b_peer_review": "PENDING",
+      "gpu_used": false,
+      "group_release_ready": false,
+      "manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+      "model_loaded": false,
+      "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+      "reopened_records": 500,
+      "source_and_benchmark_checks_recomputed": true,
+      "split_counts": {
+        "instruction_holdout": 58,
+        "train": 385,
+        "validation": 57
+      },
+      "status": "PASSED",
+      "token_ids_labels_padding_recomputed": true,
+      "training": "NOT_RUN",
+      "verified_on": "2026-10-30"
     },
-    {
-      "suite": "b_tools",
-      "passed": 36,
-      "log": "Evidence/W05/group/b_tools.log"
-    },
-    {
-      "suite": "runtime",
-      "passed": 125,
-      "log": "Evidence/W05/group/runtime.log"
-    }
-  ],
+    "report": "Evidence/W05/member-a-review.json",
+    "status": "PASSED_TECHNICAL_PENDING_B",
+    "suites": [
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/a_tools.txt",
+        "passed": 77,
+        "sha256": "555caf8acebea33c2f326960db9baff9f52caab9dc0507595ce784c1d3cbba40",
+        "size_bytes": 10852,
+        "suite": "a_tools"
+      },
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/b_tools.txt",
+        "passed": 42,
+        "sha256": "276a1ea3ed0a7f6ba0d74689f3b380fc7ce7282a8dba5e6dcc78d3a6b6b5c28a",
+        "size_bytes": 6328,
+        "suite": "b_tools"
+      },
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/runtime.txt",
+        "passed": 125,
+        "sha256": "e6899eda0f39a0e7c75132a6b97e3d6d2b9c6338dc6b811ab8e706cebfce7a3e",
+        "size_bytes": 23983,
+        "suite": "runtime"
+      }
+    ],
+    "verified_on": "2026-10-30"
+  },
   "group_readback": {
-    "status": "PASSED",
-    "reopened_records": 500,
     "files_checked": 12,
-    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
-    "split_counts": {
-      "train": 385,
-      "validation": 57,
-      "instruction_holdout": 58
-    },
-    "token_ids_labels_padding_recomputed": true,
-    "source_and_benchmark_checks_recomputed": true,
     "group_release_ready": false,
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
     "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "reopened_records": 500,
+    "source_and_benchmark_checks_recomputed": true,
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    },
+    "status": "PASSED",
+    "token_ids_labels_padding_recomputed": true,
     "training": "NOT_RUN"
   },
-  "training": "NOT_RUN",
   "group_release_ready": false,
-  "report_origin": "B_BRANCH_RECORDED_RESULTS_NOT_RERUN_BY_MERGE",
   "member_a_before_integration": {
     "archive_integrity": {
       "archive_sha256": "8ec51ffbbb80f810d0fe64ac9366d0dfa9862c2a6f8b3ff4a937ee53ab0d8a6a",
@@ -101,5 +134,59 @@
     ],
     "training_status": "NOT_RUN"
   },
-  "merge_scope_note": "A historical audit retained separately; importing B reports is not rechecking the private 500-record artifact."
+  "merge_scope_note": "A historical audit retained separately; importing B reports is not rechecking the private 500-record artifact.",
+  "report_origin": "B_BRANCH_RECORDED_RESULTS_NOT_RERUN_BY_MERGE",
+  "scope": "COMBINED_CANDIDATE_TECHNICAL_AUDIT",
+  "suites": [
+    {
+      "log": "Evidence/W05/group/a_tools.log",
+      "passed": 77,
+      "suite": "a_tools"
+    },
+    {
+      "log": "Evidence/W05/group/b_tools.log",
+      "passed": 36,
+      "suite": "b_tools"
+    },
+    {
+      "log": "Evidence/W05/group/runtime.log",
+      "passed": 125,
+      "suite": "runtime"
+    }
+  ],
+  "training": "NOT_RUN",
+  "verified_on": "2026-10-29",
+  "current_integration_review": {
+    "verified_on": "2026-10-30",
+    "status": "TECHNICAL_INTEGRATION_REVIEW_PASSED_OWNER_ACCEPTED",
+    "report": "Evidence/W05/integration-review.json",
+    "suites": [
+      {
+        "suite": "a_tools",
+        "exit_code": 0,
+        "passed": 77,
+        "log": "Evidence/W05/integration-tests/a_tools.txt",
+        "sha256": "dbb12946a85a8ac1381f9ebf46a5153f0161df04c949312a74faf0b4acc77cc4",
+        "size_bytes": 10851
+      },
+      {
+        "suite": "b_tools",
+        "exit_code": 0,
+        "passed": 46,
+        "log": "Evidence/W05/integration-tests/b_tools.txt",
+        "sha256": "3885b5e9941ca32f4584141dbfc7a1f1129e7c77f25b72c685ef1c4a5efcf84e",
+        "size_bytes": 7163
+      },
+      {
+        "suite": "runtime",
+        "exit_code": 0,
+        "passed": 125,
+        "log": "Evidence/W05/integration-tests/runtime.txt",
+        "sha256": "50f028d54461f3ab06ca8f9ef515feb85c63405db25d1b83ed0179410be3b7c6",
+        "size_bytes": 23983
+      }
+    ],
+    "reopened_records": 500,
+    "current_A_work_waits_for_B": false
+  }
 }

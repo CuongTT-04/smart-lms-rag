@@ -1,0 +1,183 @@
+{
+  "commit_created": false,
+  "current_readback": {
+    "a_reviewed_b": 250,
+    "a_revised_self_reviewed": 3,
+    "b_editorial_revisions": 9,
+    "files_checked": 12,
+    "final_b_peer_review": "PENDING",
+    "gpu_used": false,
+    "group_release_ready": false,
+    "manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+    "model_loaded": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "reopened_records": 500,
+    "source_and_benchmark_checks_recomputed": true,
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    },
+    "status": "PASSED",
+    "token_ids_labels_padding_recomputed": true,
+    "training": "NOT_RUN",
+    "verified_on": "2026-10-30"
+  },
+  "final_b_review": "PENDING",
+  "handoff": {
+    "archive": ".private/instruction/group-reviewed/group-reviewed-handoff.zip",
+    "final_b_review": "PENDING",
+    "group_release_ready": false,
+    "manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+    "original_received_files_modified": false,
+    "payload_files": 28,
+    "sha256": "5e29a179abff1603fed3bf090fae0a520a4a664e6fccaea4d58a0864b7cf2311",
+    "size_bytes": 926412,
+    "status": "PREPARED_VERIFIED_NOT_SENT",
+    "training": "NOT_RUN"
+  },
+  "intake": {
+    "archive_hash_received_separately": false,
+    "archive_sha256": "34ff758b9d2967cdaa70ea1f6502930bb6149084970c8ab15f947600d3ed89e4",
+    "archive_size_bytes": 818622,
+    "final_b_review": "PENDING",
+    "group_release_ready": false,
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "original_files_modified": false,
+    "outer_payload_files_checked": 18,
+    "package_files_checked": 12,
+    "received_on": "2026-10-30",
+    "record_count": 500,
+    "semantic_review": "NOT_INFERRED_FROM_CHECKSUM",
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    },
+    "status": "RECEIVED_INTEGRITY_VERIFIED",
+    "training": "NOT_RUN",
+    "trusted_manifest_reference": "Evidence/W05/group/verification.json"
+  },
+  "pr_created": false,
+  "pr_review_findings": {
+    "missing_log_files": "CURRENT_TXT_LOGS_PRESENT_IN_WORKING_TREE_OLD_MISSING_REFERENCES_RETAINED_AS_HISTORY",
+    "split_file_binding": "FIXED_WITH_6_REGRESSION_TESTS"
+  },
+  "private_review_files": {
+    "candidates.jsonl": {
+      "sha256": "9e58ce05432b16136a3ca2adb29f05663520889e5dea21ebb70540c0f2455d2e",
+      "size_bytes": 1183262
+    },
+    "editorial-revisions.json": {
+      "sha256": "c4306d5bf003d7712cb89a8a974d98615be144ee68b4e4356c5f9090693936cc",
+      "size_bytes": 4160
+    },
+    "member_a_reviews_b.csv": {
+      "sha256": "fcc2fb1b706454961fd2d78a851743d3aae43544689e3c412defded61bdc228b",
+      "size_bytes": 115824
+    },
+    "member_a_self_reviews.jsonl": {
+      "sha256": "a57a92072860bfc53ef1bcd428e36e8f690d69a8d0b7013e2f5d1b8ad43a4ea2",
+      "size_bytes": 150350
+    },
+    "review-details.jsonl": {
+      "sha256": "865823b5af0b55c40f830c52d9de099805d88f3a1b4a78f5cd1983977322a1a0",
+      "size_bytes": 180316
+    }
+  },
+  "push_performed": false,
+  "received_readback": {
+    "files_checked": 12,
+    "gpu_used": false,
+    "group_release_ready": false,
+    "manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "model_loaded": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "reopened_records": 500,
+    "scope": "RECEIVED_GROUP_TECHNICAL_READBACK_NOT_PEER_APPROVAL",
+    "source_and_benchmark_checks_recomputed": true,
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    },
+    "status": "PASSED",
+    "token_ids_labels_padding_recomputed": true,
+    "tool_crlf_to_lf_equivalence_verified": [
+      "scripts/w5/group_candidate.py",
+      "scripts/w5/quality.py",
+      "scripts/instruction/prepare_sft.py"
+    ],
+    "training": "NOT_RUN",
+    "verified_on": "2026-10-30"
+  },
+  "review": {
+    "a_revised_records_re_reviewed": 3,
+    "a_self_reviews_current_hash_count": 250,
+    "b_editorial_revisions": 9,
+    "b_records_reviewed": 250,
+    "b_review_decisions": {
+      "ACCEPT": 250
+    },
+    "benchmark_modified": false,
+    "final_b_peer_review": "PENDING",
+    "group_release_ready": false,
+    "original_received_files_modified": false,
+    "received_manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "reviewed_on": "2026-10-30",
+    "scope": "PRIVATE_INTERNAL_RESEARCH_ONLY",
+    "status": "MEMBER_A_REVIEW_COMPLETED_B_CONFIRMATION_PENDING",
+    "training": "NOT_RUN"
+  },
+  "schema_version": 1,
+  "status": "MEMBER_A_COMPLETE_PENDING_B",
+  "tag_created": false,
+  "tests": {
+    "checked_at": "2026-10-29T17:43:46.767048+00:00",
+    "gpu_used": false,
+    "model_loaded": false,
+    "status": "PASSED",
+    "suites": [
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/a_tools.txt",
+        "passed": 77,
+        "sha256": "555caf8acebea33c2f326960db9baff9f52caab9dc0507595ce784c1d3cbba40",
+        "size_bytes": 10852,
+        "suite": "a_tools"
+      },
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/b_tools.txt",
+        "passed": 42,
+        "sha256": "276a1ea3ed0a7f6ba0d74689f3b380fc7ce7282a8dba5e6dcc78d3a6b6b5c28a",
+        "size_bytes": 6328,
+        "suite": "b_tools"
+      },
+      {
+        "exit_code": 0,
+        "log": "Evidence/W05/current-tests/runtime.txt",
+        "passed": 125,
+        "sha256": "e6899eda0f39a0e7c75132a6b97e3d6d2b9c6338dc6b811ab8e706cebfce7a3e",
+        "size_bytes": 23983,
+        "suite": "runtime"
+      }
+    ],
+    "verified_on": "2026-10-30"
+  },
+  "verified_on": "2026-10-30",
+  "outgoing_zip_readback": {
+    "a_reviews_rechecked": 250,
+    "archive_sha256": "5e29a179abff1603fed3bf090fae0a520a4a664e6fccaea4d58a0864b7cf2311",
+    "files_checked": 28,
+    "final_b_review": "PENDING",
+    "fresh_extraction": true,
+    "gpu_used": false,
+    "group_release_ready": false,
+    "log_sha256": "6be265ced54840b05a2137d8839d5d7961ed33d36c991f67c1923341c7f4bdb1",
+    "model_loaded": false,
+    "reopened_records": 500,
+    "status": "PASSED",
+    "verified_on": "2026-10-30"
+  }
+}

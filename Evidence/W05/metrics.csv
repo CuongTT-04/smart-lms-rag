@@ -1,4 +1,7 @@
 metric,value,unit,scope
+w5_revision_a_tests,77,tests,upstream_b_fix_2c142a3_2026-10-30
+w5_revision_b_tests,40,tests,upstream_b_fix_2c142a3_2026-10-30
+w5_revision_runtime_tests,125,tests,upstream_b_fix_2c142a3_2026-10-30
 records,250,samples,member_a_internal_research
 qa,150,samples,member_a_internal_research
 summary,50,samples,member_a_internal_research
@@ -64,3 +67,22 @@ combined_holdout,58,count,group candidate 2026-10-29; not final acceptance
 combined_components,27,count,group candidate 2026-10-29; not final acceptance
 combined_source_machine_findings,0,count,group candidate 2026-10-29; not final acceptance
 combined_human_peer_acceptances,0,count,group candidate 2026-10-29; not final acceptance
+received_group_records,500,samples,member_a_review_2026-10-30
+a_reviewed_b,250,samples,member_a_review_2026-10-30
+a_accepted_b,250,samples,member_a_review_2026-10-30
+a_revised_self_reviewed,3,samples,member_a_review_2026-10-30
+b_editorial_changes,9,samples,member_a_review_2026-10-30
+current_train,385,samples,member_a_review_2026-10-30
+current_validation,57,samples,member_a_review_2026-10-30
+current_holdout,58,samples,member_a_review_2026-10-30
+a_tools_tests_passed,77,tests,member_a_review_2026-10-30
+b_tools_tests_passed,42,tests,member_a_review_2026-10-30
+runtime_tests_passed,125,tests,member_a_review_2026-10-30
+current_token_audit_passed,500,samples,member_a_review_2026-10-30
+b_peer_approved_A,0,samples,member_a_review_2026-10-30
+a_tools_tests_passed,77,tests,second_integration_2026-10-30
+b_tools_tests_passed,46,tests,second_integration_2026-10-30
+runtime_tests_passed,125,tests,second_integration_2026-10-30
+private_readback_passed,500,samples,second_integration_2026-10-30
+a_reviews_preserved,250,samples,second_integration_2026-10-30
+requires_additional_b_reply,0,boolean,second_integration_2026-10-30

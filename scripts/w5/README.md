@@ -76,7 +76,7 @@ Kiểm gói xuất thật của A:
 - `common.load_contract`, `common.content_hash`, `common.projected`, `common.digest` có thể dùng lại trong generator/exporter A; B không sở hữu exporter.
 - Candidate theo schema đã chốt; SFT mỗi dòng chỉ có `prompt` (system/user) và `completion` (assistant). Không serialize provenance, target hoặc review vào prompt.
 - Sidecar phải có `record_id`, `content_sha256`, `split`, `sft_sha256`. `sft_sha256=common.digest(payload)`; hash canonical NFC/sort keys, không phải SHA của cả file. Có thể thêm metadata audit khác trong sidecar.
-- Dòng sidecar tương ứng đúng dòng payload; các file sidecar/payload được truyền vào CLI theo cùng thứ tự. CLI nối bằng ID và kiểm trùng/thiếu, hash và split, không mặc định thứ tự thư mục.
+- Release có đúng ba cặp `train.jsonl`/`train.metadata.jsonl`, `validation.jsonl`/`validation.metadata.jsonl`, `instruction_holdout.jsonl`/`instruction_holdout.metadata.jsonl`. Truyền các cặp theo cùng thứ tự; thứ tự ba split có thể thay đổi. Mỗi file phải chứa đúng tập ID của split trong plan; từng dòng sidecar khớp payload và tên split của file. Không gộp file hoặc tráo mẫu kèm sidecar giữa các split.
 - Hash cả file ở release manifest dùng SHA256 bytes. Checker báo hash thực của input để B đối chiếu manifest A; chưa có manifest/artifact A thì chưa ghi audit release đã xong.
 - Đây là giao diện triển khai tối thiểu để A đối chiếu exporter trước bàn giao; nếu A đã chọn layout khác, thống nhất adapter/contract revision trước export, không tự sửa file của A.
 

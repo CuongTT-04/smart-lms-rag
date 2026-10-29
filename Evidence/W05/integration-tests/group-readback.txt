@@ -1,0 +1,23 @@
+Failed to find real location of C:\Users\DELL\AppData\Local\Programs\Python\Python313\python.exe
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+{
+  "status": "PASSED",
+  "reopened_records": 500,
+  "files_checked": 12,
+  "manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+  "split_counts": {
+    "train": 385,
+    "validation": 57,
+    "instruction_holdout": 58
+  },
+  "token_ids_labels_padding_recomputed": true,
+  "source_and_benchmark_checks_recomputed": true,
+  "group_release_ready": false,
+  "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+  "training": "NOT_RUN",
+  "a_reviewed_b": 250,
+  "final_b_peer_review": "PENDING",
+  "tool_line_endings_equivalence_verified": [],
+  "model_loaded": false,
+  "gpu_used": false
+}
