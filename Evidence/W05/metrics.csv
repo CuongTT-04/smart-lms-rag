@@ -1,88 +1,26 @@
-metric,value,unit,scope
-w5_revision_a_tests,77,tests,upstream_b_fix_2c142a3_2026-10-30
-w5_revision_b_tests,40,tests,upstream_b_fix_2c142a3_2026-10-30
-w5_revision_runtime_tests,125,tests,upstream_b_fix_2c142a3_2026-10-30
-records,250,samples,member_a_internal_research
-qa,150,samples,member_a_internal_research
-summary,50,samples,member_a_internal_research
-hint,25,samples,member_a_internal_research
-insufficient_evidence,25,samples,member_a_internal_research
-train,193,samples,member_a_internal_research
-validation,32,samples,member_a_internal_research
-instruction_holdout,25,samples,member_a_internal_research
-source_components,14,groups,member_a_internal_research
-tokenizer_audit_passed,250,samples,member_a_internal_research
-max_prompt_tokens,1533,tokens,member_a_internal_research
-max_completion_tokens_with_formatting,87,tokens,member_a_internal_research
-max_sequence_tokens,1602,tokens,member_a_internal_research
-tooling_tests_passed,77,tests,member_a_internal_research
-runtime_tests_passed,125,tests,member_a_internal_research
-b_peer_approved,0,samples,member_a_internal_research
-model_calls,0,calls,member_a_internal_research
-gpu_used,0,boolean,member_a_internal_research
-draft_records,250,count,B drafts; not release
-multi_context_records,8,count,B drafts; not release
-unique_source_pages,120,count,B drafts; not release
-unit_tests_passed,27,count,B drafts; not release
-machine_findings,0,count,B drafts; not release
-human_peer_reviews,0,count,B drafts; not release
-release_eligible_records,0,count,B drafts; not release
-training_runs,0,runs,B drafts; not release
-by_task:qa,150,count,B drafts; not release
-by_task:summary,50,count,B drafts; not release
-by_task:hint,25,count,B drafts; not release
-by_task:insufficient_evidence,25,count,B drafts; not release
-by_course:THMLN,100,count,B drafts; not release
-by_course:KTCTMLN,75,count,B drafts; not release
-by_course:CNXHKH,75,count,B drafts; not release
-by_source:THMLN:ch02.pdf,15,count,B drafts; not release
-by_source:KTCTMLN:ch02.pdf,25,count,B drafts; not release
-by_source:CNXHKH:ch02.pdf,25,count,B drafts; not release
-by_source:CNXHKH:ch04.pdf,25,count,B drafts; not release
-by_source:CNXHKH:ch06.pdf,25,count,B drafts; not release
-by_source:KTCTMLN:ch04.pdf,25,count,B drafts; not release
-by_source:KTCTMLN:ch06.pdf,25,count,B drafts; not release
-by_source:THMLN:ch04.pdf,15,count,B drafts; not release
-by_source:THMLN:ch06.pdf,14,count,B drafts; not release
-by_source:THMLN:ch08.pdf,14,count,B drafts; not release
-by_source:THMLN:ch10.pdf,14,count,B drafts; not release
-by_source:THMLN:ch12.pdf,14,count,B drafts; not release
-by_source:THMLN:ch14.pdf,14,count,B drafts; not release
-hint_actions:READ,9,count,B drafts; not release
-hint_actions:OUTLINE,8,count,B drafts; not release
-hint_actions:COMPARE,8,count,B drafts; not release
-max_tokens:prompt_tokens,1091,tokens,B drafts; not release
-max_tokens:completion_tokens,91,tokens,B drafts; not release
-max_tokens:sequence_tokens,1152,tokens,B drafts; not release
-a_received_candidates,250,count,A intake 2026-10-29; not group acceptance
-a_payload_files_verified,163,count,A intake 2026-10-29; not group acceptance
-a_sft_file_hashes_checked,10,count,A intake 2026-10-29; not group acceptance
-a_ai_reviewed,250,count,A intake 2026-10-29; not group acceptance
-a_ai_proposed_revision,3,count,A intake 2026-10-29; not group acceptance
-a_human_peer_acceptances,0,count,A intake 2026-10-29; not group acceptance
-combined_candidates,500,count,group candidate 2026-10-29; not final acceptance
-combined_train,385,count,group candidate 2026-10-29; not final acceptance
-combined_validation,57,count,group candidate 2026-10-29; not final acceptance
-combined_holdout,58,count,group candidate 2026-10-29; not final acceptance
-combined_components,27,count,group candidate 2026-10-29; not final acceptance
-combined_source_machine_findings,0,count,group candidate 2026-10-29; not final acceptance
-combined_human_peer_acceptances,0,count,group candidate 2026-10-29; not final acceptance
-received_group_records,500,samples,member_a_review_2026-10-30
-a_reviewed_b,250,samples,member_a_review_2026-10-30
-a_accepted_b,250,samples,member_a_review_2026-10-30
-a_revised_self_reviewed,3,samples,member_a_review_2026-10-30
-b_editorial_changes,9,samples,member_a_review_2026-10-30
-current_train,385,samples,member_a_review_2026-10-30
-current_validation,57,samples,member_a_review_2026-10-30
-current_holdout,58,samples,member_a_review_2026-10-30
-a_tools_tests_passed,77,tests,member_a_review_2026-10-30
-b_tools_tests_passed,42,tests,member_a_review_2026-10-30
-runtime_tests_passed,125,tests,member_a_review_2026-10-30
-current_token_audit_passed,500,samples,member_a_review_2026-10-30
-b_peer_approved_A,0,samples,member_a_review_2026-10-30
-a_tools_tests_passed,77,tests,second_integration_2026-10-30
-b_tools_tests_passed,46,tests,second_integration_2026-10-30
-runtime_tests_passed,125,tests,second_integration_2026-10-30
-private_readback_passed,500,samples,second_integration_2026-10-30
-a_reviews_preserved,250,samples,second_integration_2026-10-30
-requires_additional_b_reply,0,boolean,second_integration_2026-10-30
+group,metric,value,unit,denominator,source,note
+dataset,records,500,samples,500,manifest.json,
+split,instruction_holdout,58,samples,500,manifest.json,
+split,train,385,samples,500,manifest.json,
+split,validation,57,samples,500,manifest.json,
+task,qa,300,samples,500,manifest.json,
+task,summary,100,samples,500,manifest.json,
+task,hint,50,samples,500,manifest.json,
+task,insufficient_evidence,50,samples,500,manifest.json,
+course,THMLN,200,samples,500,manifest.json,
+course,KTCTMLN,150,samples,500,manifest.json,
+course,CNXHKH,150,samples,500,manifest.json,
+source,pdf_documents,27,documents,,manifest.json,
+source,split_components,27,groups,,manifest.json,
+pilot,content_accepted,20,samples,20,manifest.json,Internal research only; not whole-dataset semantic acceptance
+tokenization,audited_records,500,samples,500,manifest.json,
+tokenization,max_prompt_tokens,1533,tokens,,manifest.json,
+tokenization,max_completion_tokens_with_formatting,91,tokens,,manifest.json,
+tokenization,max_sequence_tokens,1602,tokens,,manifest.json,
+tests,instruction_tools,77,tests,,manifest.json,
+tests,dataset_quality_tools,46,tests,,manifest.json,
+tests,generation_runtime,125,tests,,manifest.json,
+tests,total,248,tests,,manifest.json,
+package,compact_files,6,files,,manifest.json,
+package,compact_size,199937,bytes,,manifest.json,
+training,runs,0,runs,,manifest.json,NOT_RUN

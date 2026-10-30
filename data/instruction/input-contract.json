@@ -794,7 +794,7 @@
     "wait_for_additional_b_response": false,
     "b_code_merged_to_main": true,
     "main_commit": "f0922f66f09b3dfbde5af3e624699c3adee002b3",
-    "report": "Evidence/W05/integration-review.json",
+    "report": "Evidence/W05/manifest.json#integration_review",
     "scope": "Completion of A technical work; not a fabricated B signature or per-record rubric",
     "frozen_package_acceptance_flags_unchanged": true,
     "training": "NOT_RUN",

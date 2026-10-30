@@ -1,8 +1,8 @@
 # W5 — kết quả tích hợp kỹ thuật bộ instruction chung
 
-> Kết luận sau tích hợp bản sửa B `2c142a3`: phần kỹ thuật được A chấp nhận sau review theo ủy quyền; không chờ thêm B để hoàn tất phần việc A. 77/46/125 test đạt. Xem `Evidence/W05/integration-review.json` và mục 13 tài liệu tổng hợp. Không tạo chữ ký/điểm PEER_REVIEW B hoặc đổi cờ nghiệm thu của package đã đóng băng.
+> Kết luận sau tích hợp bản sửa B `2c142a3`: phần kỹ thuật được A chấp nhận sau review theo ủy quyền; không chờ thêm B để hoàn tất phần việc A. 77/46/125 test đạt. Xem `Evidence/W05/manifest.json#integration_review` và mục 13 tài liệu tổng hợp. Không tạo chữ ký/điểm PEER_REVIEW B hoặc đổi cờ nghiệm thu của package đã đóng băng.
 
-> Cập nhật hiện hành 30/10/2026: A đã tiếp nhận và tái audit gói 500 mẫu, review 250 mẫu B, xác nhận ba bản sửa A và biên tập thêm 9 mẫu B trong bản mới. Manifest hiện hành `843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5`, split 385/57/58; kiểm lại 500/500 đạt. Gói B ban đầu ở phần dưới được giữ làm lịch sử. B chưa review/chốt bản mới; group_release_ready và training_ready vẫn false. Xem mục 12 của `docs/instruction-input-review.md` và `Evidence/W05/member-a-review.json`.
+> Cập nhật hiện hành 30/10/2026: A đã tiếp nhận và tái audit gói 500 mẫu, review 250 mẫu B, xác nhận ba bản sửa A và biên tập thêm 9 mẫu B trong bản mới. Manifest hiện hành `843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5`, split 385/57/58; kiểm lại 500/500 đạt. Gói B ban đầu ở phần dưới được giữ làm lịch sử. B chưa review/chốt bản mới; group_release_ready và training_ready vẫn false. Xem mục 12 của `docs/instruction-input-review.md` và `Evidence/W05/manifest.json`.
 
 Cập nhật29/10/2026. Đã hoàn thành các đầu ra kỹ thuật trước nghiệm thu:500 candidate, sửa đề xuất3 mẫu A, thống nhất kiểm nguồn/OCR, chia lại nguyên component, xuất SFT/tokenized/metadata và audit CPU từ file đã lưu. Gói A/B gốc và SELF_REVIEW giữ nguyên. Không công khai dữ liệu học liệu.
 
@@ -47,7 +47,7 @@ Normalizer nhóm dùng NFC rồi bỏ whitespace để chấp nhận khoảng tr
 
 acceptance.json để trống các xác nhận. Human peer accepted=0, group_release_ready=false, training_ready=false. Đây là cách ghi đúng trạng thái, không phải lỗi kiểm kỹ thuật. Kết quả rà soát bằng công cụ không thay cho xác nhận review của Dương. Chỉ sau các xác nhận thực tế và review PR mới chốt tag w05 hoặc ghi W5 nghiệm thu toàn bộ.
 
-Minh chứng W5 được tổng hợp trong báo cáo này và Evidence/W05/group/. Issue và PR cho nhiệm vụ dataset cần gắn milestone Tuan5; không dùng Issue7/PR8 về Ayo thay cho nhiệm vụ dataset.
+Minh chứng W5 được tổng hợp trong báo cáo này và Evidence/W05/. Issue và PR cho nhiệm vụ dataset cần gắn milestone Tuan5; không dùng Issue7/PR8 về Ayo thay cho nhiệm vụ dataset.
 
 ## Quyết định kỹ thuật của Trần Tuấn Cường
 
@@ -59,4 +59,4 @@ Theo thông tin Trần Tuấn Cường cung cấp, Vũ Nam Dương đã xác nh�
 
 ## Sửa audit split — 30/10/2026
 
-Checker release kiểm riêng ba cặp payload/sidecar theo tên split, số dòng và toàn bộ ID trong split plan; chặn tráo nguyên file hoặc từng mẫu kèm sidecar. Bổ sung4 test, bộ B đạt40 test. Log kiểm lại ở Evidence/W05/group/*.txt; gói dữ liệu đã bàn giao giữ nguyên.
+Checker release kiểm riêng ba cặp payload/sidecar theo tên split, số dòng và toàn bộ ID trong split plan; chặn tráo nguyên file hoặc từng mẫu kèm sidecar. Bổ sung4 test, bộ B đạt40 test. Log kiểm lại ở Evidence/W05/test-results.txt; gói dữ liệu đã bàn giao giữ nguyên.

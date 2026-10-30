@@ -1,34 +1,60 @@
-# Minh chứng tuần 05: phần A và kết quả tích hợp
+# Báo cáo tuần 05
 
-**Hiện hành 30/10/2026:** đã ghép bản sửa B `2c142a3` được main tiếp nhận, giữ toàn bộ kết quả review phần A. Review tích hợp theo ủy quyền A không yêu cầu đợi B phản hồi tiếp để hoàn tất phần kỹ thuật; không ghi thay chữ ký/điểm review B. Test mới: **77 A + 46 B + 125 runtime**, log ở `integration-tests/`, kết luận tại `integration-review.json`. Gói 500 mẫu sau 9 chỉnh sửa B và ba sửa A vẫn giữ nguyên, split 385/57/58. Log 42 test B tại `current-tests/` và báo cáo `member-a-review.json` là lần kiểm trước. Chưa huấn luyện hoặc tự tạo release/tag.
+**Đề tài:** Xây dựng hệ thống quản lý học tập thông minh tích hợp mô hình ngôn ngữ lớn tinh chỉnh và kỹ thuật RAG.
+**Thành viên:** Vũ Nam Dương (A, B22DCVT119) và Trần Tuấn Cường (B, B22DCVT073).  
 
-## Kết quả theo phạm vi
+## 1. Mục tiêu trong tuần
 
-| Phạm vi | Kết quả | Căn cứ |
-| --- | --- | --- |
-| A, trước tích hợp | 250 mẫu tự review; SFT 193/32/25; 14 component; audit tokenizer thật 250/250 đạt | `history/member-a/`, gói bàn giao riêng tư A |
-| B, giai đoạn draft | 250 mẫu; kiểm nguồn/citation/tokenizer; chưa peer acceptance | `history/member-b/`, báo cáo chất lượng B |
-| Nhóm, theo báo cáo B ngày 29/10/2026 | 500 candidate; split 385/57/58; 27 component; cả ba môn và bốn task trong từng tập | `group/group-report.json`, `group/verification.json` |
-| Test trong báo cáo tích hợp B | 77 công cụ A, 36 công cụ B, 125 hồi quy runtime đạt | `group/tests.json`; log được tham chiếu nhưng không có trong checkout nếu Git bỏ qua |
-| Huấn luyện / peer acceptance | Chưa huấn luyện; chưa nghiệm thu theo từng mẫu của hai thành viên | Contract và báo cáo nhóm |
+Chuẩn bị **500 mẫu instruction** cho QLoRA, thống nhất định dạng, kiểm chất lượng và chia tập. Hoàn thiện lịch sử, context hội thoại và xử lý lỗi Ayo. **Chưa huấn luyện QLoRA trong tuần 05.**
 
-Kết quả ngày 29/10 là báo cáo tích hợp do B bàn giao, chưa được tái kiểm chỉ bằng thao tác merge. Ngày 30/10, A đã nhận ZIP và kiểm lại cả gói nguồn lẫn bản mới sau review; xem `member-a-review.json`. Ba bản sửa A (`W5_A_00116`, `W5_A_00139`, `W5_A_00146`) đã có SELF_REVIEW trên hash mới; bản A đóng băng ban đầu không bị ghi đè.
+## 2. Công việc đã thực hiện
 
-## Đọc và đối chiếu
+### 2.1. Xây dựng công cụ chuẩn bị và kiểm định dữ liệu instruction phục vụ tinh chỉnh QLoRA
 
-- [Dataset card v2.0](../../docs/dataset-card-v2.0.md): phần A và cập nhật tiếp nhận.
-- [Dataset card bộ chung](../../docs/dataset-card-v2.1-group-candidate.md): candidate 500 mẫu.
-- [Quy trình và hướng dẫn bàn giao A](../../docs/instruction-input-review.md).
-- [Kết quả tích hợp của B](../../docs/weekly/W5/ket-qua-tich-hop-w5.md) và [tiếp nhận A](../../docs/weekly/W5/tiep-nhan-member-a.md).
+**Chốt quy cách đầu vào:** thống nhất trường dữ liệu và bốn tác vụ QA, tóm tắt, gợi ý, thiếu căn cứ; tách metadata/review khỏi prompt.
 
-`metrics.csv` gộp số đo với scope riêng cho A, B và nhóm. `test-results.json` giữ báo cáo nhóm B cùng kết quả phần A trước tích hợp. `manifest.json` đối chiếu file hiện có sau giải quyết xung đột; các manifest gốc được giữ nguyên nội dung trong `history/` và chỉ có giá trị cho snapshot tương ứng.
+**Tạo mẫu kiểm thử và bộ kiểm tra:** sáu câu hỏi nền được biến đổi thành fixture đúng/sai để kiểm cấu trúc, nguồn/citation, hash, benchmark và xuất SFT. **6 file, 77 test CPU đạt.**
 
-## Giới hạn và tiếp nhận tiếp
+Minh chứng: [schema](../../data/instruction/record-schema.json), [fixture](../../scripts/instruction/tests/support.py), [bộ test](../../scripts/instruction/tests/), [log kiểm thử](test-results.txt).
 
-Kiểm hồi quy sau gộp trên máy A: **77 test công cụ A, 36 test công cụ B, 125 test runtime và 338 test giao diện đạt**. Chi tiết tại `merge-validation.json`. Test B dùng pypdf 6.10.0 trong môi trường riêng; chưa chạy DB integration hoặc tái audit gói nhóm riêng tư của B.
+### 2.2. Xây dựng mẫu
 
-- Gói A: `.private/instruction/handoff/member-a-handoff.zip`. ZIP B nhận ngày 30/10 lưu tại `.private/instruction/group-intake/`; gói mới và ZIP gửi lại ở `.private/instruction/group-reviewed/`. Các artifact này không đi theo Git, phải chuyển qua kênh riêng.
-- Gói A giữ nguyên split cũ: validation thiếu KTCTMLN, holdout chỉ KTCTMLN. Báo cáo bộ chung của B có độ phủ ba môn tốt hơn; hai phạm vi không thay thế lịch sử của nhau.
-- Quyền nguồn vẫn chưa được xác minh độc lập; chỉ nghiên cứu nội bộ, không phát hành PDF/candidate/token IDs/adapter công khai.
-- Code chatbot của B cũng được merge; audit nguồn đã khóa trong gói A là lịch sử, không tự áp dụng cho runtime mới. Dùng bản đóng băng trong ZIP để kiểm lại gói A; bộ chung cần đúng artifact/hash B đã bàn giao.
-- Lượt tích hợp này không tự tạo commit, push, PR hoặc tag. A đã yêu cầu hoàn tất review kỹ thuật theo ủy quyền, không đợi B tiếp; cờ nghiệm thu và bảng peer review trong các gói lịch sử không bị giả lập hoặc sửa hồi tố.
+**Xây dựng mẫu kiểm thử:** 20 pilot gồm 12 QA, 4 tóm tắt, 2 gợi ý và 2 thiếu căn cứ; **20/20 đạt cho nghiên cứu nội bộ, 0 sửa/loại**. Kết quả không thay nghiệm thu cả bộ.
+
+**Mở rộng mẫu, chia tập và xuất dữ liệu SFT:** **500 mẫu**, gồm 300 QA, 100 tóm tắt, 50 gợi ý, 50 thiếu căn cứ từ 27 PDF/ba môn. Chia nguyên nhóm nguồn: **385 train / 57 validation / 58 holdout**.
+
+ZIP riêng tư có 6 file: ba tập SFT, metadata, cấu hình và manifest; đã kiểm nguồn/hash/token. Quyền nguồn chưa xác minh, không phát hành công khai.
+
+Minh chứng: [dataset card v2.0](../../docs/dataset-card-v2.0.md), [metrics.csv](metrics.csv), [manifest.json](manifest.json).
+
+![Phân bố dữ liệu và chia tập](figures/dataset-summary.svg)
+
+### 2.3. Bổ sung thêm lịch sử và context hội thoại
+
+Ayo lưu phiên/lượt trên PostgreSQL; có **Chat mới, Lịch sử và khôi phục phiên**. Kiểm quyền khi đọc; nguồn bị thu hồi, đổi phiên bản hoặc mất quyền thì phiên không còn khả dụng. TEST chặn trợ lý và lịch sử.
+
+Context tối đa **4 cặp COMPLETED/768 token**; bỏ cặp cũ khi đầy, không dùng FAILED hoặc citation cũ. Chống gửi trùng, một lượt PENDING/phiên, lease 180 giây; không ghi đè kết quả muộn. Đồng bộ API/Kaggle và chuẩn hóa lỗi nguồn, citation, ngôn ngữ/định dạng, đáp án trống.
+
+Minh chứng: [quản lý phiên](../../backend/apps/ai/conversations.py), [context](../../backend/apps/ai/rag/conversation.py). Ảnh nguyên bản mục 2.3:
+
+<img src="figures/ayo-chat-history.png" alt="Lịch sử các phiên chat của Trợ lý Ayo" width="320">
+
+## 3. Quản lý mã nguồn và bằng chứng
+
+| Thành phần | Tham chiếu |
+| --- | --- |
+| Repository / PR | [smart-lms-rag](https://github.com/CuongTT-04/smart-lms-rag), [PR #10](https://github.com/CuongTT-04/smart-lms-rag/pull/10), [PR #11](https://github.com/CuongTT-04/smart-lms-rag/pull/11), theo báo cáo |
+| Commit tiêu biểu | `ce431c5`: dữ liệu/công cụ; `14f081b`: SFT/dataset card; `5638609`: lịch sử/context; `283ffd8`: tích hợp/kiểm định |
+| Milestone | Chuẩn bị instruction dataset cho QLoRA; kiểm tra chất lượng mẫu |
+| Kết quả kiểm tra | **248 test CPU đạt**: 77 instruction, 46 kiểm định dữ liệu, 125 runtime; [log gộp](test-results.txt) kế thừa đợt tích hợp trước |
+| Chỉ số và toàn vẹn | [metrics.csv](metrics.csv), [manifest.json](manifest.json); ảnh trong `figures/` |
+
+Audit dữ liệu/ZIP đã kiểm lại; báo cáo ghi nhận smoke Qwen thật nhưng lần cập nhật minh chứng này không chạy lại model hoặc xác minh trạng thái GitHub.
+
+## 4. Tổng kết và hướng tiếp theo
+
+Nhóm đã hoàn thiện bộ công cụ, 20 mẫu pilot và gói SFT 500 mẫu; bổ sung lịch sử, context hội thoại và xử lý lỗi Ayo. **Đạt kiểm kỹ thuật không đồng nghĩa đã nghiệm thu toàn bộ nội dung hoặc chứng minh chất lượng sau fine-tune.** Chưa huấn luyện QLoRA; quyền nguồn chưa xác minh, chỉ sử dụng nội bộ.
+
+- Hoàn thiện review nội dung theo ID/hash; sửa và audit lại khi dữ liệu thay đổi.
+- Kiểm trainer/collator, token/EOS/loss mask; chạy thử QLoRA.
+- Mở rộng nghiệm thu Ayo: câu hỏi nối tiếp, chuyển phiên, thu hồi nguồn/quyền và lỗi ngôn ngữ, citation, kết nối trên dịch vụ thật.

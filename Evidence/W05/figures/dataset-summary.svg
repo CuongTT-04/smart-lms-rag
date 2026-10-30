@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500">
+<rect width="1000" height="500" fill="white"/>
+<g font-family="Arial,sans-serif" fill="#20242a">
+<text x="40" y="48" font-size="26">OHAYO Instruction - 500 records</text>
+<text x="40" y="78" font-size="15">27 source components | 20 pilot records reviewed | 248 CPU unit tests passed</text>
+<text x="40" y="130" font-size="19">Task distribution</text>
+<rect x="40" y="148" width="540.0" height="48" fill="#176b53"/>
+<text x="310.0" y="178" text-anchor="middle" fill="white" font-size="17">300</text>
+<rect x="580.0" y="148" width="180.0" height="48" fill="#2563a6"/>
+<text x="670.0" y="178" text-anchor="middle" fill="white" font-size="17">100</text>
+<rect x="760.0" y="148" width="90.0" height="48" fill="#87562d"/>
+<text x="805.0" y="178" text-anchor="middle" fill="white" font-size="17">50</text>
+<rect x="850.0" y="148" width="90.0" height="48" fill="#715299"/>
+<text x="895.0" y="178" text-anchor="middle" fill="white" font-size="17">50</text>
+<rect x="40" y="214" width="12" height="12" fill="#176b53"/>
+<text x="60" y="226" font-size="14">QA</text>
+<rect x="265" y="214" width="12" height="12" fill="#2563a6"/>
+<text x="285" y="226" font-size="14">Summary</text>
+<rect x="490" y="214" width="12" height="12" fill="#87562d"/>
+<text x="510" y="226" font-size="14">Hint</text>
+<rect x="715" y="214" width="12" height="12" fill="#715299"/>
+<text x="735" y="226" font-size="14">Insufficient evidence</text>
+<text x="40" y="285" font-size="19">Whole-source split</text>
+<rect x="40" y="303" width="693.0" height="48" fill="#176b53"/>
+<text x="386.5" y="333" text-anchor="middle" fill="white" font-size="17">385</text>
+<rect x="733.0" y="303" width="102.6" height="48" fill="#2563a6"/>
+<text x="784.3" y="333" text-anchor="middle" fill="white" font-size="17">57</text>
+<rect x="835.6" y="303" width="104.4" height="48" fill="#715299"/>
+<text x="887.8000000000001" y="333" text-anchor="middle" fill="white" font-size="17">58</text>
+<rect x="40" y="369" width="12" height="12" fill="#176b53"/>
+<text x="60" y="381" font-size="14">Train</text>
+<rect x="265" y="369" width="12" height="12" fill="#2563a6"/>
+<text x="285" y="381" font-size="14">Validation</text>
+<rect x="490" y="369" width="12" height="12" fill="#715299"/>
+<text x="510" y="381" font-size="14">Holdout</text>
+<text x="40" y="460" font-size="14">Technical checks passed. Internal research only. Training not run.</text>
+</g></svg>
