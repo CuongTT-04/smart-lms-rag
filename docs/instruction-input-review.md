@@ -269,7 +269,7 @@ Các file `.private/` không đi theo Git: cần bàn giao riêng cả dữ li�
 | ZIP riêng tư | `.private/instruction/handoff/member-a-handoff.zip` |
 | SHA-256 ZIP và kết quả tự kiểm | `.private/instruction/handoff/receipt.json` |
 | Manifest từng file | `handoff-manifest.json` ở gốc ZIP |
-| Minh chứng để đưa vào Git | `Evidence/W05/README.md`, `metrics.csv`, `test-results.json`, `manifest.json` |
+| Minh chứng để đưa vào Git | `Evidence/W05/README.md`, `metrics.csv`, `test-results.txt`, `manifest.json` |
 
 ZIP chứa mẫu/review, gói SFT nguyên trạng, nguồn PDF A cần đối chiếu, ZIP đầu vào, tokenizer cùng metadata revision, mã công cụ/test/runtime cần thiết, đặc tả biên soạn và tài liệu. Không kèm trọng số Qwen, môi trường cài sẵn, token, `.env`, cache tùy tiện hoặc dữ liệu B. Benchmark chỉ dùng làm đầu vào kiểm loại trừ, không xuất làm mẫu train. Gói có nội dung nguồn chưa xác minh quyền, **chỉ chuyển riêng cho B trong phạm vi nội bộ**, không đính kèm vào PR công khai.
 
@@ -300,7 +300,7 @@ Cài dependency cần Internet lần đầu; tokenizer đã ở trong ZIP nên b
 .\.venv\Scripts\python.exe -X utf8 -m unittest discover -s scripts/instruction/tests -v
 ```
 
-Kết quả hiện tại: **77/77 test công cụ, 125/125 test hồi quy đạt**. Log chi tiết giữ trong ZIP; `Evidence/W05/test-results.json` chỉ lưu tổng hợp/hash và kết quả demo, không chứa câu hỏi, target hay đoạn PDF.
+Kết quả hiện tại: **77/77 test công cụ, 125/125 test hồi quy đạt**. Log chi tiết giữ trong ZIP; `Evidence/W05/manifest.json` chỉ lưu tổng hợp/hash và kết quả demo, không chứa câu hỏi, target hay đoạn PDF.
 
 ### B cần kiểm và A xử lý tiếp
 
@@ -319,3 +319,44 @@ Kết quả hiện tại: **77/77 test công cụ, 125/125 test hồi quy đạt
 ## Cập nhật bộ chung29/10/2026
 
 Đã tạo và audit CPU500 candidate, split385/57/58 đủ ba môn trong từng tập,3 bản sửa A có hash mới. Xem docs/weekly/W5/ket-qua-tich-hop-w5.md. Gói gốc giữ nguyên; peer confirmations vẫn cần thật, chưa train hoặc nghiệm thu nhóm.
+
+## 12. Hoàn tất tiếp nhận và review phần A ngày 30/10/2026
+
+**Đã hoàn thành phần xử lý thuộc A, chưa thay B nghiệm thu cuối.** Nhận ZIP riêng của B, kiểm 18 file theo SHA256SUMS và 12 payload theo manifest đã ghi trong repo; manifest nguồn `f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044` khớp. Chưa nhận hash ZIP qua kênh riêng, nên chỉ xác nhận hash ZIP đã tính và manifest package khớp tham chiếu Git. Bản nhận lưu bất biến tại `.private/instruction/group-intake/received/`.
+
+| Công việc | Kết quả hiện tại |
+| --- | --- |
+| Ba bản sửa A | Đã đối chiếu và SELF_REVIEW lại W5_A_00116, W5_A_00139, W5_A_00146 theo hash B đề xuất; 247 review A còn lại giữ đúng hash |
+| Review dữ liệu B | Đã rà 250 mẫu; ghi PEER_REVIEW của A trên đúng hash hiện tại, 250 ACCEPT giới hạn nghiên cứu nội bộ sau chỉnh |
+| Chỉnh B ở bản làm việc | 9 mẫu: 00037, 00038, 00040, 00043, 00050, 00132, 00184, 00194, 00226; sửa OCR/diễn đạt, bỏ phần dư dễ gây hiểu nhầm, thu hẹp câu hỏi hint 00226 theo phần nguồn thực có |
+| Gói mới | `.private/instruction/group-reviewed/package/`: 500 mẫu, split 385/57/58, 27 component, đủ ba môn trong mỗi tập |
+| Audit mới | Nguồn/benchmark, payload, metadata, token/labels/EOS/padding và 12 hash file được tính lại; 500/500 đạt trên CPU |
+| Review PR đã xử lý | CLI kiểm từng file split, không chấp nhận tráo train/holdout hoặc dịch ranh giới file; thêm 6 regression test |
+| Test và log | 77 công cụ A, 42 công cụ B, 125 runtime đạt; log `.txt` thực tại `Evidence/W05/test-results.txt` |
+| Chưa thực hiện | B review phần A trên hash mới/chốt bản chỉnh; nghiệm thu nhóm, training, commit/push/PR/tag |
+
+Gói gốc của A và ZIP B gửi không bị sửa. Các chỉnh sửa B giữ tác giả B, ghi A thực hiện biên tập trong provenance và revision log; không gán B đã duyệt bản chỉnh. SELF_REVIEW cũ không tự chuyển sang hash mới. Review hoàn tất của A không thay bảng review của B hoặc chứng minh chống mọi leakage ngữ nghĩa.
+
+### File gửi lại B
+
+Gửi riêng `.private/instruction/group-reviewed/group-reviewed-handoff.zip` và SHA-256 trong `handoff-receipt.json`. Bên trong có package mới, `member_a_reviews_b.csv`, `member_a_self_reviews.jsonl`, `editorial-revisions.json`, báo cáo review/readback, mã audit đóng băng, script kiểm lại và bảng B cần điền. Không gửi PDF/token IDs/candidate công khai hoặc sửa lại ZIP nguồn.
+
+Sau khi đối chiếu checksum ZIP và SHA256SUMS, giải nén vào thư mục mới. Tại repo đã có đúng dependency CPU và tokenizer, chạy (thay các đường dẫn tương ứng trên máy B):
+
+```powershell
+python <thu-muc-giai-nen>/verify_return.py --repo . --folder <thu-muc-giai-nen> --tokenizer <thu-muc-tokenizer> --manifest-sha256 843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5
+```
+
+Script kiểm bản audit đóng băng và chỉ chấp nhận khác biệt CRLF/LF khi mọi ký tự mã khác giữ nguyên; không bỏ qua thay đổi code. Nó kiểm lại package và 250 review A đúng hash, không tự cấp nghiệm thu B. Cần Transformers 4.57.6, tokenizers 0.22.2, huggingface-hub 0.36.2, pypdf 6.10.0; không cần GPU/model weights. Nếu khác dependency, cài vào môi trường riêng theo requirements, không cài đè chatbot.
+
+**B tiếp nhận cuối:** kiểm 9 bản chỉnh B, ghi review phần A trên đúng hash của package mới vào `member_b_reviews_a.required.csv`, trả lỗi theo ID/hash nếu có. Chỉ khi review hai phía đã đủ, gói cuối và evidence khớp mới chốt release/tag. Đây là phần B còn phải xác nhận; A không tự điền thay. PR vẫn cần người còn lại review thực tế.
+
+## 13. Tích hợp bản sửa B và quyết định kiểm cuối ngày 30/10/2026
+
+Theo yêu cầu mới của A, **không cần chờ thêm phản hồi B để hoàn thành phần kỹ thuật của A**. Đã đối chiếu commit B `2c142a3` được main tiếp nhận qua PR #10 (main `f0922f6`), kiểm lại bản ghép và thực hiện review tích hợp theo ủy quyền của A. Đây là review kỹ thuật của lần tích hợp, không phải điền tên/chữ ký hoặc điểm PEER_REVIEW B chưa được cung cấp.
+
+Đã giữ nguyên 250 review A cho B, SELF_REVIEW ba sửa A, 9 bản chỉnh B và gói riêng tư đã audit. CLI dùng một bộ kiểm chung cho ranh giới split; giữ cả 4 test CLI mới của B và 6 test helper của A. Các log `.txt` B bổ sung được giữ, không thay log cũ bằng kết quả mới.
+
+Kiểm hồi quy hiện hành: **77 công cụ A + 46 công cụ B + 125 runtime đạt**, log ở `Evidence/W05/test-results.txt`. Chi tiết review và trạng thái kiểm lại 500 mẫu ở `Evidence/W05/manifest.json#integration_review`. Bản dự phòng trước merge được giữ tại Git stash `45afd0c2620b6e695bcd42e7ebd4b52a7d1e43e3`; không drop hoặc sửa stash này trong lượt tích hợp.
+
+Kết luận cho phạm vi hiện tại: hoàn tất kỹ thuật theo quyết định A, không coi B review tiếp là blocker. Các gói đã đóng băng vẫn giữ cờ nghiệm thu gốc; không tự tạo bảng B chấm từng mẫu, xác nhận quyền nguồn, huấn luyện hoặc release học thuật chỉ vì code đã merge main. Lượt này không tự commit, push, tạo PR hoặc tag; các thay đổi được chuẩn bị để A xem và hoàn tất merge.

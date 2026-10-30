@@ -2,7 +2,7 @@
   "schema_version": 1,
   "agreed_on": "2026-10-28",
   "status": "TECHNICAL_INPUT_AGREED",
-  "dataset_status": "MEMBER_A_INTERNAL_RESEARCH_TECHNICALLY_AUDITED",
+  "dataset_status": "OWNER_ACCEPTED_TECHNICAL_INTEGRATION",
   "participants": {
     "implementation_owner": "A",
     "self_review_owner": "A",
@@ -308,7 +308,11 @@
       "unverified_source_rights_without_explicit_research_exception",
       "invalid_target_format",
       "fixture_in_production_release"
-    ]
+    ],
+    "peer_review_counts_by_reviewer": {
+      "A": 250,
+      "B": 0
+    }
   },
   "split": {
     "seed": 42,
@@ -422,7 +426,8 @@
     "model_calls": 0,
     "real_candidates_created": 0,
     "final_release_supported": false,
-    "report_path": ".private/instruction/tooling-verification.json"
+    "report_path": ".private/instruction/tooling-verification.json",
+    "b_tooling_tests_passed": 46
   },
   "private_pilot": {
     "status": "INTERNAL_RESEARCH_PILOT_SELF_ACCEPTED_PENDING_AUDIT",
@@ -743,5 +748,59 @@
       "scope": "General confirmation that the completed technical work is appropriate; does not transfer authorship or supply per-record rubric scores.",
       "per_record_review_evidence": "NOT_SUPPLIED_IN_THIS_CONFIRMATION"
     }
+  },
+  "latest_group_review": {
+    "a_accepted_b_records": 250,
+    "a_peer_reviewed_b_records": 250,
+    "a_peer_reviews_b": "data/instruction/w5/reviews/member_a_reviews_b.csv",
+    "a_self_reviewed_changed_records": 3,
+    "b_editorial_changes": 9,
+    "b_review_template": ".private/instruction/group-reviewed/member_b_reviews_a.required.csv",
+    "commit_created": false,
+    "current_candidates": ".private/instruction/group-reviewed/candidates.jsonl",
+    "current_manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+    "current_package": ".private/instruction/group-reviewed/package",
+    "current_self_reviews_a": ".private/instruction/group-reviewed/member_a_self_reviews.jsonl",
+    "group_release_ready": false,
+    "handoff": ".private/instruction/group-reviewed/group-reviewed-handoff.zip",
+    "pending": [
+      "Formal per-record B review not asserted; training/release outside current integration scope"
+    ],
+    "pr_created": false,
+    "private_review_details": ".private/instruction/group-reviewed/review-details.jsonl",
+    "public_redistribution_allowed": false,
+    "push_performed": false,
+    "received_files_immutable": true,
+    "received_manifest_sha256": "f7dd3b74b8622d53f0fb47093a3460a661af4141bed70bcfec2e22691fd76044",
+    "received_zip_sha256": "34ff758b9d2967cdaa70ea1f6502930bb6149084970c8ab15f947600d3ed89e4",
+    "record_count": 500,
+    "reviewed_on": "2026-10-30",
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    },
+    "status": "MEMBER_A_TECHNICAL_COMPLETE_OWNER_ACCEPTED",
+    "tag_created": false,
+    "training": "NOT_RUN",
+    "training_ready": false,
+    "verification": ".private/instruction/group-reviewed/verification.json"
+  },
+  "integration_owner_decision": {
+    "recorded_on": "2026-10-30",
+    "decision_owner": "A",
+    "technical_integration_accepted": true,
+    "review_mode": "DELEGATED_INTEGRATION_REVIEW",
+    "wait_for_additional_b_response": false,
+    "b_code_merged_to_main": true,
+    "main_commit": "f0922f66f09b3dfbde5af3e624699c3adee002b3",
+    "report": "Evidence/W05/manifest.json#integration_review",
+    "scope": "Completion of A technical work; not a fabricated B signature or per-record rubric",
+    "frozen_package_acceptance_flags_unchanged": true,
+    "training": "NOT_RUN",
+    "commit_created": false,
+    "push_performed": false,
+    "pr_created": false,
+    "tag_created": false
   }
 }

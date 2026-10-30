@@ -59,6 +59,47 @@ def split_main():
     return output(args,plan)
 
 
+def bind_release_files(records, plan, payload_paths, sidecar_paths, *, load_rows=None):
+    """Bind each physical split file to its exact planned ID set before token audit."""
+    load_rows = load_rows or read_jsonl
+    expected_splits = {'train', 'validation', 'instruction_holdout'}
+    if set(plan['splits']) != expected_splits or len(payload_paths) != 3 or len(sidecar_paths) != 3:
+        raise ValueError('Release audit requires exactly three named split file pairs')
+    lookup = {row['record_id']: row for row in records}
+    if len(lookup) != len(records):
+        raise ValueError('Duplicate candidate ID')
+    order, payloads, seen, split_files = [], [], set(), set()
+    for payload_path, sidecar_path in zip(payload_paths, sidecar_paths):
+        split = payload_path.stem
+        if split not in expected_splits or split in split_files:
+            raise ValueError('Duplicate or unknown physical split filename')
+        if sidecar_path.name != split + '.metadata.jsonl':
+            raise ValueError('Sidecar filename does not match physical split')
+        split_files.add(split)
+        items, metadata = load_rows(payload_path), load_rows(sidecar_path)
+        if len(items) != len(metadata):
+            raise ValueError('Sidecar/payload count mismatch within split')
+        expected_ids = plan['splits'][split]
+        actual_ids = [row['record_id'] for row in metadata]
+        if len(expected_ids) != len(set(expected_ids)) or len(actual_ids) != len(set(actual_ids)) or set(actual_ids) != set(expected_ids):
+            raise ValueError('Physical split IDs do not match split plan')
+        for index, (sidecar, item) in enumerate(zip(metadata, items)):
+            rid = sidecar['record_id']
+            if rid in seen or rid not in lookup or sidecar['split'] != split:
+                raise ValueError('Duplicate/unknown ID or declared split differs from physical file')
+            row = lookup[rid]
+            if sidecar['content_sha256'] != row['content_sha256'] or sidecar['sft_sha256'] != digest(item):
+                raise ValueError('Sidecar content/payload hash mismatch')
+            if 'row_index' in sidecar and sidecar['row_index'] != index:
+                raise ValueError('Sidecar row position mismatch')
+            seen.add(rid)
+            order.append(row)
+            payloads.append(item)
+    if seen != set(lookup):
+        raise ValueError('Release file coverage differs from candidate set')
+    return order, payloads
+
+
 def training_main():
     from .training import check_training_format
     from .splitting import build_split_plan
@@ -73,38 +114,14 @@ def training_main():
     extra=[*args.payload,*(args.sidecar or []),*([args.split_plan] if args.split_plan else [])]
     if not quality['passed']: return output(args,quality,extra)
     records=sorted(records,key=lambda r:r['record_id'])
-    payload=[r for path in args.payload for r in read_jsonl(path)]
     if not args.fixture_mode and not args.draft_mode:
         if not args.sidecar or not args.split_plan: raise ValueError('Real release audit requires sidecars and split plan')
         plan=read_json(args.split_plan)
         expected=build_split_plan(records,quality['eligible_ids'],quality['confirmed_pairs'],contract['split']['seed'])
         if plan.get('contract_fingerprint')!=contract['fingerprint'] or plan.get('splits')!=expected['splits'] or plan.get('dataset_fingerprint')!=expected['dataset_fingerprint']: raise ValueError('Split plan does not bind current candidates/contract')
-        split_names={'train','validation','instruction_holdout'}
-        if len(args.payload)!=3 or len(args.sidecar)!=3:
-            raise ValueError('Release audit requires one payload/sidecar pair for each split')
-        if {path.name for path in args.payload}!={name+'.jsonl' for name in split_names}:
-            raise ValueError('Duplicate or unknown payload split filename')
-        lookup={r['record_id']:r for r in records};order=[];seen=set();payload=[]
-        for payload_path,sidecar_path in zip(args.payload,args.sidecar):
-            split=payload_path.stem
-            if sidecar_path.name!=split+'.metadata.jsonl':
-                raise ValueError('Sidecar filename does not match payload split: '+split)
-            split_payload=read_jsonl(payload_path);sidecars=read_jsonl(sidecar_path)
-            payload.extend(split_payload)
-            if len(sidecars)!=len(split_payload):
-                raise ValueError('Sidecar/payload count mismatch for split: '+split)
-            expected_ids=set(plan['splits'][split])
-            if len(sidecars)!=len(expected_ids) or {s['record_id'] for s in sidecars}!=expected_ids:
-                raise ValueError('File record IDs do not match split plan: '+split)
-            for sidecar,item in zip(sidecars,split_payload):
-                rid=sidecar['record_id']
-                if rid in seen or rid not in lookup: raise ValueError('Duplicate/unknown sidecar record')
-                seen.add(rid);row=lookup[rid]
-                if sidecar['split']!=split or sidecar['content_sha256']!=row['content_sha256'] or sidecar['sft_sha256']!=digest(item):
-                    raise ValueError('Sidecar hash/split mismatch: '+split)
-                order.append(row)
-        if seen!=set(lookup): raise ValueError('Missing release records across split files')
-        records=order
+        records,payload=bind_release_files(records,plan,args.payload,args.sidecar)
+    else:
+        payload=[r for path in args.payload for r in read_jsonl(path)]
     from importlib.metadata import version
     from huggingface_hub import snapshot_download
     from transformers import AutoTokenizer

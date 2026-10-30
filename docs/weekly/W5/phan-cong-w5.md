@@ -345,4 +345,3 @@ Trước đóng tuần, cả hai kiểm:
 - [Dataset card corpus](../../dataset-card.md); dữ liệu `data/qa/qa_baseline.json`, `qa_additions.json`, `source_map.json`.
 - [TRL Dataset formats](https://huggingface.co/docs/trl/dataset_formats): định dạng conversational prompt-completion.
 - [TRL SFT Trainer](https://huggingface.co/docs/trl/sft_trainer): completion-only loss và điều kiện assistant mask. Khi triển khai phải khóa phiên bản tương thích, không tự coi tài liệu latest là phiên bản đã cài.
-
