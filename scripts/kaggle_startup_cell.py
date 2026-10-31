@@ -46,7 +46,7 @@ def _ohayo_start(runtime_factory=None, service_signature='single-v1', source_bun
     # Install only when needed; never replace Kaggle's CUDA torch.
     from packaging.specifiers import SpecifierSet
     requirements = {'transformers': '==4.57.6', 'bitsandbytes': '==0.48.2',
-                    'accelerate': '>=1.6,<2', 'pyngrok': '>=7,<10'}
+                    'accelerate': '>=1.6,<2', 'pyngrok': '>=7,<10', 'lm-format-enforcer': '==0.11.3'}
     missing = []
     for name, constraint in requirements.items():
         try:
@@ -65,7 +65,7 @@ def _ohayo_start(runtime_factory=None, service_signature='single-v1', source_bun
                                '(KHONG Factory Reset), roi chay lai cell cuoi nay.')
     # A fresh interpreter confirms disk imports before any model allocation.
     probe = subprocess.run([sys.executable, '-c',
-        'from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig; import bitsandbytes'],
+        'from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig; import bitsandbytes; from lmformatenforcer.integrations.transformers import build_transformers_prefix_allowed_tokens_fn'],
         capture_output=True, text=True)
     if probe.returncode:
         raise RuntimeError('Kiem tra import that bai:\n' + probe.stderr[-4000:])

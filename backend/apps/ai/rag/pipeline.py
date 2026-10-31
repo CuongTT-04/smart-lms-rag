@@ -23,6 +23,36 @@ class RAGPipeline:
             raise GenerationError("INVALID_REQUEST", "Pipeline and provider configurations must agree.")
 
     def generate_answer(self, *, question, mode, contexts, exercise=None, config=None, history=None):
+        started=perf_counter()
+        arguments=dict(question=question,mode=mode,contexts=contexts,exercise=exercise,config=config,history=history)
+        import inspect
+        structured_chat=history is not None and mode=='qa' and 'json_schema' in inspect.signature(self.provider.generate).parameters
+        try:
+            return self._generate_once(**arguments,repair_format=structured_chat)
+        except GenerationError as original:
+            reason=getattr(original,'validation_reason',None)
+            if history is None or mode!='qa' or reason not in {'MISSING_CITATION','MIXED_OUTPUT_FORMAT','INCOMPLETE_EVIDENCE_COVERAGE'}:
+                raise
+            import inspect
+            parameters=inspect.signature(self.provider.generate).parameters
+            if 'timeout_seconds' not in parameters:
+                raise  # Do not retry a provider that cannot bound the remaining deadline.
+            remaining=(config or self.config).model.timeout_seconds-(perf_counter()-started)-1
+            if remaining<=0:
+                raise
+            try:
+                result=self._generate_once(**arguments,repair_format=True,remaining_seconds=remaining,
+                                           repair_feedback=getattr(original,'missing_evidence',None))
+            except GenerationError as repair:
+                if repair.code=='TOKEN_LIMIT_EXCEEDED':
+                    raise original from repair
+                raise
+            from dataclasses import replace
+            return replace(result,trace=replace(result.trace,elapsed_seconds=perf_counter()-started,
+                                               answer_origin='model_text_retried' if result.status=='ANSWERED' else result.trace.answer_origin))
+
+    def _generate_once(self, *, question, mode, contexts, exercise=None, config=None, history=None,
+                       repair_format=False, remaining_seconds=None, repair_feedback=None):
         started = perf_counter()
         config = self.config if config is None else config
         self._check_config(config)
@@ -62,9 +92,16 @@ class RAGPipeline:
         else:
             from .conversation import prepare_conversation_prompt
             prepared, memory = prepare_conversation_prompt(question=question.strip(), mode=mode, contexts=evidence,
-                exercise=exercise, config=config, provider=self.provider, history=history)
+                exercise=exercise, config=config, provider=self.provider, history=history, repair_format=repair_format,repair_feedback=repair_feedback)
+        options={'timeout_seconds':remaining_seconds} if remaining_seconds is not None else {}
+        if repair_format:
+            import inspect
+            if 'json_schema' in inspect.signature(self.provider.generate).parameters:
+                from .conversation import build_evidence_units, citation_response_schema
+                ids=[unit['evidence_id'] for unit in build_evidence_units(prepared.contexts)]
+                options['json_schema']=citation_response_schema(len(prepared.contexts),evidence_ids=ids)
         try:
-            output = self.provider.generate(prepared.messages)
+            output = self.provider.generate(prepared.messages, **options)
         except GenerationError:
             raise
         except Exception as exc:
@@ -79,14 +116,24 @@ class RAGPipeline:
                     or type(usage.output_tokens) is not int or usage.input_tokens != prepared.input_tokens
                     or not 0 <= usage.output_tokens <= config.model.max_new_tokens):
                 raise GenerationError("INVALID_GENERATION", "Model token usage does not match the request.")
+        text=output.text
+        if repair_format:
+            from .conversation import render_structured_answer
+            text=render_structured_answer(text,prepared.contexts,require_proof='json_schema' in options)
+            if 'json_schema' in options:
+                from .conversation import validate_sequence_start
+                validate_sequence_start(question,output.text,prepared.contexts)
         if mode == "hint" and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded"):
-            status, answer, references, mapping = parse_reading_hint(output.text, prepared.contexts)
+            status, answer, references, mapping = parse_reading_hint(text, prepared.contexts)
         else:
             status, answer, references, mapping = parse_answer(
-                output.text, prepared.contexts, reject_cjk_output=config.reject_cjk_output,
+                text, prepared.contexts, reject_cjk_output=config.reject_cjk_output,
             )
             if mode == "qa" and config.prompt_version in ("frozen_baseline", "efficient_grounded"):
-                validate_choice_answer(question, output.text)
+                validate_choice_answer(question, text)
+        if history is not None and status=='ANSWERED':
+            from .conversation import validate_inline_citations
+            validate_inline_citations(answer)
         result = GenerationResult(
             status, answer, references, usage,
             GenerationTrace(tuple(item.source_id for item in prepared.contexts),

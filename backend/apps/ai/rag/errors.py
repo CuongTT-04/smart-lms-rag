@@ -9,6 +9,8 @@ VALIDATION_ERRORS = {
     'EMPTY_OUTPUT': ('GENERATION_EMPTY_RESPONSE', 'AI kết thúc xử lý nhưng không tạo được nội dung trả lời. Hãy gửi lại câu hỏi.'),
     'MISSING_CITATION': _MISSING,
     'UNKNOWN_CITATION': _SOURCE,
+    'EVIDENCE_QUOTE_MISMATCH': ('GENERATION_EVIDENCE_MISMATCH', 'Đoạn trích do AI trả về không khớp với nguồn đã chọn. Câu trả lời chưa được hiển thị để tránh dẫn nguồn sai. Hãy gửi lại câu hỏi.'),
+    'INCOMPLETE_EVIDENCE_COVERAGE': ('GENERATION_INCOMPLETE_ANSWER', 'AI đã bỏ sót bước mở đầu trong quy trình của học liệu. Câu trả lời chưa được hiển thị. Hãy thử lại.'),
     'MIXED_OUTPUT_FORMAT': _FORMAT,
     'UNEXPECTED_CJK': ('GENERATION_WRONG_LANGUAGE', 'AI trả lời lẫn ngôn ngữ ngoài yêu cầu nên câu trả lời chưa được hiển thị. Hãy yêu cầu trả lời bằng tiếng Việt và thử lại.'),
     'CHOICE_FORMAT': _CHOICE,

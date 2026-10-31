@@ -1,4 +1,5 @@
 """Single-instance NF4 inference, without retrieval, citations or database access."""
+import json
 
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict
@@ -10,6 +11,30 @@ from time import perf_counter
 
 from .base import GenerationError, ModelConfig, ModelOutput, TokenUsage
 from .checkpoint import validate_checkpoint
+
+
+def _control_safe_tokenizer_data(data):
+    """LMFE0.11.3 free-text shortcut admits raw tabs; JSON strings cannot contain them."""
+    from lmformatenforcer.tokenenforcer import TokenEnforcerTokenizerData
+    tokens=[row for row in data.regular_tokens if not any(ord(char)<32 for char in row[1])]
+    return TokenEnforcerTokenizerData(tokens,data.decoder,data.eos_token_id,data.use_bitmask,data.vocab_size)
+
+
+def _complete_json_eos_guard(prefix, tokenizer, prompt_tokens, eos_ids):
+    eos_ids=set(eos_ids)
+    def allowed(batch, sequence):
+        tokens=prefix(batch,sequence)
+        if eos_ids.intersection(tokens):
+            try:
+                complete=isinstance(json.loads(tokenizer.decode(sequence[prompt_tokens:],skip_special_tokens=True)),dict)
+            except (ValueError,TypeError):
+                complete=False
+            if not complete:
+                tokens=[token for token in tokens if token not in eos_ids]
+                if not tokens:
+                    raise GenerationError('INCOMPLETE_GENERATION','Constraint parser attempted to end an unfinished JSON object.')
+        return tokens
+    return allowed
 
 
 class LocalModelProvider:
@@ -156,8 +181,11 @@ class LocalModelProvider:
             _, tokenizer, _ = self._ensure_runtime()
             return self._encode(tokenizer, messages, self.config.max_new_tokens)[1]
 
-    def generate(self, messages, *, max_new_tokens: int | None = None) -> ModelOutput:
+    def generate(self, messages, *, max_new_tokens: int | None = None, timeout_seconds: float | None = None, json_schema: dict | None = None) -> ModelOutput:
         messages = self._messages(messages)
+        timeout = self.config.timeout_seconds if timeout_seconds is None else timeout_seconds
+        if type(timeout) not in (int, float) or not 0 < timeout <= self.config.timeout_seconds:
+            raise GenerationError('INVALID_INPUT', 'Timeout must fit the configured generation deadline.')
         limit = self.config.max_new_tokens if max_new_tokens is None else max_new_tokens
         if type(limit) is not int or not 1 <= limit <= self.config.max_new_tokens:
             raise GenerationError("INVALID_INPUT", "Output limit must be positive and cannot exceed provider config.")
@@ -168,6 +196,33 @@ class LocalModelProvider:
             model, tokenizer, torch = self._ensure_runtime()
             load_seconds = perf_counter() - loading_started if cold else 0.0
             encoded, count = self._encode(tokenizer, messages, limit)
+            prefix_function=None
+            if json_schema is not None:
+                if not isinstance(json_schema,dict) or not json_schema:
+                    raise GenerationError('INVALID_INPUT','Structured output requires a nonempty schema.')
+                try:
+                    from lmformatenforcer import CharacterLevelParserConfig, JsonSchemaParser
+                    from lmformatenforcer.integrations.transformers import (build_transformers_prefix_allowed_tokens_fn,
+                                                                          build_token_enforcer_tokenizer_data)
+                    cached=getattr(self,'_format_tokenizer_data',None)
+                    if cached is None or cached[0] is not tokenizer:
+                        data=build_token_enforcer_tokenizer_data(tokenizer)
+                    else:
+                        data=cached[1]
+                    if cached is None or cached[0] is not tokenizer or len(cached)<3 or cached[2]!='json-control-safe-v1':
+                        data=_control_safe_tokenizer_data(data)
+                        cached=(tokenizer,data,'json-control-safe-v1')
+                        self._format_tokenizer_data=cached
+                    # JsonSchemaParser snapshots alphabet_without_quotes in __init__.
+                    # Setting its config later (as LMFE does) leaves minLength strings ASCII-only.
+                    parser_config=CharacterLevelParserConfig(alphabet=cached[1].tokenizer_alphabet)
+                    parser=JsonSchemaParser(json_schema,config=parser_config)
+                    raw_prefix=build_transformers_prefix_allowed_tokens_fn(cached[1],parser)
+                    configured_eos=model.generation_config.eos_token_id
+                    configured_eos=configured_eos if isinstance(configured_eos,list) else [configured_eos]
+                    prefix_function=_complete_json_eos_guard(raw_prefix,tokenizer,count,[*configured_eos,tokenizer.eos_token_id])
+                except ImportError as exc:
+                    raise GenerationError('GENERATION_UNAVAILABLE','Install lm-format-enforcer==0.11.3 for structured chat recovery.') from exc
             inputs = outputs = tokens = None
             try:
                 inputs = encoded.to(self.config.device)
@@ -177,12 +232,13 @@ class LocalModelProvider:
                     outputs = model.generate(
                         **inputs, max_new_tokens=limit, do_sample=False,
                         temperature=None, top_p=None, top_k=None,
-                        max_time=self.config.timeout_seconds, use_cache=True,
-                        prefix_allowed_tokens_fn=None, pad_token_id=tokenizer.eos_token_id,
+                        max_time=timeout, use_cache=True,
+                        prefix_allowed_tokens_fn=prefix_function, pad_token_id=tokenizer.eos_token_id,
+                        **({'eos_token_id':tokenizer.eos_token_id,'forced_eos_token_id':None} if json_schema is not None else {}),
                     )
                 torch.cuda.synchronize(self.config.device)
                 seconds = perf_counter() - generation_started
-                if seconds >= self.config.timeout_seconds:
+                if seconds >= timeout:
                     raise GenerationError("GENERATION_TIMEOUT", "Generation exceeded its soft deadline.")
                 tokens = outputs[0, count:]
                 output_count = int(tokens.shape[0])
@@ -196,6 +252,13 @@ class LocalModelProvider:
                 text = tokenizer.decode(tokens, skip_special_tokens=True).strip()
                 if not text:
                     raise GenerationError("EMPTY_OUTPUT", "The model returned no text.")
+                if json_schema is not None:
+                    try:
+                        parsed=json.loads(text)
+                    except (ValueError,TypeError) as exc:
+                        raise GenerationError('INCOMPLETE_GENERATION','Structured generation ended before producing complete JSON.') from exc
+                    if not isinstance(parsed,dict):
+                        raise GenerationError('INVALID_GENERATION','Structured generation must return an object.')
                 return ModelOutput(
                     text=text, usage=TokenUsage(count, output_count), finish_reason="eos",
                     model_id=self.config.model_id, revision=self.config.revision,

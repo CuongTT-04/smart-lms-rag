@@ -41,7 +41,9 @@ class GatewayTests(TestCase):
 
     def test_validation_reason_is_allowlisted_without_private_output(self):
         from apps.ai.providers.base import GenerationError
-        for reason, expected in [('MISSING_CITATION', {'code':'INVALID_GENERATION','reason':'MISSING_CITATION'}),
+        for reason, expected in [('INCOMPLETE_EVIDENCE_COVERAGE', {'code':'INVALID_GENERATION','reason':'INCOMPLETE_EVIDENCE_COVERAGE'}),
+                                 ('EVIDENCE_QUOTE_MISMATCH', {'code':'INVALID_GENERATION','reason':'EVIDENCE_QUOTE_MISMATCH'}),
+                                 ('MISSING_CITATION', {'code':'INVALID_GENERATION','reason':'MISSING_CITATION'}),
                                  ('PRIVATE prompt/token', {'code':'INVALID_GENERATION'}),
                                  (['MISSING_CITATION'], {'code':'INVALID_GENERATION'})]:
             def invalid(**data):

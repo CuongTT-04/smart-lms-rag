@@ -71,12 +71,8 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
             data.get('document_ids'),data['mode'])
     contexts=[]
     memory=None
-    retrieval_question=data['question']
-    if history:
-        prefix='\nChủ đề câu hỏi trước: '
-        remaining=8000-len(retrieval_question)-len(prefix)
-        if remaining>0:
-            retrieval_question+=prefix+history[-1]['question'][:min(600,remaining)]
+    from .rag.conversation import retrieval_query
+    retrieval_question=retrieval_query(data['question'],history)
     if scope.allowed_version_ids:
         runtime=runtime or get_runtime()
         try:

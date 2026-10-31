@@ -82,6 +82,8 @@ class RemoteTests(SimpleTestCase):
     def test_validation_reason_becomes_safe_specific_error(self, build):
         for reason, code in [('MISSING_CITATION','GENERATION_MISSING_CITATION'),
                              ('UNKNOWN_CITATION','GENERATION_INVALID_CITATION'),
+                             ('EVIDENCE_QUOTE_MISMATCH','GENERATION_EVIDENCE_MISMATCH'),
+                             ('INCOMPLETE_EVIDENCE_COVERAGE','GENERATION_INCOMPLETE_ANSWER'),
                              ('PRIVATE text', 'INVALID_GENERATION'), ([], 'INVALID_GENERATION')]:
             body=io.BytesIO(json.dumps({'code':'INVALID_GENERATION','reason':reason,'detail':'PRIVATE token'}).encode())
             build.return_value.open.side_effect=HTTPError('https://example.test/generate',503,'error',{},body)

@@ -11,7 +11,7 @@ INSUFFICIENT_MESSAGE = "Tài liệu được cung cấp chưa đủ căn cứ đ
 _LABEL = re.compile(r"\[([0-9]+)\]")
 _CJK = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
 VALIDATION_REASONS = frozenset({"EMPTY_OUTPUT", "MIXED_OUTPUT_FORMAT", "UNEXPECTED_CJK",
-                                "MISSING_CITATION", "UNKNOWN_CITATION", "CHOICE_FORMAT",
+                                "MISSING_CITATION", "UNKNOWN_CITATION", "EVIDENCE_QUOTE_MISMATCH", "INCOMPLETE_EVIDENCE_COVERAGE", "CHOICE_FORMAT",
                                 "CHOICE_LABEL_TEXT_MISMATCH", "CHOICE_TEXT_NOT_VERBATIM"})
 
 

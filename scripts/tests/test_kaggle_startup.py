@@ -67,7 +67,7 @@ class StartupNotebookTests(unittest.TestCase):
 
     def versions(self, name):
         return {'transformers': '4.57.6', 'bitsandbytes': '0.48.2',
-                'accelerate': '1.14.0', 'pyngrok': '9.0.2'}[name]
+                'accelerate': '1.14.0', 'pyngrok': '9.0.2', 'lm-format-enforcer': '0.11.3'}[name]
 
     @patch('importlib.metadata.version')
     @patch('subprocess.run')

@@ -77,6 +77,71 @@ class GenerationProviderTests(unittest.TestCase):
         self.assertEqual(caught.exception.code, code)
         return caught.exception
 
+    def test_shorter_retry_deadline_is_passed_to_model_without_changing_config(self):
+        result=self.provider.generate(self.messages,timeout_seconds=5)
+        self.assertEqual(self.model.generate.call_args.kwargs['max_time'],5)
+        self.assertEqual(result.config_hash,self.config.fingerprint())
+        for invalid in [0,-1,31,True,float('nan')]:
+            self.assert_error('INVALID_INPUT',lambda:self.provider.generate(self.messages,timeout_seconds=invalid))
+
+    def test_structured_generation_passes_token_constraint_to_transformers(self):
+        import sys
+        schema={'type':'object','properties':{'items':{'type':'array'}},'required':['items']}
+        parser=MagicMock();prefix=MagicMock()
+        self.tokenizer.decode.return_value='{"items":[]}'
+        modules={'lmformatenforcer':SimpleNamespace(JsonSchemaParser=parser,CharacterLevelParserConfig=MagicMock()),
+                 'lmformatenforcer.tokenenforcer':SimpleNamespace(TokenEnforcerTokenizerData=MagicMock()),
+                 'lmformatenforcer.integrations.transformers':SimpleNamespace(build_transformers_prefix_allowed_tokens_fn=MagicMock(return_value=prefix),build_token_enforcer_tokenizer_data=MagicMock())}
+        with patch.dict(sys.modules,modules):
+            self.provider.generate(self.messages,json_schema=schema)
+        self.assertEqual(parser.call_args.args,(schema,))
+        self.assertIn('config',parser.call_args.kwargs)
+        self.assertTrue(callable(self.model.generate.call_args.kwargs['prefix_allowed_tokens_fn']))
+        self.assertEqual(self.model.generate.call_args.kwargs['eos_token_id'],2)
+        self.assertIsNone(self.model.generate.call_args.kwargs['forced_eos_token_id'])
+
+    def test_schema_parser_initializes_with_the_real_tokenizer_alphabet(self):
+        # A non-ASCII quote shorter than minLength used to empty the parser stack.
+        schema={'type':'object'}
+        data=SimpleNamespace(tokenizer_alphabet='abcKhối số học và logic')
+        self.provider._format_tokenizer_data=(self.tokenizer,data,'json-control-safe-v1')
+        self.tokenizer.decode.return_value='{"items":[]}'
+        parser=MagicMock(); parser_config=MagicMock()
+        config_factory=MagicMock(return_value=parser_config)
+        modules={'lmformatenforcer':SimpleNamespace(JsonSchemaParser=parser,CharacterLevelParserConfig=config_factory),
+                 'lmformatenforcer.integrations.transformers':SimpleNamespace(
+                     build_transformers_prefix_allowed_tokens_fn=MagicMock(),build_token_enforcer_tokenizer_data=MagicMock())}
+        with patch.dict(sys.modules,modules):
+            self.provider.generate(self.messages,json_schema=schema)
+        config_factory.assert_called_once_with(alphabet=data.tokenizer_alphabet)
+        parser.assert_called_once_with(schema,config=parser_config)
+
+    def test_eos_with_unclosed_structured_json_is_not_a_completed_answer(self):
+        modules={'lmformatenforcer':SimpleNamespace(JsonSchemaParser=MagicMock(),CharacterLevelParserConfig=MagicMock()),
+                 'lmformatenforcer.tokenenforcer':SimpleNamespace(TokenEnforcerTokenizerData=MagicMock()),
+                 'lmformatenforcer.integrations.transformers':SimpleNamespace(build_transformers_prefix_allowed_tokens_fn=MagicMock(),build_token_enforcer_tokenizer_data=MagicMock())}
+        self.tokenizer.decode.return_value='{"items":[{"text":"ALU","source":1,"quote":"Khoi'
+        with patch.dict(sys.modules,modules):
+            self.assert_error('INCOMPLETE_GENERATION',lambda:self.provider.generate(self.messages,json_schema={'type':'object'}))
+
+    def test_json_tokenizer_adapter_removes_raw_controls_but_preserves_escaped_text(self):
+        from apps.ai.providers.local import _control_safe_tokenizer_data
+        raw=SimpleNamespace(regular_tokens=[(1,'ALU',False),(197,'\t',False),(198,'\n',False),(3,'x\ry',False),(4,'\\n',False)],
+                            decoder=lambda ids:'',eos_token_id=2,use_bitmask=False,vocab_size=200)
+        constructor=lambda tokens,decoder,eos,bitmask,vocab:SimpleNamespace(regular_tokens=tokens,decoder=decoder,eos_token_id=eos,use_bitmask=bitmask,vocab_size=vocab)
+        with patch.dict(sys.modules,{'lmformatenforcer.tokenenforcer':SimpleNamespace(TokenEnforcerTokenizerData=constructor)}):
+            safe=_control_safe_tokenizer_data(raw)
+        self.assertEqual([row[0] for row in safe.regular_tokens],[1,4])
+        self.assertEqual(safe.eos_token_id,2)
+
+    def test_schema_backend_cannot_force_eos_before_json_is_complete(self):
+        from apps.ai.providers.local import _complete_json_eos_guard
+        tokenizer=SimpleNamespace(decode=lambda *args,**kwargs:'{"items":[')
+        guard=_complete_json_eos_guard(lambda batch,seq:[2],tokenizer,1,[2,3])
+        self.assert_error('INCOMPLETE_GENERATION',lambda:guard(0,[9,7]))
+        guard=_complete_json_eos_guard(lambda batch,seq:[2,7],tokenizer,1,[2,3])
+        self.assertEqual(guard(0,[9,7]),[7])
+
     def test_lazy_load_once_and_reuse(self):
         self.assertFalse(self.provider.runtime_info()["model_loaded"])
         self.build.assert_not_called()

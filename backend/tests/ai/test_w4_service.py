@@ -47,6 +47,24 @@ class ChatServiceTests(ScopeFixture):
         self.assertEqual(query, self.data['question'])
         self.assertEqual(self.runtime.generate.call_args.kwargs['history'], history)
 
+    def test_independent_question_keeps_history_for_generation_but_not_retrieval(self):
+        history=[dict(question='Chu kỳ xử lý lệnh CPU?',answer='Previous answer')]
+        self.runtime.generate.return_value={**self.output,'_memory':dict(protocol='chat_history_v1')}
+        for question in ['ALU là gì?','CPU gồm những thành phần nào?']:
+            self.data['question']=question
+            answer_chat(user=self.student,data=self.data,runtime=self.runtime,request_id=str(uuid4()),history=history)
+            self.assertEqual(self.retrieval.call_args.args[1],question)
+            self.assertEqual(self.runtime.generate.call_args.kwargs['history'],history)
+
+    def test_explicit_followup_adds_previous_question_not_answer_to_retrieval(self):
+        self.data['question']='Thành phần thứ hai có chức năng gì?'
+        history=[dict(question='Các thành phần CPU?',answer='Previous answer')]
+        self.runtime.generate.return_value={**self.output,'_memory':dict(protocol='chat_history_v1')}
+        answer_chat(user=self.student,data=self.data,runtime=self.runtime,request_id=str(uuid4()),history=history)
+        query=self.retrieval.call_args.args[1]
+        self.assertIn(history[0]['question'],query)
+        self.assertNotIn(history[0]['answer'],query)
+
     def test_unknown_citation_and_invalid_schema_fail_closed(self):
         for output in ({**self.output, 'references':[{'label':1,'source_id':'S999'}]},
                        {**self.output, 'answer':'[2]'}, {**self.output, 'references':[]},

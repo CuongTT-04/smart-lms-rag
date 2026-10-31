@@ -106,7 +106,7 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                     count = busy_count()
                     self.reply(200, {'ready': not draining, 'busy': count == len(pipelines),
                         'replicas': len(pipelines), 'in_flight': count, 'config': public_config,
-                        'capabilities': ['chat_history_v1', 'validation_details_v1']})
+                        'capabilities': ['chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1']})
                 else:
                     self.reply(404, {'code': 'NOT_FOUND'})
 

@@ -14,7 +14,7 @@ class GenerationBridgeTests(SimpleTestCase):
         self.bridge=GenerationBridge(RAGPipeline(self.provider,GenerationConfig(model=self.provider.config,prompt_version='frozen_baseline')))
 
     def call(self, **extra):
-        return self.bridge(question='Nội dung tài liệu?',mode='qa',contexts=[self.context],exercise=None,config={},**extra)
+        return self.bridge(**{**dict(question='Nội dung tài liệu?',mode='qa',contexts=[self.context],exercise=None,config={}),**extra})
 
     def test_application_dict_output_from_real_pipeline(self):
         result=self.call()
@@ -23,7 +23,7 @@ class GenerationBridgeTests(SimpleTestCase):
         self.assertEqual(self.provider.generate_calls,1)
 
     def test_conversation_bridge_passes_history_into_real_prompt_builder(self):
-        result = self.call(history=[{'question':'Chủ đề trước?', 'answer':'Câu trả lời trước [9]'}])
+        result = self.call(question='Giải thích ý vừa nêu?',history=[{'question':'Chủ đề trước?', 'answer':'Câu trả lời trước [9]'}])
         self.assertEqual(result['_memory']['protocol'],'chat_history_v1')
         self.assertEqual(result['_memory']['turns_used'],1)
         self.assertEqual([m['role'] for m in self.provider.messages],['system','user','assistant','user'])
