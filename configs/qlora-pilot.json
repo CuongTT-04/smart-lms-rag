@@ -1,0 +1,12 @@
+{
+  "schema_version": "ohayo-qlora-recipe-v1",
+  "data_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+  "contract_sha256": "5af1a00516a8ef54631276454a0e905d933a2f04ec53835f407f235ddf8cf99e",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "seed": 42,
+  "lora": {"r": 8, "lora_alpha": 16, "lora_dropout": 0.05, "bias": "none", "target_modules": "all-linear", "task_type": "CAUSAL_LM"},
+  "training": {"learning_rate": 0.0002, "gradient_accumulation_steps": 4, "per_device_train_batch_size": 1, "per_device_eval_batch_size": 1, "warmup_ratio": 0.1, "max_grad_norm": 1.0, "optim": "paged_adamw_8bit", "lr_scheduler_type": "linear"},
+  "profiles": {"smoke": {"max_steps": 2, "save_steps": 2, "eval_steps": 2}, "pilot": {"max_steps": 50, "save_steps": 25, "eval_steps": 25}},
+  "dependencies": {"transformers": "4.57.6", "tokenizers": "0.22.2", "huggingface-hub": "0.36.2", "peft": "0.17.1", "accelerate": "1.10.1", "bitsandbytes": "0.48.2", "safetensors": "0.6.2"}
+}
