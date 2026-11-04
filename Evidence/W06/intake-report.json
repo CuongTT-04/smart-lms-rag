@@ -1,0 +1,32 @@
+{
+  "archive_sha256": "8bcc3af65024f2d90d8a921da58dbc8f31909c52b66da943d1e4c488fb6f0036",
+  "formal_peer_approval_created": false,
+  "full_candidate_content_hash_recomputed": false,
+  "full_candidate_hash_scope": "Authenticated sidecar hash retained; complete candidate records are not in compact ZIP.",
+  "full_w5_review_bundle": "NOT_INCLUDED_IN_COMPACT",
+  "gpu_used": false,
+  "model_weights_loaded": false,
+  "original_use_policy": {
+    "group_release_ready": false,
+    "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "public_redistribution_allowed": false,
+    "scope": "PRIVATE_INTERNAL_NONCOMMERCIAL_RESEARCH",
+    "source_rights": "DECLARED_NOT_VERIFIED",
+    "status": "GROUP_INTERNAL_RESEARCH_TECHNICALLY_AUDITED_CANDIDATE",
+    "training": "NOT_RUN"
+  },
+  "physical_file_binding": "PASSED",
+  "public_redistribution_allowed": false,
+  "record_count": 500,
+  "schema_version": "w6-intake-v1",
+  "source_component_count": 27,
+  "source_package_manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+  "split_counts": {
+    "instruction_holdout": 58,
+    "train": 385,
+    "validation": 57
+  },
+  "status": "AUTHENTICATED_COMPACT_VERIFIED",
+  "technical_handoff_blocked_by_missing_paperwork": false,
+  "training": "NOT_RUN"
+}

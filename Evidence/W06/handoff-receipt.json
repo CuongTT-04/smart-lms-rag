@@ -1,0 +1,15 @@
+{
+  "archive": "W6-Cuong-to-Duong-v1.0.zip",
+  "contract_sha256": "5af1a00516a8ef54631276454a0e905d933a2f04ec53835f407f235ddf8cf99e",
+  "counts": {
+    "train": 128,
+    "validation": 32
+  },
+  "package_manifest_sha256": "db51f0e0d04097bd617bbea094014db3d389aa509ecd0a9652596c40d5d4f96b",
+  "pilot_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+  "public_redistribution_allowed": false,
+  "schema_version": "w6-handoff-receipt-v1",
+  "size_bytes": 4227276,
+  "training": "NOT_RUN",
+  "zip_sha256": "2b44e35f7386b506955e9fad29541490c052129a8af6ae0eef7e4f0b7f7c0707"
+}

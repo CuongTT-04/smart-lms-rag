@@ -1,0 +1,155 @@
+{
+  "base_commit": "331173baf9e1d38f3acb6e45f9ed01a31ee501e5",
+  "branch": "codex/w6-02-handoff-prep",
+  "contract_sha256": "5af1a00516a8ef54631276454a0e905d933a2f04ec53835f407f235ddf8cf99e",
+  "date": "2026-11-03",
+  "files": {
+    "Evidence/W06/README.md": {
+      "sha256": "9cbc5f366e3e8c850c3cb132f891502e17095e9d4ff5c0386016e301d4ced613",
+      "size_bytes": 4836
+    },
+    "Evidence/W06/handoff-receipt.json": {
+      "sha256": "5975c6a078d83b926ecfb14cd91b83376c4654ae56ea719cdc87ab4430d1d912",
+      "size_bytes": 606
+    },
+    "Evidence/W06/handoff-tests.txt": {
+      "sha256": "378a5f71451a89147097a9338faa7cf5e6947cc361df1b2e18fbddc1e752a960",
+      "size_bytes": 409
+    },
+    "Evidence/W06/handoff-verification.json": {
+      "sha256": "8bfacc3d323f826a811c71366d3a3ee4e7126fe8027b925be28124db3f68a800",
+      "size_bytes": 1907
+    },
+    "Evidence/W06/intake-report.json": {
+      "sha256": "2f22335eb7a1991ea230b562df34ef8ed29a89dd616620872e4739b63a5b7db2",
+      "size_bytes": 1270
+    },
+    "Evidence/W06/metrics.csv": {
+      "sha256": "7b482a5274d6c41b03a46cefb684bed955de7a3f3297ccb215f09b9e43184114",
+      "size_bytes": 2065
+    },
+    "Evidence/W06/pilot-verification.json": {
+      "sha256": "61730dd3c03d0219979619f27356185a9bf5abef5eec882b072e09c48215e675",
+      "size_bytes": 1466
+    },
+    "Evidence/W06/test-results.json": {
+      "sha256": "c3dd60ec0450c0c874d92a09a7461e4431b7b6f819ee6601c6a943953c7f4b61",
+      "size_bytes": 1016
+    },
+    "Evidence/W06/unit-tests.txt": {
+      "sha256": "2c8c247b08d1750b75d431cebeebafb0e1ab369278dcea12b872b25b81981798",
+      "size_bytes": 141
+    },
+    "Evidence/W06/w5-regression.txt": {
+      "sha256": "1120951007de15a378ed98ecc3ab69067ecc1462f5a5bf41d6a91b96ef38ddb8",
+      "size_bytes": 310
+    },
+    "data/w6/record-allocation.csv": {
+      "sha256": "fdde3b7137d1656f95ba13893a8a93df3724f8d00798404dab88c960754d954a",
+      "size_bytes": 87935
+    },
+    "data/w6/source-allocation.json": {
+      "sha256": "445d60ae7095e8fbcbd4b183bf38fd8969d3c20907e3c6f0827bf3097a1cade4",
+      "size_bytes": 9205
+    },
+    "data/w6/training-contract.json": {
+      "sha256": "3cf441c021e19d812f08ec5b086f91da68fa93e145f3bcfef3cc6a8821dc9fe1",
+      "size_bytes": 5939
+    },
+    "docs/weekly/W6/ban-giao-duong.md": {
+      "sha256": "672b9a17a0b860aeebfe73caed39d89aa6b2ab93d5b3f4f8c0e459ff7c4bec4d",
+      "size_bytes": 11330
+    },
+    "docs/weekly/W6/phan-cong-w6.md": {
+      "sha256": "1ab27720b1282191f51c13bfa75e3498eb328b1ba132721911cca7b214a464ec",
+      "size_bytes": 47726
+    },
+    "scripts/w6/README.md": {
+      "sha256": "ff8bf42a282393694ae6cb67b21f494320d9cae7a2722597ec26ac6e6d655577",
+      "size_bytes": 3544
+    },
+    "scripts/w6/__init__.py": {
+      "sha256": "e4945bb919bfb69e9c5fe33d2fe9355425070056346a26a2fb85e8455a5c0b79",
+      "size_bytes": 83
+    },
+    "scripts/w6/allocation.py": {
+      "sha256": "6ad6e6c0dc5cf4e106c5bad8ce433c261d25d324d3a6ce73e5f903a09c791ea2",
+      "size_bytes": 3152
+    },
+    "scripts/w6/bootstrap.py": {
+      "sha256": "b1628c39e4c8ffad4d8599db72ee826214fbf2a5901d5fda21053108b31e1972",
+      "size_bytes": 4289
+    },
+    "scripts/w6/contracts.py": {
+      "sha256": "a11ae2a76b9d1b985fbff5ff8a4e6b3e747c60ef9584c8947a0aebae1427c5d5",
+      "size_bytes": 10032
+    },
+    "scripts/w6/handoff.py": {
+      "sha256": "786b2cfab7c5a43dc6183089dd00e6dd6dc128de7979309075a6d6c21c428489",
+      "size_bytes": 8687
+    },
+    "scripts/w6/intake.py": {
+      "sha256": "20b72159dc3f5fce66fbf4cb78ce06429ee6ef3b4c579d58397a31ef424bfc4d",
+      "size_bytes": 1999
+    },
+    "scripts/w6/prepare_pilot.py": {
+      "sha256": "c8a3c6ad1aa5c57b706a4df6df60cf2f35c55a37e9261b3db73bde971cb89aed",
+      "size_bytes": 16144
+    },
+    "scripts/w6/requirements-data.txt": {
+      "sha256": "0acdb678698f97eb7a07d010aedb4bbd4b8298fdc4e5ae43b44a4044336374f8",
+      "size_bytes": 171
+    },
+    "scripts/w6/tests/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "scripts/w6/tests/test_handoff.py": {
+      "sha256": "ca79768f06d84bffbb43fd4f5e34a07adac6f296fc57b178472fae7198bf1d2f",
+      "size_bytes": 3617
+    },
+    "scripts/w6/tests/test_prerequisites.py": {
+      "sha256": "1c0c58eb2c521435381f6acae7a7310d95f6775af916f973ee9e298970ddc49c",
+      "size_bytes": 11297
+    },
+    "scripts/w6/tests/test_validation.py": {
+      "sha256": "a4c8a0db844b65b0396343be41b7cb7a5c85f5be28373fac8f622f6f90626a71",
+      "size_bytes": 4772
+    },
+    "scripts/w6/tokenizer.py": {
+      "sha256": "3dae22d815cfb2e010b6f33f15711d61aae963c848694cceea352936ef4c976b",
+      "size_bytes": 1012
+    },
+    "scripts/w6/validate_dataset.py": {
+      "sha256": "0a3619091db8d77d0920566f82b2017479a55e5731dfa993438c61f3cb36f349",
+      "size_bytes": 7870
+    }
+  },
+  "gates": {
+    "authenticated_intake": "PASSED",
+    "private_handoff_roundtrip": "PASSED",
+    "recipient_content_check": "PENDING_DUONG",
+    "technical_pilot": "PASSED",
+    "trainer_and_gpu": "NOT_RUN",
+    "week_complete": false
+  },
+  "github_issue_number": null,
+  "gpu_used": false,
+  "human_peer_approval_created": false,
+  "issue_code": "W6-02",
+  "milestone": "Tuan6",
+  "new_sample_slots": 500,
+  "new_samples_authored": 0,
+  "peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+  "pilot_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+  "private_artifact": {
+    "delivery_directory": "D:/OHAYO-W6-Handoff-Duong-2026-11-03",
+    "filename": "W6-Cuong-to-Duong-v1.0.zip",
+    "sha256": "2b44e35f7386b506955e9fad29541490c052129a8af6ae0eef7e4f0b7f7c0707",
+    "size_bytes": 4227276
+  },
+  "schema_version": "w6-prerequisites-evidence-v1",
+  "source_rights": "DECLARED_NOT_VERIFIED",
+  "status": "TECHNICAL_HANDOFF_READY_TRAINING_NOT_RUN",
+  "training": "NOT_RUN"
+}

@@ -1,0 +1,392 @@
+{
+  "allocation_sha256": "0771c2bdfcad971fa768396d3d117687baf389dd46956edd639c0ab983a8b22d",
+  "expected_new_split_counts": {
+    "instruction_holdout": 58,
+    "train": 385,
+    "validation": 57
+  },
+  "groups": [
+    {
+      "id_end": "W6_A_00019",
+      "id_start": "W6_A_00001",
+      "new_record_count": 19,
+      "owner_member": "A",
+      "source_group_id": "CNXHKH:ch01.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 12,
+        "summary": 4
+      }
+    },
+    {
+      "id_end": "W6_B_00025",
+      "id_start": "W6_B_00001",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "CNXHKH:ch02.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 1,
+        "qa": 19,
+        "summary": 4
+      }
+    },
+    {
+      "id_end": "W6_A_00038",
+      "id_start": "W6_A_00020",
+      "new_record_count": 19,
+      "owner_member": "A",
+      "source_group_id": "CNXHKH:ch03.pdf",
+      "split": "instruction_holdout",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 2,
+        "qa": 11,
+        "summary": 4
+      }
+    },
+    {
+      "id_end": "W6_B_00050",
+      "id_start": "W6_B_00026",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "CNXHKH:ch04.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 3,
+        "qa": 14,
+        "summary": 5
+      }
+    },
+    {
+      "id_end": "W6_A_00057",
+      "id_start": "W6_A_00039",
+      "new_record_count": 19,
+      "owner_member": "A",
+      "source_group_id": "CNXHKH:ch05.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 2,
+        "qa": 11,
+        "summary": 4
+      }
+    },
+    {
+      "id_end": "W6_B_00075",
+      "id_start": "W6_B_00051",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "CNXHKH:ch06.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 4,
+        "qa": 12,
+        "summary": 6
+      }
+    },
+    {
+      "id_end": "W6_A_00075",
+      "id_start": "W6_A_00058",
+      "new_record_count": 18,
+      "owner_member": "A",
+      "source_group_id": "CNXHKH:ch07.pdf",
+      "split": "validation",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 3,
+        "qa": 11,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00100",
+      "id_start": "W6_A_00076",
+      "new_record_count": 25,
+      "owner_member": "A",
+      "source_group_id": "KTCTMLN:ch01.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 2,
+        "qa": 15,
+        "summary": 5
+      }
+    },
+    {
+      "id_end": "W6_B_00100",
+      "id_start": "W6_B_00076",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "KTCTMLN:ch02.pdf",
+      "split": "instruction_holdout",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 2,
+        "qa": 17,
+        "summary": 4
+      }
+    },
+    {
+      "id_end": "W6_A_00125",
+      "id_start": "W6_A_00101",
+      "new_record_count": 25,
+      "owner_member": "A",
+      "source_group_id": "KTCTMLN:ch03.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 3,
+        "qa": 15,
+        "summary": 5
+      }
+    },
+    {
+      "id_end": "W6_B_00125",
+      "id_start": "W6_B_00101",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "KTCTMLN:ch04.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 3,
+        "qa": 14,
+        "summary": 5
+      }
+    },
+    {
+      "id_end": "W6_A_00150",
+      "id_start": "W6_A_00126",
+      "new_record_count": 25,
+      "owner_member": "A",
+      "source_group_id": "KTCTMLN:ch05.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 2,
+        "qa": 15,
+        "summary": 5
+      }
+    },
+    {
+      "id_end": "W6_B_00150",
+      "id_start": "W6_B_00126",
+      "new_record_count": 25,
+      "owner_member": "B",
+      "source_group_id": "KTCTMLN:ch06.pdf",
+      "split": "validation",
+      "task_counts": {
+        "hint": 3,
+        "insufficient_evidence": 2,
+        "qa": 14,
+        "summary": 6
+      }
+    },
+    {
+      "id_end": "W6_A_00165",
+      "id_start": "W6_A_00151",
+      "new_record_count": 15,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch01.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00165",
+      "id_start": "W6_B_00151",
+      "new_record_count": 15,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch02.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00180",
+      "id_start": "W6_A_00166",
+      "new_record_count": 15,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch03.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00180",
+      "id_start": "W6_B_00166",
+      "new_record_count": 15,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch04.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00194",
+      "id_start": "W6_A_00181",
+      "new_record_count": 14,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch05.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 8,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00194",
+      "id_start": "W6_B_00181",
+      "new_record_count": 14,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch06.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 8,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00208",
+      "id_start": "W6_A_00195",
+      "new_record_count": 14,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch07.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 8,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00208",
+      "id_start": "W6_B_00195",
+      "new_record_count": 14,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch08.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 1,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00222",
+      "id_start": "W6_A_00209",
+      "new_record_count": 14,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch09.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 9,
+        "summary": 2
+      }
+    },
+    {
+      "id_end": "W6_B_00222",
+      "id_start": "W6_B_00209",
+      "new_record_count": 14,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch10.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 9,
+        "summary": 2
+      }
+    },
+    {
+      "id_end": "W6_A_00236",
+      "id_start": "W6_A_00223",
+      "new_record_count": 14,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch11.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 8,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00236",
+      "id_start": "W6_B_00223",
+      "new_record_count": 14,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch12.pdf",
+      "split": "train",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 2,
+        "qa": 8,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_A_00250",
+      "id_start": "W6_A_00237",
+      "new_record_count": 14,
+      "owner_member": "A",
+      "source_group_id": "THMLN:ch13.pdf",
+      "split": "instruction_holdout",
+      "task_counts": {
+        "hint": 1,
+        "insufficient_evidence": 1,
+        "qa": 9,
+        "summary": 3
+      }
+    },
+    {
+      "id_end": "W6_B_00250",
+      "id_start": "W6_B_00237",
+      "new_record_count": 14,
+      "owner_member": "B",
+      "source_group_id": "THMLN:ch14.pdf",
+      "split": "validation",
+      "task_counts": {
+        "hint": 2,
+        "insufficient_evidence": 1,
+        "qa": 8,
+        "summary": 3
+      }
+    }
+  ],
+  "new_samples_created": 0,
+  "slots": 500,
+  "source_archive_sha256": "8bcc3af65024f2d90d8a921da58dbc8f31909c52b66da943d1e4c488fb6f0036",
+  "status": "PLANNED_NOT_AUTHORED"
+}
