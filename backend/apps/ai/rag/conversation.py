@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+import unicodedata
 from collections.abc import Sequence
 
 from ..providers.base import GenerationError
@@ -47,14 +48,15 @@ Nếu evidence không đủ để trả lời, chỉ xuất {"items":[]}. Không
 """
 
 
+def _evidence_lines(text):
+    return [line for raw in text.splitlines() if (line := raw.strip()) and not line.startswith('<!--')]
+
+
 def build_evidence_units(contexts):
     """Assign request-local IDs to exact nonempty lines; IDs never come from PDF text."""
     units=[]
     for label,context in enumerate(contexts,1):
-        lines=[line.strip() for line in context.text.splitlines() if line.strip()]
-        # Image placeholders carry no textual evidence; preserve the actual extracted text.
-        lines=[line for line in lines if not line.startswith('<!--')]
-        for number,text in enumerate(lines,1):
+        for number,text in enumerate(_evidence_lines(context.text),1):
             units.append({'evidence_id':f'E{label}.{number}','citation_label':label,'text':text})
     return units
 
@@ -86,28 +88,187 @@ def _list_intro(text):
         r'(?:các (?:bước|ý|thành phần|đặc điểm)(?: sau)?|như sau|sau đây)\s*:\s*$',text,re.I))
 
 
-def validate_sequence_start(question, raw, contexts):
-    """For a full procedure, do not silently omit the source's first listed step.
+def is_full_procedure_question(question):
+    return bool(re.search(
+        r'các bước.*(?:nào|gì)|(?:liệt kê|trình bày|mô tả)\s+(?:(?:toàn bộ|đầy đủ)\s+)?'
+        r'(?:các bước|quy trình|trình tự|chu k[ỳì]|chu trình)'
+        r'|(?:quy trình|trình tự|chu k[ỳì]|chu trình).*(?:như (?:thế )?nào|mô tả|diễn ra|các bước)',
+        unicodedata.normalize('NFC', question), re.I))
 
-    This is a structural completeness check, not a semantic entailment score.
-    Narrow questions and definitions are deliberately outside its scope.
-    """
-    full_sequence=re.search(r'các bước.*(?:nào|gì)|(?:quy trình|trình tự|chu kỳ|chu trình).*(?:như (?:thế )?nào|mô tả|diễn ra|các bước)',question,re.I)
-    if not full_sequence:return
+
+def numbered_procedure_steps(text):
+    """Return (step number, evidence line number) for the first consecutive list."""
+    steps = []
+    for index, line in enumerate(_evidence_lines(text), 1):
+        if re.match(r'^(?:ví dụ\b|example\b)', line, re.I) or (steps and line.startswith('#')):
+            break
+        marker = re.match(r'^([1-9]\d{0,2})[.)]\s+\S', line)
+        if marker:
+            number = int(marker[1])
+            if steps and number != steps[-1][0] + 1:
+                break
+            steps.append((number, index))
+    return steps
+
+
+_CONTINUED_TITLE = re.compile(r'\s*\((?:cont\.?|continued|tiếp(?: theo)?)\)\s*$', re.I)
+_EXAMPLE = re.compile(r'^(?:ví dụ\b|example\b)', re.I)
+
+
+def _procedure_title(text):
+    lines = _evidence_lines(text)
+    if not lines:
+        return ''
+    title = unicodedata.normalize('NFC', lines[0]).strip('#* ').casefold()
+    return ' '.join(title.split())
+
+
+def _unnumbered_step_lines(text, *, opening):
+    """Docling can remove list markers. Require a clear opening and end of the list."""
+    if not opening and not _CONTINUED_TITLE.search(_procedure_title(text)):
+        return []
+    lines = []
+    line_number = 0
+    active = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith('<!--'):
+            if lines:
+                return lines
+            continue
+        line_number += 1
+        if active:
+            if _EXAMPLE.match(line) or line.startswith('#'):
+                return lines
+            if _list_intro(line):
+                return []
+            lines.append(line_number)
+        elif opening:
+            active = _list_intro(line) and bool(re.search(r'\bbước\b', line, re.I))
+        elif line_number == 1:
+            active = True
+    return []  # A footer without a boundary cannot be distinguished from a step.
+
+
+def _step_lines(context, *, opening):
+    numbered = numbered_procedure_steps(context.text)
+    if numbered:
+        return [line for _, line in numbered]
+    return _unnumbered_step_lines(context.text, opening=opening)
+
+
+def starts_procedure(context):
+    numbered = numbered_procedure_steps(context.text)
+    if numbered:
+        return numbered[0][0] == 1
+    return bool(_unnumbered_step_lines(context.text, opening=True))
+
+
+def continues_procedure(previous, following):
+    if ((previous.document_id, previous.version_id) != (following.document_id, following.version_id)
+            or following.page_number != previous.page_number + 1):
+        return False
+    heading = _CONTINUED_TITLE.sub('', _procedure_title(previous.text))
+    if not heading or heading != _CONTINUED_TITLE.sub('', _procedure_title(following.text)):
+        return False
+    earlier = numbered_procedure_steps(previous.text)
+    later = numbered_procedure_steps(following.text)
+    if earlier or later:
+        return bool(earlier and later and later[0][0] == earlier[-1][0] + 1)
+    if any(_EXAMPLE.match(line) for line in _evidence_lines(previous.text)):
+        return False
+    return bool((starts_procedure(previous) or _unnumbered_step_lines(previous.text, opening=False))
+                and _unnumbered_step_lines(following.text, opening=False))
+
+
+def _procedure_sequences(contexts):
+    for first in contexts:
+        if not starts_procedure(first):
+            continue
+        chain = [first]
+        while following := next((other for other in contexts if continues_procedure(chain[-1], other)), None):
+            chain.append(following)
+        if len(chain) > 1 or numbered_procedure_steps(first.text):
+            yield chain
+
+
+def _sequence_evidence_ids(sequence, labels):
+    return [f'E{labels[context.source_id]}.{line}'
+            for index, context in enumerate(sequence)
+            for line in _step_lines(context, opening=index == 0)]
+
+
+def extract_procedure_answer(question, contexts):
+    """Quote a single clearly identified slide sequence when generation missed steps."""
+    if not is_full_procedure_question(question) or needs_history(question):
+        return None
+    from .base import EvidenceContext
+    from .citations import parse_answer
+
+    evidence = [EvidenceContext.from_value(context) for context in contexts]
+    sequences = list(_procedure_sequences(evidence))
+    if len(sequences) != 1 or len(sequences[0]) < 2:
+        return None
+    sequence = sequences[0]
+    # Docling's unnumbered list items are full paragraphs. A numbered source line
+    # can be only the first fragment of a wrapped step, so leave it to generation.
+    if any(numbered_procedure_steps(context.text) for context in sequence):
+        return None
+    title = _CONTINUED_TITLE.sub('', _procedure_title(sequence[0].text))
+    topic = set(re.findall(r'\w+', title)) - {'quy', 'trình', 'tự', 'chu', 'kỳ', 'kì', 'xử', 'lý', 'các', 'bước'}
+    question_words = set(re.findall(r'\w+', unicodedata.normalize('NFC', question).casefold()))
+    if not topic or not topic <= question_words:
+        return None
+    labels = {context.source_id: label for label, context in enumerate(evidence, 1)}
+    step_ids = _sequence_evidence_ids(sequence, labels)
+    if not 2 <= len(step_ids) <= 24:
+        return None
+    units = {unit['evidence_id']: unit['text'] for unit in build_evidence_units(evidence)}
+    items = [{'text': units[evidence_id], 'evidence_id': evidence_id} for evidence_id in step_ids]
+    try:
+        rendered = render_structured_answer(json.dumps({'items': items}, ensure_ascii=False), evidence, require_proof=True)
+        if len(rendered.splitlines()) != len(step_ids):
+            return None
+        status, answer, references, _ = parse_answer(rendered, evidence)
+        validate_inline_citations(answer)
+    except GenerationError:
+        return None
+    return {'status': status, 'answer': 'Theo học liệu, các bước được liệt kê như sau:\n\n' + answer,
+            'references': [{'label': ref.label, 'source_id': ref.source_id} for ref in references], 'usage': None}
+
+
+def validate_procedure_coverage(question, raw, contexts):
+    """Check cited numbered steps in a detected procedure, with a legacy opening-step check."""
+    if not is_full_procedure_question(question):
+        return
     value=json.loads(raw)
     selected={item['evidence_id'] for item in value.get('items',[]) if 'evidence_id' in item}
     if not selected:return
     units=build_evidence_units(contexts)
     missing=[]
+    labels = {context.source_id: label for label, context in enumerate(contexts, 1)}
+    procedure_sources = set()
+    units_by_id = {unit['evidence_id']: unit for unit in units}
+    for sequence in _procedure_sequences(contexts):
+        procedure_sources.update(context.source_id for context in sequence)
+        source_labels = {labels[context.source_id] for context in sequence}
+        if any(units_by_id[evidence_id]['citation_label'] in source_labels for evidence_id in selected):
+            for evidence_id in _sequence_evidence_ids(sequence, labels):
+                if evidence_id not in selected:
+                    unit = units_by_id[evidence_id]
+                    missing.append({'source_id': contexts[unit['citation_label']-1].source_id, 'text': unit['text']})
     for index,intro in enumerate(units[:-1]):
         if not _list_intro(intro['text']) or not re.search(r'bước',intro['text'],re.I):continue
         first=units[index+1]
         if first['citation_label']!=intro['citation_label']:continue
+        if contexts[first['citation_label']-1].source_id in procedure_sources:continue
         later=[u for u in units[index+2:] if u['citation_label']==intro['citation_label']]
         if first['evidence_id'] not in selected and any(u['evidence_id'] in selected for u in later):
             missing.append({'source_id':contexts[first['citation_label']-1].source_id,'text':first['text']})
     if missing:
-        error=GenerationError('INVALID_GENERATION','A full procedure omitted its first listed step.')
+        error=GenerationError('INVALID_GENERATION','A full procedure omitted one or more listed steps.')
         error.validation_reason='INCOMPLETE_EVIDENCE_COVERAGE'
         error.missing_evidence=missing
         raise error
@@ -256,6 +417,8 @@ def prepare_conversation_prompt(*, question, mode, contexts, exercise, config, p
         raise GenerationError('INVALID_REQUEST', 'Document memory only supports QA.')
     original = validate_history(history)
     turns = original[-MAX_TURNS:] if needs_history(question) else []
+    full_procedure = repair_format and is_full_procedure_question(question)
+    continuation = next((chain for chain in _procedure_sequences(contexts) if len(chain) > 1), []) if full_procedure else []
 
     def history_count():
         if not turns:
@@ -295,19 +458,35 @@ def prepare_conversation_prompt(*, question, mode, contexts, exercise, config, p
         if repair_format:
             payload=json.loads(user['content'])
             payload['evidence']=build_evidence_units(evidence)
+            if full_procedure:
+                labels = {context.source_id: label for label, context in enumerate(evidence, 1)}
+                payload['procedure_step_ids'] = [_sequence_evidence_ids(chain, labels)
+                                                 for chain in _procedure_sequences(evidence)]
             if repair_feedback:
                 payload['repair_feedback']={'required_evidence_ids':feedback_ids(evidence),
-                    'instruction':'Lượt trước bỏ sót bước mở đầu. Đọc lại các đoạn được chỉ rõ và tự sinh lại toàn bộ quy trình, gồm bước chuẩn bị/khởi tạo nếu học liệu liệt kê. Không tạo câu dẫn thành một bước.'}
+                    'instruction':'Lượt trước bỏ sót bước. Đọc lại các đoạn được chỉ rõ và sinh lại toàn bộ quy trình theo thứ tự, kể cả các bước ở trang tiếp theo. Không tạo câu dẫn thành một bước.'}
             user={'role':'user','content':json.dumps(payload,ensure_ascii=False)}
-        return ({'role': 'system', 'content': FORMAT_REPAIR_INSTRUCTION if repair_format else system['content']+MEMORY_INSTRUCTION}, *history_messages(turns), user)
+        instruction = FORMAT_REPAIR_INSTRUCTION if repair_format else system['content']+MEMORY_INSTRUCTION
+        if full_procedure:
+            instruction += ('Mỗi danh sách trong procedure_step_ids là một quy trình theo thứ tự, có thể trải qua nhiều trang. '
+                            'Với quy trình liên quan đến câu hỏi, trình bày đủ các bước theo thứ tự đó, mỗi bước dẫn đúng evidence_id đã liệt kê. '
+                            'Các dòng liền sau một bước có thể là phần xuống dòng của chính bước đó.\n')
+        return ({'role': 'system', 'content': instruction}, *history_messages(turns), user)
 
     while True:
         kept = []
         try:
             _count_tokens(provider, messages(()))
+            if continuation:
+                if len(continuation) > config.max_sources:
+                    raise GenerationError('TOKEN_LIMIT_EXCEEDED', 'The consecutive procedure exceeds the source limit.')
+                _count_tokens(provider, messages(continuation))
+                kept.extend(continuation)
             for context in contexts:
                 if len(kept)>=config.max_sources:
                     break
+                if context in kept:
+                    continue
                 try:
                     _count_tokens(provider, messages((*kept, context)))
                 except GenerationError as exc:

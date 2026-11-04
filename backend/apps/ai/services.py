@@ -71,13 +71,14 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
             data.get('document_ids'),data['mode'])
     contexts=[]
     memory=None
-    from .rag.conversation import retrieval_query
+    from .rag.conversation import extract_procedure_answer, is_full_procedure_question, retrieval_query
     retrieval_question=retrieval_query(data['question'],history)
     if scope.allowed_version_ids:
         runtime=runtime or get_runtime()
         try:
             hits=retrieve_dense_authorized(user,retrieval_question,scope,runtime.index,runtime.embedding,
-                catalog=runtime.catalog,top_k=5)
+                catalog=runtime.catalog,top_k=5,
+                include_procedure_continuations=data['mode']=='qa' and is_full_procedure_question(data['question']))
         except DocumentError as exc:
             if exc.status==503:
                 raise DocumentError('RETRIEVAL_UNAVAILABLE','Không thể truy xuất học liệu lúc này.',503) from exc
@@ -96,12 +97,19 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
                 if not isinstance(memory,dict) or memory.get('protocol')!='chat_history_v1':
                     raise DocumentError('GENERATION_CONFIG_MISMATCH','Gateway chưa hỗ trợ context nhiều lượt. Cần đồng bộ cell mới.',503)
         except DocumentError as exc:
-            if exc.code=='INVALID_GENERATION': raise invalid_generation() from exc
-            if exc.code in VALIDATION_ERROR_CODES: raise
-            if exc.status==400 and exc.code=='INVALID_REQUEST': raise
-            if exc.code in {'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'GENERATION_TIMEOUT',
-                    'OUT_OF_MEMORY', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH'}: raise
-            raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
+            output = None
+            if exc.code == 'GENERATION_INCOMPLETE_ANSWER' and data['mode'] == 'qa':
+                output = extract_procedure_answer(data['question'], contexts)
+            if output is not None:
+                if history is not None:
+                    memory = dict(protocol='chat_history_v1', turns_used=0, turns_dropped=len(history), history_tokens=0)
+            else:
+                if exc.code=='INVALID_GENERATION': raise invalid_generation() from exc
+                if exc.code in VALIDATION_ERROR_CODES: raise
+                if exc.status==400 and exc.code=='INVALID_REQUEST': raise
+                if exc.code in {'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'GENERATION_TIMEOUT',
+                        'OUT_OF_MEMORY', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH'}: raise
+                raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
         except Exception as exc:
             raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
         status,answer,citations=map_output(output,contexts)
