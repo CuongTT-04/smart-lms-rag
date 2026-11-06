@@ -1,0 +1,23 @@
+{
+  "scope": "ASSISTED_REVIEW_TRANSFERRED_AFTER_EXACT_40_OUTPUT_AND_PROMPT_IDENTITY",
+  "human_peer_approval": false,
+  "source_predictions_sha256": "e39d3eaca4b22d28758bccc6f49559a4937f65ee0fd07c49bb31d5979dca3000",
+  "rubric": "Đủ các vế câu hỏi; tóm tắt bao quát ý trung tâm của phần được hỏi; mã nguồn hợp lệ được xét riêng với nguồn hỗ trợ ý. Không chứng minh tính đúng ngoài học liệu.",
+  "expected_task_complete": {
+    "base": 16,
+    "adapter": 16,
+    "total_each": 20
+  },
+  "owner_review_complete": {
+    "base": 17,
+    "adapter": 17,
+    "total_each": 20
+  },
+  "rubric_difference": "Review tiếp nhận coi W5_B_00120 của cả hai nhánh là chưa đủ trọng tâm phân phối. Khác biệt rubric được ghi riêng, không sửa review của Dương.",
+  "quality_improvement": "NOT_ESTABLISHED",
+  "original_review_sha256": "2ba54e92416634e1ab656c8f3b5c2ad8d4f4adbefa6cb660c3eddd52713d1f12",
+  "original_predictions_sha256": "79b69038b19365ede2bb20be17daa938751695d1a256587b5e2ad44e248f07d9",
+  "gpu_run_id": "verification-20261106T194045367524Z",
+  "identical_outputs_verified": 40,
+  "review_transfer_is_human_peer_approval": false
+}

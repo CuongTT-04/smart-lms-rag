@@ -395,3 +395,8 @@ Trình tự bắt đầu:
 Contract được tạo ngày 02/11, trường trạng thái chuẩn bị trong contract là snapshot trước khi chạy. Trạng thái thực hiện mới nhất đọc ở `Evidence/W06/README.md` và các báo cáo/receipt, không sửa contract đã khóa để đổi kết quả lịch sử. Hướng dẫn nhận gói: `docs/weekly/W6/ban-giao-duong.md`.
 
 Phần tiếp theo vẫn thuộc W6-01 của Dương: đối chiếu mapping/contract, trainer/collator, GPU smoke, pilot 50 optimizer steps và checkpoint/log thật. Cường còn phần dữ liệu mới, reload/resume và evaluation sau khi nhận adapter. Chưa đạt toàn bộ checklist đóng Tuan6; chưa có adapter fine-tune, chưa tạo Issue GitHub hoặc nộp milestone trong lần chuẩn bị này.
+
+
+## 17 Tiếp nhận kết quả ngày 06/11/2026
+
+Các mục chuẩn bị ngày 03/11 phía trên là snapshot lịch sử. Kết quả mới đọc tại `docs/qlora-receiver-report.md`, `docs/dataset-card-w6.md` và `Evidence/W06/receiver/`. Đã nhận artifact pilot 50 update của Dương, kiểm config/checkpoint/log và xuất ứng viên chung 1.000 mẫu. Cập nhật 07/11: Cường đã chạy kiểm chứng GPU riêng; ZIP/receipt/audit tải về đã được kiểm độc lập. Review nội dung/nhóm và quyền nguồn vẫn giữ trạng thái chưa chốt. Không dùng snapshot cũ để kết luận chưa có adapter, cũng không dùng báo cáo tiếp nhận để tự đóng toàn bộ checklist tuần.

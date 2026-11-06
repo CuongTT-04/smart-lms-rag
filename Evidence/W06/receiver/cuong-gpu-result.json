@@ -1,0 +1,105 @@
+{
+  "status": "CUONG_GPU_RELOAD_RESUME_AND_COMPARISON_VERIFIED",
+  "verified_on": "2026-11-07",
+  "operator_member": "B",
+  "operator_name": "Trần Tuấn Cường",
+  "execution_location": "KAGGLE_USER_SESSION",
+  "receiver_verification_location": "LOCAL_CPU_INSPECTION_OF_DOWNLOADED_ARTIFACTS",
+  "local_cuda_used": false,
+  "run_id": "verification-20261106T194045367524Z",
+  "archive_receipt": {
+    "file": "verification-20261106T194045367524Z.zip",
+    "sha256": "85760688ed358d1b8dc4ff6dc7f26ce3dad96f7558bac4e9a3d88ad4c2f0f38b",
+    "size_bytes": 190438481,
+    "audit_file": "verification-20261106T194045367524Z-audit.json",
+    "audit_sha256": "08cbddeb6bb8080f1852f5239b27c0cb7a6b72ffa7bd286aac3664b403358970",
+    "manifest_sha256": "de247e3df5d02a0e81bfce368490a0ef0f4c7360d0f8cea76626c4458d834777",
+    "pilot_manifest_sha256": "b228645e1df2d4370715539399f388208d1c7aa04745ce85ca7ccb94425a2a1d",
+    "scope": "PRIVATE_RELOAD_RESUME_DEVELOPMENT_COMPARISON",
+    "base_weights_included": false
+  },
+  "receipt_and_external_audit_checked": true,
+  "files_checked": 90,
+  "reload": {
+    "status": "GPU_RELOAD_PASSED",
+    "process_id": 195,
+    "reloaded_saved_tensors_exact": true,
+    "forward_loss": 0.0018717270577326417,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "quantization": "NF4_DOUBLE_QUANT_FP16",
+    "adapter_sha256": "b56082699bafadede84f3afc96da2e72084cae3f988464644aec4f392eb9e823",
+    "base_comparison": "SAME_NF4_BASE_WITH_ALL_LORA_DISABLED",
+    "requires_grad_any": false
+  },
+  "resume": {
+    "status": "GPU_RESUME_PASSED",
+    "start_global_step": 25,
+    "global_step": 26,
+    "applied_updates": 1,
+    "scheduler_step_before": 25,
+    "scheduler_step_after": 26,
+    "optimizer_state_steps_before": [
+      25
+    ],
+    "optimizer_state_steps_after": [
+      26
+    ],
+    "original_max_steps": 50,
+    "adapter_delta_l2": 0.14359974930891028,
+    "original_pilot_untouched": true,
+    "limitation": "One resume verification update, not a second pilot."
+  },
+  "independently_measured_resume_update": {
+    "changed_tensors": 392,
+    "adapter_delta_l2": 0.14359974930396277
+  },
+  "comparison": {
+    "arms": {
+      "base": {
+        "count": 20,
+        "completed": 20,
+        "format_valid": 20,
+        "expected_behavior_match": 20,
+        "citation_ids_valid": 18,
+        "citation_eligible_count": 18,
+        "reference_exact_match": 4,
+        "mean_reference_token_f1": 0.7455143542359124,
+        "mean_latency_seconds": 4.473869101750012,
+        "input_tokens": 13903,
+        "output_tokens": 937
+      },
+      "adapter": {
+        "count": 20,
+        "completed": 20,
+        "format_valid": 20,
+        "expected_behavior_match": 20,
+        "citation_ids_valid": 18,
+        "citation_eligible_count": 18,
+        "reference_exact_match": 4,
+        "mean_reference_token_f1": 0.7854212697448018,
+        "mean_latency_seconds": 5.0657043671499995,
+        "input_tokens": 13903,
+        "output_tokens": 720
+      }
+    },
+    "scope": "20_DEVELOPMENT_VALIDATION_CASES_NOT_HELDOUT_TEST",
+    "semantic_quality": "NOT_REVIEWED",
+    "human_review_complete": false,
+    "limitation": "Format, valid IDs, action grammar and lexical overlap do not establish factuality, grounding or citation support. Failed/truncated generations count as failures."
+  },
+  "output_identity": {
+    "passed": true,
+    "compared_outputs": 40,
+    "identical_raw_outputs": 40,
+    "changed_outputs": [],
+    "old_predictions_sha256": "79b69038b19365ede2bb20be17daa938751695d1a256587b5e2ad44e248f07d9",
+    "new_predictions_sha256": "e39d3eaca4b22d28758bccc6f49559a4937f65ee0fd07c49bb31d5979dca3000",
+    "prompts_identical": true,
+    "source": "CPU_BYTE_COMPARISON_OF_AUTHENTICATED_ARCHIVES"
+  },
+  "human_peer_approval": false,
+  "quality_improvement": "NOT_ESTABLISHED",
+  "core_w6_criterion": "SMALL_QLORA_CONFIG_CHECKPOINT_LOG_VERIFIED",
+  "data_group_release": "PENDING_OWNER_PEER_REVIEW"
+}

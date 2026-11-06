@@ -1,0 +1,23 @@
+{
+  "status": "READBACK_AUDIT_PASSED",
+  "record_count": 250,
+  "split_counts": {
+    "train": 199,
+    "validation": 18,
+    "instruction_holdout": 33
+  },
+  "tokenizer": "PINNED_REAL_QWEN_CPU",
+  "retokenized_records": 250,
+  "collator_batch_size": 4,
+  "prompt_and_padding_masked": true,
+  "single_completion_eos": true,
+  "silent_truncation": false,
+  "peer_approval": false,
+  "training": "NOT_RUN",
+  "physical_pdf_sources_rechecked": 14,
+  "physical_pdf_pages_rechecked": 60,
+  "original_target_and_sources_rebuilt": true,
+  "review_scope": "ASSISTED_RECEIVER_TECHNICAL_REVIEW_PENDING_HUMAN_PEER",
+  "human_peer_approval_created": false,
+  "duplicate_scan_findings": 0
+}

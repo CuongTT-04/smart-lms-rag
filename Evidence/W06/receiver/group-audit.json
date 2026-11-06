@@ -1,0 +1,98 @@
+{
+  "status": "TECHNICAL_GROUP_CANDIDATE_PENDING_MEMBER_PEER_REVIEW",
+  "record_count": 1000,
+  "inherited_records": 500,
+  "new_a": 250,
+  "new_b": 250,
+  "stats": {
+    "train": {
+      "count": 770,
+      "tasks": {
+        "qa": 460,
+        "summary": 154,
+        "insufficient_evidence": 78,
+        "hint": 78
+      },
+      "courses": {
+        "THMLN": 344,
+        "KTCTMLN": 200,
+        "CNXHKH": 226
+      }
+    },
+    "validation": {
+      "count": 114,
+      "tasks": {
+        "qa": 66,
+        "hint": 12,
+        "summary": 24,
+        "insufficient_evidence": 12
+      },
+      "courses": {
+        "CNXHKH": 36,
+        "KTCTMLN": 50,
+        "THMLN": 28
+      }
+    },
+    "instruction_holdout": {
+      "count": 116,
+      "tasks": {
+        "qa": 74,
+        "summary": 22,
+        "hint": 10,
+        "insufficient_evidence": 10
+      },
+      "courses": {
+        "THMLN": 28,
+        "CNXHKH": 38,
+        "KTCTMLN": 50
+      }
+    }
+  },
+  "tokenizer_records_checked": 1000,
+  "max_sequence_tokens": 1602,
+  "source_group_and_family_split": "PRESERVED",
+  "exact_and_5gram_duplicates": "PASSED",
+  "member_reports": {
+    "A": {
+      "status": "READBACK_AUDIT_PASSED",
+      "record_count": 250,
+      "split_counts": {
+        "train": 199,
+        "validation": 18,
+        "instruction_holdout": 33
+      },
+      "tokenizer": "PINNED_REAL_QWEN_CPU",
+      "retokenized_records": 250,
+      "collator_batch_size": 4,
+      "prompt_and_padding_masked": true,
+      "single_completion_eos": true,
+      "silent_truncation": false,
+      "peer_approval": false,
+      "training": "NOT_RUN"
+    },
+    "B": {
+      "status": "READBACK_AUDIT_PASSED",
+      "record_count": 250,
+      "split_counts": {
+        "train": 186,
+        "validation": 39,
+        "instruction_holdout": 25
+      },
+      "tokenizer": "PINNED_REAL_QWEN_CPU",
+      "retokenized_records": 250,
+      "collator_batch_size": 4,
+      "prompt_and_padding_masked": true,
+      "single_completion_eos": true,
+      "silent_truncation": false,
+      "peer_approval": false,
+      "training": "NOT_RUN"
+    }
+  },
+  "training": "NOT_RUN_ON_GROUP_1000",
+  "human_peer_approval_created": false,
+  "source_rights": "DECLARED_NOT_VERIFIED",
+  "training_ready": false,
+  "group_release_ready": false,
+  "format": "INHERITED_W5_PAYLOADS_PRESERVED_PLUS_NEW_EVIDENCE_ID_PAYLOADS",
+  "format_transition": "PILOT_160_LOCKED_SEPARATELY_UNIFORM_GROUP_CONVERSION_BEFORE_W7_TRAINING"
+}
