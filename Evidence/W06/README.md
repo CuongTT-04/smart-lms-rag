@@ -45,13 +45,13 @@ Gradient dao động nhưng không có dấu hiệu bùng nổ kéo dài trên b
 
 Gộp **500 mẫu cũ + 250 mẫu mới của Dương + 250 mẫu mới của Cường**; chia thành **770 train / 114 validation / 116 holdout**, giữ các nhóm nguồn và biến thể cùng tập. Kiểm nguồn, trùng lặp, benchmark leakage, token/EOS/loss mask; độ dài lớn nhất **1.602 token**.
 
-Bộ 1.000 mẫu là **ứng viên đã kiểm kỹ thuật**, còn cần thống nhất định dạng và review nội dung theo ID/hash trước khi chốt sử dụng. Pilot đã chạy vẫn dùng bộ 128/32, **không phải huấn luyện trên toàn bộ 1.000 mẫu**. Minh chứng được báo cáo tại `Evidence/W06/receiver/` trong dự án.
+Bộ 1.000 mẫu là **ứng viên đã kiểm kỹ thuật**, còn cần thống nhất định dạng và review nội dung theo ID/hash trước khi chốt sử dụng. Pilot đã chạy vẫn dùng bộ 128/32, **không phải huấn luyện trên toàn bộ 1.000 mẫu**. Số liệu tổng hợp và thông tin xác định các gói dữ liệu nằm trong [metrics.csv](metrics.csv) và [manifest.json](manifest.json).
 
 ### 2.5. Tiếp nhận checkpoint, kiểm reload/resume và đối chiếu development
 
 Kiểm receipt, manifest và checksum trước khi đọc checkpoint. Cường chạy kiểm chứng độc lập trên Kaggle: nạp lại adapter trong tiến trình mới; tiếp tục từ **checkpoint 25 đến bước 26**, giữ lịch huấn luyện 50 bước và thực hiện đúng một cập nhật.
 
-Đợt `verification-20261106T194045367524Z` đạt reload/resume; gói được kiểm **90 file**, **392 tensor adapter thay đổi**, độ lệch L2 khoảng **0,14360**. Minh chứng: `cuong-gpu-result.json`, `cuong-gpu-artifact-audit.json`, `cuong-gpu-intake.json`.
+Đợt `verification-20261106T194045367524Z` đạt reload/resume; đã kiểm **90 file**, xác nhận **392 tensor adapter thay đổi**, độ lệch L2 khoảng **0,14360**. Kết quả và checksum gói kiểm chứng được ghi trong [manifest.json](manifest.json).
 
 Đối chiếu development gồm **20 ca × 2 nhánh = 40 đầu ra** hợp lệ để kiểm quy trình, chưa thay thế đánh giá chất lượng tổng thể. Adapter chưa được triển khai vào Ayo.
 
@@ -62,7 +62,7 @@ Kiểm receipt, manifest và checksum trước khi đọc checkpoint. Cường c
 | Repository / PR | [smart-lms-rag](https://github.com/CuongTT-04/smart-lms-rag), [PR #15](https://github.com/CuongTT-04/smart-lms-rag/pull/15), [PR #14](https://github.com/CuongTT-04/smart-lms-rag/pull/14) |
 | Commit tiêu biểu | `3c3b803`: pilot và 250 mẫu mới; `934695e`: tích hợp QLoRA, dữ liệu và kiểm chứng checkpoint GPU |
 | Milestone | Fine-tune/QLoRA thử nghiệm nhỏ; lưu config/checkpoint/log |
-| Kết quả kiểm tra | **208 test đạt**: 103 QLoRA/receiver và 105 instruction, theo báo cáo |
+| Kết quả kiểm tra | **208 test đạt**: 103 kiểm tra công cụ QLoRA và xác thực kết quả, 105 kiểm tra instruction; [log kiểm thử](test-results.txt) |
 | Chỉ số toàn vẹn | [metrics.csv](metrics.csv), [manifest.json](manifest.json); ảnh trong `figures/` |
 
 ## 4. Tổng kết và hướng tiếp theo

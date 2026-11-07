@@ -1,4 +1,4 @@
-"""Package only trainer source, tests, recipe and the single guide for Kaggle."""
+"""Package trainer source, tests and recipe for Kaggle without private handoff notes."""
 import argparse
 from pathlib import Path
 import sys
@@ -21,7 +21,7 @@ def main(argv=None):
     output = output_guard(args.output, [root / 'scripts/qlora', root / 'configs', root / 'docs'])
     output.mkdir(parents=True, exist_ok=False)
     paths = sorted((root / 'scripts/qlora').rglob('*.py')) + [
-        root / 'scripts/qlora/requirements.txt', root / 'configs/qlora-pilot.json', root / 'docs/qlora.md']
+        root / 'scripts/qlora/requirements.txt', root / 'configs/qlora-pilot.json']
     archive = output / 'qlora-tools.zip'
     with ZipFile(archive, 'x', compression=ZIP_DEFLATED) as zipped:
         for path in paths:

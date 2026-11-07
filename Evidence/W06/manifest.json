@@ -263,7 +263,8 @@
   "report_source": {
     "path": "D:\\Đồ án tốt nghiệp\\README.md",
     "sha256": "4a3410ff729bb9a2e16b493cb9c079a192e9724f0e404508eeec96193a3af362",
-    "copied_without_modification": true
+    "copied_without_modification": false,
+    "adaptation": "README references updated to the public metrics, manifest and test log; original report retained as provenance."
   },
   "figure_sources": {
     "figures/loss-curve.png": {
@@ -282,7 +283,7 @@
     }
   },
   "relocated_readme_references": {
-    "note": "Supplied README kept exact per user request. Its receiver/ and individual audit names refer to members inside previous_evidence_archive.",
+    "note": "README now references the public metrics, manifest and test log. Detailed historical audits remain in previous_evidence_archive.",
     "previous_folder": "Evidence/W06/receiver/",
     "archive_member_prefix": "receiver/"
   },
@@ -306,8 +307,8 @@
       "size_bytes": 3005
     },
     "README.md": {
-      "sha256": "4a3410ff729bb9a2e16b493cb9c079a192e9724f0e404508eeec96193a3af362",
-      "size_bytes": 6778
+      "sha256": "859e3f55277d654b749bda730730372114a43fc1ed3a20080429f0061ae17c3e",
+      "size_bytes": 6922
     },
     "test-results.txt": {
       "sha256": "86bf23bd5b0cb93a60a75d47b4862a31ecd949b3f07a99ad31024ab16c9563bd",
@@ -315,5 +316,5 @@
     }
   },
   "manifest_hashes_itself": false,
-  "integrity_basis": "Exact file bytes, including unmodified supplied README and figures."
+  "integrity_basis": "Exact file bytes of the current README, metrics, test log and original figures."
 }

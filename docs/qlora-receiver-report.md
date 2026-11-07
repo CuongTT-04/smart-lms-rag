@@ -68,7 +68,7 @@ Việc đọc đối chiếu có hỗ trợ được ghi `ASSISTED_CONTENT_REVIE
 
 ## Chạy lại và bàn giao
 
-Đọc [hướng dẫn tiếp nhận](qlora-receiver-handoff.md). Evidence công khai hiện được tổng hợp tại `Evidence/W06/` theo layout W05: README, metrics, log kiểm tra, manifest và figures. Các audit chi tiết/PDF trước đây trong `receiver/` đã được lưu nguyên trạng trong ZIP ngoài thư mục evidence; xem `previous_evidence_archive` trong `Evidence/W06/manifest.json` để biết đường dẫn và checksum. Raw output, dữ liệu và trọng số chỉ trong gói `.private` có checksum.
+Evidence công khai được tổng hợp tại [Evidence/W06](../Evidence/W06/README.md) theo layout W05: README, metrics, log kiểm tra, manifest và figures. Các audit chi tiết/PDF trước đây trong `receiver/` đã được lưu nguyên trạng trong ZIP ngoài thư mục evidence; xem `previous_evidence_archive` trong `Evidence/W06/manifest.json` để biết đường dẫn và checksum. Raw output, dữ liệu và trọng số chỉ trong gói `.private` có checksum.
 
 ## Review code cuối và sửa sau review
 
