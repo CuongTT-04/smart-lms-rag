@@ -309,6 +309,39 @@ class ProcedureCompletenessTests(TestCase):
         self.assertNotIn('Gửi hồ sơ.',feedback['instruction'])
         self.assertGreater(provider.deadlines[1],0)
 
+    def test_numbered_procedure_retries_missing_middle_and_continuation(self):
+        import json
+        from dataclasses import replace
+
+        first = replace(self.context, text='Quy trình đăng ký\nCác bước sau:\n1. Chuẩn bị hồ sơ.\n2. Gửi hồ sơ.\n3. Kiểm tra hồ sơ.')
+        second = replace(first, source_id='S2', chunk_id='continuation', page_number=first.page_number + 1,
+                         text='Quy trình đăng ký (tiếp theo)\n4. Nhận kết quả.\nVí dụ: Hồ sơ của lớp A.')
+        items = [dict(text=text, evidence_id=evidence_id) for text, evidence_id in (
+            ('Chuẩn bị hồ sơ.', 'E1.3'), ('Gửi hồ sơ.', 'E1.4'), ('Kiểm tra hồ sơ.', 'E1.5'), ('Nhận kết quả.', 'E2.2'))]
+        provider = self.provider([json.dumps({'items': [items[0], items[2]]}), json.dumps({'items': items})])
+        result = RAGPipeline(provider).generate_answer(question=self.question, mode='qa', contexts=[first, second], history=[])
+        self.assertEqual(provider.generate_calls, 2)
+        self.assertEqual([ref.source_id for ref in result.references], ['S1', 'S2'])
+        self.assertTrue(result.answer.endswith('4. Nhận kết quả. [2]'))
+        feedback = json.loads(provider.requests[1][-1]['content'])['repair_feedback']
+        self.assertEqual(feedback['required_evidence_ids'], ['E1.4', 'E2.2'])
+
+    def test_extracted_slides_without_markers_exclude_example_and_footer(self):
+        import json
+        from dataclasses import replace
+
+        first = replace(self.context, text='Quy trình đăng ký (cont.)\nCác bước sau:\nChuẩn bị hồ sơ.\nGửi hồ sơ.\n<!-- image -->\nTên giảng viên')
+        second = replace(first, source_id='S2', chunk_id='continuation', page_number=first.page_number + 1,
+                         text='Quy trình đăng ký (cont.)\nNhận kết quả.\nVí dụ: Hồ sơ của lớp A.\nTên giảng viên')
+        items = [dict(text=text, evidence_id=evidence_id) for text, evidence_id in (
+            ('Chuẩn bị hồ sơ.', 'E1.3'), ('Gửi hồ sơ.', 'E1.4'), ('Nhận kết quả.', 'E2.2'))]
+        provider = self.provider([json.dumps({'items': items[:2]}), json.dumps({'items': items})])
+        result = RAGPipeline(provider).generate_answer(question=self.question, mode='qa', contexts=[first, second], history=[])
+        self.assertEqual(provider.generate_calls, 2)
+        self.assertTrue(result.answer.endswith('3. Nhận kết quả. [2]'))
+        prompt = json.loads(provider.requests[0][-1]['content'])
+        self.assertEqual(prompt['procedure_step_ids'], [['E1.3', 'E1.4', 'E2.2']])
+
     def test_second_missing_first_step_fails_without_inserting_text(self):
         provider=self.provider([self.bad,self.bad])
         with self.assertRaises(GenerationError) as caught:

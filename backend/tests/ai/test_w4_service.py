@@ -81,6 +81,27 @@ class ChatServiceTests(ScopeFixture):
         self.assertEqual(caught.exception.code,'GENERATION_UNAVAILABLE')
         self.assertNotIn('secret',caught.exception.message)
 
+    def test_incomplete_model_procedure_returns_cited_source_steps(self):
+        self.retrieval.return_value = [
+            {**self.hit, 'text': 'Quy trình đăng ký (cont.)\nCác bước sau:\nChuẩn bị hồ sơ.\nGửi hồ sơ.\n<!-- image -->\nTên giảng viên'},
+            {**self.hit, 'chunk_id': 'chunk-2', 'source': {**self.hit['source'], 'page_number': 2},
+             'text': 'Quy trình đăng ký (cont.)\nNhận kết quả.\nVí dụ: Hồ sơ của lớp A.'},
+        ]
+        self.runtime.generate.side_effect = DocumentError('GENERATION_INCOMPLETE_ANSWER', 'Missing steps', 503)
+        self.data['question'] = 'Quy trình đăng ký diễn ra như thế nào?'
+        result = answer_chat(user=self.student, data=self.data, runtime=self.runtime, request_id=str(uuid4()), history=[])
+        self.assertEqual(result['status'], 'ANSWERED')
+        self.assertEqual([source['page_number'] for source in result['citations']], [1, 2])
+        self.assertIn('1. Chuẩn bị hồ sơ. [1]', result['answer'])
+        self.assertTrue(result['answer'].endswith('3. Nhận kết quả. [2]'))
+        self.assertNotIn('Ví dụ', result['answer'])
+        self.assertNotIn('Tên giảng viên', result['answer'])
+        self.assertEqual(result['memory']['turns_used'], 0)
+        self.data['question'] = 'Quy trình thanh toán diễn ra như thế nào?'
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual(caught.exception.code, 'GENERATION_INCOMPLETE_ANSWER')
+
     def test_model_limit_and_busy_errors_are_not_flattened_to_unavailable(self):
         for code,status in [('OUTPUT_LIMIT_REACHED',503),('GENERATION_TIMEOUT',503),('GENERATION_BUSY',429),('GENERATION_CONFIG_MISMATCH',503),('GENERATION_MISSING_CITATION',503)]:
             self.runtime.generate.side_effect=DocumentError(code,'Safe message',status)

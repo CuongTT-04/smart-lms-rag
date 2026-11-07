@@ -1,7 +1,9 @@
 from dataclasses import replace
-from unittest.mock import Mock
+from types import SimpleNamespace
+from unittest import TestCase
+from unittest.mock import Mock, patch
 from apps.documents.exceptions import DocumentError
-from apps.documents.retrieval_contracts import Chunk
+from apps.documents.retrieval_contracts import Chunk, RetrievalScope
 from apps.documents.retrieval_scope import resolve_scope
 from apps.documents.retrieval_adapter import retrieve_authorized
 from tests.documents.test_retrieval_scope import ScopeFixture
@@ -46,6 +48,7 @@ class AdapterTests(ScopeFixture):
             self.member.status='REMOVED';self.member.save();return [{'chunk_id':'chunk-1','score':1}]
         self.retriever.search.side_effect=revoke
         with self.assertRaises(DocumentError):retrieve_authorized(self.student,'Q',self.scope,self.retriever,catalog=self.catalog)
+
         self.member.status='ACTIVE';self.member.save()
         def remove(**kwargs):
             from django.utils import timezone
@@ -76,3 +79,27 @@ class AdapterTests(ScopeFixture):
         self.retriever.search.side_effect=unpublish
         with self.assertRaises(DocumentError):
             retrieve_authorized(self.student,'Q',self.scope,self.retriever,catalog=self.catalog)
+
+class ProcedureRetrievalTests(TestCase):
+    def test_matching_next_page_can_take_a_slot_outside_dense_top_k(self):
+        first = Chunk('1.0', 'chunk-1', 'course', 'doc', 'v1', 'PDF', 1, None, 0,
+                      'Quy trình đăng ký\n1. Chuẩn bị hồ sơ.\n2. Gửi hồ sơ.', 20, 0, 60, 'a'*64, 'b'*64)
+        second = replace(first, chunk_id='chunk-2', page_number=2,
+                         text='Quy trình đăng ký (cont.)\n3. Nhận kết quả.')
+        other = replace(second, chunk_id='unrelated', text='Quy trình khác\n3. Mở tài khoản.')
+        foreign = replace(second, chunk_id='foreign', version_id='v2')
+        catalog = {c.chunk_id: c for c in (first, second, other, foreign)}
+        retriever = Mock()
+        retriever.search.return_value = [{'chunk_id': first.chunk_id, 'score': 0.9},
+                                         {'chunk_id': other.chunk_id, 'score': 0.8}]
+        scope = RetrievalScope('user', 'course', None, None, None, ('v1',))
+        version = SimpleNamespace(pk='v1', document_id='doc', page_count=2, checksum_sha256='a'*64)
+        with patch('apps.documents.retrieval_adapter.live_scope', return_value=scope), \
+                patch('apps.documents.retrieval_adapter.DocumentVersion.objects.filter', return_value=[version]):
+            result = retrieve_authorized(SimpleNamespace(pk='user'), 'Quy trình đăng ký như thế nào?',
+                                         scope, retriever, top_k=2, catalog=catalog, include_procedure_continuations=True)
+            ordinary = retrieve_authorized(SimpleNamespace(pk='user'), 'Hồ sơ là gì?',
+                                           scope, retriever, top_k=2, catalog=catalog)
+        self.assertEqual([row['chunk_id'] for row in result], ['chunk-1', 'chunk-2'])
+        self.assertEqual([row['rank'] for row in result], [1, 2])
+        self.assertEqual([row['chunk_id'] for row in ordinary], ['chunk-1', 'unrelated'])

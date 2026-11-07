@@ -121,8 +121,8 @@ class RAGPipeline:
             from .conversation import render_structured_answer
             text=render_structured_answer(text,prepared.contexts,require_proof='json_schema' in options)
             if 'json_schema' in options:
-                from .conversation import validate_sequence_start
-                validate_sequence_start(question,output.text,prepared.contexts)
+                from .conversation import validate_procedure_coverage
+                validate_procedure_coverage(question,output.text,prepared.contexts)
         if mode == "hint" and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded"):
             status, answer, references, mapping = parse_reading_hint(text, prepared.contexts)
         else:

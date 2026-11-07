@@ -1,0 +1,468 @@
+OHAYO - W06 verification
+Layout updated: 20261107T145404+0700
+Unit tests passed: 208 (103 QLoRA/receiver + 105 instruction).
+Execution: retained verified test runs; no tests, model loading, inference or training rerun during layout update.
+Fresh checks in this operation: ZIP inventory/payload readback, source README/figures byte identity, final layout/manifest/CSV consistency.
+Previous detailed evidence archive: .private/w6/evidence-archive/W06-before-layout-20261107T145404+0700.zip
+
+=== QLoRA/receiver (103 tests) - retained log ===
+test_abstention_does_not_count_as_normal_answer (scripts.qlora.tests.test_assessment.AssessmentTests.test_abstention_does_not_count_as_normal_answer) ... ok
+test_actual_tiny_cpu_adapter_reload_not_qwen7b_gpu (scripts.qlora.tests.test_assessment.AssessmentTests.test_actual_tiny_cpu_adapter_reload_not_qwen7b_gpu) ... D:\Đồ án tốt nghiệp\smart-lms-rag\.private\qlora\receiver-runtime\Lib\site-packages\peft\utils\save_and_load.py:286: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+  warnings.warn(
+ok
+test_format_and_known_citation_do_not_assert_semantic_quality (scripts.qlora.tests.test_assessment.AssessmentTests.test_format_and_known_citation_do_not_assert_semantic_quality) ... ok
+test_hint_action_grammar_cannot_certify_hint_quality (scripts.qlora.tests.test_assessment.AssessmentTests.test_hint_action_grammar_cannot_certify_hint_quality) ... ok
+test_locked_selection_reads_only_validation_and_does_not_mutate_prompt (scripts.qlora.tests.test_assessment.AssessmentTests.test_locked_selection_reads_only_validation_and_does_not_mutate_prompt) ... ok
+test_partial_valid_json_or_hint_never_passes_without_completed_generation (scripts.qlora.tests.test_assessment.AssessmentTests.test_partial_valid_json_or_hint_never_passes_without_completed_generation) ... ok
+test_reference_never_reaches_tokenizer_or_generation (scripts.qlora.tests.test_assessment.AssessmentTests.test_reference_never_reaches_tokenizer_or_generation) ... ok
+test_summary_counts_all_40_cases_and_preserves_semantic_unknowns (scripts.qlora.tests.test_assessment.AssessmentTests.test_summary_counts_all_40_cases_and_preserves_semantic_unknowns) ... ok
+test_unknown_id_duplicate_keys_and_extra_text_are_rejected (scripts.qlora.tests.test_assessment.AssessmentTests.test_unknown_id_duplicate_keys_and_extra_text_are_rejected) ... ok
+test_changed_run_file_fails_integrity_before_resume_claim (scripts.qlora.tests.test_assessment.ResumeAuditTests.test_changed_run_file_fails_integrity_before_resume_claim) ... ok
+test_optimizer_or_scheduler_restart_cannot_pass_as_resume (scripts.qlora.tests.test_assessment.ResumeAuditTests.test_optimizer_or_scheduler_restart_cannot_pass_as_resume) ... ok
+test_synthetic_resume_proof_not_gpu_execution (scripts.qlora.tests.test_assessment.ResumeAuditTests.test_synthetic_resume_proof_not_gpu_execution) ... ok
+test_frozen_sources_keep_original_hashes_and_worker_sources_match_repo (scripts.qlora.tests.test_assessment.VerificationNotebookTests.test_frozen_sources_keep_original_hashes_and_worker_sources_match_repo) ... ok
+test_notebook_runtime_overlay_and_resume_launch_without_gpu (scripts.qlora.tests.test_assessment.VerificationNotebookTests.test_notebook_runtime_overlay_and_resume_launch_without_gpu) ... ok
+test_six_cells_and_only_one_resume_step_not_pilot_retraining (scripts.qlora.tests.test_assessment.VerificationNotebookTests.test_six_cells_and_only_one_resume_step_not_pilot_retraining) ... ok
+test_cpu_preflight_never_loads_weights (scripts.qlora.tests.test_cli.CLITests.test_cpu_preflight_never_loads_weights) ... ok
+test_failed_validation_keeps_failed_run_without_model_load (scripts.qlora.tests.test_cli.CLITests.test_failed_validation_keeps_failed_run_without_model_load) ... ok
+test_help_does_not_load_model (scripts.qlora.tests.test_cli.CLITests.test_help_does_not_load_model) ... ok
+test_kaggle_launcher_rejects_non_kaggle_machine (scripts.qlora.tests.test_cli.CLITests.test_kaggle_launcher_rejects_non_kaggle_machine) ... ok
+test_package_contains_only_declared_tools_and_no_private_payload (scripts.qlora.tests.test_cli.CLITests.test_package_contains_only_declared_tools_and_no_private_payload) ... ok
+test_stop_requires_authenticated_resume (scripts.qlora.tests.test_cli.CLITests.test_stop_requires_authenticated_resume) ... ok
+test_does_not_double_shift_labels (scripts.qlora.tests.test_collator.CollatorTests.test_does_not_double_shift_labels) ... ok
+test_rejects_all_masked_or_prompt_loss (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_all_masked_or_prompt_loss) ... ok
+test_rejects_bad_shapes (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_bad_shapes) ... ok
+test_rejects_bool_tokens (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_bool_tokens) ... ok
+test_rejects_empty_batch (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_empty_batch) ... ok
+test_rejects_label_mismatch_and_multiple_eos (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_label_mismatch_and_multiple_eos) ... ok
+test_rejects_mask_holes_and_missing_eos (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_mask_holes_and_missing_eos) ... ok
+test_rejects_metadata (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_metadata) ... ok
+test_rejects_padding_that_exceeds_limit (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_padding_that_exceeds_limit) ... ok
+test_rejects_prepadded_rows (scripts.qlora.tests.test_collator.CollatorTests.test_rejects_prepadded_rows) ... ok
+test_right_padding_dtype_and_input_immutability (scripts.qlora.tests.test_collator.CollatorTests.test_right_padding_dtype_and_input_immutability) ... ok
+test_variable_length_batch_stable_multiple (scripts.qlora.tests.test_collator.CollatorTests.test_variable_length_batch_stable_multiple) ... ok
+test_budget_boundary_and_no_truncation (scripts.qlora.tests.test_data.DataTests.test_budget_boundary_and_no_truncation) ... ok
+test_canonical_unicode_matches_contract (scripts.qlora.tests.test_data.DataTests.test_canonical_unicode_matches_contract) ... ok
+test_duplicate_keys_and_nonfinite_rejected (scripts.qlora.tests.test_data.DataTests.test_duplicate_keys_and_nonfinite_rejected) ... ok
+test_empty_target_and_post_eos_content_rejected (scripts.qlora.tests.test_data.DataTests.test_empty_target_and_post_eos_content_rejected) ... ok
+test_exact_prompt_eos_and_post_format_mask (scripts.qlora.tests.test_data.DataTests.test_exact_prompt_eos_and_post_format_mask) ... ok
+test_hash_and_split_authentication (scripts.qlora.tests.test_data.DataTests.test_hash_and_split_authentication) ... ok
+test_jsonl_does_not_accept_blanks_or_duplicate_keys (scripts.qlora.tests.test_data.DataTests.test_jsonl_does_not_accept_blanks_or_duplicate_keys) ... ok
+test_missing_or_duplicate_eos_rejected (scripts.qlora.tests.test_data.DataTests.test_missing_or_duplicate_eos_rejected) ... ok
+test_paths_confined (scripts.qlora.tests.test_data.DataTests.test_paths_confined) ... ok
+test_notebook_environment_source_matches_reviewed_module (scripts.qlora.tests.test_notebook.NotebookTests.test_notebook_environment_source_matches_reviewed_module) ... ok
+test_overlay_preserves_locked_input_and_is_repeatable (scripts.qlora.tests.test_notebook.NotebookTests.test_overlay_preserves_locked_input_and_is_repeatable) ... ok
+test_smoke_notebook_creates_separate_runtime_and_never_launches_pilot (scripts.qlora.tests.test_notebook.NotebookTests.test_smoke_notebook_creates_separate_runtime_and_never_launches_pilot) ... ok
+test_smoke_sources_match_repo_and_profile_is_exactly_smoke (scripts.qlora.tests.test_notebook.NotebookTests.test_smoke_sources_match_repo_and_profile_is_exactly_smoke) ... ok
+test_49_updates_rejected (scripts.qlora.tests.test_pilot.PilotAuditTests.test_49_updates_rejected) ... ok
+test_missing_state_or_bad_binding_at_25_rejected (scripts.qlora.tests.test_pilot.PilotAuditTests.test_missing_state_or_bad_binding_at_25_rejected) ... ok
+test_modified_recipe_or_adapter_identity_rejected (scripts.qlora.tests.test_pilot.PilotAuditTests.test_modified_recipe_or_adapter_identity_rejected) ... ok
+test_resume_or_wrong_eval_schedule_rejected (scripts.qlora.tests.test_pilot.PilotAuditTests.test_resume_or_wrong_eval_schedule_rejected) ... ok
+test_smoke_cannot_pass_as_pilot (scripts.qlora.tests.test_pilot.PilotAuditTests.test_smoke_cannot_pass_as_pilot) ... ok
+test_valid_fixture_exports_two_checkpoints_not_quality_claim (scripts.qlora.tests.test_pilot.PilotAuditTests.test_valid_fixture_exports_two_checkpoints_not_quality_claim) ... GPU_PILOT_PASSED: C:\Users\Cuong\AppData\Local\Packages\OpenAI.Codex_2p2nqsd0c76g0\AC\#!sandbox.{b7ea915b-6fc0-4ad6-bcc2-e730a5ae4c6a}\Temp\tmplvfyx9ka\pilot-test-audit.json
+Private artifact: C:\Users\Cuong\AppData\Local\Packages\OpenAI.Codex_2p2nqsd0c76g0\AC\#!sandbox.{b7ea915b-6fc0-4ad6-bcc2-e730a5ae4c6a}\Temp\tmplvfyx9ka\pilot-test.zip
+ok
+test_pilot_notebook_runs_only_pilot_and_embeds_reviewed_sources (scripts.qlora.tests.test_pilot.PilotNotebookTests.test_pilot_notebook_runs_only_pilot_and_embeds_reviewed_sources) ... ok
+test_authenticates_every_file_and_can_read_back_same_output (scripts.qlora.tests.test_receive.ReceiveTests.test_authenticates_every_file_and_can_read_back_same_output) ... ok
+test_bad_receipt_rejected_before_output_created (scripts.qlora.tests.test_receive.ReceiveTests.test_bad_receipt_rejected_before_output_created) ... ok
+test_traversal_rejected_even_if_hashes_are_consistent (scripts.qlora.tests.test_receive.ReceiveTests.test_traversal_rejected_even_if_hashes_are_consistent) ... ok
+test_unlisted_file_in_archive_is_rejected (scripts.qlora.tests.test_receive.ReceiveTests.test_unlisted_file_in_archive_is_rejected) ... ok
+test_missing_artifact_never_creates_success_report (scripts.qlora.tests.test_receive_training.ReceiverTrainingTests.test_missing_artifact_never_creates_success_report) ... ok
+test_refuses_overwriting_existing_report (scripts.qlora.tests.test_receive_training.ReceiverTrainingTests.test_refuses_overwriting_existing_report) ... ok
+test_config_or_learning_rate_drift_is_rejected (scripts.qlora.tests.test_receive_training.ResumeBindingTests.test_config_or_learning_rate_drift_is_rejected) ... ok
+test_positive_report_does_not_hide_unchanged_resume_weights (scripts.qlora.tests.test_receive_training.ResumeBindingTests.test_positive_report_does_not_hide_unchanged_resume_weights) ... ok
+test_recomputes_finite_delta_from_actual_tensors (scripts.qlora.tests.test_receive_training.ResumeBindingTests.test_recomputes_finite_delta_from_actual_tensors) ... ok
+test_accepts_same_pinned_pilot_mounted_under_dataset_name (scripts.qlora.tests.test_receive_training.ResumeParentTests.test_accepts_same_pinned_pilot_mounted_under_dataset_name) ... ok
+test_rejects_other_parent_wrong_step_or_wrong_manifest (scripts.qlora.tests.test_receive_training.ResumeParentTests.test_rejects_other_parent_wrong_step_or_wrong_manifest) ... ok
+test_environment_probe_and_evaluation_use_same_python_environment (scripts.qlora.tests.test_receiver_notebook.ReceiverNotebookTests.test_environment_probe_and_evaluation_use_same_python_environment) ... ok
+test_identical_bundle_copies_in_existing_inputs_are_accepted (scripts.qlora.tests.test_receiver_notebook.ReceiverNotebookTests.test_identical_bundle_copies_in_existing_inputs_are_accepted) ... ok
+test_receiver_changes_only_bootstrap_and_label_not_frozen_gpu_logic (scripts.qlora.tests.test_receiver_notebook.ReceiverNotebookTests.test_receiver_changes_only_bootstrap_and_label_not_frozen_gpu_logic) ... ok
+test_actual_cpu_training_update_checkpoint_and_resume (scripts.qlora.tests.test_runtime.RuntimeTests.test_actual_cpu_training_update_checkpoint_and_resume) ... {'loss': 3.5202, 'grad_norm': 0.18358290195465088, 'learning_rate': 0.0, 'epoch': 1.0}
+{'loss': 3.5202, 'grad_norm': 0.18358290195465088, 'learning_rate': 0.01, 'epoch': 2.0}
+{'eval_loss': 3.50651478767395, 'eval_runtime': 0.0066, 'eval_samples_per_second': 151.043, 'eval_steps_per_second': 151.043, 'epoch': 2.0}
+{'train_runtime': 0.1248, 'train_samples_per_second': 128.217, 'train_steps_per_second': 32.054, 'train_loss': 3.5201902389526367, 'epoch': 2.0}
+D:\Đồ án tốt nghiệp\smart-lms-rag\.private\qlora\receiver-runtime\Lib\site-packages\peft\utils\save_and_load.py:286: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+  warnings.warn(
+{'loss': 3.5065, 'grad_norm': 0.2247888743877411, 'learning_rate': 0.006666666666666666, 'epoch': 3.0}
+{'eval_loss': 3.4934184551239014, 'eval_runtime': 0.0064, 'eval_samples_per_second': 155.218, 'eval_steps_per_second': 155.218, 'epoch': 3.0}
+D:\Đồ án tốt nghiệp\smart-lms-rag\.private\qlora\receiver-runtime\Lib\site-packages\peft\utils\save_and_load.py:286: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+  warnings.warn(
+{'train_runtime': 0.0856, 'train_samples_per_second': 186.942, 'train_steps_per_second': 46.736, 'train_loss': 1.1688382625579834, 'epoch': 3.0}
+D:\Đồ án tốt nghiệp\smart-lms-rag\.private\qlora\receiver-runtime\Lib\site-packages\peft\utils\save_and_load.py:286: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+  warnings.warn(
+ok
+test_base_trainability_rejected (scripts.qlora.tests.test_runtime.RuntimeTests.test_base_trainability_rejected) ... ok
+test_corrupted_recipe_rejected (scripts.qlora.tests.test_runtime.RuntimeTests.test_corrupted_recipe_rejected) ... ok
+test_failed_training_preserves_primary_error_without_tensor_readback (scripts.qlora.tests.test_runtime.RuntimeTests.test_failed_training_preserves_primary_error_without_tensor_readback) ... ok
+test_gpu_loader_recipe_wiring_without_gpu_execution (scripts.qlora.tests.test_runtime.RuntimeTests.test_gpu_loader_recipe_wiring_without_gpu_execution) ... ok
+test_inventory_detects_changed_or_traversing_file (scripts.qlora.tests.test_runtime.RuntimeTests.test_inventory_detects_changed_or_traversing_file) ... ok
+test_missing_or_nonfinite_gradient_rejected (scripts.qlora.tests.test_runtime.RuntimeTests.test_missing_or_nonfinite_gradient_rejected) ... ok
+test_no_gpu_never_attempts_model_download (scripts.qlora.tests.test_runtime.RuntimeTests.test_no_gpu_never_attempts_model_download) ... ok
+test_nonfinite_loss_rejected (scripts.qlora.tests.test_runtime.RuntimeTests.test_nonfinite_loss_rejected) ... ok
+test_output_cannot_overlap_inputs_or_existing_run (scripts.qlora.tests.test_runtime.RuntimeTests.test_output_cannot_overlap_inputs_or_existing_run) ... ok
+test_profiles_and_recipe (scripts.qlora.tests.test_runtime.RuntimeTests.test_profiles_and_recipe) ... ok
+test_recipe_preserves_pilot_scheduler_during_resume (scripts.qlora.tests.test_runtime.RuntimeTests.test_recipe_preserves_pilot_scheduler_during_resume) ... ok
+test_resume_requires_receipt_and_full_training_state (scripts.qlora.tests.test_runtime.RuntimeTests.test_resume_requires_receipt_and_full_training_state) ... ok
+test_skipped_optimizer_count_and_stop_control (scripts.qlora.tests.test_runtime.RuntimeTests.test_skipped_optimizer_count_and_stop_control) ... ok
+test_training_arguments_do_not_allow_implicit_dataparallel (scripts.qlora.tests.test_runtime.RuntimeTests.test_training_arguments_do_not_allow_implicit_dataparallel) ... ok
+test_two_visible_gpus_are_rejected_before_base_loading (scripts.qlora.tests.test_runtime.RuntimeTests.test_two_visible_gpus_are_rejected_before_base_loading) ... ok
+test_checks_t4_memory_and_disk (scripts.qlora.tests.test_setup.EnvironmentTests.test_checks_t4_memory_and_disk) ... ok
+test_cpu_failure_is_recorded_and_never_calls_nf4_or_qwen (scripts.qlora.tests.test_setup.EnvironmentTests.test_cpu_failure_is_recorded_and_never_calls_nf4_or_qwen) ... ok
+test_environment_does_not_require_space_for_unloaded_base (scripts.qlora.tests.test_setup.EnvironmentTests.test_environment_does_not_require_space_for_unloaded_base) ... ok
+test_environment_only_rejects_training_flags (scripts.qlora.tests.test_setup.EnvironmentTests.test_environment_only_rejects_training_flags) ... ok
+test_launcher_repairs_partial_env_without_ensurepip_and_targets_its_pip (scripts.qlora.tests.test_setup.EnvironmentTests.test_launcher_repairs_partial_env_without_ensurepip_and_targets_its_pip) ... ok
+test_rejects_busy_gpu_and_insufficient_disk (scripts.qlora.tests.test_setup.EnvironmentTests.test_rejects_busy_gpu_and_insufficient_disk) ... ok
+test_rejects_cpu_or_wrong_gpu (scripts.qlora.tests.test_setup.EnvironmentTests.test_rejects_cpu_or_wrong_gpu) ... ok
+test_rejects_two_visible_gpus_before_probe (scripts.qlora.tests.test_setup.EnvironmentTests.test_rejects_two_visible_gpus_before_probe) ... ok
+test_cpu_run_or_tensor_mismatch_is_rejected (scripts.qlora.tests.test_smoke.SmokeAuditTests.test_cpu_run_or_tensor_mismatch_is_rejected) ... ok
+test_missing_checkpoint_state_is_rejected (scripts.qlora.tests.test_smoke.SmokeAuditTests.test_missing_checkpoint_state_is_rejected) ... ok
+test_tampering_after_manifest_is_rejected (scripts.qlora.tests.test_smoke.SmokeAuditTests.test_tampering_after_manifest_is_rejected) ... ok
+test_valid_synthetic_evidence_not_a_real_gpu_run (scripts.qlora.tests.test_smoke.SmokeAuditTests.test_valid_synthetic_evidence_not_a_real_gpu_run) ... ok
+test_zero_delta_skipped_update_or_unfrozen_base_cannot_pass (scripts.qlora.tests.test_smoke.SmokeAuditTests.test_zero_delta_skipped_update_or_unfrozen_base_cannot_pass) ... ok
+test_cached_base_needs_only_output_budget (scripts.qlora.tests.test_storage.StorageTests.test_cached_base_needs_only_output_budget) ... ok
+test_known_budget_fits_19_gib_without_requiring_20 (scripts.qlora.tests.test_storage.StorageTests.test_known_budget_fits_19_gib_without_requiring_20) ... ok
+test_metadata_check_does_not_download_weights (scripts.qlora.tests.test_storage.StorageTests.test_metadata_check_does_not_download_weights) ... ok
+test_offline_uses_only_complete_pinned_cache (scripts.qlora.tests.test_storage.StorageTests.test_offline_uses_only_complete_pinned_cache) ... ok
+test_separate_volumes_must_both_fit (scripts.qlora.tests.test_storage.StorageTests.test_separate_volumes_must_both_fit) ... ok
+test_shared_volume_reserves_download_and_output_together (scripts.qlora.tests.test_storage.StorageTests.test_shared_volume_reserves_download_and_output_together) ... ok
+test_wrong_revision_or_unknown_size_is_rejected (scripts.qlora.tests.test_storage.StorageTests.test_wrong_revision_or_unknown_size_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 103 tests in 10.605s
+
+OK
+
+=== Instruction tools (105 tests) - retained log ===
+.........................................................................................................
+----------------------------------------------------------------------
+Ran 105 tests in 7.495s
+
+OK
+
+=== Authenticated pilot GPU training - retained verified report ===
+{
+  "smoke": {
+    "status": "GPU_SMOKE_PASSED",
+    "global_step": 2,
+    "applied_updates": 2,
+    "scaler_skipped_updates": 0,
+    "adapter_delta_l2": 0.5213757403978743,
+    "base_frozen": true,
+    "train_loss_by_step": {
+      "1": 1.0083,
+      "2": 0.2679
+    },
+    "eval_loss": 0.5336042642593384,
+    "trainable_parameters": 20185088,
+    "checkpoint": "checkpoint-2",
+    "saved_adapter_tensors_match": true,
+    "vram": {
+      "peak_allocated_bytes": 11506013184,
+      "peak_reserved_bytes": 12404654080
+    },
+    "config_sha256": "23687030d479dc69f1f257b1655ed319a78fa58b850526f4a20609eb4a831103",
+    "data_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+    "run_manifest_sha256": "2e6708182e4030005db5d775eb68647723623d505e8f3951851e84b446f6af40",
+    "limitation": "Two-step technical smoke, not pilot 50, reload/resume verification or quality improvement."
+  },
+  "pilot": {
+    "status": "GPU_PILOT_PASSED",
+    "global_step": 50,
+    "applied_updates": 50,
+    "scaler_skipped_updates": 0,
+    "adapter_delta_l2": 4.9554480940375685,
+    "base_frozen": true,
+    "train_loss_by_step": {
+      "1": 1.0083,
+      "2": 0.2679,
+      "3": 1.1766,
+      "4": 0.6007,
+      "5": 0.9307,
+      "6": 0.287,
+      "7": 0.4349,
+      "8": 0.382,
+      "9": 0.4953,
+      "10": 0.4331,
+      "11": 0.941,
+      "12": 0.3847,
+      "13": 0.2169,
+      "14": 0.1525,
+      "15": 0.3737,
+      "16": 0.6636,
+      "17": 0.1496,
+      "18": 0.1667,
+      "19": 0.4903,
+      "20": 0.7215,
+      "21": 0.6447,
+      "22": 0.3477,
+      "23": 0.5668,
+      "24": 0.1712,
+      "25": 0.1896,
+      "26": 0.3162,
+      "27": 0.2657,
+      "28": 0.3037,
+      "29": 0.2798,
+      "30": 0.2798,
+      "31": 0.0849,
+      "32": 0.6001,
+      "33": 0.2482,
+      "34": 0.2463,
+      "35": 0.1668,
+      "36": 0.2626,
+      "37": 0.5319,
+      "38": 0.4668,
+      "39": 0.6075,
+      "40": 0.259,
+      "41": 0.3377,
+      "42": 0.3002,
+      "43": 0.2388,
+      "44": 0.2184,
+      "45": 0.2061,
+      "46": 0.245,
+      "47": 0.1296,
+      "48": 0.1427,
+      "49": 0.0499,
+      "50": 0.1915
+    },
+    "eval_loss": 0.30503764748573303,
+    "trainable_parameters": 20185088,
+    "checkpoint": "checkpoint-50",
+    "saved_adapter_tensors_match": true,
+    "vram": {
+      "peak_allocated_bytes": 12184912896,
+      "peak_reserved_bytes": 14050918400
+    },
+    "config_sha256": "23687030d479dc69f1f257b1655ed319a78fa58b850526f4a20609eb4a831103",
+    "data_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+    "run_manifest_sha256": "b228645e1df2d4370715539399f388208d1c7aa04745ce85ca7ccb94425a2a1d",
+    "limitation": "Technical pilot 50, not independent GPU reload/resume verification or quality improvement.",
+    "checkpoints": [
+      "checkpoint-25",
+      "checkpoint-50"
+    ],
+    "eval_loss_by_step": {
+      "25": 0.3279542922973633,
+      "50": 0.30503764748573303
+    },
+    "initialization": "PINNED_BASE_WITH_FRESH_LORA",
+    "gpu_reload": "NOT_RUN",
+    "gpu_resume": "NOT_RUN",
+    "quality_improvement": "NOT_ESTABLISHED"
+  },
+  "verification": {
+    "passed": true,
+    "archived_gpu_reload": {
+      "status": "GPU_RELOAD_PASSED",
+      "process_id": 603,
+      "reloaded_saved_tensors_exact": true,
+      "forward_loss": 0.0018717270577326417,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "quantization": "NF4_DOUBLE_QUANT_FP16",
+      "adapter_sha256": "b56082699bafadede84f3afc96da2e72084cae3f988464644aec4f392eb9e823",
+      "base_comparison": "SAME_NF4_BASE_WITH_ALL_LORA_DISABLED",
+      "requires_grad_any": false
+    },
+    "optimizer_steps": [
+      25,
+      26
+    ],
+    "resume_global_step": 26,
+    "measured_update": {
+      "changed_tensors": 392,
+      "adapter_delta_l2": 0.14360502710160428
+    },
+    "predictions_checked": 40,
+    "comparison": {
+      "arms": {
+        "base": {
+          "count": 20,
+          "completed": 20,
+          "format_valid": 20,
+          "expected_behavior_match": 20,
+          "citation_ids_valid": 18,
+          "citation_eligible_count": 18,
+          "reference_exact_match": 4,
+          "mean_reference_token_f1": 0.7455143542359124,
+          "mean_latency_seconds": 4.6169577003001905,
+          "input_tokens": 13903,
+          "output_tokens": 937
+        },
+        "adapter": {
+          "count": 20,
+          "completed": 20,
+          "format_valid": 20,
+          "expected_behavior_match": 20,
+          "citation_ids_valid": 18,
+          "citation_eligible_count": 18,
+          "reference_exact_match": 4,
+          "mean_reference_token_f1": 0.7854212697448018,
+          "mean_latency_seconds": 5.174761428349666,
+          "input_tokens": 13903,
+          "output_tokens": 720
+        }
+      },
+      "scope": "20_DEVELOPMENT_VALIDATION_CASES_NOT_HELDOUT_TEST",
+      "semantic_quality": "NOT_REVIEWED",
+      "human_review_complete": false,
+      "limitation": "Format, valid IDs, action grammar and lexical overlap do not establish factuality, grounding or citation support. Failed/truncated generations count as failures."
+    }
+  },
+  "receiver_scope": "INDEPENDENT_CPU_AUDIT_OF_AUTHENTICATED_GPU_ARTIFACTS",
+  "receiver_cuda_available": false,
+  "receiver_reexecuted_gpu_reload": false,
+  "receiver_reexecuted_gpu_resume": false,
+  "human_peer_approval_created": false,
+  "technical_milestone": "SMALL_QLORA_CONFIG_CHECKPOINT_LOG_VERIFIED"
+}
+
+=== Independent Cường GPU reload/resume - retained verified report ===
+{
+  "status": "CUONG_GPU_RELOAD_RESUME_AND_COMPARISON_VERIFIED",
+  "verified_on": "2026-11-07",
+  "operator_member": "B",
+  "operator_name": "Trần Tuấn Cường",
+  "execution_location": "KAGGLE_USER_SESSION",
+  "receiver_verification_location": "LOCAL_CPU_INSPECTION_OF_DOWNLOADED_ARTIFACTS",
+  "local_cuda_used": false,
+  "run_id": "verification-20261106T194045367524Z",
+  "archive_receipt": {
+    "file": "verification-20261106T194045367524Z.zip",
+    "sha256": "85760688ed358d1b8dc4ff6dc7f26ce3dad96f7558bac4e9a3d88ad4c2f0f38b",
+    "size_bytes": 190438481,
+    "audit_file": "verification-20261106T194045367524Z-audit.json",
+    "audit_sha256": "08cbddeb6bb8080f1852f5239b27c0cb7a6b72ffa7bd286aac3664b403358970",
+    "manifest_sha256": "de247e3df5d02a0e81bfce368490a0ef0f4c7360d0f8cea76626c4458d834777",
+    "pilot_manifest_sha256": "b228645e1df2d4370715539399f388208d1c7aa04745ce85ca7ccb94425a2a1d",
+    "scope": "PRIVATE_RELOAD_RESUME_DEVELOPMENT_COMPARISON",
+    "base_weights_included": false
+  },
+  "receipt_and_external_audit_checked": true,
+  "files_checked": 90,
+  "reload": {
+    "status": "GPU_RELOAD_PASSED",
+    "process_id": 195,
+    "reloaded_saved_tensors_exact": true,
+    "forward_loss": 0.0018717270577326417,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "quantization": "NF4_DOUBLE_QUANT_FP16",
+    "adapter_sha256": "b56082699bafadede84f3afc96da2e72084cae3f988464644aec4f392eb9e823",
+    "base_comparison": "SAME_NF4_BASE_WITH_ALL_LORA_DISABLED",
+    "requires_grad_any": false
+  },
+  "resume": {
+    "status": "GPU_RESUME_PASSED",
+    "start_global_step": 25,
+    "global_step": 26,
+    "applied_updates": 1,
+    "scheduler_step_before": 25,
+    "scheduler_step_after": 26,
+    "optimizer_state_steps_before": [
+      25
+    ],
+    "optimizer_state_steps_after": [
+      26
+    ],
+    "original_max_steps": 50,
+    "adapter_delta_l2": 0.14359974930891028,
+    "original_pilot_untouched": true,
+    "limitation": "One resume verification update, not a second pilot."
+  },
+  "independently_measured_resume_update": {
+    "changed_tensors": 392,
+    "adapter_delta_l2": 0.14359974930396277
+  },
+  "comparison": {
+    "arms": {
+      "base": {
+        "count": 20,
+        "completed": 20,
+        "format_valid": 20,
+        "expected_behavior_match": 20,
+        "citation_ids_valid": 18,
+        "citation_eligible_count": 18,
+        "reference_exact_match": 4,
+        "mean_reference_token_f1": 0.7455143542359124,
+        "mean_latency_seconds": 4.473869101750012,
+        "input_tokens": 13903,
+        "output_tokens": 937
+      },
+      "adapter": {
+        "count": 20,
+        "completed": 20,
+        "format_valid": 20,
+        "expected_behavior_match": 20,
+        "citation_ids_valid": 18,
+        "citation_eligible_count": 18,
+        "reference_exact_match": 4,
+        "mean_reference_token_f1": 0.7854212697448018,
+        "mean_latency_seconds": 5.0657043671499995,
+        "input_tokens": 13903,
+        "output_tokens": 720
+      }
+    },
+    "scope": "20_DEVELOPMENT_VALIDATION_CASES_NOT_HELDOUT_TEST",
+    "semantic_quality": "NOT_REVIEWED",
+    "human_review_complete": false,
+    "limitation": "Format, valid IDs, action grammar and lexical overlap do not establish factuality, grounding or citation support. Failed/truncated generations count as failures."
+  },
+  "output_identity": {
+    "passed": true,
+    "compared_outputs": 40,
+    "identical_raw_outputs": 40,
+    "changed_outputs": [],
+    "old_predictions_sha256": "79b69038b19365ede2bb20be17daa938751695d1a256587b5e2ad44e248f07d9",
+    "new_predictions_sha256": "e39d3eaca4b22d28758bccc6f49559a4937f65ee0fd07c49bb31d5979dca3000",
+    "prompts_identical": true,
+    "source": "CPU_BYTE_COMPARISON_OF_AUTHENTICATED_ARCHIVES"
+  },
+  "human_peer_approval": false,
+  "quality_improvement": "NOT_ESTABLISHED",
+  "core_w6_criterion": "SMALL_QLORA_CONFIG_CHECKPOINT_LOG_VERIFIED",
+  "data_group_release": "PENDING_OWNER_PEER_REVIEW"
+}
+
+=== 1,000-record readback - retained verified report ===
+{
+  "passed": true,
+  "records_checked": 1000,
+  "inherited_payloads_and_splits_preserved": 500,
+  "retokenized_records": 1000,
+  "physical_split_and_row_id_checked": true,
+  "manifest_sha256": "4971377b34c9918422d92b8b099057c2eb602225132bdfd3ca8a552f282a805a",
+  "counts": {
+    "train": 770,
+    "validation": 114,
+    "instruction_holdout": 116
+  },
+  "human_approval": false
+}
+
+=== Regression evidence: payload-swap-regression.txt ===
+REAL_REHASHED_SWAP_REJECTED: AUTHORED_PAYLOAD_RECOMPUTATION
+
+=== Regression evidence: summary-context-regression.txt ===
+THREE_SUMMARY_CONTEXT_REGRESSIONS_PASSED
+
+=== Regression evidence: environment-routing-tests.txt ===
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.107s
+
+OK
+
+=== Regression evidence: resume-binding-tests.txt ===
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 2.414s
+
+OK
+
+=== Regression evidence: renamed-pilot-path-tests.txt ===
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 2.647s
+
+OK
+

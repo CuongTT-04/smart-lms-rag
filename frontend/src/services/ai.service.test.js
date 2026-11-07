@@ -17,6 +17,7 @@ it('explains output limits and busy generation separately from unavailable AI',(
 it('explains verified validation failures without guessing details or displaying raw provider text',()=>{
   expect(chatErrorMessage({data:{code:'GENERATION_MISSING_CITATION',message:'PRIVATE provider text'}})).toContain('thiếu dẫn nguồn')
   expect(chatErrorMessage({data:{code:'GENERATION_INVALID_CITATION'}})).toContain('không có trong học liệu')
+  expect(chatErrorMessage({data:{code:'GENERATION_INCOMPLETE_ANSWER'}})).toContain('đủ các bước')
   expect(chatErrorMessage({data:{code:'INVALID_GENERATION'}})).toContain('chưa cung cấp nguyên nhân chi tiết')
   expect(chatErrorMessage({data:{code:'UNKNOWN',message:'PRIVATE token'}})).not.toContain('PRIVATE')
 })

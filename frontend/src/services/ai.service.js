@@ -36,6 +36,7 @@ export function chatErrorMessage(error) {
     GENERATION_MISSING_CITATION: 'AI đã tạo câu trả lời nhưng thiếu dẫn nguồn từ học liệu nên chưa được hiển thị. Hãy gửi lại hoặc hỏi cụ thể hơn.',
     GENERATION_INVALID_CITATION: 'AI dẫn nguồn không có trong học liệu được cung cấp cho lượt hỏi này. Câu trả lời chưa được hiển thị để tránh dẫn nguồn sai. Hãy gửi lại câu hỏi.',
     GENERATION_INVALID_FORMAT: 'AI trả lời sai định dạng hoặc trộn câu trả lời với thông báo thiếu căn cứ. Câu trả lời chưa được hiển thị. Hãy gửi lại hoặc chia nhỏ câu hỏi.',
+    GENERATION_INCOMPLETE_ANSWER: 'AI chưa trình bày đủ các bước trong học liệu. Hãy hỏi từng phần của quy trình.',
     GENERATION_EMPTY_RESPONSE: 'AI kết thúc xử lý nhưng không tạo được nội dung trả lời. Hãy gửi lại câu hỏi.',
     GENERATION_WRONG_LANGUAGE: 'AI trả lời lẫn ngôn ngữ ngoài yêu cầu nên câu trả lời chưa được hiển thị. Hãy yêu cầu trả lời bằng tiếng Việt và thử lại.',
     GENERATION_CHOICE_MISMATCH: 'Lựa chọn AI đưa ra không khớp với các phương án trong câu hỏi. Câu trả lời chưa được hiển thị. Hãy gửi lại câu hỏi kèm đầy đủ phương án.',
