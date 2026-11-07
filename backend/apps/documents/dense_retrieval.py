@@ -16,7 +16,8 @@ def _dense_scope(scope):
         document_ids=None if scope.document_ids is None else frozenset(scope.document_ids))
 
 
-def retrieve_dense_authorized(user, query, scope, index, embedding, *, catalog, top_k=5):
+def retrieve_dense_authorized(user, query, scope, index, embedding, *, catalog, top_k=5,
+                              include_procedure_continuations=False):
     """Use only an authenticated user and operator-loaded index/catalog.
 
     Keep B's preview flag on the captured scope; A receives no client allowlist.
@@ -49,4 +50,5 @@ def retrieve_dense_authorized(user, query, scope, index, embedding, *, catalog, 
                     raise exc.__cause__
                 raise
 
-    return retrieve_authorized(user, query, scope, BoundProvider(), top_k, catalog=catalog)
+    return retrieve_authorized(user, query, scope, BoundProvider(), top_k, catalog=catalog,
+                               include_procedure_continuations=include_procedure_continuations)

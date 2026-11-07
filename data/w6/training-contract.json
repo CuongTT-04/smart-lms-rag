@@ -1,0 +1,145 @@
+{
+  "authorization": {
+    "decision_reference": "User request in current conversation 2026-11-02",
+    "formal_w5_review_paperwork_required_for_technical_handoff": false,
+    "human_peer_approval_recorded": false,
+    "original_peer_acceptance": "PENDING_ACTUAL_MEMBERS",
+    "public_redistribution_allowed": false,
+    "recipient_content_check": "Inspect mapping-audit.html before the GPU smoke; no signature is fabricated.",
+    "scope": "PRIVATE_INTERNAL_TECHNICAL_PILOT_HANDOFF",
+    "source_rights": "DECLARED_NOT_VERIFIED"
+  },
+  "contract_id": "w6-pilot-evidence-v1",
+  "created_on": "2026-11-02",
+  "expected_compact": {
+    "archive_sha256": "8bcc3af65024f2d90d8a921da58dbc8f31909c52b66da943d1e4c488fb6f0036",
+    "record_count": 500,
+    "source_package_manifest_sha256": "843b450ead5bc43958f60c146352f4f1b2f93b863eb46fc7f162ee2531b89bc5",
+    "split_counts": {
+      "instruction_holdout": 58,
+      "train": 385,
+      "validation": 57
+    }
+  },
+  "format": {
+    "conversion": "EXPLICIT_LABEL_TO_UNAMBIGUOUS_UNIT_ONLY",
+    "hint": "W5_READ_OUTLINE_COMPARE_UNCHANGED",
+    "insufficient_evidence": "{\"items\":[]}",
+    "metadata_in_prompt": false,
+    "qa": "evidence_citations_v2",
+    "summary": "evidence_citations_v2"
+  },
+  "handoff": {
+    "issue": "W6-02",
+    "milestone": "Tuan6",
+    "new_instruction_records_authored": 0,
+    "new_record_allocation_only": true,
+    "status": "DATA_PREPARATION_NOT_YET_RUN"
+  },
+  "labels": {
+    "causal_label_shift": "MODEL_INTERNAL_DO_NOT_SHIFT_TWICE",
+    "loss_scope": "COMPLETION_AND_SINGLE_EOS_ONLY",
+    "pad_to_multiple_of": 8,
+    "padding_label": -100,
+    "padding_side": "right",
+    "post_eos_format_label": -100,
+    "pre_padded": false,
+    "prompt_label": -100,
+    "silent_truncation": false
+  },
+  "model": {
+    "chat_template_sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+    "eos_token_id": 151645,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "pad_token_id": 151643,
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "tokenizer_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "transformers_version": "4.57.6"
+  },
+  "owners": {
+    "data_and_verification": "Trần Tuấn Cường",
+    "trainer_and_gpu": "Vũ Nam Dương"
+  },
+  "plan": "docs/weekly/W6/phan-cong-w6.md",
+  "schema_version": "ohayo-w6-training-contract-v1",
+  "selection": {
+    "algorithm": "DETERMINISTIC_INTEGER_FLOW",
+    "forbidden_split": "instruction_holdout",
+    "holdout_in_handoff": false,
+    "rank": "sha256(seed:source_record_id)",
+    "seed": 42,
+    "train": {
+      "count": 128,
+      "courses": {
+        "CNXHKH": 38,
+        "KTCTMLN": 38,
+        "THMLN": 52
+      },
+      "tasks": {
+        "hint": 13,
+        "insufficient_evidence": 13,
+        "qa": 77,
+        "summary": 25
+      }
+    },
+    "validation": {
+      "count": 32,
+      "courses": {
+        "CNXHKH": 10,
+        "KTCTMLN": 10,
+        "THMLN": 12
+      },
+      "tasks": {
+        "hint": 3,
+        "insufficient_evidence": 3,
+        "qa": 19,
+        "summary": 7
+      }
+    }
+  },
+  "source_code_sha256": {
+    "backend/apps/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/prompts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/prompts/guarded.py": "bd37e4403c3f2db918784ef3fcc8b87d57f76a4f579476f62d1d9bbb4e2da49e",
+    "backend/apps/ai/prompts/qa.py": "21b10eeca307ea2117f810ab2557ada5c6ece3e4b7059b0e8c126d6dcc03b27f",
+    "backend/apps/ai/prompts/system.py": "1d844667bcf91611562c563e0d4ffed11a0c42e5a6f9cfdc40a60e02a3e7125e",
+    "backend/apps/ai/providers/__init__.py": "1831c0b59cd37a75baeab86c6b57008789c242dde48746325ab7bec05e37db45",
+    "backend/apps/ai/providers/base.py": "69e623a477395f80fcf07e05761f11c6df747da04834b264b8b7798bfd43e31f",
+    "backend/apps/ai/providers/checkpoint.py": "a9d4baaa584cea08bdb39893fab670152bfe3fc14eefcecd514a547c4c59f42f",
+    "backend/apps/ai/providers/local.py": "18fee282e7bd36078a6de97cb8b4f0b47959b54490e6cbc0f343ee436d97822e",
+    "backend/apps/ai/providers/openai.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/apps/ai/rag/__init__.py": "a03861fbd62fdec1bacb2c95f29ea3b6ffbaef96e23b33b21f4b38bc523408da",
+    "backend/apps/ai/rag/base.py": "a357faa876a74874b1815836c39c4f2079965b949081da435a5182f101f3e29c",
+    "backend/apps/ai/rag/checks.py": "542ded051839d40ae53c9a1e2f05aefab61ad018b8565c37b139887c5d20411e",
+    "backend/apps/ai/rag/citations.py": "fe3a4e24375b30c0b36e593a9f1278c03473ef660aa1c4402b3a2c304483617a",
+    "backend/apps/ai/rag/context_builder.py": "8932af50dd10f3a222b93faf82b686331bbb2b49eed89e4931c7efd5f6dba91b",
+    "backend/apps/ai/rag/conversation.py": "1325b0e764ffb7621f6e7684f147028b509048ea347e4905ede372718ff1a806",
+    "backend/apps/ai/rag/errors.py": "72917e8bbb7276095729876308035ef2c1b0d53805e6ffb2684881591ad94421",
+    "backend/apps/ai/rag/guardrails.py": "0b031fc1205477de70b1c12bc1d3a864c124756ba8bb303276cba7652388f24a",
+    "backend/apps/ai/rag/pipeline.py": "29362bc0dc275decb4c171c6191f90370e57eb60ef71b33dc4d4847a51e2e043"
+  },
+  "source_git_commit": "331173baf9e1d38f3acb6e45f9ed01a31ee501e5",
+  "source_manifest": {
+    "path": "data/instruction/w5/contract/source-manifest.json",
+    "sha256": "366d96d3a4d269000f8a55c219657c09788b32e4b51145c8a8e37ccc4432e222"
+  },
+  "token_limits": {
+    "max_completion_tokens": 512,
+    "max_prompt_tokens": 1536,
+    "max_sequence_tokens": 2048
+  },
+  "training": {
+    "checkpoint_steps": [
+      25,
+      50
+    ],
+    "preserve_base_model": true,
+    "serving_ayo_changed": false,
+    "smoke_steps": 2,
+    "status": "NOT_RUN",
+    "target_global_step": 50,
+    "trainer_owner": "Vũ Nam Dương",
+    "weights_downloaded": false
+  }
+}

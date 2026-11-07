@@ -53,6 +53,15 @@ class AdditionTests(unittest.TestCase):
     def test_locked_250_slots_pass(self):
         check_slots(*allocated_fixture())
 
+    def test_member_b_uses_only_b_slots_and_record_namespace(self):
+        records, slots = allocated_fixture()
+        for row, slot in zip(records, slots):
+            row.update(record_id=row['record_id'].replace('W6_A_', 'W6_B_'), author_member='B')
+            slot.update(record_id=row['record_id'], owner_member='B')
+        check_slots(records, slots, member='B')
+        with self.assertRaises(ValueError):
+            check_slots(records, slots)
+
     def test_old_nested_and_new_flat_metadata_split(self):
         self.assertEqual(source_split_map([
             dict(record=dict(source_group_ids=['one']),split='train'),

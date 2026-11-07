@@ -1,0 +1,44 @@
+group,metric,value,unit,denominator,source,note
+split,train,770,samples,1000,manifest.json,
+split,validation,114,samples,1000,manifest.json,
+split,instruction_holdout,116,samples,1000,manifest.json,
+dataset,records,1000,samples,1000,manifest.json,Technical candidate; owner/peer content acceptance pending
+task,qa,600,samples,1000,manifest.json,
+task,summary,200,samples,1000,manifest.json,
+task,insufficient_evidence,100,samples,1000,manifest.json,
+task,hint,100,samples,1000,manifest.json,
+course,THMLN,400,samples,1000,manifest.json,
+course,KTCTMLN,300,samples,1000,manifest.json,
+course,CNXHKH,300,samples,1000,manifest.json,
+contribution,inherited_W5,500,samples,1000,manifest.json,
+contribution,member_A_additions,250,samples,1000,manifest.json,
+contribution,member_B_additions,250,samples,1000,manifest.json,
+tokenization,audited_records,1000,samples,1000,manifest.json,
+tokenization,max_sequence_tokens,1602,tokens,,manifest.json,
+pilot,train,128,samples,160,manifest.json,
+pilot,validation,32,samples,160,manifest.json,
+training,smoke_updates,2,count,,manifest.json,
+training,pilot_updates,50,count,,manifest.json,
+training,trainable_parameters,20185088,count,,manifest.json,
+validation,loss_step_25,0.3279542922973633,cross_entropy,32,manifest.json,
+validation,loss_step_50,0.30503764748573303,cross_entropy,32,manifest.json,
+memory,peak_allocated_bytes,11.348084449768066,GiB,,manifest.json,
+memory,peak_reserved_bytes,13.0859375,GiB,,manifest.json,
+resume,start_step,25,step,,manifest.json,
+resume,end_step,26,step,,manifest.json,
+resume,applied_updates,1,updates,,manifest.json,
+resume,changed_tensors,392,tensors,,manifest.json,
+resume,adapter_delta_l2,0.14359974930396277,l2,,manifest.json,
+base,completed,20,outputs,20,manifest.json,20 locked development cases; not a heldout quality result
+base,format_valid,20,outputs,20,manifest.json,20 locked development cases; not a heldout quality result
+base,citation_ids_valid,18,outputs,18,manifest.json,20 locked development cases; not a heldout quality result
+base,mean_reference_token_f1,0.7455143542359124,fraction,20,manifest.json,20 locked development cases; not a heldout quality result
+base,mean_latency_seconds,4.473869101750012,seconds,20,manifest.json,20 locked development cases; not a heldout quality result
+adapter,completed,20,outputs,20,manifest.json,20 locked development cases; not a heldout quality result
+adapter,format_valid,20,outputs,20,manifest.json,20 locked development cases; not a heldout quality result
+adapter,citation_ids_valid,18,outputs,18,manifest.json,20 locked development cases; not a heldout quality result
+adapter,mean_reference_token_f1,0.7854212697448018,fraction,20,manifest.json,20 locked development cases; not a heldout quality result
+adapter,mean_latency_seconds,5.0657043671499995,seconds,20,manifest.json,20 locked development cases; not a heldout quality result
+tests,qlora_receiver,103,tests,,manifest.json,
+tests,instruction_tools,105,tests,,manifest.json,
+tests,total,208,tests,,manifest.json,

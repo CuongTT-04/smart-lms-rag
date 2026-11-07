@@ -1,0 +1,320 @@
+{
+  "schema_version": 3,
+  "week": "W06",
+  "updated_at": "2026-11-07T14:54:04.129369+07:00",
+  "status": "SMALL_QLORA_AND_INDEPENDENT_GPU_CHECKS_PASSED_DATASET_CONTENT_ACCEPTANCE_PENDING",
+  "readme_intentionally_empty": false,
+  "layout": [
+    "README.md",
+    "metrics.csv",
+    "test-results.txt",
+    "manifest.json",
+    "figures/"
+  ],
+  "dataset": {
+    "record_count": 1000,
+    "split_counts": {
+      "train": 770,
+      "validation": 114,
+      "instruction_holdout": 116
+    },
+    "task_counts": {
+      "qa": 600,
+      "summary": 200,
+      "insufficient_evidence": 100,
+      "hint": 100
+    },
+    "course_counts": {
+      "THMLN": 400,
+      "KTCTMLN": 300,
+      "CNXHKH": 300
+    },
+    "inherited_records": 500,
+    "new_a": 250,
+    "new_b": 250,
+    "tokenized_records_checked": 1000,
+    "max_sequence_tokens": 1602,
+    "training_ready": false,
+    "format": "INHERITED_W5_PAYLOADS_PRESERVED_PLUS_NEW_EVIDENCE_ID_PAYLOADS",
+    "format_transition": "PILOT_160_LOCKED_SEPARATELY_UNIFORM_GROUP_CONVERSION_BEFORE_W7_TRAINING"
+  },
+  "pilot": {
+    "record_count": 160,
+    "train_records": 128,
+    "validation_records": 32,
+    "holdout_records_used": 0,
+    "data_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448"
+  },
+  "training": {
+    "status": "GPU_PILOT_PASSED",
+    "smoke_updates": 2,
+    "pilot_updates": 50,
+    "trainable_parameters": 20185088,
+    "base_frozen": true,
+    "adapter_delta_l2": 4.9554480940375685,
+    "eval_loss_by_step": {
+      "25": 0.3279542922973633,
+      "50": 0.30503764748573303
+    },
+    "vram": {
+      "peak_allocated_bytes": 12184912896,
+      "peak_reserved_bytes": 14050918400
+    },
+    "checkpoints": [
+      "checkpoint-25",
+      "checkpoint-50"
+    ],
+    "config_path": "configs/qlora-pilot.json",
+    "config_sha256": "23687030d479dc69f1f257b1655ed319a78fa58b850526f4a20609eb4a831103",
+    "run_manifest_sha256": "b228645e1df2d4370715539399f388208d1c7aa04745ce85ca7ccb94425a2a1d"
+  },
+  "verification": {
+    "status": "PASSED",
+    "suites": [
+      {
+        "suite": "qlora_receiver",
+        "tests_run": 103,
+        "passed": true,
+        "execution": "RETAINED_VERIFIED_RUN"
+      },
+      {
+        "suite": "instruction_tools",
+        "tests_run": 105,
+        "passed": true,
+        "execution": "RETAINED_VERIFIED_RUN"
+      }
+    ],
+    "unit_tests_passed": 208,
+    "log": "test-results.txt",
+    "current_layout_operation_gpu_used": false,
+    "independent_gpu_execution": "KAGGLE_USER_SESSION",
+    "gpu_run_id": "verification-20261106T194045367524Z",
+    "reload": {
+      "status": "GPU_RELOAD_PASSED",
+      "process_id": 195,
+      "reloaded_saved_tensors_exact": true,
+      "forward_loss": 0.0018717270577326417,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "quantization": "NF4_DOUBLE_QUANT_FP16",
+      "adapter_sha256": "b56082699bafadede84f3afc96da2e72084cae3f988464644aec4f392eb9e823",
+      "base_comparison": "SAME_NF4_BASE_WITH_ALL_LORA_DISABLED",
+      "requires_grad_any": false
+    },
+    "resume": {
+      "status": "GPU_RESUME_PASSED",
+      "start_global_step": 25,
+      "global_step": 26,
+      "applied_updates": 1,
+      "scheduler_step_before": 25,
+      "scheduler_step_after": 26,
+      "optimizer_state_steps_before": [
+        25
+      ],
+      "optimizer_state_steps_after": [
+        26
+      ],
+      "original_max_steps": 50,
+      "adapter_delta_l2": 0.14359974930891028,
+      "original_pilot_untouched": true,
+      "limitation": "One resume verification update, not a second pilot."
+    },
+    "resume_measured_update": {
+      "changed_tensors": 392,
+      "adapter_delta_l2": 0.14359974930396277
+    },
+    "gpu_files_checked": 90,
+    "comparison": {
+      "arms": {
+        "base": {
+          "count": 20,
+          "completed": 20,
+          "format_valid": 20,
+          "expected_behavior_match": 20,
+          "citation_ids_valid": 18,
+          "citation_eligible_count": 18,
+          "reference_exact_match": 4,
+          "mean_reference_token_f1": 0.7455143542359124,
+          "mean_latency_seconds": 4.473869101750012,
+          "input_tokens": 13903,
+          "output_tokens": 937
+        },
+        "adapter": {
+          "count": 20,
+          "completed": 20,
+          "format_valid": 20,
+          "expected_behavior_match": 20,
+          "citation_ids_valid": 18,
+          "citation_eligible_count": 18,
+          "reference_exact_match": 4,
+          "mean_reference_token_f1": 0.7854212697448018,
+          "mean_latency_seconds": 5.0657043671499995,
+          "input_tokens": 13903,
+          "output_tokens": 720
+        }
+      },
+      "scope": "20_DEVELOPMENT_VALIDATION_CASES_NOT_HELDOUT_TEST",
+      "semantic_quality": "NOT_REVIEWED",
+      "human_review_complete": false,
+      "limitation": "Format, valid IDs, action grammar and lexical overlap do not establish factuality, grounding or citation support. Failed/truncated generations count as failures."
+    },
+    "output_identity": {
+      "passed": true,
+      "compared_outputs": 40,
+      "identical_raw_outputs": 40,
+      "changed_outputs": [],
+      "old_predictions_sha256": "79b69038b19365ede2bb20be17daa938751695d1a256587b5e2ad44e248f07d9",
+      "new_predictions_sha256": "e39d3eaca4b22d28758bccc6f49559a4937f65ee0fd07c49bb31d5979dca3000",
+      "prompts_identical": true,
+      "source": "CPU_BYTE_COMPARISON_OF_AUTHENTICATED_ARCHIVES"
+    }
+  },
+  "previous_evidence_archive": {
+    "path": ".private/w6/evidence-archive/W06-before-layout-20261107T145404+0700.zip",
+    "sha256": "ea7e3eb699e08f2161101d4e522f1a630657a9bcc04dc744182bae964100957a",
+    "size_bytes": 436606,
+    "file_count": 36,
+    "inventory_and_payload_verified": true,
+    "note": "Exact pre-reorganization W06; original relative paths retained, including receiver/."
+  },
+  "private_artifacts": {
+    "duong_handoff_sha256": "15360e8fa39f62551db321126e525d61a999d12119f16a4127eecdcd8558a647",
+    "member_b": {
+      "file": "instruction-additions.zip",
+      "sha256": "d07ef41af7a8d6c3c6fab1f71ac25ff808c7e5e7f9ba3f4c262a36f526d3ef74",
+      "size_bytes": 357450,
+      "manifest_sha256": "ac987f5a0c28ac575af02f33ce9ba8e7d4b3263ddff3d18daf5dbbca992022bf",
+      "record_count": 250,
+      "peer_approval": false,
+      "public_redistribution_allowed": false
+    },
+    "group_candidate": {
+      "file": "package.zip",
+      "sha256": "7cd57224a56d1f4265535ae27523913933726adeaf85b570e75187ce1e50475b",
+      "size_bytes": 999246,
+      "manifest_sha256": "4971377b34c9918422d92b8b099057c2eb602225132bdfd3ca8a552f282a805a",
+      "record_count": 1000,
+      "group_release_ready": false,
+      "public_redistribution_allowed": false
+    },
+    "cuong_verification": {
+      "file": "verification-20261106T194045367524Z.zip",
+      "sha256": "85760688ed358d1b8dc4ff6dc7f26ce3dad96f7558bac4e9a3d88ad4c2f0f38b",
+      "size_bytes": 190438481,
+      "audit_file": "verification-20261106T194045367524Z-audit.json",
+      "audit_sha256": "08cbddeb6bb8080f1852f5239b27c0cb7a6b72ffa7bd286aac3664b403358970",
+      "manifest_sha256": "de247e3df5d02a0e81bfce368490a0ef0f4c7360d0f8cea76626c4458d834777",
+      "pilot_manifest_sha256": "b228645e1df2d4370715539399f388208d1c7aa04745ce85ca7ccb94425a2a1d",
+      "scope": "PRIVATE_RELOAD_RESUME_DEVELOPMENT_COMPARISON",
+      "base_weights_included": false
+    }
+  },
+  "config": {
+    "schema_version": "ohayo-qlora-recipe-v1",
+    "data_manifest_sha256": "3be5d5f9d70e9bda9b2d0285ffdb78e3186287359ec70f35052b4e1ac3947448",
+    "contract_sha256": "5af1a00516a8ef54631276454a0e905d933a2f04ec53835f407f235ddf8cf99e",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "seed": 42,
+    "lora": {
+      "r": 8,
+      "lora_alpha": 16,
+      "lora_dropout": 0.05,
+      "bias": "none",
+      "target_modules": "all-linear",
+      "task_type": "CAUSAL_LM"
+    },
+    "training": {
+      "learning_rate": 0.0002,
+      "gradient_accumulation_steps": 4,
+      "per_device_train_batch_size": 1,
+      "per_device_eval_batch_size": 1,
+      "warmup_ratio": 0.1,
+      "max_grad_norm": 1.0,
+      "optim": "paged_adamw_8bit",
+      "lr_scheduler_type": "linear"
+    },
+    "profiles": {
+      "smoke": {
+        "max_steps": 2,
+        "save_steps": 2,
+        "eval_steps": 2
+      },
+      "pilot": {
+        "max_steps": 50,
+        "save_steps": 25,
+        "eval_steps": 25
+      }
+    },
+    "dependencies": {
+      "transformers": "4.57.6",
+      "tokenizers": "0.22.2",
+      "huggingface-hub": "0.36.2",
+      "peft": "0.17.1",
+      "accelerate": "1.10.1",
+      "bitsandbytes": "0.48.2",
+      "safetensors": "0.6.2"
+    }
+  },
+  "source_rights": "DECLARED_NOT_VERIFIED",
+  "public_redistribution_allowed": false,
+  "group_release_ready": false,
+  "quality_improvement": "NOT_ESTABLISHED",
+  "report_source": {
+    "path": "D:\\Đồ án tốt nghiệp\\README.md",
+    "sha256": "4a3410ff729bb9a2e16b493cb9c079a192e9724f0e404508eeec96193a3af362",
+    "copied_without_modification": false,
+    "adaptation": "README references updated to the public metrics, manifest and test log; original report retained as provenance."
+  },
+  "figure_sources": {
+    "figures/loss-curve.png": {
+      "archive": "D:\\Đồ án tốt nghiệp\\figures.zip",
+      "archive_sha256": "88b675aab9b4c0d3b3267198e5a8362a3838c32e688c244d9261dc0fd91a2b58",
+      "member": "figures/loss-curve.png",
+      "sha256": "276d1b864d8ed4a887eaff26bcc95f024e9b0dcd0d48305fdaa39fa9fa2e2cee",
+      "original_download_unedited": true
+    },
+    "figures/training-diagnostics.png": {
+      "archive": "D:\\Đồ án tốt nghiệp\\figures.zip",
+      "archive_sha256": "88b675aab9b4c0d3b3267198e5a8362a3838c32e688c244d9261dc0fd91a2b58",
+      "member": "figures/training-diagnostics.png",
+      "sha256": "479eba0fbdb65d4ee24b90a903f4c9d3549a047698f25d9b25b8faa0915ce7a8",
+      "original_download_unedited": true
+    }
+  },
+  "relocated_readme_references": {
+    "note": "README now references the public metrics, manifest and test log. Detailed historical audits remain in previous_evidence_archive.",
+    "previous_folder": "Evidence/W06/receiver/",
+    "archive_member_prefix": "receiver/"
+  },
+  "limitations": [
+    "Technical dataset checks do not replace owner/peer content acceptance.",
+    "1,000-record candidate has mixed formats; normalize and review before W7 training.",
+    "Development comparison is not proof of overall answer-quality improvement.",
+    "Supplied figures kept unchanged, not regenerated by this layout operation."
+  ],
+  "files": {
+    "figures/loss-curve.png": {
+      "sha256": "276d1b864d8ed4a887eaff26bcc95f024e9b0dcd0d48305fdaa39fa9fa2e2cee",
+      "size_bytes": 223113
+    },
+    "figures/training-diagnostics.png": {
+      "sha256": "479eba0fbdb65d4ee24b90a903f4c9d3549a047698f25d9b25b8faa0915ce7a8",
+      "size_bytes": 237137
+    },
+    "metrics.csv": {
+      "sha256": "16f4a4099f93eca22c81abba40333aa51a7ef8798cd9bb3bf397ddc80d29b1b3",
+      "size_bytes": 3005
+    },
+    "README.md": {
+      "sha256": "859e3f55277d654b749bda730730372114a43fc1ed3a20080429f0061ae17c3e",
+      "size_bytes": 6922
+    },
+    "test-results.txt": {
+      "sha256": "86bf23bd5b0cb93a60a75d47b4862a31ecd949b3f07a99ad31024ab16c9563bd",
+      "size_bytes": 29655
+    }
+  },
+  "manifest_hashes_itself": false,
+  "integrity_basis": "Exact file bytes of the current README, metrics, test log and original figures."
+}

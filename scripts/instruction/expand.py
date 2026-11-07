@@ -56,14 +56,15 @@ def excerpt(page, start, end):
     return text[positions[begin]:positions[stop - 1] + 1]
 
 
-def check_slots(records, slots):
-    expected = {s['record_id']: s for s in slots if s['owner_member'] == 'A'}
+def check_slots(records, slots, *, member='A'):
+    require(member in ('A', 'B'), 'MEMBER')
+    expected = {s['record_id']: s for s in slots if s['owner_member'] == member}
     require(len(expected) == 250 and len(records) == 250, 'MEMBER_QUOTA')
     require(len({r['record_id'] for r in records}) == 250
             and {r['record_id'] for r in records} == set(expected), 'SLOT_IDS')
     for row in records:
         slot = expected[row['record_id']]
-        require(row['author_member'] == 'A' and row['task_type'] == slot['task_type']
+        require(row['author_member'] == member and row['record_id'].startswith('W6_' + member + '_') and row['task_type'] == slot['task_type']
                 and row['course_code'] == slot['course_code']
                 and row['source_group_ids'] == [slot['source_group_id']], 'SLOT_BINDING')
         for ctx in row['contexts']:
@@ -144,14 +145,32 @@ def source_split_map(metadata):
     return result
 
 
-def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_records=None, expected_payloads=None):
+def validate_payload_binding(record, payload, metadata, expected_payload):
+    require(payload == expected_payload, 'AUTHORED_PAYLOAD_RECOMPUTATION')
+    fields = ('author_member', 'course_code', 'task_type', 'variant_family_id')
+    sources = [{k:c[k] for k in ('source_id','document_id','version_id','page_number',
+               'source_checksum','text_sha256','rights_reference')} for c in record['contexts']]
+    require(all(metadata[k] == record[k] for k in fields) and metadata['sources'] == sources,
+            'CANDIDATE_METADATA_BINDING')
+
+
+def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_records=None, expected_payloads=None, *, member='A'):
     from scripts.w5.common import content_hash
     from jsonschema import Draft202012Validator, FormatChecker
     manifest = read_json(folder / 'manifest.json')
     verify_inventory(folder, manifest['files'])
     require({p.name for p in folder.iterdir() if p.is_file()} == set(manifest['files']) | {'manifest.json'}, 'PACKAGE_FILE_SET')
     records = read_rows(folder / 'candidates.jsonl')
-    check_slots(records, slots)
+    check_slots(records, slots, member=member)
+    if expected_records is None or expected_payloads is None:
+        # Hashes inside an archive do not bind a candidate to its prompt/target.
+        # Rebuild from the specification and authenticated physical PDF sources;
+        # build does not use old_records (novelty is a separate audit).
+        rebuilt, canonical_payloads, _, _, _ = build(read_json(folder / 'authored-specs.json'), slots,
+            read_json(ROOT / contract['source_manifest']['path']), [], records[0]['provenance']['created_at'],
+            member=member)
+        require(records == rebuilt, 'AUTHORED_RECORD_RECOMPUTATION')
+        expected_records, expected_payloads = rebuilt, canonical_payloads
     if expected_records is not None:
         require(records == expected_records, 'AUTHORED_RECORD_RECOMPUTATION')
     by_id = {r['record_id']: r for r in records}
@@ -165,7 +184,7 @@ def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_rec
     require(len(reviews) == 250 and len({r['record_id'] for r in reviews}) == 250, 'REVIEW_COUNT')
     for row in reviews:
         require(row['record_id'] in by_id and row['content_sha256'] == by_id[row['record_id']]['content_sha256']
-                and row['reviewer_member'] == 'A' and row['peer_approval'] is False
+                and row['reviewer_member'] == member and row['peer_approval'] is False
                 and row['decision'] == 'ACCEPT_FOR_PRIVATE_INTERNAL_RESEARCH', 'REVIEW_BINDING')
     old_splits = source_split_map(old_metadata)
     allocated = {s['record_id']: s for s in slots}
@@ -188,8 +207,7 @@ def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_rec
                     'SOURCE_SPLIT_BINDING')
             require(set(payload) == {'prompt','completion'} and len(payload['completion']) == 1
                     and payload['completion'][0]['role'] == 'assistant', 'SFT_PUBLIC_FIELDS')
-            if expected_payloads is not None:
-                require(payload == expected_payloads[rid], 'AUTHORED_PAYLOAD_RECOMPUTATION')
+            validate_payload_binding(record, payload, meta, expected_payloads[rid])
             require(digest(payload) == meta['sft_sha256'] == meta['training_payload_sha256'], 'PAYLOAD_HASH')
             expected = tokenize_payload(payload, tokenizer, contract['token_limits'])
             require(tokens == dict(record_id=rid, **expected), 'TOKEN_MASK_RECOMPUTATION')
@@ -199,7 +217,8 @@ def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_rec
             require(all(label == -100 for mask, labels in zip(batch['attention_mask'], batch['labels'])
                         for visible, label in zip(mask, labels) if not visible), 'PAD_MASK')
         all_metadata.extend(metadata)
-    require(seen == set(by_id) and counts == dict(train=199, validation=18, instruction_holdout=33), 'SPLIT_COUNTS')
+    expected_counts = dict(Counter(slot['split'] for slot in slots if slot['owner_member'] == member))
+    require(seen == set(by_id) and counts == expected_counts, 'SPLIT_COUNTS')
     require(read_rows(folder / 'metadata.jsonl') == all_metadata, 'COMBINED_METADATA')
     report = read_json(folder / 'tokenization-report.json')
     require(report['records'] == stats and report['passed'] is True and report['silent_truncation'] is False, 'TOKEN_REPORT')
@@ -210,7 +229,7 @@ def audit_package(folder, tokenizer, contract, slots, old_metadata, expected_rec
                 peer_approval=False, training='NOT_RUN')
 
 
-def build(specification, allocation, catalog, old_records, created_at):
+def build(specification, allocation, catalog, old_records, created_at, *, member='A'):
     from jsonschema import Draft202012Validator, FormatChecker
     from pypdf import PdfReader
     from scripts.w5.common import content_hash
@@ -223,7 +242,7 @@ def build(specification, allocation, catalog, old_records, created_at):
     by_group = {s['source_group_id']: s for s in catalog['sources']}
     slot_map = defaultdict(list)
     for slot in allocation:
-        if slot['owner_member'] == 'A':
+        if slot['owner_member'] == member:
             slot_map[(slot['source_group_id'], slot['task_type'])].append(slot)
     for slots in slot_map.values():
         slots.sort(key=lambda r: r['record_id'])
@@ -281,19 +300,22 @@ def build(specification, allocation, catalog, old_records, created_at):
                       dict(role='user', content=json.dumps(dict(question=item['question'], mode='qa', evidence=units, exercise=None), ensure_ascii=False))]
             requirements = [p if isinstance(p, str) else p[1] for p in points] or [item['review_note']]
         family = digest({'group': groups[0], 'excerpts': sorted(item['sources'])})[:20]
-        record = dict(schema_version='w5-instruction-v1', record_id=slot['record_id'], author_member='A',
+        provenance = dict(method='manual', drafting_tool=None, generation_model_id=None,
+            generation_model_revision=None, generation_prompt_sha256=None, recipe_id='page-grounded-additions', created_at=created_at)
+        provenance.update(specification.get('drafting_provenance', {}))
+        provenance['created_at'] = created_at
+        record = dict(schema_version='w5-instruction-v1', record_id=slot['record_id'], author_member=member,
             course_code=slot['course_code'], language='vi', task_type=item['task'],
             mode='hint' if item['task'] == 'hint' else 'qa', question=item['question'], contexts=evidence,
             exercise=None, target_text=legacy, source_group_ids=groups, variant_family_id='ADDITION_' + family,
-            parent_record_id=None, provenance=dict(method='manual', drafting_tool=None, generation_model_id=None,
-                generation_model_revision=None, generation_prompt_sha256=None, recipe_id='page-grounded-additions', created_at=created_at),
+            parent_record_id=None, provenance=provenance,
             prompt_version='bounded_guidance', source_identity_scope='offline_corpus')
         record['content_sha256'] = content_hash(record)
         validator.validate(record)
         payloads[record['record_id']] = dict(prompt=prompt, completion=[dict(role='assistant', content=completion)])
         records.append(record)
         reviews.append(dict(record_id=record['record_id'], content_sha256=record['content_sha256'],
-            reviewer_member='A', review_kind='SELF_REVIEW', required_points=requirements,
+            reviewer_member=member, review_kind=specification.get('review_kind', 'SELF_REVIEW'), required_points=requirements,
             source_pages=[{'group': group, 'page': s['page']} for group, s in zip([groups[0]] * len(selections), selections)],
             decision='ACCEPT_FOR_PRIVATE_INTERNAL_RESEARCH', peer_approval=False,
             reason=item.get('review_note', 'Đối chiếu các ý bắt buộc với đoạn nguồn; giữ đủ từng vế, citation và giới hạn phát biểu.'),
@@ -305,7 +327,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--spec', type=Path, required=True)
     parser.add_argument('--handoff', type=Path, required=True)
-    parser.add_argument('--old-package', type=Path, required=True)
+    old_inputs = parser.add_mutually_exclusive_group(required=True)
+    old_inputs.add_argument('--old-package', type=Path)
+    old_inputs.add_argument('--old-compact', type=Path, help='Authenticated W5 compact ZIP, preserving original SFT and metadata')
+    parser.add_argument('--member', choices=('A', 'B'), default='A')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--inspect', action='store_true')
     parser.add_argument('--audit-only', action='store_true')
@@ -326,25 +351,36 @@ def main(argv=None):
     contract = read_json(args.handoff / 'data/pilot-v2/training-contract.json')
     catalog_file = source_root / contract['source_manifest']['path']
     require(sha_file(catalog_file) == contract['source_manifest']['sha256'], 'SOURCE_REGISTRY_HASH')
-    original_manifest = read_json(args.old_package / 'manifest.json')
-    verify_inventory(args.old_package, original_manifest['files'])
-    old_records = read_rows(args.old_package / 'candidates.jsonl')
+    if args.old_compact:
+        from scripts.w6.contracts import load_archive
+        original = load_archive(args.old_compact, contract['expected_compact'])
+        old_records = [dict(record_id=row['metadata']['record_id'],
+                            question=json.loads(row['payload']['prompt'][-1]['content'])['question'],
+                            target_text=row['payload']['completion'][0]['content']) for row in original['records']]
+        old_meta = [row['metadata'] for row in original['records']]
+        old_manifest_sha = original['manifest']['source_package_manifest_sha256']
+    else:
+        original_manifest = read_json(args.old_package / 'manifest.json')
+        verify_inventory(args.old_package, original_manifest['files'])
+        old_records = read_rows(args.old_package / 'candidates.jsonl')
+        old_meta = read_rows(args.old_package / 'metadata.jsonl')
+        old_manifest_sha = sha_file(args.old_package / 'manifest.json')
     require(len(old_records) == 500, 'OLD_500_REQUIRED')
     specification = read_json(args.spec)
     created = datetime.now(timezone.utc).isoformat()
     if args.audit_only:
         require(not args.inspect, 'EXCLUSIVE_AUDIT_MODE')
         created = read_rows(args.output / 'candidates.jsonl')[0]['provenance']['created_at']
-    records, payloads, reviews, checked, page_count = build(specification, slots, read_json(catalog_file), old_records, created)
+    records, payloads, reviews, checked, page_count = build(specification, slots, read_json(catalog_file), old_records, created, member=args.member)
     if not args.inspect:
-        check_slots(records, slots)
+        check_slots(records, slots, member=args.member)
     else:
         print('Counts:', len(records), dict(Counter(r['course_code'] for r in records)), dict(Counter(r['task_type'] for r in records)))
     problems, diagnostics = scan_duplicates(records, old_records, read_json(ROOT / 'data/instruction/w5/contract/benchmark-exclusion-manifest.json'))
     if args.audit_only:
         require(not problems, 'DUPLICATE_RECHECK')
         report = audit_package(args.output, load_tokenizer(args.handoff, contract), contract, slots,
-                               read_rows(args.old_package / 'metadata.jsonl'), records, payloads)
+                               old_meta, records, payloads, member=args.member)
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
     args.output.mkdir(parents=True)
@@ -356,7 +392,6 @@ def main(argv=None):
         return 0 if args.inspect else 1
     tokenizer = load_tokenizer(args.handoff, contract)
     maximum = 0
-    old_meta = read_rows(args.old_package / 'metadata.jsonl')
     old_splits = source_split_map(old_meta)
     allocations = {s['record_id']: s for s in slots}
     metadata, token_stats, split_counts = [], [], {}
@@ -379,11 +414,11 @@ def main(argv=None):
             token_stats.append(dict(record_id=row['record_id'], split=split, **{k:v for k,v in tokens.items() if k not in ('input_ids','labels','attention_mask')}))
             sidecar.append(dict(record_id=row['record_id'], source_record_id=row['record_id'],
                 content_sha256=row['content_sha256'], split=split, row_index=index,
-                author_member='A', course_code=row['course_code'], task_type=row['task_type'],
+                author_member=args.member, course_code=row['course_code'], task_type=row['task_type'],
                 source_group_ids=row['source_group_ids'], variant_family_id=row['variant_family_id'],
                 source_identity_scope='offline_corpus', sft_sha256=digest(payload), training_payload_sha256=digest(payload),
                 sources=[{k:c[k] for k in ('source_id','document_id','version_id','page_number','source_checksum','text_sha256','rights_reference')} for c in row['contexts']],
-                self_review='ACCEPTED_INTERNAL_RESEARCH', peer_review='NOT_ASSERTED'))
+                self_review='ACCEPTED_INTERNAL_RESEARCH' if specification.get('review_kind', 'SELF_REVIEW') == 'SELF_REVIEW' else 'AUTOMATED_CHECK_PENDING_OWNER', peer_review='NOT_ASSERTED'))
         save_rows(split + '.jsonl', [payloads[r['record_id']] for r in rows])
         save_rows(split + '.metadata.jsonl', sidecar)
         save_rows('tokenized-' + split + '.jsonl', tokenized)
@@ -397,23 +432,24 @@ def main(argv=None):
     write_json(args.output / 'tokenization-report.json', dict(passed=True, records=token_stats,
         max_sequence_tokens=maximum, limits=contract['token_limits'], silent_truncation=False,
         loss_scope='COMPLETION_AND_SINGLE_EOS_ONLY', holdout_is_separate=True))
-    write_json(args.output / 'dataset-config.json', dict(record_count=250, author_member='A',
+    write_json(args.output / 'dataset-config.json', dict(record_count=250, author_member=args.member,
         course_counts=dict(Counter(r['course_code'] for r in records)), task_counts=dict(Counter(r['task_type'] for r in records)),
         split_counts=split_counts, model=contract['model'], protocol='evidence_citations_v2',
         token_limits=contract['token_limits'], training='NOT_RUN', peer_approval=False,
         public_redistribution_allowed=False, source_rights='DECLARED_NOT_VERIFIED',
         scope='PRIVATE_INTERNAL_RESEARCH_MEMBER_ADDITIONS_NOT_GROUP_1000_RELEASE'))
-    write_json(args.output / 'audit.json', dict(status='MEMBER_ADDITIONS_SELF_REVIEWED_AND_TECHNICALLY_AUDITED',
+    owner_review = specification.get('review_kind', 'SELF_REVIEW') == 'SELF_REVIEW'
+    write_json(args.output / 'audit.json', dict(status='MEMBER_ADDITIONS_SELF_REVIEWED_AND_TECHNICALLY_AUDITED' if owner_review else 'MEMBER_ADDITIONS_AUTOMATED_CHECKED_PENDING_OWNER_REVIEW',
         record_count=250, split_counts=split_counts, sources_verified=checked, pages_verified=page_count,
         exact_and_5gram_duplicate_scan='PASSED_AGAINST_NEW_250_OLD_500_AND_PROTECTED_BENCHMARKS',
         semantic_novelty='AUTHORED_FROM_NEW_SOURCE_SELECTIONS_AND_OWNER_REVIEW_NOT_EXHAUSTIVE_PROOF',
-        self_reviewed_records=250, peer_approved_records=0, model_calls=0, gpu_used=False,
+        self_reviewed_records=250 if owner_review else 0, automated_checked_records=0 if owner_review else 250, peer_approved_records=0, model_calls=0, gpu_used=False,
         old_dataset_unchanged=True, locked_allocation_unchanged=True, training='NOT_RUN'))
     write_json(args.output / 'manifest.json', dict(record_count=250, split_counts=split_counts,
         inputs=dict(allocation_sha256=sha_file(allocation_file), source_manifest_sha256=sha_file(catalog_file),
-            old_manifest_sha256=sha_file(args.old_package / 'manifest.json'), authored_spec_sha256=sha_file(args.spec)),
+            old_manifest_sha256=old_manifest_sha, authored_spec_sha256=sha_file(args.spec)),
         tool_sha256=sha_file(__file__), files=inventory(args.output)))
-    readback = audit_package(args.output, tokenizer, contract, slots, old_meta, records, payloads)
+    readback = audit_package(args.output, tokenizer, contract, slots, old_meta, records, payloads, member=args.member)
     write_json(args.output.with_name('readback-audit.json'), readback)
     archive = args.output.with_name('instruction-additions.zip')
     require(not archive.exists(), 'ARCHIVE_EXISTS')

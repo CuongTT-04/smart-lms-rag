@@ -69,6 +69,7 @@ class CLITests(unittest.TestCase):
             with ZipFile(output / receipt['file']) as archive:
                 self.assertIsNone(archive.testzip())
                 self.assertEqual(set(archive.namelist()), set(receipt['files']))
+                self.assertFalse(any(name.startswith('docs/') for name in archive.namelist()))
                 for name, sha in receipt['files'].items():
                     self.assertFalse(name.startswith('.private/'))
                     self.assertEqual(hashlib.sha256(archive.read(name)).hexdigest(), sha)
