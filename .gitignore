@@ -71,6 +71,7 @@ data/processed/*
 frontend/dist-w2/
 backend/db-w2.sqlite3
 backend/db-w2.sqlite3-journal
+artifacts
 
 # Local implementation plans
 docs/superpowers/

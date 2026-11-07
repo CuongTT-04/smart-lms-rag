@@ -1,43 +1,75 @@
-# W6 — bằng chứng chuẩn bị đầu vào bàn giao Dương
+# Báo cáo tuần 06
 
-Ngày: **03/11/2026**. Milestone kế hoạch: **Tuan6**. Công việc **W6-02**, phụ trách Trần Tuấn Cường; người tiếp nhận trainer/GPU **Vũ Nam Dương, W6-01**. Hai mã này chưa phải số Issue GitHub. Trạng thái: **TECHNICAL_HANDOFF_READY_TRAINING_NOT_RUN**.
+**Đề tài:** Xây dựng hệ thống quản lý học tập thông minh tích hợp mô hình ngôn ngữ lớn tinh chỉnh và kỹ thuật RAG.  
+**Thành viên:** Vũ Nam Dương (A, B22DCVT119) và Trần Tuấn Cường (B, B22DCVT073).
 
-## Planned
+## 1. Mục tiêu trong tuần
 
-Xác minh đầu vào W5, khóa contract, chuẩn bị pilot theo format citation Ayo hiện tại, kiểm tokenizer/EOS/loss mask, phân nguồn 250 mẫu mới/người và bàn giao để Dương triển khai trainer. Lần này không chạy huấn luyện, tạo Issue/PR, commit/push hoặc nộp milestone.
+Thử nghiệm QLoRA quy mô nhỏ: chuẩn bị môi trường, xây trainer/collator, huấn luyện và lưu adapter, checkpoint, cấu hình, log. Kiểm tra cập nhật tham số, nạp lại và tiếp tục huấn luyện; mở rộng bộ instruction lên **1.000 mẫu** để chuẩn bị đánh giá tiếp theo.
 
-## Done
+**Dương:** môi trường, trainer/collator, GPU smoke và pilot. **Cường:** chuẩn bị đầu vào, tiếp nhận kết quả và kiểm chứng GPU độc lập. Mỗi người bổ sung 250 mẫu mới.
 
-- Nhận ZIP gọn W5 đúng checksum, 500 mẫu (385/57/58). Kiểm từng file vật lý với ID/hash/split của sidecar và ranh giới nhóm nguồn/family.
-- Khóa contract model/tokenizer/template, giao thức completion và giới hạn token. Chuẩn bị **128 train + 32 validation**, khóa **20 ca development** từ validation. Không dùng nội dung holdout hoặc benchmark để train/chỉnh cấu hình.
-- Chuyển nhãn citation W5 đã chỉ rõ sang evidence unit duy nhất. Loại ba mẫu mơ hồ/không phù hợp, không đoán nguồn hoặc sửa để đủ quota.
-- Kiểm **160/160** bằng tokenizer Qwen thật (Transformers 4.57.6, chạy CPU), prefix template, EOS, labels và không truncate. Chiều dài lớn nhất **1.405 token**; kiểm lại đoạn nguồn trên **94 trang PDF**.
-- Chuẩn bị 500 slot ID/task/nguồn/split, **250/người**, chưa biên soạn câu hỏi/đáp án mới.
-- Đóng gói riêng dữ liệu chọn, tokenizer, code/tests, contract, kế hoạch và guide. Giải nén gói cuối vào thư mục khác, xác thực receipt/hash toàn gói rồi tính lại payload/token/mask và chạy **37 unit tests** từ code trong gói: đạt. **46 tests hồi quy W5** chạy trong môi trường pinned: đạt.
+## 2. Công việc đã thực hiện
 
-## Evidence
+### 2.1. Chuẩn bị môi trường training riêng
 
-| File | Chứng minh |
+Ba cell đầu của `qlora_training.ipynb` tiếp nhận gói đầu vào, kiểm checksum, thiết lập môi trường riêng và kiểm khả năng chạy trên Tesla T4. **NF4 CUDA forward, FP16 và backward đều đạt**; kiểm đủ **128 train + 32 validation**, không dùng holdout để huấn luyện.
+
+Trạng thái `ENVIRONMENT_READY_FOR_SMOKE` chỉ xác nhận môi trường: ở bước này chưa nạp trọng số Qwen, chưa có cập nhật tham số.
+
+### 2.2. Xây trainer và collator
+
+Trainer nạp Qwen đúng revision, giữ cố định base lượng tử hóa NF4 và chỉ học adapter LoRA. Cấu hình chính: **r = 8, alpha = 16, dropout = 0,05, all-linear, learning rate = 0,0002, batch = 1, tích lũy gradient = 4**, warmup 10%.
+
+Collator giới hạn **2.048 token**, padding bên phải theo bội số 8; phân biệt PAD/EOS và gán nhãn `-100` cho prompt, padding để loss chỉ tính trên phần đáp án. `runtime.py` kết nối huấn luyện, validation, lưu và tiếp tục checkpoint.
+
+### 2.3. Huấn luyện
+
+**GPU smoke:** chạy 2 optimizer steps để kiểm cơ chế cập nhật thật trước pilot. **Pilot:** khởi tạo adapter mới, không tiếp tục từ smoke; huấn luyện **50 optimizer steps trên 128 train / 32 validation**, lưu checkpoint 25/50 và final adapter.
+
+Audit xác nhận đủ cập nhật, loss/gradient hữu hạn, base giữ nguyên, adapter thay đổi, đủ state và checksum; final adapter khớp checkpoint 50. Đầu ra: `pilot-20261104T180615021055Z.zip`, `pilot-20261104T180615021055Z-audit.json` và `pilot-20261104T180615021055Z-receipt.json`.
+
+![Loss huấn luyện và validation của pilot QLoRA](figures/loss-curve.png)
+
+| Chỉ số | Kết quả |
 | --- | --- |
-| `intake-report.json` | Nhận ZIP W5, counts, nguồn và giới hạn chứng cứ gói gọn |
-| `pilot-verification.json` | Tính lại 160 payload/token/mask, source PDF và split, pin manifest bên ngoài |
-| `handoff-verification.json` | Kiểm bản ZIP cuối giải nén độc lập, exact file set, 160 mẫu và bundled tests |
-| `handoff-receipt.json` | SHA-256/kích thước ZIP riêng, pilot manifest và contract |
-| `unit-tests.txt`, `w5-regression.txt`, `handoff-tests.txt` | Log thực, không chứa dữ liệu mẫu/PDF/secret |
-| `test-results.json`, `metrics.csv` | Kết quả và số đo chuẩn bị; huấn luyện ghi NOT_RUN |
-| `manifest.json` | Hash/kích thước evidence và code/config/docs cuối, reference artifact riêng |
+| Train loss trung bình 10 bước đầu / cuối | 0,60165 / 0,20599 |
+| Validation loss bước 25 / 50 | 0,32795 / 0,30504; giảm khoảng 6,99% |
+| VRAM cực đại allocated / reserved | 11,35 / 13,09 GiB |
 
-Gói riêng: `D:/OHAYO-W6-Handoff-Duong-2026-11-03/W6-Cuong-to-Duong-v1.0.zip`. Receipt/guide/checksum nằm cùng thư mục. Không commit ZIP, dữ liệu tokenized, PDF, model weights hoặc secret. Code/config/số đếm/checksum và hướng dẫn trong repo không chứa nội dung bài học.
+![Gradient norm, learning rate và VRAM của pilot](figures/training-diagnostics.png)
 
-## Problems / giới hạn
+Gradient dao động nhưng không có dấu hiệu bùng nổ kéo dài trên biểu đồ; learning rate tăng trong warmup rồi giảm. **Mô hình đã học thật và loss cải thiện**, nhưng hai mốc validation chưa đủ chứng minh không overfit, tổng quát hóa tốt hoặc trả lời tốt hơn base.
 
-- Chưa có gói hồ sơ review W5 đầy đủ. Cường đã cho phép bỏ phụ thuộc hồ sơ này trong phạm vi bàn giao kỹ thuật. Giữ nguyên `PENDING_ACTUAL_MEMBERS` và `DECLARED_NOT_VERIFIED`, không tạo review/nghiệm thu giả. Hash candidate đầy đủ được giữ từ metadata xác thực, không tuyên bố đã tái tính từ candidate không có trong ZIP gọn.
-- Kiểm cấu trúc/provenance không phải chứng nhận ngữ nghĩa mọi câu. Dương cần xem mapping audit và báo ID/hash nếu cần sửa; không sửa trực tiếp gói đã khóa. Không tuyên bố fine-tune đã cải thiện model.
-- Ba mẫu không vào pool chuyển đổi: W5_A_00139, W5_A_00146 (nguồn liên hợp chưa xác định duy nhất); W5_B_00008 (item nhiều dòng không tương thích). Pool hợp lệ còn 439, đủ quota.
-- Lần thử hồi quy ban đầu bằng môi trường chính có Transformers khác pin bị chặn đúng guard version; chạy lại môi trường 4.57.6 đạt 46/46. Không thay dependency của backend/chatbot.
+### 2.4. Mở rộng dữ liệu và kiểm bộ ứng viên 1.000 mẫu
 
-## Next week / việc tiếp nhận ngay
+Gộp **500 mẫu cũ + 250 mẫu mới của Dương + 250 mẫu mới của Cường**; chia thành **770 train / 114 validation / 116 holdout**, giữ các nhóm nguồn và biến thể cùng tập. Kiểm nguồn, trùng lặp, benchmark leakage, token/EOS/loss mask; độ dài lớn nhất **1.602 token**.
 
-Dương kiểm contract/mapping, viết trainer và collator, chạy 2 optimizer steps smoke rồi 50 bước pilot thật, lưu config/log/checkpoint 25/50/final adapter. Sau đó Cường kiểm reload/resume và đánh giá 20 ca development. Hai người tiếp tục biên soạn/review 250 mẫu mới mỗi người để đạt mục tiêu dataset W6. **Chưa đủ điều kiện đóng Tuan6 hoặc ghi W6 đã hoàn thành.**
+Bộ 1.000 mẫu là **ứng viên đã kiểm kỹ thuật**, còn cần thống nhất định dạng và review nội dung theo ID/hash trước khi chốt sử dụng. Pilot đã chạy vẫn dùng bộ 128/32, **không phải huấn luyện trên toàn bộ 1.000 mẫu**. Minh chứng được báo cáo tại `Evidence/W06/receiver/` trong dự án.
 
-Hướng dẫn chi tiết: `docs/weekly/W6/ban-giao-duong.md`; phân công và tiêu chí cuối: `docs/weekly/W6/phan-cong-w6.md`.
+### 2.5. Tiếp nhận checkpoint, kiểm reload/resume và đối chiếu development
+
+Kiểm receipt, manifest và checksum trước khi đọc checkpoint. Cường chạy kiểm chứng độc lập trên Kaggle: nạp lại adapter trong tiến trình mới; tiếp tục từ **checkpoint 25 đến bước 26**, giữ lịch huấn luyện 50 bước và thực hiện đúng một cập nhật.
+
+Đợt `verification-20261106T194045367524Z` đạt reload/resume; gói được kiểm **90 file**, **392 tensor adapter thay đổi**, độ lệch L2 khoảng **0,14360**. Minh chứng: `cuong-gpu-result.json`, `cuong-gpu-artifact-audit.json`, `cuong-gpu-intake.json`.
+
+Đối chiếu development gồm **20 ca × 2 nhánh = 40 đầu ra** hợp lệ để kiểm quy trình, chưa thay thế đánh giá chất lượng tổng thể. Adapter chưa được triển khai vào Ayo.
+
+## 3. Quản lý mã nguồn và bằng chứng
+
+| Thành phần | Tham chiếu |
+| --- | --- |
+| Repository / PR | [smart-lms-rag](https://github.com/CuongTT-04/smart-lms-rag), [PR #15](https://github.com/CuongTT-04/smart-lms-rag/pull/15), [PR #14](https://github.com/CuongTT-04/smart-lms-rag/pull/14) |
+| Commit tiêu biểu | `3c3b803`: pilot và 250 mẫu mới; `934695e`: tích hợp QLoRA, dữ liệu và kiểm chứng checkpoint GPU |
+| Milestone | Fine-tune/QLoRA thử nghiệm nhỏ; lưu config/checkpoint/log |
+| Kết quả kiểm tra | **208 test đạt**: 103 QLoRA/receiver và 105 instruction, theo báo cáo |
+| Chỉ số toàn vẹn | [metrics.csv](metrics.csv), [manifest.json](manifest.json); ảnh trong `figures/` |
+
+## 4. Tổng kết và hướng tiếp theo
+
+Nhóm đã hoàn thiện môi trường và công cụ QLoRA, chạy smoke/pilot thành công, lưu adapter/checkpoint và kiểm reload/resume độc lập. Bộ dữ liệu được mở rộng lên 1.000 mẫu ứng viên. **Đạt kiểm kỹ thuật và giảm loss chưa đồng nghĩa đáp án tốt hơn; chưa hoàn tất đánh giá ba phương án hoặc triển khai adapter vào chatbot.**
+
+- Chuẩn hóa định dạng, review nội dung và audit lại bộ 1.000 mẫu trước khi mở rộng huấn luyện.
+- Thử nghiệm mô hình với quy mô dữ liệu lớn hơn.
+- Khóa benchmark, rubric và kiểm leakage; so sánh Base LLM, RAG và mô hình tinh chỉnh + RAG trên cùng câu hỏi, revision và cấu hình sinh. Hai nhánh RAG dùng cùng index và cấu hình truy xuất.
+- Lưu đầu vào/đầu ra, lỗi, cấu hình và độ trễ; chấm độ đúng, liên quan, mức bám nguồn và citation, kết hợp đọc thủ công để phân tích lỗi.

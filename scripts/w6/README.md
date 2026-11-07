@@ -8,7 +8,7 @@ Lệnh chạy ở root repo. Các đường dẫn dưới là ví dụ lần chu
 
 ```powershell
 python -B -m scripts.w6.bootstrap
-python -B scripts/w6/intake.py --contract data/w6/training-contract.json --archive D:/ohayo-instruction.zip --output .private/w6/inputs/w5-compact --report Evidence/W06/intake-report.json
+python -B scripts/w6/intake.py --contract data/w6/training-contract.json --archive D:/ohayo-instruction.zip --output .private/w6/inputs/w5-compact --report .private/w6/verification/intake-report.json
 python -B scripts/w6/allocation.py --contract data/w6/training-contract.json --archive D:/ohayo-instruction.zip --output data/w6
 ```
 
