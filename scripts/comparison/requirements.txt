@@ -1,0 +1,2 @@
+-r ../qlora/requirements.txt
+jsonschema==4.26.0
