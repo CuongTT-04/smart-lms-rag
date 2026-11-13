@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["qa_id", "question", "scope_id"],
+  "properties": {
+    "qa_id": {"type": "string", "pattern": "^[QD][0-9a-f]{20}$"},
+    "question": {"type": "string", "minLength": 2},
+    "scope_id": {"type": "string", "format": "uuid"}
+  }
+}
