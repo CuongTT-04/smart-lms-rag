@@ -1,5 +1,6 @@
 import ast
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -44,6 +45,11 @@ class MainTests(unittest.TestCase):
 
     def test_entrypoint_probe_rejects_missing_kaggle_module(self):
         with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, 'MAIN_PACKAGE_ENTRYPOINT'):
+                probe_entrypoints(Path(tmp))
+
+    def test_entrypoint_probe_cannot_borrow_modules_from_parent_pythonpath(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'PYTHONPATH': str(ROOT)}):
             with self.assertRaisesRegex(ValueError, 'MAIN_PACKAGE_ENTRYPOINT'):
                 probe_entrypoints(Path(tmp))
 

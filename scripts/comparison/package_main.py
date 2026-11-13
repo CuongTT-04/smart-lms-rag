@@ -1,6 +1,7 @@
 """Export the frozen main experiment, never train or include evaluator answers."""
 import argparse
 import ast
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -34,10 +35,13 @@ def copy_runtime(source, contents):
 
 def probe_entrypoints(contents):
     reports = {}
+    environment = os.environ.copy()
+    # Probe only the exported package, without borrowing modules from the checkout.
+    environment.pop('PYTHONPATH', None)
     for module in ('kaggle', 'runner', 'main_entry'):
         name = 'scripts.comparison.' + module
         result = subprocess.run([sys.executable, '-X', 'utf8', '-B', '-m', name, '--help'],
-                                cwd=contents, capture_output=True, text=True, encoding='utf-8', errors='replace')
+                                cwd=contents, env=environment, capture_output=True, text=True, encoding='utf-8', errors='replace')
         require(result.returncode == 0 and '--package' in result.stdout,
                 'MAIN_PACKAGE_ENTRYPOINT:' + name + ':' + result.stderr[-2000:])
         reports[name] = 'HELP_ENTRYPOINT_PASSED_NO_MODEL_CALL'

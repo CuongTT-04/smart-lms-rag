@@ -302,59 +302,57 @@ Minh chứng lưu riêng tại [main-intake](../.private/comparison/runs/main-in
 
 **Bước 7 hoàn tất phần chạy và kiểm kết quả kỹ thuật.** Chưa chấm factuality/correctness/citation/từ chối hoặc kết luận mô hình mới tốt hơn trên main. Bước 8 sẽ dùng chính 900 output này để đánh giá; không cần train hoặc sinh đáp án lại. Không tự commit/push/PR, không thay model chatbot.
 
-## 8. Chấm và phân tích — hoàn thành phần A
+## 8. Chấm và phân tích — kết quả của hai thành viên
 
-Đã hoàn thành **450 primary + 45 secondary**, đúng phạm vi phân công của Dương. Primary gồm **150 câu × ba nhánh**, cân bằng mỗi môn 50 câu, mỗi môn 20 factual / 15 explanation / 5 multi-page / 10 insufficient. Secondary là **15 câu khác × ba nhánh**, nằm trong phần primary của Cường; không cộng vào mẫu số primary. Phân bằng seed 42 theo môn/loại trước khi chấm, che nhãn arm bằng ID; nội dung/cấu trúc output vẫn có thể gợi ý nhánh. Chưa có điểm độc lập của Cường nên không ghi mức đồng thuận hay phân xử đã hoàn thành.
+Đã tiếp nhận gói kết quả Cường ngày **14/11/2026**, kiểm SHA-256/kích thước/CRC và đủ 60 file theo manifest, sau đó tái chạy aggregate trên dữ liệu cuối của dự án. Review A ban đầu được giữ nguyên: **450 primary + 45 secondary**; review B có **450 primary + 45 secondary**. Ghép thành **900 primary trên 300 câu × ba nhánh**, dùng 90 secondary để đối chiếu riêng, không cộng trùng vào mẫu số. Bản mở rộng một reviewer vừa tạo đã được gỡ, không dùng bất kỳ điểm nào từ bản đó.
 
-Đối chiếu lại **1.500 context bindings và 352 gold-page bindings** với **27 PDF / 354 trang vật lý**. Giữ nguyên gold đã khóa, không thay reference hoặc cấu hình sau khi xem output. Mỗi review gắn hash raw/reference/content, điểm, lý do và nguồn của các ý; chấm nội dung riêng với JSON/citation/renderer. Output limit nhận 0 correctness chính theo chính sách failure đã chốt; phần nội dung còn đọc được được lưu riêng, không repair raw.
+Cùng rubric, đơn vị item, raw/reference hash và failure policy; mỗi review gắn ID/hash, điểm, lý do và căn cứ nguồn. Kết quả gồm **14 output bất đồng đã có quyết định phân xử**, giữ nguyên review gốc A/B, bảng trước phân xử và decision log. Ba output_limit vẫn giữ trong 900 và nhận 0 correctness chính; không chạy lại Qwen, không train hoặc sửa raw/gold.
 
-### Điểm chất lượng trên 150 câu primary mỗi nhánh
+### Kết quả sau phân xử trên 300 câu mỗi nhánh
 
 | Chỉ số | Base | RAG | Tuned + RAG |
 | --- | --- | --- | --- |
-| Tổng điểm / tối đa | **160/300** | **213/300** | **221/300** |
-| Điểm đúng/đủ quy đổi | **53,33%** | **71,00%** | **73,67%** |
-| Đạt 2/2 | 54/150 | 86/150 | 91/150 |
-| Điểm trên 120 câu có đáp án | 45,83% | 64,17% | 67,08% |
-| Từ chối đúng trên 30 câu insufficient | 25/30 | 29/30 | 30/30 |
-| Từ chối rỗng nhầm câu có đáp án | 1/120 | 2/120 | 4/120 |
-| Bám nguồn theo item | N/A | **125/129 (96,90%)** | **116/130 (89,23%)** |
-| Citation precision theo item | N/A | **108/129 (83,72%)** | **89/130 (68,46%)** |
-| Citation coverage theo item | N/A | **108/129 (83,72%)** | **89/130 (68,46%)** |
+| Tổng điểm / tối đa | **335/600** | **454/600** | **457/600** |
+| Điểm đúng/đủ quy đổi | **55,83%** | **75,67%** | **76,17%** |
+| Đạt 2/2 | 118/300 | 193/300 | 191/300 |
+| Từ chối đúng trên 60 câu thiếu căn cứ | 47/60 | 58/60 | 59/60 |
+| Từ chối rỗng nhầm trên 240 câu có đáp án | 3/240 | 3/240 | 10/240 |
+| Bám nguồn theo item | N/A | 251/263 (95,44%) | 242/273 (88,64%) |
+| Citation precision/coverage theo item | N/A | 207/263 (78,71%) | 177/273 (64,84%) |
+| Generation trung bình | 5,37 giây | 12,41 giây | 9,73 giây |
+| Renderer hoặc protocol riêng của Base hợp lệ | 222/300 | 269/300 | 299/300 |
 
-Điểm phần trăm là tổng rubric / tổng điểm tối đa, **không phải tỷ lệ câu đúng hoàn toàn**. Các tỷ lệ bám nguồn/citation dùng **item có mệnh đề kiểm chứng được**, không coi một item dài là một claim nguyên tử: toàn bộ ý trong item phải được hỗ trợ, nên đây là phép đo bảo thủ ở cấp item, không tuyên bố tương đương atomic-claim faithfulness. Nguồn có thể hỗ trợ nội dung nhưng không phải đúng đoạn được dẫn. Item không có assertion, output rỗng và raw không parse được ghi riêng/N/A; không mặc định 100% support. Base không có context nên faithfulness/citation N/A. Precision và coverage tình cờ cùng mẫu số ở phần này, không đồng nghĩa về định nghĩa.
+Điểm quy đổi là tổng rubric 0/1/2 chia tối đa, **không phải tỷ lệ câu đúng hoàn toàn**. Support/citation tính trên item có mệnh đề kiểm chứng được; item nhiều ý cần được hỗ trợ toàn bộ. Output rỗng, không parse được và item không có assertion được đếm riêng, không mặc định 100% support; đây không phải atomic-claim faithfulness. Base không nhận context nên source support/citation N/A. Precision và coverage tình cờ bằng nhau do mỗi item đủ điều kiện có một citation; định nghĩa hai chỉ số vẫn khác.
 
-Theo môn (tổng tối đa 100 điểm/môn/nhánh): **CNXHKH 59 / 65 / 68; KTCTMLN 43 / 77 / 78; THMLN 58 / 71 / 75**, theo thứ tự Base / RAG / Tuned+RAG. Mức cải thiện không đồng đều và nhiều câu nhiều trang chỉ được một phần; đã lưu mọi lý do/ngoại lệ ở bảng lỗi.
+**Nhận xét:** RAG cao hơn Base **19,83 điểm phần trăm**. Tuned + RAG nhỉnh RAG **0,50 điểm phần trăm**, nhưng CI 95% **[-3,17; +4,33]** còn chứa 0; có **36 thắng / 39 thua / 225 hòa** theo cặp 300 câu. Chưa đủ cơ sở kết luận tuning cải thiện correctness chắc chắn hoặc thắng toàn diện. Tuned có lợi về format/hiển thị, từ chối khi thiếu căn cứ và thời gian generation, nhưng bám nguồn/citation thấp hơn và từ chối nhầm nhiều hơn. Tuned sinh ít token hơn, không diễn giải latency thấp hơn thành tốc độ mỗi token cao hơn.
 
-So theo cặp RAG → tuned+RAG trên 150 câu: **23 thắng / 21 thua / 106 hòa**, tăng **2,67 điểm phần trăm**. Paired bootstrap **10.000 lần, seed 42, resample theo câu hỏi** cho CI 95% **[-3,00; +8,33]**, còn chứa 0: chưa đủ cơ sở khẳng định tuning cải thiện correctness một cách chắc chắn. RAG cao hơn Base **17,67 điểm phần trăm**, CI **[9,67; 25,67]** trong phạm vi phần A. Khoảng tin cậy chỉ xét biến thiên chọn câu, không bao gồm sai số/thiên lệch reviewer và không biến nửa tập thành kết quả semantic toàn bộ 300 câu.
+A/B trùng điểm correctness **81/90 (90,00%)**, Cohen kappa **0,8289**. Có 14 output bất đồng về điểm hoặc support/citation; không hiểu 14 là số câu khác điểm correctness. Đây là đồng thuận giữa các lượt **đánh giá rubric tự động có đối chiếu nguồn**, không phải độ tin cậy chấm tay. Provenance B ghi ba batch mù; exact judge revision/decoding không được nền tảng cung cấp, không khẳng định cùng phiên bản judge cố định. Bootstrap 10.000 lần seed 42 chỉ phản ánh biến thiên chọn câu, không bao gồm sai số judge hay biến thiên giữa các lượt train.
 
-Ví dụ tuning cải thiện: `Q4344aa57122e22b72c9b` về hoàn cảnh cá nhân **0→2**; `Qccfbf233ff6538caa5f0` về lưu thông/thanh toán **0→2**. Ví dụ thoái lui: `Q282e378db6c96ffa15d0` tăng gấp đôi tử/mẫu của M=PQ/V **2→0**; `Qecae530a48d3c852bc41` thực thể chung của trao đổi **2→0**. Không chọn riêng các ví dụ có lợi cho adapter.
+Retrieval dùng chung trên 240 câu answerable: page Recall@5 **79,38%**, MRR@5 **0,7081**, nDCG@5 **0,6982**, truy đủ trang gold ở multi-page **30,00%**. Không dùng 60 insufficient để tính recall; không tìm thêm để bù top-5 chunk trùng trang. Adapter không làm đổi retrieval cache. Benchmark có giao kiến thức đã công bố; kết luận chỉ trong phạm vi bộ kiểm ba môn đã khóa, không phải 300 khái niệm hoàn toàn mới hay độ trễ chatbot online end-to-end.
 
-### Kiểm vận hành và retrieval toàn bộ main
+### Minh chứng và tái lập
 
-Trên **300 output/nhánh**, JSON parse được **222 / 297 / 299**. Hai nhánh grounded qua renderer backend thật **269/300 RAG, 299/300 tuned+RAG**; Base đạt protocol riêng **222/300**, không giả là đã qua proof renderer của chatbot. Output JSON lỗi vẫn giữ nội dung raw để chấm riêng, nhưng JSON hỏng không tính là valid abstention ở câu insufficient. Generation trung bình **5,37 / 12,41 / 9,73 giây**, p95 **11,22 / 29,90 / 17,73 giây**. Tuned sinh trung bình khoảng **44,27 token** so với RAG **88,49 token**, nên không diễn giải latency thấp hơn thành tốc độ xử lý mỗi token cao hơn. Không gọi số này là latency online end-to-end.
+- [Review A gốc](../.private/comparison/assessment/main/reviews-a.jsonl), [review B](../.private/comparison/assessment/member-b-v1/reviews-b.jsonl), [quyết định phân xử](../.private/comparison/assessment/adjudication-v1/decisions-notes.jsonl).
+- Kết quả nhận từ Cường tại [group-v2](../.private/comparison/assessment/group-v2/): [900 scored rows](../.private/comparison/assessment/group-v2/scored-group.jsonl), [metrics.csv](../.private/comparison/assessment/group-v2/metrics.csv), [summary.json](../.private/comparison/assessment/group-v2/summary.json), paired/errors, bảng trước phân xử, decision log, bốn PNG và báo cáo MD/PDF.
+- Kết quả tái tính riêng tại [group-reproduced](../.private/comparison/assessment/group-reproduced/). Summary/paired JSON khớp về nội dung; bốn file JSONL scored/primary-before/adjudication/adjudicated-reviews **khớp từng byte** với gói nhận. [Biên bản tái lập](../.private/comparison/inputs/member-b-handoff/reproduction.json).
+- [group_scoring.py](../scripts/comparison/group_scoring.py) kiểm A/B locks, rubric, raw/reference/context, mapping/assignment và renderer trước khi ghép. [group_report.py](../scripts/comparison/group_report.py) vẽ biểu đồ từ số liệu thật, không chèn nhận xét vào ảnh. **156/156 test comparison đạt tại máy tiếp nhận**: [kết quả test](../.private/comparison/group-scoring-tests.json).
 
-Retrieval chung trên **240 câu answerable**: page Recall@5 **79,38%**, MRR@5 **0,7081**, nDCG@5 **0,6982**; truy đủ mọi trang gold ở câu multi-page chỉ **30,00%**. Dùng các trang duy nhất trong top-5 chunk đã khóa, không tìm thêm để bù trang trùng. Hai nhánh RAG dùng cùng context nên chỉ có một bảng retrieval; adapter không làm tăng Recall@5. Không dùng 60 câu thiếu căn cứ để tính recall.
+Không ghi đè bản đã khóa. Để tái lập, dùng thư mục output mới:
 
-**Đánh giá:** RAG cải thiện rõ điểm đúng/đủ so với closed-book trong phần đã chấm. Tuning cải thiện nhẹ điểm tổng, format và latency, nhưng giảm mức hỗ trợ/citation ở phép chấm item và tăng một số từ chối nhầm; chưa thể kết luận thắng toàn diện. Các nhóm lỗi chính là trả lời lạc trọng tâm dù trích đúng nguồn, suy diễn số học/khái niệm, bỏ ý cần trang khác, dẫn sai đoạn và JSON lẫn ký tự/ngôn ngữ. Hướng tiếp theo là kiểm các bất đồng với Cường; cải thiện retrieval nhiều trang, dữ liệu gắn citation và độ đầy đủ trên development ở phiên bản sau, **không sửa run/test hiện tại để nâng điểm**.
+```text
+python -m scripts.comparison.group_scoring aggregate --b-folder .private/comparison/assessment/member-b-v1 --adjudication .private/comparison/assessment/adjudication-v1/decisions-notes.jsonl --output .private/comparison/assessment/group-check
+python -m scripts.comparison.group_report --output .private/comparison/assessment/group-check
+```
 
-### Minh chứng
+Các lệnh cần môi trường CPU có numpy/jsonschema, vẽ ảnh cần matplotlib; không cần GPU. Các trạng thái pending trong snapshot `assessment/main/` được giữ nguyên theo manifest lịch sử, không phải trạng thái nhóm hiện hành.
 
-Tất cả ở [assessment/main](../.private/comparison/assessment/main/): [summary.json](../.private/comparison/assessment/main/summary.json), [metrics.csv](../.private/comparison/assessment/main/metrics.csv) chỉ rõ scope A primary; [reviews-a.jsonl](../.private/comparison/assessment/main/reviews-a.jsonl) đủ 495 lượt; [reviews-lock.json](../.private/comparison/assessment/main/reviews-lock.json) và manifest khóa hash; [scored-a.jsonl](../.private/comparison/assessment/main/scored-a.jsonl), [errors.csv](../.private/comparison/assessment/main/errors.csv), [paired.json](../.private/comparison/assessment/main/paired.json), renderer và kiểm nguồn. [blinded-b.jsonl](../.private/comparison/assessment/main/blinded-b.jsonl) cùng mapping riêng chuẩn bị **450 primary + 45 secondary** cho Cường, không đưa mapping arm vào đầu vào judge. `group-status.json` vẫn để phần B/đồng thuận/phân xử pending, không tự điền điểm.
+## 9. Tiếp nhận và hoàn thiện bàn giao
 
-Biểu đồ thực [correctness](../.private/comparison/assessment/main/figures/correctness.png) và [latency](../.private/comparison/assessment/main/figures/latency.png) chỉ có số liệu/nhãn/trục, không chèn nhận xét. Công cụ [main_scoring.py](../scripts/comparison/main_scoring.py); **143/143 test comparison đạt** tại [main-scoring-tests.json](../.private/comparison/main-scoring-tests.json). Không cần chạy thêm Kaggle, gọi Qwen hoặc train lại.
+Gói Dương [comparison-handoff.zip](../.private/comparison/handoff/comparison-handoff.zip) giữ nguyên đầu vào/run/review A đã khóa. Gói Cường [member-b-w7-handoff.zip](../.private/comparison/inputs/member-b-handoff/member-b-w7-handoff.zip) và [receipt](../.private/comparison/inputs/member-b-handoff/member-b-w7-handoff.receipt.json) chứa phần B/phân xử/kết quả nhóm; SHA-256 ZIP **6d67a86ac01c7336dfab19de53ed13eb8bce41bd2216c1a381afff54fe89eed2**. Hai gói bổ sung cho nhau, không tự hiểu ZIP Dương cũ đã chứa kết quả nhóm mới.
 
-Đây là **một lượt đánh giá rubric tự động có đối chiếu nguồn**, không phải human review độc lập hay API judge khóa được model revision/decoding; thông tin nền tảng không cung cấp để `null`, không bịa thông số. Điểm semantic vẫn có độ chủ quan; log review và hash giúp kiểm lại, không chứng minh reviewer hoàn hảo. Chưa có **900 primary + 90 secondary** của cả nhóm, chưa có báo cáo semantic cuối cho toàn bộ main và chưa đổi model chatbot. Bước 8 phần A hoàn tất; bước 9 bàn giao Cường kiểm/tổng hợp cuối.
+Đã kiểm manifest, tích hợp công cụ theo skeleton hiện có và tái lập kết quả. Sửa kiểm entrypoint để gói không mượn module từ PYTHONPATH của checkout; không đổi runner ZIP đã khóa, model, adapter, input hoặc kết quả main. Giữ provenance và log do Cường gửi riêng; không biến việc tiếp nhận thành khẳng định đã tự chạy lại các phép kiểm GPU/tokenizer/PDF của Cường.
 
-## 9. Bàn giao riêng cho Cường
-
-Gói riêng [comparison-handoff.zip](../.private/comparison/handoff/comparison-handoff.zip) tập hợp code/notebook, đầu vào cuối, training ZIP với checkpoint/adapter, smoke/dev/main và review/phân tích A. `bundle-manifest.json` kiểm từng file, `verify.py` chạy bằng Python chuẩn sau giải nén; [readback.json](../.private/comparison/handoff/readback.json) ghi kết quả kiểm ZIP/giải nén. File hướng dẫn ngắn `comparison-handoff.md` được gửi riêng, không nằm trong ZIP và có thể đưa ra ngoài repository sau bàn giao.
-
-Theo checklist 02.1–02.5 ban đầu, Cường đối chiếu đầu vào cuối và các thay đổi benchmark/retrieval, kiểm adapter mới thay pilot mặc định, tiếp nhận hoặc mở rộng scorer hiện có, chấm 450 primary + 45 secondary, ghép và phân xử 90 lượt đối chiếu, rồi xuất bảng/biểu đồ/báo cáo nhóm và Evidence/W07. Không ghi đè review A hoặc dùng bảng điểm A thay review B độc lập. Kiểm `judge-config.json` và đơn vị item trước khi ghép; nếu cần chuẩn claim nguyên tử hoặc judge có version xác định thì tạo revision đánh giá đồng nhất, không trộn hai kiểu điểm.
-
-ZIP không phải bản sao đầy đủ ứng dụng: không kèm base weights, virtualenv/cache, PDF gốc hoặc các bản runner lỗi/đã thay thế. `restore-map.json` chỉ rõ mỗi file/thư mục tương ứng vị trí nào trong repo hiện có; tích hợp theo skeleton `scripts/comparison/`, `data/comparison/`, `notebooks/`, `docs/comparison.md` và `.private/comparison/`, không tạo pipeline trùng hoặc copy đè thay đổi chung. Các đường dẫn lịch sử trong source lock không được sửa cho giống máy mới; dùng runner Input đã khóa khi cần tái hiện suy luận.
-
-Nên sao lưu **ZIP bàn giao và Markdown hướng dẫn ngoài dự án**; ZIP đã chứa các kết quả mới quan trọng và original full training ZIP. Giữ cả các bản lưu gốc từ lượt trước, không hiểu gói bàn giao này là toàn bộ lịch sử mọi tuần. Không công khai ZIP, PDF, weights, gold hoặc raw output. Chưa có xác nhận Cường đã nhận/duyệt, chưa có đánh giá chung hoàn chỉnh; không tự commit/push/PR.
+Phần tiếp theo là Dương hoàn thiện **Evidence/W07** theo layout README.md, metrics.csv, test-results.txt, manifest.json, figures/ từ kết quả nhóm sau phân xử. Lưu review/raw/gold/weights/ZIP riêng; không đưa dữ liệu nhạy cảm vào Evidence công khai. Khi cần sửa điểm, đối chiếu ID/hash/tiêu chí và tạo bản dẫn xuất mới thay vì sửa review gốc. Việc cập nhật Evidence, commit/push/PR hoặc đổi model chatbot không được tự thực hiện trong lượt tiếp nhận này.
 
 ## Lộ trình tiếp theo
 
@@ -367,7 +365,7 @@ Nên sao lưu **ZIP bàn giao và Markdown hướng dẫn ngoài dự án**; ZIP
 | 5 | Train mở rộng 770 mẫu một epoch, audit và đối chiếu trên dev | Full đạt 193 updates/1 epoch; đã chấm 60 old/new outputs và ghi regressions |
 | 6 | Chọn adapter và khóa phiên bản thí nghiệm | Đã chọn adapter mới, khóa model/config/benchmark/retrieval và kiểm 990 đầu vào; chưa chạy main |
 | 7 | Chạy main 300 câu × ba nhánh | Đã xác thực đủ 900 output: 897 completed, 3 output_limit; giữ nguyên toàn bộ để chấm |
-| 8 | Chấm phần A và phân tích | Hoàn thành 450 primary + 45 secondary; có metrics, lỗi, paired CI và biểu đồ; phần B/phân xử chung chưa thực hiện |
-| 9 | Kiểm gói, bàn giao để Cường kiểm cuối | Nội dung và hướng dẫn bàn giao được xuất riêng; trạng thái byte/readback tại gói handoff, Cường chưa nghiệm thu |
+| 8 | Ghép chấm A/B và phân tích nhóm | Đủ 900 primary + 90 secondary, 14 output đã phân xử; đã tái lập kết quả nhóm khớp gói Cường |
+| 9 | Kiểm gói và hoàn thiện bàn giao | Đã tiếp nhận gói B, kiểm checksum và tái lập aggregate/report; Evidence/W07 do Dương hoàn thiện sau cùng |
 
 Giữ nguyên artifact cũ, không tự commit/push/PR hoặc triển khai adapter vào chatbot. Các đầu ra sinh sau phải có run/hash thực; không dùng 990 đầu vào đã chuẩn bị để thay cho kết quả model.
