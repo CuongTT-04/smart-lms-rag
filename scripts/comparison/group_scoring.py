@@ -23,6 +23,8 @@ def policy_score(case, raw_score):
         return 0
     if not case['answerable'] and not case['parsed']['schema_valid']:
         return 0
+    if case['answerable'] and case['parsed']['schema_valid'] and not case['parsed']['items']:
+        return 0
     return raw_score
 
 

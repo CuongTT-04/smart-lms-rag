@@ -4,6 +4,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 from scripts.comparison.group_scoring import build_review, validate_reviews, agreement, resolve_reviews, validate_renderers, verify_b_lock
+from scripts.comparison.main_scoring import parse
 from scripts.comparison.protocol import write_json, file_hash
 
 
@@ -25,6 +26,35 @@ class GroupScoringTests(unittest.TestCase):
         case.update(generation_status='completed',answerable=False,parsed={'schema_valid':False,'items':[]})
         note=self.note();note.update(verdicts=[],claim_reasons=[])
         self.assertEqual(build_review(case,note,'B')['correctness'],0)
+
+    def test_empty_answerable_response_scores_zero(self):
+        case = self.case()
+        case['parsed'] = parse('{"items":[]}')
+        for raw_score in (0, 1, 2):
+            note = {**self.note(), 'raw_content_score': raw_score, 'verdicts': [], 'claim_reasons': []}
+            with self.subTest(raw_score=raw_score):
+                review = build_review(case, note, 'B')
+                self.assertEqual(review['correctness'], 0)
+                validate_reviews({'M1': case}, [review], {'M1'}, 'B')
+                for forced_score in (1, 2):
+                    with self.subTest(forced_score=forced_score), self.assertRaisesRegex(ValueError, 'GROUP_FAILURE_SCORE_POLICY'):
+                        validate_reviews({'M1': case}, [{**review, 'correctness': forced_score}], {'M1'}, 'B')
+
+    def test_valid_insufficient_abstention_keeps_full_credit(self):
+        case = self.case()
+        case.update(answerable=False, parsed=parse('{"items":[]}'))
+        note = {**self.note(), 'verdicts': [], 'claim_reasons': []}
+        review = build_review(case, note, 'B')
+        self.assertEqual(review['correctness'], 2)
+        validate_reviews({'M1': case}, [review], {'M1'}, 'B')
+
+    def test_unparseable_answerable_content_is_still_scored_semantically(self):
+        case = self.case()
+        case['parsed'] = parse('A meaningful answer outside the JSON protocol')
+        note = {**self.note(), 'verdicts': [], 'claim_reasons': []}
+        review = build_review(case, note, 'B')
+        self.assertEqual(review['correctness'], 2)
+        validate_reviews({'M1': case}, [review], {'M1'}, 'B')
 
     def test_support_and_citation_are_separate_and_exact_source_is_bound(self):
         case=self.case();case['parsed']['items'][0]['evidence_id']='E9.1'
