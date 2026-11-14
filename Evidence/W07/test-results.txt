@@ -32,3 +32,13 @@ Evidence sources:
 - Source document: https://docs.google.com/document/d/1PDohFub9IxAexOdSCmmqq7aPRwZNejCz/edit
 - Three original chart images were selected visually; ten non-chart images were excluded.
 - README.md summarizes the source report; current file integrity is recorded in manifest.json.
+
+Review follow-up (2026-11-14):
+- Recomputed source-split and exact-question audit on all 1000 normalized records: 770 train / 114 validation / 116 instruction holdout.
+- Main source groups overlapping actual train/validation: 0; main exact-question matches against instruction records: 0.
+- Prior semantic screen covers 300 main questions and 1175 prior questions; partial concept/answer overlap remains disclosed, not waived as semantic independence.
+- Purposive diagnostic sample: 6 questions / 18 outputs across all three courses; not an error-rate estimate.
+- Verified selected gold pages and received context spans against checksummed PDFs: 10 PDFs / 28 physical pages, all bindings passed.
+- Completed the source-grounded qualitative review of the selected 18 outputs and recorded case-level findings. Human review status: NOT_RECORDED; no human approval or new independent scores asserted.
+- Original raw/reference/review scores and frozen artifacts were not changed.
+- These follow-up checks are not additional unittest cases; the recorded comparison suite remains 159 tests.

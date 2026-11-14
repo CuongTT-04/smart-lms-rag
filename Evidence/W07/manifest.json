@@ -101,6 +101,22 @@
     "scripts/comparison/tests/test_group_scoring.py": {
       "sha256": "b2f62a9a5c85273a087ac9e0cc08b07b7f2d9bdb9bbefad86b6febd5e9d9e259",
       "size_bytes": 8140
+    },
+    ".private/comparison/assessment/spot-check/review.json": {
+      "sha256": "8bd003b598f1fee59e5c3d7bff06aaaf12c33559750c0b85d7c25f1c7bc71a69",
+      "size_bytes": 11247
+    },
+    ".private/comparison/assessment/spot-check/review.html": {
+      "sha256": "f731ecc3d6e0d4dbcec1f6e566494a5649cae5197b08d549bef5374c7d092148",
+      "size_bytes": 105201
+    },
+    ".private/comparison/prepared/semantic-review.json": {
+      "sha256": "c18a01a9ebd70cd4f38d21d72d4b710e964e122b2fdb255b74ba9190b34501de",
+      "size_bytes": 5332
+    },
+    ".private/comparison/prepared/benchmark-v3/main.references.jsonl": {
+      "sha256": "2c722102d793f4a7616e45ce04c8ba2e9ca48e22abce5a91f1e91f2a5e2272a2",
+      "size_bytes": 1602971
     }
   },
   "limitations": [
@@ -128,14 +144,49 @@
       "size_bytes": 6513
     },
     "README.md": {
-      "sha256": "6d23bbcdd362b95aa7964de4b7c0181dcc40b1f6cdffcd95df5f1fcf18058b43",
-      "size_bytes": 8759
+      "sha256": "e33cca7045fccac9c9a4825820f963f432892bd650e6b6f7cce9118048e30d30",
+      "size_bytes": 12472
     },
     "test-results.txt": {
-      "sha256": "62a29ea0c269274d7b2ca21de76487b87a561c2e5cee1d4fe458b4f5c26fa56c",
-      "size_bytes": 2106
+      "sha256": "b0cbaa802798529535449a9388656f82c5976b13f63a112fb0860b6b8c87eb88",
+      "size_bytes": 3191
     }
   },
   "manifest_hashes_itself": false,
-  "integrity_basis": "SHA-256 and exact file sizes of the final README, metrics, test log and original chart images."
+  "integrity_basis": "SHA-256 and exact file sizes of the final README, metrics, test log and original chart images.",
+  "review_followup": {
+    "date": "2026-11-14",
+    "source_split_check": {
+      "records": 1000,
+      "split_counts": {
+        "train": 770,
+        "validation": 114,
+        "instruction_holdout": 116
+      },
+      "main_train_validation_source_overlap": 0,
+      "exact_main_instruction_question_matches": 0,
+      "semantic_independence_proven": false,
+      "disclosure": "Partial conceptual/answer overlap remains; shared-domain comparison, not entirely novel concepts."
+    },
+    "qualitative_sample": {
+      "questions": 6,
+      "outputs": 18,
+      "courses": 3,
+      "selection": "PURPOSIVE_DIAGNOSTIC_NOT_RANDOM",
+      "pdfs": 10,
+      "physical_pages": 28,
+      "source_bindings": "PASSED",
+      "locked_scores_changed": false,
+      "status": "COMPLETED",
+      "assessment_kind": "SOURCE_GROUNDED_QUALITATIVE_REVIEW"
+    },
+    "reading_sheet": ".private/comparison/assessment/spot-check/review.html",
+    "review_record": ".private/comparison/assessment/spot-check/review.json",
+    "human_review": {
+      "status": "NOT_RECORDED",
+      "reviewer": null,
+      "checked_at": null
+    },
+    "status": "SOURCE_CHECKS_AND_QUALITATIVE_REVIEW_COMPLETED"
+  }
 }

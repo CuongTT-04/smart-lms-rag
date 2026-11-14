@@ -53,6 +53,10 @@ Hoàn thiện bộ công cụ `scripts/comparison/` để kiểm đầu vào, kh
 
 Kiểm adapter cuối của lượt train 193 bước với **392 tensor**; tính lại token IDs cho **990 đầu vào dev/main**. Đối chiếu **1.500 liên kết ngữ cảnh và 352 liên kết trang đáp án trên 354 trang thuộc 27 PDF**. Phân chia 770/114/116 và nguồn benchmark được kiểm lại với train/validation; giữ nguyên dữ liệu gốc và ghi rõ giới hạn giao kiến thức.
 
+**Làm rõ giao dữ liệu:** kiểm lại trên đúng **770 train / 114 validation / 116 holdout** cho thấy nguồn main (`CNXHKH:ch03`, `KTCTMLN:ch02`, `THMLN:ch13`) không giao với train/validation và không có câu hỏi main trùng nguyên văn với bộ instruction. Đây là kiểm tách nguồn và trùng câu, **không chứng minh độc lập hoàn toàn về ngữ nghĩa**. Rà soát với 1.175 câu hỏi trước đó vẫn ghi nhận giao khái niệm hoặc một phần đáp án, như câu `Q53025e7a1de1b10dbccf` về vai trò các tổ chức trong phát huy dân chủ và `Qd576db0b25cfb1e00679` về thành phần tồn tại xã hội. Vì vậy, kết quả là so sánh ba phương pháp trong cùng miền kiến thức, không phải phép đo trên 300 khái niệm hoàn toàn mới. Không thay benchmark sau khi xem kết quả.
+
+Việc tách nguồn trên áp dụng cho **nguồn trang đáp án của benchmark main**. Kho truy xuất vẫn dùng chung 27 PDF cho hai nhánh RAG, có thể chứa tài liệu từng dùng để tạo mẫu train; không diễn giải thành toàn bộ context đều độc lập với train.
+
 ### 2.4. Đánh giá phần B và đối chiếu kết quả của hai thành viên
 
 Mỗi phần A/B gồm **450 lượt chấm chính + 45 lượt chấm đối chiếu**, dùng cùng rubric, che tên nhánh và khóa điểm trước khi ghép. Toàn bộ có **900 lượt chấm chính + 90 lượt đối chiếu**; không cộng các lượt đối chiếu vào mẫu số chính.
@@ -68,6 +72,19 @@ Xuất số liệu theo môn, loại câu hỏi, nhóm lỗi và so sánh theo c
 Bootstrap **10.000 lần, seed 42**, lấy mẫu theo câu hỏi: Tuned + RAG nhỉnh RAG **0,50 điểm phần trăm**, nhưng khoảng tin cậy 95% **[-3,17; +4,33]** chứa 0, nên chưa đủ cơ sở khẳng định tuning cải thiện độ đúng chắc chắn. Khoảng này chưa bao gồm sai số bộ chấm hoặc biến thiên giữa các lượt train.
 
 Bộ kiểm đã chặn việc mượn module từ `PYTHONPATH` ngoài gói và chấm điểm khác 0 cho câu có đáp án nhưng trả JSON rỗng. **159/159 test comparison hiện tại đạt**; xem [kết quả kiểm thử](test-results.txt).
+
+**Đối chiếu định tính bổ sung:** chọn có chủ đích **6 câu × 3 nhánh = 18 đầu ra**, phủ ba môn, để xem các trường hợp cải thiện, thoái lui và lỗi truy xuất. Đã đối chiếu câu hỏi, đầu ra, ngữ cảnh thực nhận và trang đáp án; kiểm nguồn của mẫu trên **10 PDF / 28 trang vật lý**. Điểm trong bảng là điểm nhóm đã khóa, không phải lượt chấm mới.
+
+| Câu hỏi | Lỗi hoặc khác biệt tiêu biểu | Điểm Base / RAG / Tuned |
+| --- | --- | --- |
+| `Q4344aa57122e22b72c9b` | RAG dẫn đúng một đoạn nhưng nêu biểu hiện tâm lý giai cấp, không trả lời về hoàn cảnh sinh hoạt cá nhân. Tuned trả lời đúng trọng tâm. | 2 / 0 / 2 |
+| `Qccfbf233ff6538caa5f0` | RAG nhầm thanh toán phải dùng tiền đủ giá trị. Tuned phân biệt đúng mua bán/trả nợ, nhưng chỉ dẫn E4.1 ở trang 15; ý thanh toán cần E1.1 ở trang 16. Nội dung đúng chưa đồng nghĩa citation đủ. | 0 / 0 / 2 |
+| `Q282e378db6c96ffa15d0` | Đã có công thức `M = PQ/V`, nhưng Tuned kết luận M tăng gấp đôi khi PQ và V cùng tăng hai lần; đúng ra M không đổi. Đây là lỗi suy luận, không phải thiếu công thức trong context. | 2 / 2 / 0 |
+| `Qecae530a48d3c852bc41` | Base hiểu nhầm sang trao đổi chất sinh học. Tuned chép ý về tiêu dùng, không giải thích cái chung là lao động xã hội, đồng thời dẫn khác đoạn hỗ trợ. | 0 / 2 / 0 |
+| `Qab46ace5f85b17c741c6` | Tuned trả rỗng; cache không có trang gold CNXHKH chương 3, trang 12. Cần xem lỗi truy xuất trước, không quy trường hợp này chỉ cho hành vi từ chối của adapter. | 1 / 0 / 0 |
+| `Q7a7d654f503db86baaa9` | Tuned lặp lại câu hỏi; RAG trả lời một phần nhưng thiếu ý kế thừa thành tựu. Cache có 2/3 trang gold, thiếu trang 16: có cả hạn chế tổng hợp và thiếu ngữ cảnh. | 1 / 1 / 0 |
+
+**Đã hoàn thành đối chiếu định tính 18 đầu ra với câu hỏi, ngữ cảnh và trang đáp án**, lưu nhận xét theo từng ID. Mẫu này phục vụ phân tích lỗi, không dùng để ước lượng tỷ lệ lỗi toàn bộ benchmark và không phải một lượt chấm tay độc lập. Đầu ra, nguồn, điểm nhóm và các gói đã khóa được giữ nguyên; phạm vi kiểm tra và thông tin đối chiếu nằm trong [manifest.json](manifest.json).
 
 ## 3. Quản lý mã nguồn và bằng chứng
 
