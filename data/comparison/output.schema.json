@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["run_id", "qa_id", "arm", "input_sha256", "contexts_sha256", "input_token_ids_sha256", "adapter_enabled", "adapter_sha256", "raw_output", "status", "stop_reason", "input_tokens", "output_tokens", "generation_seconds", "error"],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "qa_id": {"type": "string", "pattern": "^[QD][0-9a-f]{20}$"},
+    "arm": {"enum": ["base", "rag", "tuned_rag"]},
+    "input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contexts_sha256": {"type": ["string", "null"]},
+    "input_token_ids_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adapter_enabled": {"type": "boolean"},
+    "adapter_sha256": {"type": ["string", "null"]},
+    "raw_output": {"type": "string"},
+    "status": {"enum": ["completed", "timeout", "output_limit", "model_error", "infrastructure_error"]},
+    "stop_reason": {"type": ["string", "null"]},
+    "input_tokens": {"type": "integer", "minimum": 0},
+    "output_tokens": {"type": "integer", "minimum": 0},
+    "generation_seconds": {"type": "number", "minimum": 0},
+    "error": {"type": ["string", "null"]}
+  }
+}
