@@ -1,0 +1,141 @@
+{
+  "schema_version": 3,
+  "week": "W07",
+  "updated_at": "2026-11-14",
+  "status": "EXPANDED_TRAINING_AND_GROUP_COMPARISON_COMPLETE",
+  "readme_intentionally_empty": false,
+  "layout": [
+    "README.md",
+    "metrics.csv",
+    "test-results.txt",
+    "manifest.json",
+    "figures/"
+  ],
+  "git_head": "398bf29b0b4cc182aed6838a14be0f5b3fa3c842",
+  "dataset": {
+    "record_count": 1000,
+    "split_counts": {
+      "train": 770,
+      "validation": 114,
+      "instruction_holdout": 116
+    },
+    "holdout_used_for_training_or_selection": false
+  },
+  "training": {
+    "status": "EXPANDED_ONE_EPOCH_TRAINING_PASSED",
+    "optimizer_updates": 193,
+    "epochs": 1,
+    "adapter_sha256": "51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7"
+  },
+  "benchmark": {
+    "questions": 300,
+    "primary_outputs": 900,
+    "secondary_outputs": 90,
+    "adjudicated_outputs": 14,
+    "completed_outputs": 897,
+    "output_limit_outputs": 3,
+    "assessment_kind": "AUTOMATED_RUBRIC"
+  },
+  "tests": {
+    "suite": "scripts/comparison/tests",
+    "run_date": "2026-11-14",
+    "passed": 159,
+    "failures": 0,
+    "errors": 0,
+    "gpu_used": false
+  },
+  "report_source": {
+    "url": "https://docs.google.com/document/d/1PDohFub9IxAexOdSCmmqq7aPRwZNejCz/edit",
+    "file_name": "ĐATN_N2_Báo cáo tuần 07.docx",
+    "modified_time": "2026-11-14T12:04:32.610Z",
+    "sha256": "fda5c001ce950da6b820d98097b47724f9ab9437ea04bfdd882a81d0ef6037e7",
+    "selection": "Only original chart images; code screenshots, interface screenshots and logo excluded."
+  },
+  "readme_source": {
+    "url": "https://docs.google.com/document/d/1PDohFub9IxAexOdSCmmqq7aPRwZNejCz/edit",
+    "modified_time": "2026-11-14T13:38:34.662Z",
+    "adaptation": "Shortened report using the W06 README layout; current test count is 159 after three regression tests, versus the historical 156 in the source report."
+  },
+  "figure_sources": {
+    "figures/loss-curve.png": {
+      "document_member": "word/media/image12.png",
+      "section": "2.1",
+      "sha256": "98a17d98c3ddc1e749b97d221bc1e5e606250a84627543e1087fecb59c16cf26",
+      "original_download_unedited": true
+    },
+    "figures/training-diagnostics.png": {
+      "document_member": "word/media/image13.png",
+      "section": "2.1",
+      "sha256": "ad5206ed0503d04523590e46fa4ad016190e288d389e21d5a5b11561c224df58",
+      "original_download_unedited": true
+    },
+    "figures/paired-ci.png": {
+      "document_member": "word/media/image3.png",
+      "section": "2.5",
+      "sha256": "44255de6ef29470be0833b4c9ba51ffce1708585939d2ec790d2dc5ed976aa77",
+      "original_download_unedited": true
+    }
+  },
+  "metric_sources": {
+    "normalized-training/manifest.json": ".private/comparison/prepared/training-v2/manifest.json",
+    "full-training-audit.json": ".private/comparison/runs/full-20261112T192034516377Z-audit.json",
+    "group-v2/summary.json": ".private/comparison/assessment/group-v2/summary.json"
+  },
+  "source_files": {
+    ".private/comparison/assessment/group-v2/summary.json": {
+      "sha256": "7b71a5443b58d4292808254f1083d694af2c345163138dff9cc3fbd9c2ef248b",
+      "size_bytes": 30158
+    },
+    ".private/comparison/prepared/training-v2/manifest.json": {
+      "sha256": "95a678d4cfdaa02ff1f10b4278056e0eb72ea44f9991911fde52105e8645f3e3",
+      "size_bytes": 5560
+    },
+    ".private/comparison/runs/full-20261112T192034516377Z-audit.json": {
+      "sha256": "9ce30f6f5615dae7267cca65f57781a78851b9032033254d8046d6b54014f145",
+      "size_bytes": 1023
+    },
+    "scripts/comparison/group_scoring.py": {
+      "sha256": "3510e06c3b2608cc96a6fdb51897d2c435b50742dc9719ff7fad6e157b576bb2",
+      "size_bytes": 26666
+    },
+    "scripts/comparison/tests/test_group_scoring.py": {
+      "sha256": "b2f62a9a5c85273a087ac9e0cc08b07b7f2d9bdb9bbefad86b6febd5e9d9e259",
+      "size_bytes": 8140
+    }
+  },
+  "limitations": [
+    "Training validation loss does not independently establish answer quality.",
+    "Benchmark scores are automated rubric assessments, not human inter-rater reliability.",
+    "Generation timings exclude setup, retrieval and online API overhead.",
+    "Source charts are preserved as embedded in the linked report; no chart was regenerated.",
+    "Raw outputs, gold references, model weights and private datasets are not included."
+  ],
+  "files": {
+    "figures/loss-curve.png": {
+      "sha256": "98a17d98c3ddc1e749b97d221bc1e5e606250a84627543e1087fecb59c16cf26",
+      "size_bytes": 166802
+    },
+    "figures/paired-ci.png": {
+      "sha256": "44255de6ef29470be0833b4c9ba51ffce1708585939d2ec790d2dc5ed976aa77",
+      "size_bytes": 52174
+    },
+    "figures/training-diagnostics.png": {
+      "sha256": "ad5206ed0503d04523590e46fa4ad016190e288d389e21d5a5b11561c224df58",
+      "size_bytes": 160151
+    },
+    "metrics.csv": {
+      "sha256": "ce55637b34742899cd8d0e7786e381a52d1ed39706b825795a44da9177bc870a",
+      "size_bytes": 6513
+    },
+    "README.md": {
+      "sha256": "6d23bbcdd362b95aa7964de4b7c0181dcc40b1f6cdffcd95df5f1fcf18058b43",
+      "size_bytes": 8759
+    },
+    "test-results.txt": {
+      "sha256": "62a29ea0c269274d7b2ca21de76487b87a561c2e5cee1d4fe458b4f5c26fa56c",
+      "size_bytes": 2106
+    }
+  },
+  "manifest_hashes_itself": false,
+  "integrity_basis": "SHA-256 and exact file sizes of the final README, metrics, test log and original chart images."
+}

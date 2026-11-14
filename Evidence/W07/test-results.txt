@@ -1,0 +1,34 @@
+COMPARISON VERIFICATION
+Date: 2026-11-14 (Asia/Bangkok)
+Scope: scripts/comparison/tests
+Git HEAD: 398bf29b0b4cc182aed6838a14be0f5b3fa3c842
+
+Command:
+.private/qlora/trainer-env/Scripts/python.exe -X utf8 -B -c "import os,sys,unittest; os.environ.update(PYTHONDONTWRITEBYTECODE='1',USE_TF='0',USE_FLAX='0',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1'); sys.path[:0]=['.private/qlora/data-deps','.private/qlora/plot-deps']; result=unittest.TextTestRunner(verbosity=1).run(unittest.defaultTestLoader.discover('scripts/comparison/tests')); sys.exit(not result.wasSuccessful())"
+
+Observed unittest summary:
+Ran 159 tests in 13.330s
+OK
+Process exit code: 0
+
+Coverage includes:
+- Input identity, source/split bindings, frozen configuration and notebook packaging.
+- Runner smoke/main gates, adapter state and returned output integrity.
+- Training/collator fixtures, training diagnostics and dependency checks.
+- Independent review locks, source/citation bindings, agreement and adjudication.
+- Answerable valid empty JSON scores zero; forced nonzero review is rejected.
+- Valid insufficient-evidence abstention remains eligible for full credit.
+
+Execution boundaries:
+- CPU fixtures and temporary files only; no Qwen weight loading, GPU training or benchmark regeneration.
+- Synthetic model_error and fixture-training messages are intentional test cases, not failures of the actual benchmark.
+- Local fixture model warnings were nonfatal; the test suite completed successfully.
+- This run verifies the tools, not a new training run or new semantic grading.
+- Historical 156-test results remain historical; 159 is the current suite after three regression tests were added.
+
+Evidence sources:
+- Training: .private/comparison/runs/full-20261112T192034516377Z-audit.json
+- Group metrics: .private/comparison/assessment/group-v2/summary.json
+- Source document: https://docs.google.com/document/d/1PDohFub9IxAexOdSCmmqq7aPRwZNejCz/edit
+- Three original chart images were selected visually; ten non-chart images were excluded.
+- README.md summarizes the source report; current file integrity is recorded in manifest.json.

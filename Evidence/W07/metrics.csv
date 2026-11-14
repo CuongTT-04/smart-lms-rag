@@ -1,0 +1,70 @@
+group,metric,value,unit,denominator,source,note
+split,train,770,samples,1000,normalized-training/manifest.json,
+split,validation,114,samples,1000,normalized-training/manifest.json,
+split,instruction_holdout,116,samples,1000,normalized-training/manifest.json,Not used for training or selection
+training,global_step,193,updates,,full-training-audit.json,
+training,applied_updates,193,updates,,full-training-audit.json,
+training,scaler_skipped_updates,0,updates,,full-training-audit.json,
+training,validation_baseline,0.44855982065200806,loss,,full-training-audit.json,
+training,validation_final,0.1899760365486145,loss,,full-training-audit.json,
+training,peak_allocated_gib,11.348247051239014,GiB,,full-training-audit.json,
+base,outputs,300,count,300,group-v2/summary.json,After adjudication
+base,correctness_total,335,count,600,group-v2/summary.json,After adjudication
+base,correctness_percent,55.833333333333336,percent,600,group-v2/summary.json,After adjudication
+base,full_credit,118,count,300,group-v2/summary.json,After adjudication
+base,correct_abstentions,47,count,60,group-v2/summary.json,After adjudication
+base,false_protocol_abstentions,3,count,240,group-v2/summary.json,After adjudication
+base,faithfulness_item_micro,N/A,ratio,N/A,group-v2/summary.json,Conservative structured-item assessment
+base,citation_precision_item_micro,N/A,ratio,N/A,group-v2/summary.json,Conservative structured-item assessment
+base,citation_coverage_item_micro,N/A,ratio,N/A,group-v2/summary.json,Conservative structured-item assessment
+base,raw_json_valid,222,count,300,group-v2/summary.json,
+base,renderer_or_base_protocol_valid,222,count,300,group-v2/summary.json,
+base,generation_mean_seconds,5.369868651956695,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+base,generation_p95_seconds,11.223151473700183,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+base,output_tokens,21801,count,300,group-v2/summary.json,
+rag,outputs,300,count,300,group-v2/summary.json,After adjudication
+rag,correctness_total,454,count,600,group-v2/summary.json,After adjudication
+rag,correctness_percent,75.66666666666667,percent,600,group-v2/summary.json,After adjudication
+rag,full_credit,193,count,300,group-v2/summary.json,After adjudication
+rag,correct_abstentions,58,count,60,group-v2/summary.json,After adjudication
+rag,false_protocol_abstentions,3,count,240,group-v2/summary.json,After adjudication
+rag,faithfulness_item_micro,0.9543726235741445,ratio,263,group-v2/summary.json,Conservative structured-item assessment
+rag,citation_precision_item_micro,0.7870722433460076,ratio,263,group-v2/summary.json,Conservative structured-item assessment
+rag,citation_coverage_item_micro,0.7870722433460076,ratio,263,group-v2/summary.json,Conservative structured-item assessment
+rag,raw_json_valid,297,count,300,group-v2/summary.json,
+rag,renderer_or_base_protocol_valid,269,count,300,group-v2/summary.json,
+rag,generation_mean_seconds,12.412066118660023,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+rag,generation_p95_seconds,29.902743147149845,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+rag,output_tokens,26547,count,300,group-v2/summary.json,
+tuned_rag,outputs,300,count,300,group-v2/summary.json,After adjudication
+tuned_rag,correctness_total,457,count,600,group-v2/summary.json,After adjudication
+tuned_rag,correctness_percent,76.16666666666667,percent,600,group-v2/summary.json,After adjudication
+tuned_rag,full_credit,191,count,300,group-v2/summary.json,After adjudication
+tuned_rag,correct_abstentions,59,count,60,group-v2/summary.json,After adjudication
+tuned_rag,false_protocol_abstentions,10,count,240,group-v2/summary.json,After adjudication
+tuned_rag,faithfulness_item_micro,0.8864468864468864,ratio,273,group-v2/summary.json,Conservative structured-item assessment
+tuned_rag,citation_precision_item_micro,0.6483516483516484,ratio,273,group-v2/summary.json,Conservative structured-item assessment
+tuned_rag,citation_coverage_item_micro,0.6483516483516484,ratio,273,group-v2/summary.json,Conservative structured-item assessment
+tuned_rag,raw_json_valid,299,count,300,group-v2/summary.json,
+tuned_rag,renderer_or_base_protocol_valid,299,count,300,group-v2/summary.json,
+tuned_rag,generation_mean_seconds,9.726427840946675,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+tuned_rag,generation_p95_seconds,17.73312622254971,seconds,300,group-v2/summary.json,Generation only; not online end-to-end
+tuned_rag,output_tokens,13282,count,300,group-v2/summary.json,
+assessment,primary_outputs,900,outputs,900,group-v2/summary.json,
+assessment,secondary_outputs,90,outputs,90,group-v2/summary.json,Not added to primary denominator
+assessment,adjudicated_outputs,14,outputs,90,group-v2/summary.json,Score or source/citation disagreement
+assessment,exact_correctness_agreement,0.9,ratio,90,group-v2/summary.json,Automated rubric assessment
+assessment,cohen_kappa,0.8289334741288279,coefficient,90,group-v2/summary.json,Not human inter-rater reliability
+retrieval,page_recall_at_5,0.79375,ratio,240,group-v2/summary.json,Frozen top-5 chunks; deduplicated pages without refill
+retrieval,page_mrr_at_5,0.7080555555555555,ratio,240,group-v2/summary.json,Frozen top-5 chunks; deduplicated pages without refill
+retrieval,page_ndcg_at_5,0.6982069800353469,ratio,240,group-v2/summary.json,Frozen top-5 chunks; deduplicated pages without refill
+retrieval,multi_page_all_gold_recall,0.3,ratio,30,group-v2/summary.json,Frozen top-5 chunks; deduplicated pages without refill
+rag_vs_base,correctness_delta,19.833333333333332,percentage_points,300,group-v2/summary.json,Paired bootstrap; 10000 resamples; seed 42
+rag_vs_base,ci_95_lower,14.499999999999998,percentage_points,300,group-v2/summary.json,
+rag_vs_base,ci_95_upper,25.333333333333336,percentage_points,300,group-v2/summary.json,
+tuned_rag_vs_rag,correctness_delta,0.5,percentage_points,300,group-v2/summary.json,Paired bootstrap; 10000 resamples; seed 42
+tuned_rag_vs_rag,ci_95_lower,-3.166666666666667,percentage_points,300,group-v2/summary.json,
+tuned_rag_vs_rag,ci_95_upper,4.333333333333334,percentage_points,300,group-v2/summary.json,
+tuned_rag_vs_base,correctness_delta,20.333333333333332,percentage_points,300,group-v2/summary.json,Paired bootstrap; 10000 resamples; seed 42
+tuned_rag_vs_base,ci_95_lower,14.833333333333334,percentage_points,300,group-v2/summary.json,
+tuned_rag_vs_base,ci_95_upper,25.666666666666664,percentage_points,300,group-v2/summary.json,
