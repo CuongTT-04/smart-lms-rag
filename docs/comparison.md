@@ -1,5 +1,7 @@
 # Thí nghiệm so sánh mô hình
 
+> Cập nhật 14/11/2026: đã hoàn thành kiểm độc lập và phần Cường, đủ 900 primary + 90 secondary, đã phân xử bất đồng và có báo cáo nhóm cuối ở mục 10. Các mục 1–7 ghi quá trình triển khai; mục 8–9 ghi kết quả tiếp nhận và tái lập, mục 10 bổ sung báo cáo của Cường. Evidence/W07 do Dương hoàn thiện sau cùng từ gói kết quả nhóm. Đánh giá nội dung bằng agent theo rubric tự động, exact judge revision không được nền tảng cung cấp.
+
 ## Mục tiêu và quyết định
 
 So sánh Base LLM, RAG và tuned+RAG trên cùng benchmark 300 câu. Theo quyết định mới nhất ngày 12/11/2026, dùng **bộ 1.000 mẫu đã nhận qua `package.zip`**: **770 train / 114 validation / 116 holdout**. Khởi tạo adapter mới, train một epoch, dự kiến khoảng **193 optimizer updates** với batch 1, tích lũy gradient 4 trên một GPU; số bước thực phải xác nhận trong trainer/log. Quyết định này thay thế phương án tạm dùng 500 mẫu; không chạy thêm một lượt train 500 mẫu riêng.
@@ -369,3 +371,75 @@ Phần tiếp theo là Dương hoàn thiện **Evidence/W07** theo layout README
 | 9 | Kiểm gói và hoàn thiện bàn giao | Đã tiếp nhận gói B, kiểm checksum và tái lập aggregate/report; Evidence/W07 do Dương hoàn thiện sau cùng |
 
 Giữ nguyên artifact cũ, không tự commit/push/PR hoặc triển khai adapter vào chatbot. Các đầu ra sinh sau phải có run/hash thực; không dùng 990 đầu vào đã chuẩn bị để thay cho kết quả model.
+
+
+## 10. Kết quả nhóm và phần Cường — hoàn thành 14/11/2026
+
+## Thiết kế và phạm vi
+
+Đánh giá 300 câu trên THMLN, KTCTMLN, CNXHKH, mỗi môn 100 câu. Toàn bộ gồm 120 factual, 90 explanation, 30 multi-page và 60 insufficient. Cùng Qwen2.5-7B-Instruct revision a09a35458c702b33eeacc393d103063234e8bc28, NF4 double quant FP16. Adapter mới được huấn luyện một epoch, 193 updates trên 770 train và 114 validation; 116 holdout tách riêng. Adapter được chọn bằng dev trước khi khóa main. Hai nhánh RAG dùng cùng cache, messages và token IDs; Base không nhận học liệu. Greedy, seed 42, tối đa 512 token, một lượt sinh/câu/nhánh, một GPU T4.
+
+Có 900 output thực, 897 completed và 3 output_limit. Giữ cả ba lỗi trong mẫu số và chấm 0 correctness chính. Đã có 900 primary, 90 secondary và phân xử mọi bất đồng được phát hiện. Điểm nội dung được tạo bằng agent theo rubric có đối chiếu nguồn; exact judge revision và decoding không được nền tảng cung cấp.
+
+## Kết quả trên toàn bộ 300 câu mỗi phương pháp
+
+| Chỉ số | Base LLM | RAG | Tuned + RAG |
+|---|---:|---:|---:|
+| Tổng điểm rubric / 600 | 335/600 | 454/600 | 457/600 |
+| Điểm đúng/đủ quy đổi (%) | 55,83 | 75,67 | 76,17 |
+| Câu đạt 2/2 | 118/300 | 193/300 | 191/300 |
+| Từ chối đúng trên 60 câu thiếu căn cứ | 47/60 | 58/60 | 59/60 |
+| Từ chối rỗng nhầm trên 240 câu có đáp án | 3/240 | 3/240 | 10/240 |
+| Bám nguồn theo item (%) | N/A | 95,44 | 88,64 |
+| Citation precision theo item (%) | N/A | 78,71 | 64,84 |
+| Citation coverage theo item (%) | N/A | 78,71 | 64,84 |
+| Generation trung bình (giây) | 5,37 | 12,41 | 9,73 |
+| Generation p95 (giây) | 11,22 | 29,90 | 17,73 |
+| Output token | 21801 | 26547 | 13282 |
+
+Điểm phần trăm là tổng điểm rubric chia điểm tối đa. Tỷ lệ đạt 2/2 được ghi riêng. Faithfulness/citation dùng item có mệnh đề kiểm chứng được; một item nhiều ý phải được hỗ trợ đầy đủ. Output rỗng, không parse được và item không có assertion được đếm riêng, không tự nhận 100% hỗ trợ. Base có các chỉ số nguồn/citation N/A. Xem metrics.csv để đối chiếu tử số, mẫu số và từng môn/loại.
+
+## So sánh theo cặp
+
+| So sánh | Chênh lệch điểm % | CI 95% | Thắng / thua / hòa |
+|---|---:|---|---|
+| rag so với base | 19,83 | [14,50; 25,33] | 112 / 39 / 149 |
+| tuned_rag so với rag | 0,50 | [-3,17; 4,33] | 36 / 39 / 225 |
+| tuned_rag so với base | 20,33 | [14,83; 25,67] | 109 / 33 / 158 |
+
+RAG tăng điểm đúng/đủ so với Base trong phạm vi benchmark này. Tuned+RAG chênh 0,50 điểm phần trăm so với RAG. CI còn chứa 0, nên chưa đủ cơ sở khẳng định tuning làm tăng correctness chắc chắn. Các chỉ số nguồn/citation cần đọc cùng correctness và khả năng hiển thị; kết quả không cho thấy tuned thắng toàn diện.
+
+Bootstrap 10.000 lần, seed 42, resample theo câu hỏi để giữ ba nhánh cùng nhau. CI phản ánh biến thiên chọn câu, chưa bao gồm sai số judge hoặc độ biến thiên giữa các lần train.
+
+## Kiểm độc lập, đồng thuận và giới hạn
+
+Đã tái kiểm đủ 900 ID/arm, config/input/context hash, lịch chạy và log trạng thái LoRA; kiểm bytes/config/392 tensor của adapter, tái tính token IDs của 990 đầu vào dev/main. Đã đối chiếu 1.500 context bindings và 352 gold-page bindings trên 354 trang vật lý thuộc 27 PDF. Nguồn main không nằm trong train/validation thực 770/114. Báo cáo leakage 385/57/58 trong gói gốc là bản lịch sử; kết quả kiểm độc lập 770/114/116 được lưu riêng, giữ nguyên artifact gốc.
+
+A và B cùng điểm correctness ở 90,00% của 90 lượt đối chiếu; Cohen kappa 0,8289. Đã phân xử 14 output có bất đồng về điểm hoặc support/citation. Các review gốc A/B và quyết định mới được giữ riêng. Đây là đồng thuận giữa các lượt đánh giá tự động, có thể có sai số hoặc thiên lệch chung của model.
+
+Retrieval dùng chung trên 240 câu answerable: page Recall@5 79,38%, MRR@5 0,7081, nDCG@5 0,6982; truy đủ trang của câu multi-page đạt 30,00%. Adapter không làm đổi cache retrieval đã khóa.
+
+Tổng generation 8252,51 giây. Số đo này tách khỏi setup/load/warmup và retrieval offline, chưa phải độ trễ API end-to-end. Tuned sinh ít token hơn RAG; thời gian thấp hơn không tự chứng minh tốc độ mỗi token cao hơn.
+
+Benchmark chỉ phủ ba chương và có giao kiến thức đã công bố. Chấm nguồn theo item bảo thủ; exact judge revision không xác minh được. Các khác biệt theo môn/loại và lỗi nằm trong metrics.csv/errors.csv. Kết quả là bằng chứng so sánh trên bộ test đã khóa, phạm vi suy rộng cần giữ đúng giới hạn này.
+
+## Đầu ra gửi Dương
+
+Gửi review B đã khóa, 90 lượt đối chiếu, 14 quyết định phân xử, summary/metrics/paired/errors, bốn biểu đồ và log kiểm/test cùng manifest/checksum. Dương hoàn thiện Evidence/W07 sau cùng từ các artifact cuối này. Raw, benchmark, adapter và review A gốc được giữ nguyên.
+
+
+### Tái lập phần chấm/tổng hợp
+
+Giữ nguyên snapshot/raw/review gốc. Code mới `scripts/comparison/group_scoring.py` dùng lại `assignment`, `semantic_metrics`, `paired`, parser và kiểm input/output có sẵn. `group_report.py` dựng báo cáo/biểu đồ từ summary thực. `package_main.py` đã sửa kiểm entrypoint để gói thiếu module không mượn module từ PYTHONPATH của máy nhận.
+
+Kết quả cuối riêng tư tại `.private/comparison/assessment/group-v2/`, review Cường `.private/comparison/assessment/member-b-v1/`, phân xử `.private/comparison/assessment/adjudication-v1/`. Bản group-v1 là bản dẫn xuất trước khi hoàn thiện phần provenance/kỹ thuật, dùng group-v2 để bàn giao. Nhật ký kiểm đầu vào độc lập tại `.private/comparison/work/cuong-20261114/`.
+
+```text
+python -m unittest discover -s scripts/comparison/tests
+python -m scripts.comparison.group_scoring aggregate --b-folder .private/comparison/assessment/member-b-v1 --adjudication .private/comparison/assessment/adjudication-v1/decisions-notes.jsonl --output .private/comparison/assessment/group-reproduced-v1
+python -m scripts.comparison.group_report --output .private/comparison/assessment/group-reproduced-v1
+```
+
+Các lệnh aggregate/report cần các dữ liệu cuối được phục hồi bằng restore-map gói Dương và kết quả B/phân xử trong gói Cường. Dùng thư mục output mới, giữ nguyên bản đã đóng. Vẽ biểu đồ dùng matplotlib đã khai báo trong training-requirements; tổng hợp dùng numpy và jsonschema. PDF báo cáo hai trang có trong gói riêng cùng nguồn dựng PDF; phần PDF cần reportlab. Các phép kiểm/tokenizer CPU tái sử dụng môi trường W6.
+
+Sau nhận `member-b-w7-handoff.zip` và receipt, Dương kiểm checksum/manifest, chạy lại test và aggregate sang thư mục mới, đối chiếu 900/90 và số liệu nhóm. Hoàn thiện Evidence/W07 gồm README, metrics.csv, test-results.txt, manifest.json, figures theo layout đã thống nhất; ghi đúng artifact/run/hash cuối. Các gói dữ liệu/raw/weights/review chỉ gửi riêng. PR/commit/merge và thay model chatbot là thao tác riêng theo quyết định của nhóm.

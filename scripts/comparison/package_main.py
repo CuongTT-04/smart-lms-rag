@@ -36,7 +36,7 @@ def copy_runtime(source, contents):
 def probe_entrypoints(contents):
     reports = {}
     environment = os.environ.copy()
-    # Probe only the exported package, without borrowing modules from the checkout.
+    # A missing package module must not be supplied by the receiver's checkout.
     environment.pop('PYTHONPATH', None)
     for module in ('kaggle', 'runner', 'main_entry'):
         name = 'scripts.comparison.' + module
