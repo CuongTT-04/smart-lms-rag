@@ -61,3 +61,23 @@ class ChatResponseRecord(models.Model):
             condition=models.Q(rating__isnull=True) | models.Q(rating__in=['LIKE', 'DISLIKE']),
             name='ai_chat_valid_rating',
         )]
+
+
+class SummaryTask(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    client_request_id = models.UUIDField(default=uuid4)
+    document = models.ForeignKey('documents.KnowledgeDocument', on_delete=models.CASCADE)
+    version = models.ForeignKey('documents.DocumentVersion', on_delete=models.CASCADE)
+    selector = models.JSONField()
+    state = models.JSONField()
+    result = models.JSONField(null=True, blank=True)
+    status = models.CharField(max_length=10, default='PENDING', choices=[(s, s) for s in ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED')])
+    lease_token = models.UUIDField(null=True)
+    lease_expires_at = models.DateTimeField(null=True)
+    error_code = models.CharField(max_length=48, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'client_request_id'], name='ai_summary_request_once')]

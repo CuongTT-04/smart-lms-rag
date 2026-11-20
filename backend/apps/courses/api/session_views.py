@@ -31,7 +31,8 @@ class SessionSerializer(serializers.ModelSerializer):
     def get_material_count(self, obj) -> int:
         materials = obj.materials.filter(removed_at__isnull=True)
         if not can_manage_course(self.context['request'].user, obj.classroom.course):
-            materials = materials.filter(is_published=True, published_version__isnull=False)
+            materials = materials.filter(is_published=True, published_version__isnull=False,
+                                         published_version__removed_at__isnull=True)
         return materials.count()
     class Meta:
         model = ClassroomSession
@@ -47,10 +48,13 @@ class ClassroomSessionsView(GenericAPIView):
         if not room or not (can_manage_course(request.user, room.course) if manage else can_view_classroom(request.user, room)):
             raise NotFound('Classroom unavailable.')
         return room
-    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_list', summary='Danh sách buổi học của lớp', description='Giáo viên sở hữu hoặc học viên còn quyền trong đúng lớp xem danh sách buổi học. Ghi danh lớp khác không cấp quyền xem.', responses=SessionSerializer(many=True))
+    @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_list', summary='Danh sách buổi học của lớp', description='Chủ khóa học xem cả buổi nháp; học viên còn quyền trong đúng lớp chỉ thấy buổi đã hoàn tất. Buổi đã gỡ không xuất hiện; ghi danh lớp khác không cấp quyền xem.', responses=SessionSerializer(many=True))
     def get(self, request, course_id, classroom_id):
         room = self.room(request, course_id, classroom_id)
-        page = self.paginate_queryset(room.sessions.filter(removed_at__isnull=True))
+        sessions = room.sessions.filter(removed_at__isnull=True)
+        if not can_manage_course(request.user, room.course):
+            sessions = sessions.filter(is_draft=False)
+        page = self.paginate_queryset(sessions)
         return self.get_paginated_response(SessionSerializer(page, many=True, context={'request': request}).data)
     @extend_schema(tags=['Classrooms'], operation_id='classroom_sessions_create', summary='Tạo buổi học trong lớp', description='Chủ khóa học tạo buổi học; tên có thể để trống, tối đa 255 ký tự. Hệ thống tự gán thứ tự tiếp theo trong lớp.', request=SessionInput, responses={201: SessionSerializer})
     def post(self, request, course_id, classroom_id):

@@ -11,6 +11,8 @@ VALIDATION_ERRORS = {
     'UNKNOWN_CITATION': _SOURCE,
     'EVIDENCE_QUOTE_MISMATCH': ('GENERATION_EVIDENCE_MISMATCH', 'Đoạn trích do AI trả về không khớp với nguồn đã chọn. Câu trả lời chưa được hiển thị để tránh dẫn nguồn sai. Hãy gửi lại câu hỏi.'),
     'INCOMPLETE_EVIDENCE_COVERAGE': ('GENERATION_INCOMPLETE_ANSWER', 'AI chưa trình bày đủ các bước trong học liệu. Hãy thử lại hoặc hỏi từng phần của quy trình.'),
+    'INCOMPLETE_ANSWER_BODY': ('GENERATION_INCOMPLETE_CONTENT', 'AI mới đưa câu dẫn hoặc câu dở dang, chưa trả lời trọn vẹn nội dung được hỏi. Hãy thử lại hoặc hỏi cụ thể từng ý trong học liệu.'),
+    'INCOMPLETE_ENUMERATION': ('GENERATION_INCOMPLETE_CONTENT', 'AI chưa trình bày đủ các ý được học liệu liệt kê cho câu hỏi này. Hãy thử lại hoặc hỏi cụ thể từng ý.'),
     'MIXED_OUTPUT_FORMAT': _FORMAT,
     'UNEXPECTED_CJK': ('GENERATION_WRONG_LANGUAGE', 'AI trả lời lẫn ngôn ngữ ngoài yêu cầu nên câu trả lời chưa được hiển thị. Hãy yêu cầu trả lời bằng tiếng Việt và thử lại.'),
     'CHOICE_FORMAT': _CHOICE,

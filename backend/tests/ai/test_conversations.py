@@ -174,7 +174,7 @@ class ConversationTests(ScopeFixture):
         cid = self.create()
         with patch('apps.ai.conversations.answer_chat', side_effect=self.answer):
             response = self.send(cid)
-        assessment = Assessment.objects.create(session=self.session, title='Exam', kind='TEXT', mode='TEST', due_at=timezone.now()+timedelta(hours=1))
+        assessment = Assessment.objects.create(session=self.session, title='Exam', kind='TEXT', mode='TEST', is_published=True, due_at=timezone.now()+timedelta(hours=1))
         AssessmentAttempt.objects.create(assessment=assessment, student=self.student, request_id=uuid4(), number=1, expires_at=assessment.due_at)
         for result in (self.client.post('/api/ai/conversations/', self.selector, format='json'),
                        self.client.get('/api/ai/conversations/', self.selector),

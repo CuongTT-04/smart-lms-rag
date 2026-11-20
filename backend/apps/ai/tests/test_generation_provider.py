@@ -13,6 +13,7 @@ from unittest.mock import MagicMock, patch
 
 from apps.ai.providers import GenerationError, LocalModelProvider, ModelConfig
 from apps.ai.providers.checkpoint import validate_checkpoint
+from apps.ai.providers.local import verify_saved_qwen_pattern
 
 
 class Tokens(list):
@@ -115,6 +116,47 @@ class GenerationProviderTests(unittest.TestCase):
             self.provider.generate(self.messages,json_schema=schema)
         config_factory.assert_called_once_with(alphabet=data.tokenizer_alphabet)
         parser.assert_called_once_with(schema,config=parser_config)
+
+    def test_json_grammar_uses_cached_state_regex_parser_without_changing_normal_schema_path(self):
+        schema={'type':'object'}
+        data=SimpleNamespace(tokenizer_alphabet='abcTriết học')
+        self.provider._format_tokenizer_data=(self.tokenizer,data,'json-control-safe-v1')
+        self.tokenizer.decode.return_value='{"items":[]}'
+        regex=MagicMock(); normal=MagicMock()
+        modules={'lmformatenforcer':SimpleNamespace(JsonSchemaParser=normal,RegexParser=regex,
+                                                    CharacterLevelParserConfig=MagicMock()),
+                 'lmformatenforcer.integrations.transformers':SimpleNamespace(
+                     build_transformers_prefix_allowed_tokens_fn=MagicMock(),build_token_enforcer_tokenizer_data=MagicMock())}
+        with patch.dict(sys.modules,modules):
+            self.provider.generate(self.messages,json_schema=schema,output_regex='json-pattern')
+        self.assertEqual(regex.call_args.args,('json-pattern',))
+        normal.assert_not_called()
+        self.assertEqual(self.model.generate.call_args.kwargs['eos_token_id'],2)
+
+    def test_invalid_json_grammar_does_not_load_a_model(self):
+        for pattern in ('',123,'x'*20001):
+            self.assert_error('INVALID_INPUT',lambda:self.provider.generate(self.messages,json_schema={'type':'object'},output_regex=pattern))
+        self.assert_error('INVALID_INPUT',lambda:self.provider.generate(self.messages,output_regex='x'))
+        self.build.assert_not_called()
+
+    def test_regex_character_set_cache_is_shared_without_mutating_parent_state(self):
+        from apps.ai.providers.local import _CachedRegexState
+        child=MagicMock()
+        child.cache_key.return_value=2
+        child.get_allowed_characters.return_value='bc'
+        root=MagicMock()
+        root.cache_key.return_value=1
+        root.get_allowed_characters.return_value='ab'
+        root.add_character.return_value=child
+        wrapped=_CachedRegexState(root)
+        self.assertEqual(wrapped.get_allowed_characters(),frozenset('ab'))
+        self.assertIs(wrapped.get_allowed_characters(),wrapped.get_allowed_characters())
+        root.get_allowed_characters.assert_called_once()
+        following=wrapped.add_character('a')
+        self.assertEqual(following.get_allowed_characters(),frozenset('bc'))
+        self.assertEqual(wrapped.cache_key(),1)
+        self.assertIs(following.character_sets,wrapped.character_sets)
+        self.assertIsNone(following.shortcut_key())
 
     def test_eos_with_unclosed_structured_json_is_not_a_completed_answer(self):
         modules={'lmformatenforcer':SimpleNamespace(JsonSchemaParser=MagicMock(),CharacterLevelParserConfig=MagicMock()),
@@ -325,17 +367,21 @@ class GenerationProviderTests(unittest.TestCase):
         self.assertIs(kwargs["local_files_only"], True)
         self.assertIs(kwargs["trust_remote_code"], False)
         self.assertEqual(kwargs["quantization_config"]["bnb_4bit_quant_type"], "nf4")
+        self.assertIs(transformers.AutoTokenizer.from_pretrained.call_args.kwargs['fix_mistral_regex'], False)
 
     def test_local_loader_validates_checkpoint_and_never_requantizes(self):
         transformers = self.transformers_module()
         config = replace(self.config, checkpoint_path="/trusted/checkpoint", local_files_only=False)
         with patch.dict(sys.modules, {"torch": self.torch, "transformers": transformers}), \
-                patch("apps.ai.providers.local.validate_checkpoint") as validate:
+                patch("apps.ai.providers.local.validate_checkpoint") as validate, \
+                patch("apps.ai.providers.local.verify_saved_qwen_pattern", return_value={'saved_pattern_unchanged': True}) as pattern:
             LocalModelProvider(config)._build_runtime()
         validate.assert_called_once_with(config)
+        pattern.assert_called_once_with(self.tokenizer, '/trusted/checkpoint')
         kwargs = transformers.AutoModelForCausalLM.from_pretrained.call_args.kwargs
         self.assertIs(kwargs["local_files_only"], True)
         self.assertNotIn("quantization_config", kwargs)
+        self.assertIs(transformers.AutoTokenizer.from_pretrained.call_args.kwargs['fix_mistral_regex'], False)
         transformers.BitsAndBytesConfig.assert_not_called()
 
     def test_invalid_local_checkpoint_does_not_fallback_to_network(self):
@@ -347,6 +393,30 @@ class GenerationProviderTests(unittest.TestCase):
             self.assert_error("CHECKPOINT_INVALID", lambda: LocalModelProvider(config)._build_runtime())
         transformers.AutoTokenizer.from_pretrained.assert_not_called()
         transformers.AutoModelForCausalLM.from_pretrained.assert_not_called()
+
+
+class SavedQwenPatternTests(unittest.TestCase):
+    def verify(self, saved, loaded, model_type='qwen2'):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'config.json').write_text(json.dumps({'model_type': model_type}))
+            (root / 'tokenizer.json').write_text(json.dumps({'pre_tokenizer': saved}))
+            tokenizer = SimpleNamespace(backend_tokenizer=SimpleNamespace(
+                to_str=lambda: json.dumps({'pre_tokenizer': loaded})))
+            return verify_saved_qwen_pattern(tokenizer, root)
+
+    def test_unchanged_saved_qwen_pattern_is_verified(self):
+        pattern = {'type': 'Sequence', 'pretokenizers': [{'type': 'Split', 'pattern': 'qwen'}]}
+        self.assertTrue(self.verify(pattern, pattern)['saved_pattern_unchanged'])
+
+    def test_changed_pattern_is_rejected(self):
+        with self.assertRaises(GenerationError):
+            self.verify({'type': 'qwen'}, {'type': 'mistral'})
+
+    def test_non_qwen_or_missing_pattern_is_not_certified(self):
+        for saved, model in [({'type': 'qwen'}, 'mistral'), (None, 'qwen2')]:
+            with self.assertRaises(GenerationError):
+                self.verify(saved, saved, model)
 
 
 class ModelConfigTests(unittest.TestCase):

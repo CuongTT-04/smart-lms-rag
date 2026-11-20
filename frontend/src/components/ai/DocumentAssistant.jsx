@@ -1,9 +1,10 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowUp, History, MessageSquarePlus, X } from 'lucide-react'
+import { ArrowUp, ArrowUpRight, FileText, History, MessageSquarePlus, X } from 'lucide-react'
 import { listConversations, createConversation, getConversation, sendChat, chatErrorMessage } from '../../services/ai.service'
 import ChatAnswer from './ChatAnswer'
 import ChatUserMessage from './ChatUserMessage'
+import DocumentSummary from './DocumentSummary'
 
 function restoreTurns(rows) {
   return rows.map(row => ({ id: row.id, position: row.position, question: row.question, createdAt: row.created_at,
@@ -29,6 +30,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
   const [olderBefore, setOlderBefore] = useState(null)
   const [olderLoading, setOlderLoading] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [summaryOpen, setSummaryOpen] = useState(false)
   const [historyClosing, setHistoryClosing] = useState(false)
   const historyId = useId()
   const [sessions, setSessions] = useState([])
@@ -38,6 +40,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
   const initialized = useRef(false)
   const generation = useRef(0)
   const active = useRef(null)
+  const sending = useRef(false)
   const olderRequest = useRef(null)
   const historyRequest = useRef(null)
   const currentConversation = useRef(null)
@@ -47,6 +50,12 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
   const thread = useRef(null)
   const content = useRef(null)
   const pinned = useRef(true)
+  const blocked = busy || loading || !!loadError || !visible || turns.some(turn => turn.pending || turn.uncertain)
+  const latest = turns.at(-1)
+  const suggestions = latest?.result?.status === 'ANSWERED' && Array.isArray(latest.result.suggested_questions)
+    ? [...new Set(latest.result.suggested_questions.slice(0, 3).filter(value => typeof value === 'string' && value.trim() && value.length <= 240).map(value => value.trim()))]
+      .filter(value => !turns.some(turn => turn.question.trim().toLocaleLowerCase('vi') === value.toLocaleLowerCase('vi')))
+    : []
 
   function closeHistory(restoreFocus = false) {
     setHistoryClosing(historyOpen); setHistoryOpen(false)
@@ -141,6 +150,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
   }, [conversation?.id, busy, visible, turns])
 
   function newChat() {
+    sending.current = false
     active.current?.abort(); olderRequest.current?.abort(); ++generation.current
     initialized.current = true; currentConversation.current = null; pinned.current = true
     setConversation(null); setTurns([]); setQuestion(''); setBusy(false); setLoading(false)
@@ -149,6 +159,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
   }
 
   async function selectConversation(id) {
+    sending.current = false
     active.current?.abort(); olderRequest.current?.abort()
     const controller = new AbortController(), epoch = ++generation.current
     active.current = controller; currentConversation.current = id; initialized.current = true
@@ -186,10 +197,12 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
     finally { if (!controller.signal.aborted && epoch === generation.current) setOlderLoading(false) }
   }
 
-  async function submit(event, retryTurn = null) {
+  async function submit(event, retryTurn = null, selectedQuestion = null) {
     event.preventDefault()
-    if (busy || loading || loadError || (!retryTurn && (!question.trim() || turns.some(turn => turn.uncertain)))) return
-    const text = retryTurn?.question || question.trim(), messageId = retryTurn?.clientMessageId || crypto.randomUUID()
+    const text = retryTurn?.question || (selectedQuestion ?? question).trim()
+    if (sending.current || busy || loading || loadError || !visible || !text || turns.some(turn => turn.pending) || (!retryTurn && turns.some(turn => turn.uncertain))) return
+    sending.current = true
+    const messageId = retryTurn?.clientMessageId || crypto.randomUUID()
     olderRequest.current?.abort(); setOlderLoading(false)
     const controller = new AbortController(), epoch = ++generation.current
     active.current?.abort(); active.current = controller
@@ -215,7 +228,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
       const uncertain = !error.status || (error.status >= 500 && !error.data?.code)
       if (valid()) setTurns(previous => previous.map(turn => turn.clientMessageId === messageId ?
         { ...turn, pending: false, uncertain, error: uncertain ? 'Kết nối bị gián đoạn. Kiểm tra lại để nhận kết quả của lượt hỏi này.' : chatErrorMessage(error) } : turn))
-    } finally { if (valid()) setBusy(false) }
+    } finally { if (valid()) { sending.current = false; setBusy(false) } }
   }
 
   function resizeInput() {
@@ -238,6 +251,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
     </section>
 
   const toolbar = <div className="ai-chat-toolbar" role="group" aria-label="Thao tác hội thoại">
+    <button className="ai-chat-tool" type="button" aria-label="Tóm tắt học liệu" title="Tóm tắt học liệu" aria-expanded={summaryOpen} onClick={() => setSummaryOpen(value => !value)}><FileText size={18} /></button>
     <button className="ai-chat-tool" type="button" aria-label="Chat mới" title="Chat mới" onClick={newChat}><MessageSquarePlus size={18} /></button>
     <div className="ai-chat-history-anchor" ref={historyAnchor}>
       <button className="ai-chat-tool" type="button" aria-label="Lịch sử" title="Lịch sử" ref={historyTrigger} aria-haspopup="dialog" aria-controls={historyId} aria-expanded={historyOpen}
@@ -248,6 +262,7 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
 
   return <div className="ai-chat-content">
     {toolbarTarget ? createPortal(toolbar, toolbarTarget) : toolbar}
+    {summaryOpen && visible && <DocumentSummary key={selectorKey} scope={scope} documentId={documentId} onClose={() => setSummaryOpen(false)} onOpenCitation={onOpenCitation} />}
     {loading && <p className="ai-chat-empty" role="status">Đang tải hội thoại…</p>}
     {loadError && <div><p className="error-banner" role="alert">{loadError}</p><button className="ai-chat-retry" type="button" onClick={() => {
       active.current?.abort(); initialized.current = false; setLoadError(''); setLoading(true); setReload(value => value+1)
@@ -264,15 +279,20 @@ export default function DocumentAssistant({ scope, documentId, visible = true, o
           else { setQuestion(turn.question); input.current?.focus() }
         }}>{turn.uncertain ? 'Kiểm tra lại lượt hỏi' : 'Soạn lại câu hỏi'}</button></div>}
         {turn.result && <ChatAnswer result={turn.result} onOpenCitation={onOpenCitation} active={visible} animate={!turn.restored} />}
+        {turn.id === latest?.id && suggestions.length > 0 && <div className="ai-chat-followups" role="group" aria-label="Câu hỏi tiếp theo">
+          {suggestions.map(value => <button key={value} type="button" disabled={blocked} onClick={event => submit(event, null, value)}>
+            <ArrowUpRight size={15} aria-hidden="true" /><span>{value}</span>
+          </button>)}
+        </div>}
       </section>)}</div>
       {!loading && !loadError && !turns.length && <p className="ai-chat-empty">Bắt đầu cuộc trò chuyện về học liệu này.</p>}
     </div>
     <form className="ai-chat-compose" onSubmit={submit}>
-      <textarea ref={input} aria-label="Câu hỏi cho ayo" rows={1} maxLength={8000} placeholder="Hỏi ayo…" disabled={busy || loading || !!loadError || turns.some(turn => turn.uncertain)} value={question}
+      <textarea ref={input} aria-label="Câu hỏi cho ayo" rows={1} maxLength={8000} placeholder="Hỏi ayo…" disabled={blocked} value={question}
         onChange={event => { setQuestion(event.target.value); resizeInput() }} onKeyDown={event => {
           if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); submit(event) }
         }} />
-      <button className="ai-chat-send" type="submit" aria-label="Gửi câu hỏi" title="Gửi câu hỏi" disabled={busy || loading || !!loadError || turns.some(turn => turn.uncertain) || !question.trim()}><ArrowUp size={19} /></button>
+      <button className="ai-chat-send" type="submit" aria-label="Gửi câu hỏi" title="Gửi câu hỏi" disabled={blocked || !question.trim()}><ArrowUp size={19} /></button>
     </form>
     <p className="ai-chat-disclaimer">ayo có thể sai — hãy đối chiếu với học liệu.</p>
   </div>

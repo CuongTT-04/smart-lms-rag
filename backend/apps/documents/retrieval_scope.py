@@ -56,6 +56,10 @@ def resolve_scope(user,course_id,classroom_id=None,session_id=None,document_ids=
         if preview:
             # No implicit arbitrary "latest" version: explicit active source or published source only.
             version=document.active_version or version
+        if (document_ids and version and version.document_id == document.pk and not version.removed_at
+                and version.status not in ('EXTRACTED', 'READY', 'REMOVED')):
+            raise DocumentError('RETRIEVAL_NOT_READY',
+                'Học liệu đã chọn đang xử lý hoặc xử lý lỗi. Chờ học liệu sẵn sàng rồi thử lại.', 503)
         if (version and version.document_id==document.pk and not version.removed_at
                 and version.status in ('EXTRACTED','READY')):
             allowed.append(str(version.pk))

@@ -4,6 +4,7 @@ from django.utils import timezone
 from apps.courses.assessment_models import Assessment, AssessmentAttempt
 from apps.courses.assessment_services import expire
 from apps.documents.exceptions import DocumentError
+from apps.documents.access import require_session_access
 from apps.documents.retrieval_scope import resolve_scope
 
 
@@ -14,10 +15,19 @@ def enforce_chat_policy(user, data):
     if user.role == 'STUDENT':
         # Locks are held only for local lifecycle updates, never for an LLM call.
         with transaction.atomic():
-            attempts = AssessmentAttempt.objects.select_for_update().select_related('assessment').filter(
-                student=user, assessment__mode='TEST', status='DRAFT')
+            attempts = AssessmentAttempt.objects.select_for_update().select_related(
+                'assessment__session__classroom__course').filter(
+                student=user, assessment__mode='TEST', status='DRAFT',
+                assessment__removed_at__isnull=True, assessment__is_published=True)
             blocked = False
             for attempt in attempts:
+                session = attempt.assessment.session
+                try:
+                    require_session_access(user, session, session.classroom.course)
+                except DocumentError as error:
+                    if error.status == 404:
+                        continue
+                    raise
                 expire(attempt)
                 if attempt.status == 'DRAFT' and now < min(attempt.expires_at, attempt.assessment.due_at):
                     blocked = True

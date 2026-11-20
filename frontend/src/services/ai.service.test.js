@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest'
 import { apiRequest } from './api'
-import { sendChat, sendChatFeedback, chatErrorMessage } from './ai.service'
+import { sendChat, sendChatFeedback, chatErrorMessage, advanceSummaryTask } from './ai.service'
 vi.mock('./api', () => ({ apiRequest: vi.fn(async () => ({status:'ANSWERED'})) }))
 it('uses the existing auth client with a bounded timeout specific to chat', async () => {
   const controller=new AbortController()
@@ -25,4 +25,23 @@ it('explains verified validation failures without guessing details or displaying
 it('persists or clears feedback through the authenticated API client', async () => {
   await sendChatFeedback('answer-id',null)
   expect(apiRequest).toHaveBeenLastCalledWith('/ai/chat/answer-id/feedback/',expect.objectContaining({method:'PATCH',body:'{"rating":null}'}))
+})
+
+it('distinguishes indexing and incomplete content from absent academic evidence', () => {
+  expect(chatErrorMessage({ data: { code: 'RETRIEVAL_NOT_READY' } })).toContain('Chờ lập chỉ mục')
+  expect(chatErrorMessage({ data: { code: 'GENERATION_INCOMPLETE_CONTENT' } })).toContain('câu dẫn')
+})
+
+it('preserves the long timeout for summary steps and explains transport failures', async () => {
+  await advanceSummaryTask('summary-id')
+  expect(apiRequest).toHaveBeenLastCalledWith('/ai/summaries/summary-id/', expect.objectContaining({ method: 'POST', timeoutMs: 150000 }))
+  expect(chatErrorMessage({ status: 0 })).toContain('Mất kết nối')
+  expect(chatErrorMessage({ status: 504 })).toContain('chưa phản hồi kịp')
+  expect(chatErrorMessage({ status: 429 })).toContain('quá nhiều yêu cầu')
+})
+
+it('uses only known safe summary error codes, never raw provider messages', () => {
+  expect(chatErrorMessage({ data: { code: 'SUMMARY_GENERATION_FAILED', remote_code: 'GENERATION_TIMEOUT' } })).toContain('quá lâu')
+  expect(chatErrorMessage({ data: { code: 'SUMMARY_GENERATION_FAILED', remote_code: 'PRIVATE', message: 'PRIVATE' } })).not.toContain('PRIVATE')
+  expect(chatErrorMessage({ status: 403, data: { code: 'AI_NOT_ALLOWED' } })).toContain('bài kiểm tra')
 })

@@ -68,6 +68,29 @@ class ConversationContextTests(TestCase):
         self.assertNotIn('chat_history_v1', messages[0]['content'])
         self.assertEqual(set(json.loads(messages[1]['content'])), {'question', 'mode', 'evidence', 'exercise'})
 
+    def test_philosophy_followup_uses_previous_question_but_not_old_sources(self):
+        from apps.ai.rag.conversation import retrieval_query
+        history = [dict(question='Triết học ra đời trong những điều kiện nào?',
+                        answer='Hai điều kiện trong học liệu [1].')]
+        question = 'Giải thích rõ hơn điều kiện thứ hai.'
+        prepared, memory = prepare_conversation_prompt(question=question, mode='qa', contexts=(self.context,),
+            exercise=None, config=self.config, provider=self.provider, history=history)
+        self.assertEqual(memory['turns_used'], 1)
+        self.assertIn(history[0]['question'], retrieval_query(question, history))
+        self.assertNotIn('[1]', prepared.messages[2]['content'])
+        self.assertEqual(json.loads(prepared.messages[-1]['content'])['evidence'][0]['text'], self.context.text)
+
+    def test_explicit_topic_change_discards_history_for_both_prompt_and_retrieval(self):
+        from apps.ai.rag.conversation import retrieval_query
+        history = [dict(question='Điều kiện ra đời của Triết học?', answer='Nguồn cũ [7].')]
+        question = 'Thế giới quan là gì và có những loại hình cơ bản nào?'
+        prepared, memory = prepare_conversation_prompt(question=question, mode='qa', contexts=(self.context,),
+            exercise=None, config=self.config, provider=self.provider, history=history)
+        self.assertEqual(memory['turns_used'], 0)
+        self.assertEqual(len(prepared.messages), 2)
+        self.assertEqual(retrieval_query(question, history), question)
+        self.assertNotIn('Nguồn cũ', json.dumps(prepared.messages, ensure_ascii=False))
+
     def test_token_budget_uses_valid_provider_message_sequences(self):
         from apps.ai.providers.local import LocalModelProvider
         from unittest.mock import patch

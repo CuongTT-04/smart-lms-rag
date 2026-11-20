@@ -25,6 +25,19 @@ class AdapterTests(ScopeFixture):
         self.assertEqual(result[0]['source']['page_number'],1)
         self.assertNotIn('storage_key',str(result))
 
+    def test_explicit_source_missing_catalog_is_not_academic_insufficiency(self):
+        scope = resolve_scope(self.student, self.course.pk, document_ids=[str(self.doc.pk)])
+        with self.assertRaises(DocumentError) as caught:
+            retrieve_authorized(self.student, 'Question', scope, self.retriever, catalog={})
+        self.assertEqual((caught.exception.code, caught.exception.status), ('RETRIEVAL_NOT_READY', 503))
+        self.retriever.search.assert_not_called()
+
+    def test_explicit_indexed_source_with_zero_hits_is_a_valid_empty_result(self):
+        scope = resolve_scope(self.student, self.course.pk, document_ids=[str(self.doc.pk)])
+        self.retriever.search.return_value = []
+        self.assertEqual(retrieve_authorized(self.student, 'Question', scope, self.retriever,
+                                            catalog=self.catalog), [])
+
     def test_bad_provider_unknown_duplicate_nan_and_wrong_provenance_fail_closed(self):
         cases=[[{'chunk_id':'unknown','score':1}],
                [{'chunk_id':'chunk-1','score':float('nan')}],

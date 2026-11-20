@@ -31,7 +31,7 @@ class RAGPipeline:
             return self._generate_once(**arguments,repair_format=structured_chat)
         except GenerationError as original:
             reason=getattr(original,'validation_reason',None)
-            if history is None or mode!='qa' or reason not in {'MISSING_CITATION','MIXED_OUTPUT_FORMAT','INCOMPLETE_EVIDENCE_COVERAGE'}:
+            if history is None or mode!='qa' or reason not in {'MISSING_CITATION','MIXED_OUTPUT_FORMAT','INCOMPLETE_EVIDENCE_COVERAGE','INCOMPLETE_ANSWER_BODY','INCOMPLETE_ENUMERATION','EVIDENCE_QUOTE_MISMATCH'}:
                 raise
             import inspect
             parameters=inspect.signature(self.provider.generate).parameters
@@ -42,17 +42,18 @@ class RAGPipeline:
                 raise
             try:
                 result=self._generate_once(**arguments,repair_format=True,remaining_seconds=remaining,
-                                           repair_feedback=getattr(original,'missing_evidence',None))
+                                           repair_feedback=getattr(original,'missing_evidence',None),
+                                           repair_reason=reason)
             except GenerationError as repair:
                 if repair.code=='TOKEN_LIMIT_EXCEEDED':
                     raise original from repair
                 raise
             from dataclasses import replace
             return replace(result,trace=replace(result.trace,elapsed_seconds=perf_counter()-started,
-                                               answer_origin='model_text_retried' if result.status=='ANSWERED' else result.trace.answer_origin))
+                                               answer_origin='model_text_retried' if result.trace.answer_origin=='model_text' else result.trace.answer_origin))
 
     def _generate_once(self, *, question, mode, contexts, exercise=None, config=None, history=None,
-                       repair_format=False, remaining_seconds=None, repair_feedback=None):
+                       repair_format=False, remaining_seconds=None, repair_feedback=None, repair_reason=None):
         started = perf_counter()
         config = self.config if config is None else config
         self._check_config(config)
@@ -86,20 +87,25 @@ class RAGPipeline:
                                 dict(protocol='chat_history_v1',turns_used=0,turns_dropped=len(history),history_tokens=0) if history is not None else None),
             )
         memory = None
+        from .conversation import description_evidence_groups
+        selection_only = repair_format and (bool(description_evidence_groups(question, evidence))
+                                            or repair_reason == 'EVIDENCE_QUOTE_MISMATCH')
         if history is None:
             prepared = prepare_prompt(question=question.strip(), mode=mode, contexts=evidence,
                                       exercise=exercise, config=config, provider=self.provider)
         else:
             from .conversation import prepare_conversation_prompt
             prepared, memory = prepare_conversation_prompt(question=question.strip(), mode=mode, contexts=evidence,
-                exercise=exercise, config=config, provider=self.provider, history=history, repair_format=repair_format,repair_feedback=repair_feedback)
+                exercise=exercise, config=config, provider=self.provider, history=history, repair_format=repair_format,
+                repair_feedback=repair_feedback, repair_reason=repair_reason, selection_only=selection_only)
         options={'timeout_seconds':remaining_seconds} if remaining_seconds is not None else {}
         if repair_format:
             import inspect
             if 'json_schema' in inspect.signature(self.provider.generate).parameters:
-                from .conversation import build_evidence_units, citation_response_schema
+                from .conversation import build_evidence_units, citation_response_schema, source_selection_schema
                 ids=[unit['evidence_id'] for unit in build_evidence_units(prepared.contexts)]
-                options['json_schema']=citation_response_schema(len(prepared.contexts),evidence_ids=ids)
+                options['json_schema']=(source_selection_schema(ids) if selection_only else
+                                        citation_response_schema(len(prepared.contexts),evidence_ids=ids))
         try:
             output = self.provider.generate(prepared.messages, **options)
         except GenerationError:
@@ -117,12 +123,19 @@ class RAGPipeline:
                     or not 0 <= usage.output_tokens <= config.model.max_new_tokens):
                 raise GenerationError("INVALID_GENERATION", "Model token usage does not match the request.")
         text=output.text
-        if repair_format:
+        if selection_only:
+            from .conversation import render_source_selection
+            text = render_source_selection(text, prepared.contexts, question)
+        elif repair_format:
             from .conversation import render_structured_answer
             text=render_structured_answer(text,prepared.contexts,require_proof='json_schema' in options)
             if 'json_schema' in options:
-                from .conversation import validate_procedure_coverage
+                from .conversation import (validate_copied_claim_sources, validate_description_coverage,
+                                           validate_enumeration_coverage, validate_procedure_coverage)
                 validate_procedure_coverage(question,output.text,prepared.contexts)
+                validate_enumeration_coverage(question,output.text,prepared.contexts)
+                validate_description_coverage(question,output.text,prepared.contexts)
+                validate_copied_claim_sources(output.text,prepared.contexts)
         if mode == "hint" and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded"):
             status, answer, references, mapping = parse_reading_hint(text, prepared.contexts)
         else:
@@ -132,8 +145,9 @@ class RAGPipeline:
             if mode == "qa" and config.prompt_version in ("frozen_baseline", "efficient_grounded"):
                 validate_choice_answer(question, text)
         if history is not None and status=='ANSWERED':
-            from .conversation import validate_inline_citations
+            from .conversation import validate_answer_body, validate_inline_citations
             validate_inline_citations(answer)
+            validate_answer_body(answer)
         result = GenerationResult(
             status, answer, references, usage,
             GenerationTrace(tuple(item.source_id for item in prepared.contexts),
@@ -142,7 +156,8 @@ class RAGPipeline:
                             perf_counter() - started, mode == "hint",
                             "authored_reading_guide" if mode == "hint" and status == "ANSWERED"
                             and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded") else
-                            "insufficient_evidence_notice" if status == "INSUFFICIENT_EVIDENCE" else "model_text"),
+                            "insufficient_evidence_notice" if status == "INSUFFICIENT_EVIDENCE" else
+                            "source_selected_extract" if selection_only else "model_text"),
         )
         if memory is not None:
             from dataclasses import replace

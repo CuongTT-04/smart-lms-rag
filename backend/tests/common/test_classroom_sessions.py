@@ -64,7 +64,7 @@ class ClassroomSessionTests(TestCase):
         from apps.courses.enrollment_services import join_by_code
         from apps.documents.models import KnowledgeDocument, DocumentVersion
         other_room=Classroom.objects.create(course=self.course,name='Other room')
-        sessions=[ClassroomSession.objects.create(classroom=room,title='Lesson') for room in [self.room,other_room]]
+        sessions=[ClassroomSession.objects.create(classroom=room,title='Lesson',is_draft=False) for room in [self.room,other_room]]
         documents=[]
         for session in sessions:
             document=KnowledgeDocument.objects.create(course=self.course,session=session,uploaded_by=self.owner,title='Material',is_published=True)
@@ -129,13 +129,16 @@ class ClassroomSessionTests(TestCase):
             self.assertEqual(image.status_code, 200)
             self.assertEqual(self.client.post(image_url, {}, format='json').status_code, 405)
             self.assertEqual(image['Content-Type'], 'image/png')
-            image.close()
+            # The test client's streaming wrapper closes safely inside TestCase's transaction.
+            self.assertTrue(b''.join(image.streaming_content).startswith(b'\x89PNG'))
+            self.assertTrue(image.closed)
             student = authenticate_client(APIClient(), self.student)
             self.assertEqual(student.get(image_url).status_code, 404)
             join_by_code(actor=self.student, class_code=self.room.class_code)
             allowed = student.get(image_url)
             self.assertEqual(allowed.status_code, 200)
-            allowed.close()
+            self.assertTrue(b''.join(allowed.streaming_content).startswith(b'\x89PNG'))
+            self.assertTrue(allowed.closed)
             self.assertEqual(APIClient().get(image_url).status_code, 401)
             invalid = self.client.post(url, {'content': 'No', 'image': SimpleUploadedFile('fake.png', b'not an image', 'image/png')}, format='multipart')
             self.assertEqual(invalid.status_code, 400)

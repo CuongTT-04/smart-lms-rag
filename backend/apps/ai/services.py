@@ -58,6 +58,9 @@ def map_output(output, contexts):
 
 
 def answer_chat(*, user, data, request_id, runtime=None, history=None):
+    if data['mode'] == 'summary':
+        from .summary import answer_summary
+        return answer_summary(user=user, data=data, request_id=request_id, runtime=runtime)
     started=monotonic()
     user.refresh_from_db()
     exercise=enforce_chat_policy(user,data)
@@ -80,6 +83,8 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
                 catalog=runtime.catalog,top_k=5,
                 include_procedure_continuations=data['mode']=='qa' and is_full_procedure_question(data['question']))
         except DocumentError as exc:
+            if exc.code == 'RETRIEVAL_NOT_READY':
+                raise
             if exc.status==503:
                 raise DocumentError('RETRIEVAL_UNAVAILABLE','Không thể truy xuất học liệu lúc này.',503) from exc
             raise
@@ -113,6 +118,9 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
         except Exception as exc:
             raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
         status,answer,citations=map_output(output,contexts)
+        if status == 'ANSWERED' and data['mode'] == 'qa':
+            from .source_quotes import complete_quote_context
+            answer = complete_quote_context(answer, citations)
     else:
         status,answer,citations='INSUFFICIENT_EVIDENCE','Chưa đủ căn cứ trong học liệu được phép để trả lời câu hỏi này.',[]
         if history is not None:
@@ -128,4 +136,8 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
             'citations':citations,'timing':{'total_ms':round(elapsed,3)}}
     if memory is not None:
         result['memory']=memory
+    if data['mode'] == 'qa':
+        from .followups import suggested_questions
+        result['suggested_questions'] = suggested_questions(data['question'], citations,
+            mode=data['mode'], status=status, history=history)
     return result

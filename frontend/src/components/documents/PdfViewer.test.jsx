@@ -30,7 +30,19 @@ it('closes the viewer when a later check detects lost access and revokes the blo
   documentStatus.mockRejectedValue({status:404})
   await act(async()=>{await vi.advanceTimersByTimeAsync(2000)})
   expect(unavailable).toHaveBeenCalled()
+  expect(screen.queryByTitle('PDF Lesson')).not.toBeInTheDocument()
   view.unmount();expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:protected-test')
+})
+
+it('fails closed on a server outage without falsely reporting revoked permission', async () => {
+  const unavailable = vi.fn()
+  render(<PdfViewer document={row} onUnavailable={unavailable} />)
+  await act(async () => { await Promise.resolve(); await Promise.resolve() })
+  documentStatus.mockRejectedValueOnce({ status: 502 })
+  await act(async () => { await vi.advanceTimersByTimeAsync(2000) })
+  expect(unavailable).toHaveBeenCalledWith(expect.stringContaining('lỗi kết nối máy chủ'))
+  expect(screen.queryByTitle('PDF Lesson')).not.toBeInTheDocument()
+  expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:protected-test')
 })
 it('refuses to display bytes if policy changes while the PDF is loading',async()=>{
   const unavailable=vi.fn()

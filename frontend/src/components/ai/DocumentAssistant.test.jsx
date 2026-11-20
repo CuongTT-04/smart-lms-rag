@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'
 import SessionAssistant from './SessionAssistant'
@@ -132,4 +132,68 @@ it('anchors history to its icon and supports outside dismissal and Escape with f
   await userEvent.click(screen.getByRole('textbox'))
   expect(trigger).toHaveAttribute('aria-expanded', 'false')
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+})
+
+it('shows followups without sending automatically and uses the same conversation when clicked', async () => {
+  let sequence = 0
+  vi.stubGlobal('crypto', { randomUUID: () => `message-${++sequence}` })
+  const followup = 'Giải thích rõ hơn nội dung vừa nêu trong học liệu.'
+  sendChat.mockResolvedValue({ ...result, suggested_questions: [followup, 'Tóm lược các ý chính vừa nêu trong học liệu.'] })
+  render(<SessionAssistant scope={scope} documentId="doc" />)
+  await waitFor(() => expect(screen.getByRole('textbox')).toBeEnabled())
+  await userEvent.type(screen.getByRole('textbox'), 'Triết học là gì?{Enter}')
+  const button = await screen.findByRole('button', { name: followup })
+  expect(sendChat).toHaveBeenCalledTimes(1)
+  await userEvent.click(button)
+  await waitFor(() => expect(sendChat).toHaveBeenCalledTimes(2))
+  expect(sendChat.mock.calls[1][0]).toEqual({ ...scope, document_ids: ['doc'], conversation_id: 'new-conv',
+    client_message_id: 'message-2', question: followup, mode: 'qa' })
+  expect(createConversation).toHaveBeenCalledTimes(1)
+})
+
+it('prevents rapid duplicate followup sends and keeps the selected turn retryable', async () => {
+  const followup = 'Giải thích rõ hơn nội dung vừa nêu trong học liệu.'
+  listConversations.mockResolvedValue({ results: [{ id: 'conv' }] })
+  getConversation.mockResolvedValue({ ...detail, turns: [{ ...detail.turns[0], result: { ...result, suggested_questions: [followup] } }] })
+  let finish
+  sendChat.mockImplementation(() => new Promise(resolve => { finish = resolve }))
+  render(<SessionAssistant scope={scope} documentId="doc" />)
+  const button = await screen.findByRole('button', { name: followup })
+  act(() => { fireEvent.click(button); fireEvent.click(button) })
+  await waitFor(() => expect(sendChat).toHaveBeenCalledTimes(1))
+  expect(screen.getByRole('textbox')).toBeDisabled()
+  expect(sendChat.mock.calls[0][0].conversation_id).toBe('conv')
+  await act(async () => finish({ ...result, turn_id: 'next-turn' }))
+})
+
+it('ignores malformed suggestions without losing the valid answer', async () => {
+  listConversations.mockResolvedValue({ results: [{ id: 'conv' }] })
+  getConversation.mockResolvedValue({ ...detail, turns: [{ ...detail.turns[0], result: { ...result,
+    suggested_questions: [null, { text: 'Not a string' }, 'x'.repeat(241)] } }] })
+  render(<SessionAssistant scope={scope} documentId="doc" />)
+  expect(await screen.findByRole('button', { name: 'Trích dẫn [1]' })).toBeVisible()
+  expect(screen.queryByRole('group', { name: 'Câu hỏi tiếp theo' })).not.toBeInTheDocument()
+})
+
+it('does not carry suggestions to a new conversation or another document', async () => {
+  const followup = 'Tóm lược các ý chính vừa nêu trong học liệu.'
+  listConversations.mockResolvedValueOnce({ results: [{ id: 'conv' }] })
+  getConversation.mockResolvedValue({ ...detail, turns: [{ ...detail.turns[0], result: { ...result, suggested_questions: [followup] } }] })
+  const { rerender } = render(<SessionAssistant scope={scope} documentId="doc" />)
+  await screen.findByRole('button', { name: followup })
+  await userEvent.click(screen.getByRole('button', { name: 'Chat mới' }))
+  expect(screen.queryByRole('button', { name: followup })).not.toBeInTheDocument()
+  rerender(<SessionAssistant scope={scope} documentId="other-doc" />)
+  await waitFor(() => expect(listConversations).toHaveBeenLastCalledWith({ ...scope, document_id: 'other-doc' }, expect.anything()))
+  expect(screen.queryByRole('button', { name: followup })).not.toBeInTheDocument()
+  expect(sendChat).not.toHaveBeenCalled()
+})
+
+it('blocks composition while a restored turn is pending', async () => {
+  listConversations.mockResolvedValue({ results: [{ id: 'conv' }] })
+  getConversation.mockResolvedValue({ ...detail, turns: [{ ...detail.turns[0], status: 'PENDING', result: null }] })
+  render(<SessionAssistant scope={scope} documentId="doc" />)
+  await screen.findByText('Câu hỏi cũ')
+  expect(screen.getByRole('textbox')).toBeDisabled()
+  expect(screen.queryByRole('group', { name: 'Câu hỏi tiếp theo' })).not.toBeInTheDocument()
 })
