@@ -129,12 +129,16 @@ class ChatPolicyTests(ScopeFixture):
         hit = dict(chunk_id='triethoc', text='Triết học nghiên cứu thế giới.', source=dict(
             document_id=str(self.doc.pk), version_id=str(self.version.pk), document_title='Triết học',
             page_number=1, section_title=None))
-        with patch('apps.ai.services.retrieve_dense_authorized', return_value=[hit]):
+        with patch('apps.ai.services.retrieve_dense_authorized', return_value=[hit]) as retrieval:
             result = answer_chat(user=self.student, data=self.values(mode='hint',
                 assessment_id=str(assessment.pk), question_id=assessment.questions[0]['id']),
                 request_id=str(uuid4()), runtime=runtime)
         exercise = runtime.generate.call_args.kwargs['exercise']
+        retrieval_query = retrieval.call_args.args[1]
+        self.assertIn(assessment.title, retrieval_query)
+        self.assertIn(assessment.questions[0]['prompt'], retrieval_query)
         self.assertEqual(set(exercise['question']), {'id', 'prompt', 'choices'})
         for secret in ('correct_ids', 'PRIVATE_TEACHER_HINT', 'PRIVATE_RUBRIC', 'PRIVATE_EXPLANATION', 'Secret'):
             self.assertNotIn(secret, str(runtime.generate.call_args))
+            self.assertNotIn(secret, retrieval_query)
             self.assertNotIn(secret, str(result))

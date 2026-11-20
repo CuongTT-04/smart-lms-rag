@@ -37,6 +37,18 @@ class ChatServiceTests(ScopeFixture):
         self.runtime.generate.assert_not_called()
         self.retrieval.assert_not_called()
 
+    def test_hint_retrieval_uses_public_text_exercise_and_stays_bounded(self):
+        assessment = Assessment.objects.create(session=self.session, kind='TEXT', mode='PRACTICE',
+            title='Vai trò ALU và CU', description='Nội dung đề công khai. ' * 500,
+            hint='PRIVATE_TEACHER_HINT', due_at=timezone.now()+timedelta(days=1), is_published=True)
+        self.data.update(mode='hint', question='Gợi ý cách đọc đề. ' * 400, assessment_id=str(assessment.pk))
+        self.call()
+        query = self.retrieval.call_args.args[1]
+        self.assertIn(assessment.title, query)
+        self.assertIn('Nội dung đề công khai.', query)
+        self.assertLessEqual(len(query), 8000)
+        self.assertNotIn('PRIVATE_TEACHER_HINT', query)
+
     def test_followups_are_optional_and_do_not_add_a_generation_call(self):
         self.hit['text'] = 'b) Đối tượng của triết học\nNguồn hiện tại.'
         result = self.call()
