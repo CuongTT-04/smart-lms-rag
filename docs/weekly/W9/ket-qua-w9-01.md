@@ -111,8 +111,24 @@ Log chi tiết được lưu tại `.private/w9/member-b/`.
 
 Log riêng ở `.private/w9/integration-20261120/`. Lượt đầu gọi toàn bộ `tests.documents` bằng settings LMS có hai lỗi import test-support của upload/worker; đã chạy riêng đúng settings theo README và đạt. Các lỗi này không được tính là lượt test đạt. Cấu hình demo đã bổ sung Compose project riêng để frontend và backend cùng dùng DB demo.
 
+### Docker và demo trên trình duyệt
+
+Bản code tích hợp được lưu tại merge commit `1163002`, có hai parent `818a9c3` và `77f9259`. Đã sao lưu DB trước triển khai vào `.private/w9/integration-20261120/database-before.dump`, rebuild Docker và kiểm health qua frontend cổng 5173. Backend/frontend healthy, Nginx `-t` đạt. Các migration `ai.0003_summarytask`, `courses.0016_documentcompletion`, `documents.0004_documentstudynotes` đã áp dụng.
+
+Demo thực tế dùng Compose project `smart-lms-w9-demo`, DB `w9_demo_w9integration`, frontend `http://localhost:5174`, có mạng và volume riêng. Tài khoản/mật khẩu demo nằm trong file riêng `demo.env`, ngoài Git.
+
+| Thao tác đã kiểm qua trình duyệt | Kết quả quan sát |
+|---|---|
+| S1 mở PDF có watermark, đánh dấu đã học | Hiển thị Đã học; tiến độ từ 25% lên 50% |
+| S1 tiếp tục tự luận, lưu nháp và nộp bài | Đã nộp thành công, chờ chấm; tiến độ 3/4 = 75% |
+| T1 mở bảng lớp | S1 75%, S2 100%; 2 bài chờ chấm trước khi chấm S1 |
+| T1 chấm tự luận S1 8/10 và công bố lượt đó | Bảng lớp hiện 8/10; còn 1 bài chờ chấm của S2 |
+| Restart backend demo, đăng nhập lại S1 | Vẫn 75%, quiz 0/10, tự luận 8/10, TB 4; DB kiểm lại SUBMITTED, grade_published=True |
+
+Ảnh trong thư mục log riêng gồm `student-pdf-completed.png`, `student-submitted.png`, `teacher-results-pending.png`, `teacher-results-graded.png`, `student-results-after-restart.png`. Dữ liệu demo đã thay đổi qua thao tác nộp/chấm thật, nên S1 ở 75% và tự luận 8/10 thay cho trạng thái seed ban đầu. Command seed sẽ báo conflict nếu chạy lại vào các bản ghi đã thay đổi; dùng DB demo mới khi cần kịch bản từ đầu.
+
 ## 5. Những mục còn chờ nghiệm thu nhóm
 
 - Địa chỉ Kaggle trong Docker trả HTTP 404 ở `/health` khi kiểm ngày 20/11. Người chạy xác nhận notebook báo thiếu checkpoint nền NF4 trong Input. Cần gắn lại dataset `ohayo-model` đã dùng ở notebook Qwen cũ, khởi động runtime và cung cấp URL hoạt động để kiểm model thật trên bản tích hợp, gồm hint PRACTICE, TEST, nguồn nhiều trang, memory, summary và câu hỏi gợi ý.
-- Chạy demo giáo viên–học viên–giáo viên trên dữ liệu demo riêng, kiểm restart giữ dữ liệu và quyền API/media. Kết quả test tự động ở mục 4 chưa thay thế bằng chứng thao tác trên trình duyệt/model thật.
+- Đã kiểm luồng PDF → tự luận → chấm/công bố → restart → học viên xem lại trên trình duyệt. Quyền API/media, quiz, video/checkpoint và xung đột được kiểm bằng test tự động; các kịch bản AI và nghiệm thu E01–E10 đầy đủ cần nối tiếp khi có runtime thật.
 - Chuyển log/ảnh/config đã khử bí mật và SHA bản chạy cuối cho Dương tổng hợp `Evidence/W09/`. Chỉ đóng milestone nhóm sau khi E01–E10 được kiểm đủ.
