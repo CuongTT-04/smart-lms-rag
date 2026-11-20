@@ -152,7 +152,7 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
       </nav></div>
       <div ref={content} className="session-main-content">
         {error && <div className="error-banner" role="alert">{error}</div>}
-        <div hidden={section !== 'materials'}><CourseDocuments courseId={course.id} sessionId={session.id} canManage={canManage} workspace selectedDocumentId={active?.document_id} draftId={draftId} onDraftUploaded={uploaded} onDocumentsChanged={receiveDocuments} /></div>
+        <div hidden={section !== 'materials'}><CourseDocuments courseId={course.id} classroomId={room.id} sessionId={session.id} canManage={canManage} workspace selectedDocumentId={active?.document_id} draftId={draftId} onDraftUploaded={uploaded} onDocumentsChanged={receiveDocuments} /></div>
         {section === 'videos' && <SessionVideos path={videosPath} rows={videos} selectedId={videoId} canManage={canManage} listError={videosError} onRefresh={refreshVideos} onSelect={setVideoId} uploading={uploadingVideo} onUploadingChange={setUploadingVideo} />}
         {section === 'assignments' && <SessionAssessments path={assessmentsPath} rows={assessments} selectedId={assessmentId} canManage={canManage} onSelect={setAssessmentId} onRefresh={refreshAssessments} listError={assessmentError} creating={creatingAssessment} onCreatingChange={setCreatingAssessment} onTestActive={setActiveTest} onRequestAssistance={(value) => { setExercise(value); setAssistant(true) }} />}
       </div>

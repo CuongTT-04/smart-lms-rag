@@ -4,7 +4,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.courses.services import create_course, update_course
 from apps.users.models import User
-from common.testing import authenticate_client, close_response
+from common.testing import authenticate_client
 
 class ClassroomSessionTests(TestCase):
     def test_delete_session_hides_session_and_materials_but_retains_records(self):
@@ -65,7 +65,7 @@ class ClassroomSessionTests(TestCase):
         from apps.courses.enrollment_services import join_by_code
         from apps.documents.models import KnowledgeDocument, DocumentVersion
         other_room=Classroom.objects.create(course=self.course,name='Other room')
-        sessions=[ClassroomSession.objects.create(classroom=room,title='Lesson') for room in [self.room,other_room]]
+        sessions=[ClassroomSession.objects.create(classroom=room,title='Lesson',is_draft=False) for room in [self.room,other_room]]
         documents=[]
         for session in sessions:
             document=KnowledgeDocument.objects.create(course=self.course,session=session,uploaded_by=self.owner,title='Material',is_published=True)
@@ -130,7 +130,8 @@ class ClassroomSessionTests(TestCase):
             self.assertEqual(image.status_code, 200)
             self.assertEqual(self.client.post(image_url, {}, format='json').status_code, 405)
             self.assertEqual(image['Content-Type'], 'image/png')
-            close_response(image)
+            # The test client's streaming wrapper closes safely inside TestCase's transaction.
+            self.assertTrue(b''.join(image.streaming_content).startswith(b'\x89PNG'))
             self.assertTrue(image.closed)
             self.assertFalse(connection.connection.closed)
             student = authenticate_client(APIClient(), self.student)
@@ -138,7 +139,7 @@ class ClassroomSessionTests(TestCase):
             join_by_code(actor=self.student, class_code=self.room.class_code)
             allowed = student.get(image_url)
             self.assertEqual(allowed.status_code, 200)
-            close_response(allowed)
+            self.assertTrue(b''.join(allowed.streaming_content).startswith(b'\x89PNG'))
             self.assertTrue(allowed.closed)
             self.assertFalse(connection.connection.closed)
             self.assertEqual(APIClient().get(image_url).status_code, 401)

@@ -104,6 +104,9 @@ def remove_document(user,document):
         document.save(update_fields=["removed_at","active_version","published_version","is_published","updated_at"])
         document.versions.update(removed_at=now,status="REMOVED")
         IngestionJob.objects.filter(document_version__document=document,status__in=["QUEUED","RUNNING"]).update(status="CANCELLED",worker_token=None,finished_at=now,error_code="SOURCE_REMOVED")
+        if document.session_id:
+            from apps.courses.progress_services import refresh_classroom_progress
+            transaction.on_commit(lambda classroom_id=document.session.classroom_id: refresh_classroom_progress(classroom_id=classroom_id))
 
 
 def set_publication(user,document,published,version_id=None):
@@ -119,6 +122,9 @@ def set_publication(user,document,published,version_id=None):
             locked.published_version=version
         else:locked.published_version=None
         locked.is_published=published;locked.save(update_fields=["published_version","is_published","updated_at"])
+        if locked.session_id:
+            from apps.courses.progress_services import refresh_classroom_progress
+            transaction.on_commit(lambda classroom_id=locked.session.classroom_id: refresh_classroom_progress(classroom_id=classroom_id))
         return locked
 
 

@@ -7,7 +7,7 @@ import PdfStudyTools from './PdfStudyTools'
 // Use a fresh cache key after correcting the module MIME type in Docker.
 GlobalWorkerOptions.workerSrc = `${workerUrl}?module=2`
 
-export default function PdfCanvas({ url, title, annotatable = false, documentId, versionId, showFeedback = true, allowCopy = false, initialPage = 1 }) {
+export default function PdfCanvas({ url, title, annotatable = false, documentId, versionId, showFeedback = true, allowCopy = false, initialPage = 1, onReady }) {
   const [pdf, setPdf] = useState(null)
   const [pageNumber, setPageNumber] = useState(initialPage)
   const [zoom, setZoom] = useState(null)
@@ -22,6 +22,7 @@ export default function PdfCanvas({ url, title, annotatable = false, documentId,
   const pan = useRef(null)
   const [dragging, setDragging] = useState(false)
   const [pageRatio, setPageRatio] = useState(1)
+  useEffect(() => { onReady?.(Boolean(pdf && !error)) }, [pdf, error, onReady])
   useEffect(() => {
     let live = true
     const task = getDocument({ url, isEvalSupported: false })

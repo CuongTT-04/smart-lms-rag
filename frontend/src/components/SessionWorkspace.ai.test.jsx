@@ -25,6 +25,11 @@ it('aborts the previous exercise hint when another assessment is selected', asyn
   await userEvent.click(screen.getByRole('button',{name:'Yêu cầu gợi ý'}))
   await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Tôi nên bắt đầu ra sao?')
   await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
+  expect(sendChat.mock.calls[0][0]).toMatchObject({
+    course_id:'c1', classroom_id:'r1', session_id:'assessment-scope',
+    mode:'hint', assessment_id:'a1', question_id:'q1',
+  })
+  expect(sendChat.mock.calls[0][0]).not.toHaveProperty('conversation_id')
   const signal=sendChat.mock.calls[0][1].signal
   await userEvent.click(screen.getByRole('button',{name:/^Bài B/}))
   await waitFor(()=>expect(signal.aborted).toBe(true))

@@ -106,13 +106,15 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                     count = busy_count()
                     self.reply(200, {'ready': not draining, 'busy': count == len(pipelines),
                         'replicas': len(pipelines), 'in_flight': count, 'config': public_config,
-                        'capabilities': ['chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1']})
+                        'capabilities': ['chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1', 'qa_completeness_v1', 'qa_atomic_evidence_v1', 'qa_source_descriptions_v1', 'qa_source_selection_v1', 'coherent_summary_v1', 'summary_topic_paragraphs_v1', 'summary_validation_details_v1', 'summary_text_grammar_v1', 'summary_json_quotes_v1']})
                 else:
                     self.reply(404, {'code': 'NOT_FOUND'})
 
         def do_POST(self):
             if not self.authorized():
                 return
+            if self.path == '/summary':
+                return self.summary_request()
             if self.path != '/generate':
                 return self.reply(404, {'code': 'NOT_FOUND'})
             try:
@@ -169,6 +171,38 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                 safe = code if code in {'INVALID_REQUEST', 'INVALID_GENERATION', 'GENERATION_TIMEOUT',
                     'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'OUT_OF_MEMORY'} else 'GENERATION_UNAVAILABLE'
                 payload = {'code': safe}
+                if safe == 'INVALID_GENERATION' and isinstance(reason, str) and reason in VALIDATION_REASONS:
+                    payload['reason'] = reason
+                self.reply(400 if safe == 'INVALID_REQUEST' else 503, payload)
+            finally:
+                locks[index].release()
+
+        def summary_request(self):
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if self.headers.get('Transfer-Encoding') or not 0 < length <= 1024 * 1024:
+                    return self.reply(413, {'code': 'REQUEST_TOO_LARGE'})
+                data = json.loads(self.rfile.read(length))
+                if not isinstance(data, dict) or set(data) != {'phase', 'records', 'config'}:
+                    raise ValueError('Invalid summary request')
+                if data['config'] != public_config:
+                    return self.reply(409, {'code': 'CONFIG_MISMATCH'})
+            except (ValueError, TypeError, UnicodeError):
+                return self.reply(400, {'code': 'INVALID_REQUEST'})
+            index = acquire()
+            if index is None:
+                return self.reply(429, {'code': 'GENERATION_BUSY'})
+            try:
+                from apps.ai.rag.summary import step
+                result = step(pipelines[index].provider, data['phase'], data['records'])
+                self.reply(200, result)
+            except Exception as error:
+                from apps.ai.rag.summary import VALIDATION_REASONS
+                code = getattr(error, 'code', 'GENERATION_UNAVAILABLE')
+                safe = code if code in {'INVALID_REQUEST', 'INVALID_GENERATION', 'GENERATION_TIMEOUT',
+                    'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'OUT_OF_MEMORY'} else 'GENERATION_UNAVAILABLE'
+                payload = {'code': safe}
+                reason = getattr(error, 'validation_reason', None)
                 if safe == 'INVALID_GENERATION' and isinstance(reason, str) and reason in VALIDATION_REASONS:
                     payload['reason'] = reason
                 self.reply(400 if safe == 'INVALID_REQUEST' else 503, payload)

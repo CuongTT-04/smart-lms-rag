@@ -1,4 +1,17 @@
 .ai-chat-content { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 16px; gap: 12px; }
+.ai-chat-followups { display: grid; gap: 6px; margin: 10px 0 4px; min-width: 0; }
+.ai-chat-followups button { display: flex; align-items: flex-start; gap: 7px; width: 100%; min-width: 0; text-align: left; border: 1px solid #bed5c7; border-radius: 6px; background: #f6faf7; color: #254d3b; padding: 8px 10px; font: inherit; font-size: 13px; line-height: 1.5; }
+.ai-chat-followups button span { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.ai-chat-followups button svg { flex: 0 0 15px; margin-top: 2px; }
+.ai-chat-followups button:disabled { opacity: .55; cursor: not-allowed; }
+.ai-chat-followups button:not(:disabled):hover { background: #eaf4ed; }
+.ai-document-summary { flex: 0 1 auto; min-height: 0; max-height: 65%; overflow: auto; border-bottom: 1px solid #bed5c7; padding-bottom: 12px; }
+.ai-document-summary header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ai-document-summary form { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.ai-document-summary label { display: grid; gap: 4px; flex: 1 1 100px; min-width: 0; font-size: 12px; }
+.ai-document-summary input { width: 100%; min-width: 0; box-sizing: border-box; padding: 6px; }
+.ai-document-summary form button { padding: 7px 10px; border-radius: 6px; }
+.ai-summary-result > p { font-size: 12px; overflow-wrap: anywhere; }
 .ayo-avatar { display: block; object-fit: contain; flex-shrink: 0; }
 .ai-chat-toolbar { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .ai-chat-tool { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0; border: 1px solid transparent; border-radius: 7px; background: transparent; color: #285743; cursor: pointer; }

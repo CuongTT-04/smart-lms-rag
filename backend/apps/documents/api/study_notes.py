@@ -1,13 +1,26 @@
-"""Prototype-only, per-user PDF annotations. Intentionally no database or disk storage."""
-from django.core.cache.backends.locmem import LocMemCache
+"""Private, durable study notes bound to the current user's permitted PDF version."""
+import math
 import uuid
+from django.db import transaction
+from django.utils.crypto import constant_time_compare, salted_hmac
 from rest_framework import serializers
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from .views import DocumentAPIView
+from ..exceptions import DocumentError
+from ..models import DocumentStudyNotes, KnowledgeDocument
 
-study_cache = LocMemCache('prototype-study-notes', {'TIMEOUT': None, 'OPTIONS': {'MAX_ENTRIES': 10000}})
-study_session = str(uuid.uuid4())
+
+def study_scope(user, document, version):
+    identity = f'{user.pk}:{document.pk}:{version.pk}'
+    return 'study-v1:' + salted_hmac('documents.study-notes', identity, algorithm='sha256').hexdigest()
+
+
+def study_payload(note, scope):
+    payload = {'scope': scope, 'items': note.items if note else [], 'notes': note.notes if note else ''}
+    if note and note.feedback:
+        payload['feedback'] = note.feedback
+    return payload
 
 
 class StudyItemSerializer(serializers.Serializer):
@@ -20,6 +33,10 @@ class StudyItemSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=2000, required=False)
 
     def validate(self, value):
+        coordinates = [value[key] for key in ('x', 'y') if key in value]
+        coordinates.extend(number for point in value.get('points', []) for number in point)
+        if any(not math.isfinite(number) for number in coordinates):
+            raise serializers.ValidationError('Coordinates must be finite numbers.')
         if value['kind'] == 'text':
             if not {'x', 'y', 'text'} <= value.keys():
                 raise serializers.ValidationError('Text position and content required.')
@@ -46,37 +63,66 @@ class StudyNotesSerializer(serializers.Serializer):
     notes = serializers.CharField(max_length=20000, allow_blank=True, trim_whitespace=False)
     feedback = StudyFeedbackSerializer(required=False)
 
+    def validate_items(self, items):
+        if len({item['id'] for item in items}) != len(items):
+            raise serializers.ValidationError('Annotation IDs must be unique.')
+        return items
+
 
 class StudyNotesView(DocumentAPIView):
-    @extend_schema(tags=['Documents'], summary='Xem ghi chú và nét vẽ cá nhân', description='Trả ghi chú, nét vẽ và đánh giá của tài khoản trên phiên bản PDF được phép xem. Dữ liệu tạm trong bộ nhớ, mất khi máy chủ khởi động lại.', parameters=[OpenApiParameter('version_id', str, required=True)], responses=StudyNotesSerializer)
+    def recheck_version(self, request, document_id, version):
+        request.user.refresh_from_db()
+        document = self.document(request, document_id)
+        if self.version(request, document).pk != version.pk:
+            raise DocumentError('SCOPE_CHANGED', 'Reopen the current PDF version.', 409)
+
+    @extend_schema(tags=['Documents'], summary='Xem ghi chú và nét vẽ cá nhân', description='Đọc ghi chú, nét vẽ và đánh giá cá nhân từ database theo tài khoản và phiên bản PDF được phép xem. Dữ liệu được giữ qua restart; không chia sẻ giữa tài khoản hoặc chuyển sang phiên bản PDF mới.', parameters=[OpenApiParameter('version_id', str, required=True)], responses=StudyNotesSerializer)
     def get(self, request, document_id):
         document = self.document(request, document_id)
         version = self.version(request, document)
-        scope = f'{study_session}:{request.user.pk}:{version.pk}'
-        return Response({**study_cache.get(f'{request.user.pk}:{version.pk}', {'items': [], 'notes': ''}), 'scope': scope}, headers={'Cache-Control': 'private, no-store'})
+        note = DocumentStudyNotes.objects.filter(user=request.user, version=version).first()
+        self.recheck_version(request, document_id, version)
+        return Response(study_payload(note, study_scope(request.user, document, version)), headers={'Cache-Control': 'private, no-store'})
 
-    @extend_schema(tags=['Documents'], summary='Lưu ghi chú và nét vẽ cá nhân', description='Thay ghi chú, nét vẽ và đánh giá cá nhân theo phiên bản PDF và scope hiện tại. Không sửa tệp gốc; dữ liệu mất khi máy chủ khởi động lại.', parameters=[OpenApiParameter('version_id', str, required=True)], request=StudyNotesSerializer, responses=StudyNotesSerializer)
+    @extend_schema(tags=['Documents'], summary='Lưu ghi chú và nét vẽ cá nhân', description='Thay toàn bộ ghi chú, nét vẽ và đánh giá cá nhân trong database theo phiên bản PDF và scope đã đọc. Không sửa PDF gốc. Scope sai tài khoản/phiên bản trả 409; mất quyền trả 404. Các lượt lưu được tuần tự hóa; lượt ghi sau thay nội dung trước.', parameters=[OpenApiParameter('version_id', str, required=True)], request=StudyNotesSerializer, responses=StudyNotesSerializer)
     def put(self, request, document_id):
-        document = self.document(request, document_id)
-        version = self.version(request, document)
-        if request.data.get('scope') != f'{study_session}:{request.user.pk}:{version.pk}':
-            return Response({'detail': 'Study session changed. Reopen the PDF.'}, status=409)
-        serializer = StudyNotesSerializer(data=request.data, context={'page_count': version.page_count})
-        serializer.is_valid(raise_exception=True)
-        previous = study_cache.get(f'{request.user.pk}:{version.pk}', {})
-        report = serializer.validated_data.get('feedback', {}).get('report')
-        if report and report != previous.get('feedback', {}).get('report'):
-            from apps.notifications.events import owners, scope
-            from apps.notifications.services import notify
-            from apps.users.models import User
-            session = document.session
-            context = {**scope(document.course, session.classroom if session else None, session), 'document_id': str(document.pk)}
-            event = str(uuid.uuid4())
-            notify(event_id=event, recipients=owners(document.course), actor=request.user, kind='MATERIAL_REPORTED',
-                   title='Có báo cáo về học liệu', body=report['reason'], context=context)
-            notify(event_id=event, recipients=User.objects.filter(role='ADMIN', is_active=True).values_list('pk', flat=True),
-                   actor=request.user, kind='MATERIAL_REPORTED', title='Có báo cáo về học liệu', body=report['reason'], context={'admin': True, 'report': {
-                       'document_id': str(document.pk), 'document_title': document.title, 'course_title': document.course.title,
-                       'reporter': request.user.full_name or request.user.username, 'reason': report['reason'], 'opinion': report['opinion']}})
-        study_cache.set(f'{request.user.pk}:{version.pk}', serializer.validated_data, timeout=None)
-        return Response(serializer.validated_data, headers={'Cache-Control': 'private, no-store'})
+        if not isinstance(request.data, dict):
+            raise serializers.ValidationError('Expected a study notes object.')
+        # Use the publication/removal lock too, including when the first notes row is created.
+        with transaction.atomic():
+            KnowledgeDocument.objects.select_for_update().get(pk=document_id, removed_at__isnull=True)
+            request.user.refresh_from_db()
+            document = self.document(request, document_id)
+            version = self.version(request, document)
+            expected_scope = study_scope(request.user, document, version)
+            provided_scope = request.data.get('scope')
+            if not isinstance(provided_scope, str) or not constant_time_compare(provided_scope, expected_scope):
+                return Response({'detail': 'Study session changed. Reopen the PDF.'}, status=409)
+            serializer = StudyNotesSerializer(data=request.data, context={'page_count': version.page_count})
+            serializer.is_valid(raise_exception=True)
+            note, _ = DocumentStudyNotes.objects.get_or_create(user=request.user, version=version)
+            previous_report = note.feedback.get('report')
+            note.items = serializer.validated_data['items']
+            note.notes = serializer.validated_data['notes']
+            note.feedback = serializer.validated_data.get('feedback', {})
+            note.save(update_fields=['items', 'notes', 'feedback', 'updated_at'])
+            self.recheck_version(request, document_id, version)
+            report = note.feedback.get('report')
+            if report and report != previous_report:
+                self.notify_report(request, document, report)
+            payload = study_payload(note, expected_scope)
+        return Response(payload, headers={'Cache-Control': 'private, no-store'})
+
+    def notify_report(self, request, document, report):
+        from apps.notifications.events import owners, scope
+        from apps.notifications.services import notify
+        from apps.users.models import User
+        session = document.session
+        context = {**scope(document.course, session.classroom if session else None, session), 'document_id': str(document.pk)}
+        event = str(uuid.uuid4())
+        notify(event_id=event, recipients=owners(document.course), actor=request.user, kind='MATERIAL_REPORTED',
+               title='Có báo cáo về học liệu', body=report['reason'], context=context)
+        notify(event_id=event, recipients=User.objects.filter(role='ADMIN', is_active=True).values_list('pk', flat=True),
+               actor=request.user, kind='MATERIAL_REPORTED', title='Có báo cáo về học liệu', body=report['reason'], context={'admin': True, 'report': {
+                   'document_id': str(document.pk), 'document_title': document.title, 'course_title': document.course.title,
+                   'reporter': request.user.full_name or request.user.username, 'reason': report['reason'], 'opinion': report['opinion']}})

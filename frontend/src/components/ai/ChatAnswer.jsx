@@ -26,7 +26,7 @@ function AnimatedAnswer({ result, active, animate }) {
   </div>
 }
 
-export default function ChatAnswer({ result, onOpenCitation, active = true, animate = true }) {
+export default function ChatAnswer({ result, onOpenCitation, active = true, animate = true, sourceLabel = 'Nguồn học liệu' }) {
   const [sourcesOpen, setSourcesOpen] = useState(false)
   const sourcesId = useId()
   const [rating, setRating] = useState(result.rating || null)
@@ -56,7 +56,7 @@ export default function ChatAnswer({ result, onOpenCitation, active = true, anim
     </div>
     {result.citations?.length > 0 && <section className="ai-chat-sources">
       <button className="ai-chat-sources-toggle" type="button" aria-expanded={sourcesOpen} aria-controls={sourcesId} onClick={() => setSourcesOpen(open => !open)}>
-        <span>Nguồn học liệu ({result.citations.length})</span><ChevronDown size={15} />
+        <span>{sourceLabel} ({result.citations.length})</span><ChevronDown size={15} />
       </button>
       <div id={sourcesId} className={`ai-chat-source-panel ${sourcesOpen ? 'is-open' : 'is-closed'}`} aria-hidden={!sourcesOpen} inert={!sourcesOpen}>
       <div className="ai-chat-source-clip"><div className="ai-chat-source-list">

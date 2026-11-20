@@ -1,9 +1,9 @@
 # Báo cáo kết quả thực hiện W9-01 (Trần Tuấn Cường)
 
-- **Ngày thực hiện:** 18–19/11/2026
+- **Ngày thực hiện:** 18–20/11/2026
 - **Người phụ trách:** Trần Tuấn Cường (B, B22DCVT073)
-- **Nhánh làm việc:** `TranTuanCuong_B22DCVT073_W8Tasks` (HEAD gốc `8b180aa`, chưa commit/push/merge theo yêu cầu).
-- **Trạng thái:** Hoàn thành phần LMS độc lập T0–T6 và kiểm thử tổng hợp T7 phía LMS; các mục phụ thuộc phần AI/học liệu của Dương (`W9-02`) được giữ ở trạng thái chờ tích hợp tuần tự.
+- **Nhánh tích hợp:** `codex/w9-integration`, ghép phần LMS tại `818a9c3` với Ayo của Dương tại `77f9259`; nền chung `8b180aa`.
+- **Trạng thái:** Đã ghép code LMS và Ayo, nối hoàn thành học liệu và kiểm hợp đồng hint. Kiểm thử tự động trên bản chung đạt. Nghiệm thu model thật và demo xuyên suốt E01–E10 còn chờ kiểm thực tế.
 
 ---
 
@@ -67,7 +67,7 @@ Do tuân thủ ranh giới ownership file trong `phan-cong-w9.md`, Cường **kh
 
 ---
 
-## 3. Kết quả kiểm chứng cuối (T7)
+## 3. Kết quả kiểm chứng LMS trước khi ghép Ayo
 
 Log chi tiết được lưu tại `.private/w9/member-b/`.
 
@@ -77,7 +77,7 @@ Log chi tiết được lưu tại `.private/w9/member-b/`.
 | `docker compose exec -T backend python manage.py check` | `System check identified no issues (0 silenced)` (exit 0) |
 | `git diff --check` | Không lỗi trailing whitespace / conflict marker (exit 0) |
 | `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.courses.tests.test_learning_progress apps.courses.tests.test_progress_api apps.courses.tests.test_classroom_results apps.courses.tests.test_w9_demo --noinput` | **11/11 tests OK** (`4.177s`) |
-| `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --noinput` | **357/365 tests PASS**, còn **7 failures + 1 error** đều nằm trong `tests.common.test_schema.OpenAPITests` cho phần `/api/ai/*` của W9-02 (Dương); 100% test LMS (bao gồm 4 endpoint mới của Cường trong `test_schema.py`) đều đạt (`51.816s`). |
+| `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --noinput` | Chạy **365 tests**, báo **7 failures + 1 error** đều nằm trong `tests.common.test_schema.OpenAPITests` cho phần `/api/ai/*` của W9-02 (Dương); 100% test LMS (bao gồm 4 endpoint mới của Cường trong `test_schema.py`) đều đạt (`51.816s`). |
 | `npm.cmd run lint` (trong `frontend/`) | **0 errors, 0 warnings** (`eslint . --max-warnings 0`) |
 | `npm.cmd run build` (trong `frontend/`) | **Thành công** (`vite build` trong `809ms`) |
 | `npm.cmd test -- --run --maxWorkers=2` (trong `frontend/`) | **54/54 file test PASS, 346/346 tests PASS** (`85.09s`) |
@@ -90,11 +90,29 @@ Log chi tiết được lưu tại `.private/w9/member-b/`.
 
 ---
 
-## 4. Các hạng mục phụ thuộc còn chờ để đóng Milestone W9
+## 4. Tích hợp Ayo ngày 20/11/2026
 
-- **Từ Dương (`W9-02`):**
-  1. Hoàn thiện `test_schema.py` cho các endpoint AI & sửa `ai/policy.py` (không giữ khóa AI vô thời hạn khi bài kiểm tra bị gỡ/mất quyền).
-  2. Chốt hợp đồng hint/summary/next-question API để nối hoàn chỉnh vào UI `SessionAssistant` / `AssessmentRunner`.
-  3. Gắn callback `refresh_classroom_progress` vào `documents/services.py` và component `<DocumentCompletionButton>` vào `SessionWorkspace.jsx` / `CourseDocuments.jsx`.
-- **Kiểm nghiệm tích hợp cuối (E05–E10):**
-  - Chạy kịch bản AI live (multi-page CPU, ALU citation, multi-turn memory, hint, summary, Kaggle error resilience) và chạy demo xuyên suốt trên DB `w9_demo_*` sau khi ghép phần `W9-02` của Dương, tổng hợp vào `Evidence/W09/`.
+Đã nhận commit `77f9259` của Dương và đối chiếu 67 file code với `ayo-handoff.zip`. Checksum ZIP đúng biên bản, 111 file manifest đúng kích thước/hash. Notebook gửi riêng có cùng nội dung cell với bản runtime trong ZIP.
+
+- Xử lý xung đột `test_classroom_sessions.py`, giữ kiểm tra PNG, đóng stream và kết nối DB còn mở.
+- Gắn `DocumentCompletionButton` vào màn hình đọc học liệu của học viên. Truyền classroom từ `SessionWorkspace`; chỉ bật sau khi PDF tải được. Tính trạng thái theo `kind=PDF` và đúng version; hủy request tiến độ cũ khi áp dụng kết quả ghi hoàn thành.
+- Sau công bố, đổi phiên bản công bố, thu hồi công bố hoặc gỡ tài liệu, tính lại tiến độ sau commit giao dịch học liệu để tránh đảo thứ tự khóa enrollment/document. Test kiểm trạng thái enrollment thực tế và thời điểm callback.
+- Luồng hint dùng `onRequestAssistance` hiện có qua `SessionAssistant`, gửi scope, `mode=hint`, assessment/question công khai qua `/api/ai/chat/`. Test xác nhận không gửi conversation_id và hủy request cũ khi đổi bài. Bộ policy AI/OpenAPI chạy cùng LMS đã đạt.
+
+| Kiểm chứng trên bản tích hợp | Kết quả |
+|---|---|
+| Backend chính, settings `config.settings.test` | 429/429 đạt; users, courses, common/schema, AI, material access và annotations |
+| Các module tài liệu runtime/index/parser còn lại | 84/84 đạt |
+| Upload/worker với `tests.documents_settings` | 27/27 đạt |
+| Frontend toàn bộ | 56 file, 366/366 đạt |
+| Frontend kiểm lại PDF/progress/hint sau bổ sung assertion | 4 file, 16/16 đạt |
+| Lint/build | Đạt; build còn cảnh báo chunk lớn |
+| Django check và makemigrations --check --dry-run | Đạt, không thiếu migration |
+
+Log riêng ở `.private/w9/integration-20261120/`. Lượt đầu gọi toàn bộ `tests.documents` bằng settings LMS có hai lỗi import test-support của upload/worker; đã chạy riêng đúng settings theo README và đạt. Các lỗi này không được tính là lượt test đạt. Cấu hình demo đã bổ sung Compose project riêng để frontend và backend cùng dùng DB demo.
+
+## 5. Những mục còn chờ nghiệm thu nhóm
+
+- Địa chỉ Kaggle trong Docker trả HTTP 404 ở `/health` khi kiểm ngày 20/11. Người chạy xác nhận notebook báo thiếu checkpoint nền NF4 trong Input. Cần gắn lại dataset `ohayo-model` đã dùng ở notebook Qwen cũ, khởi động runtime và cung cấp URL hoạt động để kiểm model thật trên bản tích hợp, gồm hint PRACTICE, TEST, nguồn nhiều trang, memory, summary và câu hỏi gợi ý.
+- Chạy demo giáo viên–học viên–giáo viên trên dữ liệu demo riêng, kiểm restart giữ dữ liệu và quyền API/media. Kết quả test tự động ở mục 4 chưa thay thế bằng chứng thao tác trên trình duyệt/model thật.
+- Chuyển log/ảnh/config đã khử bí mật và SHA bản chạy cuối cho Dương tổng hợp `Evidence/W09/`. Chỉ đóng milestone nhóm sau khi E01–E10 được kiểm đủ.

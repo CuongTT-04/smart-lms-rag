@@ -13,11 +13,58 @@ from .base import GenerationError, ModelConfig, ModelOutput, TokenUsage
 from .checkpoint import validate_checkpoint
 
 
+def verify_saved_qwen_pattern(tokenizer, checkpoint):
+    """Fail closed if the loader changed the tokenizer pattern saved with Qwen."""
+    try:
+        config = json.loads((Path(checkpoint) / 'config.json').read_text(encoding='utf-8'))
+        saved = json.loads((Path(checkpoint) / 'tokenizer.json').read_text(encoding='utf-8'))
+        loaded = json.loads(tokenizer.backend_tokenizer.to_str())
+        if (config.get('model_type') != 'qwen2' or not saved.get('pre_tokenizer')
+                or loaded.get('pre_tokenizer') != saved['pre_tokenizer']):
+            raise ValueError('Saved Qwen tokenizer pattern differs.')
+        return {'model_type': 'qwen2', 'saved_pattern_unchanged': True, 'mistral_regex_applied': False}
+    except Exception as exc:
+        raise GenerationError('INVALID_RUNTIME', 'Cannot verify the saved Qwen tokenizer pattern.') from exc
+
+
 def _control_safe_tokenizer_data(data):
     """LMFE0.11.3 free-text shortcut admits raw tabs; JSON strings cannot contain them."""
     from lmformatenforcer.tokenenforcer import TokenEnforcerTokenizerData
     tokens=[row for row in data.regular_tokens if not any(ord(char)<32 for char in row[1])]
     return TokenEnforcerTokenizerData(tokens,data.decoder,data.eos_token_id,data.use_bitmask,data.vocab_size)
+
+
+class _CachedRegexState:
+    """Cache character sets: LMFE intersects these with the vocabulary trie at every node."""
+    def __init__(self, parser, character_sets=None):
+        self.parser = parser
+        self.character_sets = {} if character_sets is None else character_sets
+
+    @property
+    def config(self):
+        return self.parser.config
+
+    @config.setter
+    def config(self, value):
+        self.parser.config = value
+
+    def add_character(self, character):
+        return _CachedRegexState(self.parser.add_character(character), self.character_sets)
+
+    def get_allowed_characters(self):
+        key = self.parser.cache_key()
+        if key not in self.character_sets:
+            self.character_sets[key] = frozenset(self.parser.get_allowed_characters())
+        return self.character_sets[key]
+
+    def cache_key(self):
+        return self.parser.cache_key()
+
+    def shortcut_key(self):
+        return None
+
+    def can_end(self):
+        return self.parser.can_end()
 
 
 def _complete_json_eos_guard(prefix, tokenizer, prompt_tokens, eos_ids):
@@ -50,6 +97,7 @@ class LocalModelProvider:
         self._lock = Lock()
         self._load_count = 0
         self._borrowed_runtime = False
+        self.tokenizer_audit = None
 
     @classmethod
     def from_loaded(cls, model, tokenizer, config: ModelConfig | None = None):
@@ -108,7 +156,10 @@ class LocalModelProvider:
                 validate_checkpoint(self.config)
                 source = self.config.checkpoint_path
                 kwargs = {"local_files_only": True, "trust_remote_code": False}
-                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs)
+                # This is pinned Qwen, not Mistral. Preserve its saved regex;
+                # transformers 4.57.x can misdetect locally saved non-Mistral configs.
+                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs, fix_mistral_regex=False)
+                self.tokenizer_audit = verify_saved_qwen_pattern(tokenizer, source)
                 model = AutoModelForCausalLM.from_pretrained(
                     source, **kwargs, dtype=torch.float16, device_map={"": index},
                 )
@@ -120,7 +171,7 @@ class LocalModelProvider:
                     "trust_remote_code": False,
                     "cache_dir": self.config.cache_dir,
                 }
-                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs)
+                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs, fix_mistral_regex=False)
                 model = AutoModelForCausalLM.from_pretrained(
                     source, **kwargs, dtype=torch.float16, device_map={"": index},
                     quantization_config=BitsAndBytesConfig(
@@ -181,7 +232,7 @@ class LocalModelProvider:
             _, tokenizer, _ = self._ensure_runtime()
             return self._encode(tokenizer, messages, self.config.max_new_tokens)[1]
 
-    def generate(self, messages, *, max_new_tokens: int | None = None, timeout_seconds: float | None = None, json_schema: dict | None = None) -> ModelOutput:
+    def generate(self, messages, *, max_new_tokens: int | None = None, timeout_seconds: float | None = None, json_schema: dict | None = None, output_regex: str | None = None) -> ModelOutput:
         messages = self._messages(messages)
         timeout = self.config.timeout_seconds if timeout_seconds is None else timeout_seconds
         if type(timeout) not in (int, float) or not 0 < timeout <= self.config.timeout_seconds:
@@ -189,6 +240,9 @@ class LocalModelProvider:
         limit = self.config.max_new_tokens if max_new_tokens is None else max_new_tokens
         if type(limit) is not int or not 1 <= limit <= self.config.max_new_tokens:
             raise GenerationError("INVALID_INPUT", "Output limit must be positive and cannot exceed provider config.")
+        if output_regex is not None and (json_schema is None or not isinstance(output_regex, str)
+                                         or not 0 < len(output_regex) <= 20000):
+            raise GenerationError('INVALID_INPUT', 'A bounded JSON grammar requires a schema and nonempty pattern.')
         started = perf_counter()
         with self._lock:
             loading_started = perf_counter()
@@ -216,7 +270,11 @@ class LocalModelProvider:
                     # JsonSchemaParser snapshots alphabet_without_quotes in __init__.
                     # Setting its config later (as LMFE does) leaves minLength strings ASCII-only.
                     parser_config=CharacterLevelParserConfig(alphabet=cached[1].tokenizer_alphabet)
-                    parser=JsonSchemaParser(json_schema,config=parser_config)
+                    if output_regex is None:
+                        parser=JsonSchemaParser(json_schema,config=parser_config)
+                    else:
+                        from lmformatenforcer import RegexParser
+                        parser=_CachedRegexState(RegexParser(output_regex,config=parser_config))
                     raw_prefix=build_transformers_prefix_allowed_tokens_fn(cached[1],parser)
                     configured_eos=model.generation_config.eos_token_id
                     configured_eos=configured_eos if isinstance(configured_eos,list) else [configured_eos]

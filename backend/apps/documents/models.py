@@ -47,6 +47,16 @@ class DocumentVersion(DocumentBase):
           models.CheckConstraint(condition=Q(version_number__gte=1),name="doc_version_positive"),
           models.CheckConstraint(condition=Q(file_size_bytes__gt=0),name="doc_size_positive")]
 
+class DocumentStudyNotes(DocumentBase):
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='document_study_notes')
+    version=models.ForeignKey(DocumentVersion,on_delete=models.PROTECT,related_name='study_notes')
+    items=models.JSONField(default=list)
+    notes=models.TextField(blank=True,default='')
+    feedback=models.JSONField(blank=True,default=dict)
+    updated_at=models.DateTimeField(auto_now=True)
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=['user','version'],name='doc_study_user_version_unique')]
+
 class IngestionJob(DocumentBase):
     document_version=models.ForeignKey(DocumentVersion,on_delete=models.PROTECT,related_name="jobs")
     job_type=models.CharField(max_length=20,default="EXTRACT")

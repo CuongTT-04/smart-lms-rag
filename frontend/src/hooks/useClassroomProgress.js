@@ -47,6 +47,8 @@ export function useClassroomProgress(courseId, classroomId, enabled = true) {
 
   const applyProgress = useCallback((nextProgress) => {
     if (!activeScope || !nextProgress) return
+    controllerRef.current?.abort()
+    requestEpoch.current += 1
     setState({ scope: activeScope, progress: nextProgress, loading: false, error: '' })
   }, [activeScope])
 

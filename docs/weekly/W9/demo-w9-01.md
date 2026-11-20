@@ -47,10 +47,22 @@
 
 ## 3. Lệnh chạy demo trên DB riêng (không chạm DB đang dùng)
 
+Chạy các lệnh sau trong một cửa sổ PowerShell riêng tại root dự án. Compose project `smart-lms-w9-demo` tạo database, mạng và volume riêng. Backend và frontend demo cùng dùng database `w9_demo_local`.
+
 ```powershell
-# Tạo DB riêng w9_demo_local trong PostgreSQL trước khi chạy, sau đó:
-docker compose exec -T -e DB_NAME=w9_demo_local -e W9_DEMO_ENABLED=1 -e W9_DEMO_PASSWORD="<mat-khau-rieng>" backend python manage.py migrate --noinput
-docker compose exec -T -e DB_NAME=w9_demo_local -e W9_DEMO_ENABLED=1 -e W9_DEMO_PASSWORD="<mat-khau-rieng>" backend python manage.py seed_w9_demo
+$env:POSTGRES_DB = "w9_demo_local"
+$env:POSTGRES_PORT = "5434"
+$env:BACKEND_PORT = "8001"
+$env:FRONTEND_PORT = "5174"
+$env:CORS_ALLOWED_ORIGINS = "http://localhost:5174,http://127.0.0.1:5174"
+docker compose -p smart-lms-w9-demo up -d --build
+
+# Thay placeholder bằng mật khẩu demo riêng trước khi chạy.
+docker compose -p smart-lms-w9-demo exec -T -e W9_DEMO_ENABLED=1 -e W9_DEMO_PASSWORD="<mat-khau-rieng>" backend python manage.py seed_w9_demo
 ```
+
+Mở `http://localhost:5174`, đăng nhập bằng tài khoản trong mục 1 và mật khẩu vừa truyền. Mở `/api/health/` qua cổng 5174 để kiểm kết nối frontend–backend. Entrypoint backend đã chạy migration cho DB demo khi khởi động.
+
+Các lệnh `exec -e DB_NAME=...` chỉ đổi database cho tiến trình lệnh đó. Để demo trên trình duyệt, cả web backend và tiến trình seed phải cùng kết nối database demo như project riêng ở trên. Đóng cửa sổ PowerShell sau khi dùng để các biến demo không ảnh hưởng lệnh chạy project chính sau này.
 
 > Lưu ý: Các tài liệu synthetic trong seed này chỉ phục vụ kiểm thử tiến độ và kết quả LMS; khi kiểm AI RAG thật (E05–E07), sử dụng tài liệu CPU đã được cấp quyền và lập chỉ mục riêng.

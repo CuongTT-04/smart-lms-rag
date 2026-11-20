@@ -25,6 +25,15 @@ class ScopeFixture(TestCase):
 
 
 class ScopeTests(ScopeFixture):
+    def test_explicit_processing_or_failed_source_is_not_empty_evidence(self):
+        for status in ('QUEUED', 'PROCESSING', 'FAILED'):
+            with self.subTest(status=status):
+                self.version.status = status
+                self.version.save(update_fields=['status'])
+                with self.assertRaises(DocumentError) as caught:
+                    resolve_scope(self.student, self.course.pk, document_ids=[str(self.doc.pk)])
+                self.assertEqual((caught.exception.code, caught.exception.status), ('RETRIEVAL_NOT_READY', 503))
+
     def test_student_published_scope_empty_selection_and_hint(self):
         scope=resolve_scope(self.student,self.course.pk,session_id=self.session.pk,mode='hint')
         self.assertEqual(scope.allowed_version_ids,(str(self.version.pk),))

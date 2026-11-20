@@ -46,6 +46,8 @@ def _ohayo_dual_runtime(torch, Provider, ModelConfig, Pipeline, GenerationConfig
     for index, provider in enumerate(providers):
         print(f'Nap/kiem tra Qwen tren cuda:{index}...')
         provider.count_tokens([{'role': 'user', 'content': 'Xin chao.'}])
+        if getattr(provider, 'tokenizer_audit', None):
+            print('QWEN_TOKENIZER_CHECK:', provider.tokenizer_audit)
         pipelines.append(Pipeline(provider, GenerationConfig(model=provider.config, prompt_version='bounded_guidance')))
     return pipelines, providers[0].config
 

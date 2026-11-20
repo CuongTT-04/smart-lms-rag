@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 import uuid
+from unittest.mock import patch
 
 from django.core.management import call_command
 from django.db import connections
@@ -86,6 +87,52 @@ def _create_published_assessment(session, kind='QUIZ', mode='PRACTICE', title='B
 
 
 class LearningProgressServiceTests(TestCase):
+    def test_document_publication_and_removal_sync_saved_enrollment(self):
+        from apps.documents.services import remove_document, set_publication
+
+        def mutate(operation, *args):
+            with patch('apps.courses.progress_services.refresh_classroom_progress', wraps=refresh_classroom_progress) as refresh:
+                with self.captureOnCommitCallbacks(execute=True):
+                    operation(*args)
+                    refresh.assert_not_called()
+                refresh.assert_called_once_with(classroom_id=room.pk)
+
+        teacher, student, _, course, room, enrollment, _, session = _setup_classroom_fixture()
+        document, version = _create_published_pdf(teacher, course, session)
+        version.watermark_status = 'READY'
+        version.watermarked_view_key = 'views/one.pdf'
+        version.save()
+        mark_document_complete(actor=student, classroom_id=room.pk, version_id=version.pk)
+        enrollment.refresh_from_db()
+        self.assertEqual(enrollment.status, Enrollment.Status.COMPLETED)
+
+        mutate(set_publication, teacher, document, False)
+        enrollment.refresh_from_db()
+        self.assertEqual(enrollment.status, Enrollment.Status.ACTIVE)
+        self.assertEqual(enrollment.progress_percent, 0)
+        self.assertIsNone(enrollment.completed_at)
+
+        next_version = DocumentVersion.objects.create(
+            document=document, version_number=2, file_name='new.pdf', file_size_bytes=100,
+            checksum_sha256='1' * 64, page_count=1, original_storage_key='originals/new.pdf',
+            status='EXTRACTED', watermark_status='READY', watermarked_view_key='views/two.pdf',
+        )
+        with patch('apps.documents.services.private_path') as storage:
+            storage.return_value.is_file.return_value = True
+            mutate(set_publication, teacher, document, True, version.pk)
+            enrollment.refresh_from_db()
+            self.assertEqual(enrollment.status, Enrollment.Status.COMPLETED)
+            mutate(set_publication, teacher, document, True, next_version.pk)
+        enrollment.refresh_from_db()
+        self.assertEqual(enrollment.status, Enrollment.Status.ACTIVE)
+        self.assertIsNone(enrollment.completed_at)
+        mark_document_complete(actor=student, classroom_id=room.pk, version_id=next_version.pk)
+        mutate(remove_document, teacher, document)
+        enrollment.refresh_from_db()
+        self.assertEqual(enrollment.status, Enrollment.Status.ACTIVE)
+        self.assertEqual(enrollment.progress_percent, 0)
+        self.assertIsNone(enrollment.completed_at)
+
     def test_empty_classroom_progress_and_draft_exclusion(self):
         teacher, student_a, _, course, room, enrollment_a, _, session = _setup_classroom_fixture()
         draft_session = ClassroomSession.objects.create(classroom=room, title='Nháp', is_draft=True)
