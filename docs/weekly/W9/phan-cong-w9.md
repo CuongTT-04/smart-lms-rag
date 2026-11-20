@@ -1,10 +1,10 @@
-# W9 – Phân công hoàn thiện LMS core và Ayo
+# Phân công hoàn thiện LMS core và AI assistant
 
 **Mục tiêu:** Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant, chứng minh bằng demo tích hợp và kiểm thử có thể chạy lại.
 
-**Theo đề cương:** W9, 22–28/11/2026; công việc “LMS quiz/progress/teacher analytics”; đầu ra `Integrated LMS demo`; đầu vào `Synthetic course activity`. Có thể bắt đầu chuẩn bị từ 17/11/2026.
+**Căn cứ nghiệm thu theo giảng viên:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant”, thuộc mốc W8 theo lịch giảng viên giao. Ưu tiên tiêu đề và nội dung yêu cầu này khi lịch trong tài liệu đề cương bị lệch. Đầu ra là demo LMS tích hợp với dữ liệu hoạt động giả lập và bằng chứng kiểm chứng.
 
-**Milestone đề xuất:** `Tuan09 – Hoàn thiện LMS core và Ayo`. Mã việc `W9-01`, `W9-02` là mã kế hoạch, chưa phải số Issue GitHub. Khi tạo Issue mới dùng số thật cho `Refs`/`Closes`.
+**Tiêu đề milestone:** `Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant`. Mã việc `W9-01`, `W9-02` và đường dẫn `weekly/W9`, `Evidence/W09` là các định danh đã dùng trong hồ sơ triển khai; nghiệm thu theo nội dung yêu cầu giảng viên ở trên. Các mã kế hoạch chưa phải số Issue GitHub. Khi tạo Issue mới dùng số thật cho `Refs`/`Closes`.
 
 **Thành viên:** Trần Tuấn Cường (B, B22DCVT073), Vũ Nam Dương (A, B22DCVT119).
 

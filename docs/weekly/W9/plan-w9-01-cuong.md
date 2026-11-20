@@ -6,6 +6,8 @@
 
 **Goal:** Hoàn thiện tiến độ, kết quả lớp, quiz/submission và ghép Ayo để demo LMS xuyên suốt; có code, migration, tests, dữ liệu giả lập và bằng chứng tái lập.
 
+**Căn cứ nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant” theo mốc W8 giảng viên giao. Tiêu đề và nội dung yêu cầu là căn cứ khi lịch đề cương bị lệch; các mã W9 trong kế hoạch là định danh hồ sơ đã sử dụng.
+
 **Architecture:** Tái sử dụng courses/assessments/video/documents hiện có; đặt phép tính tiến độ và kết quả lớp trong các service/selectors riêng của `apps.courses`. Chỉ lưu mới dấu xác nhận hoàn thành PDF; video và bài nộp lấy từ dữ liệu nghiệp vụ sẵn có. Frontend gọi API có kiểm quyền, không tự suy ra điểm hoặc phần trăm.
 
 **Tech Stack:** Django/DRF, PostgreSQL, React/Vite/Vitest, Docker Compose. Không thêm thư viện nếu stack hiện tại đáp ứng.

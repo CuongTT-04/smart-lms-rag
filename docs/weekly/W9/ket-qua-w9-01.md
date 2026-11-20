@@ -1,4 +1,6 @@
-# Báo cáo kết quả thực hiện W9-01 (Trần Tuấn Cường)
+# Báo cáo hoàn thiện LMS core và AI assistant (Trần Tuấn Cường)
+
+- **Yêu cầu nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant”, theo mốc W8 giảng viên giao. Nội dung yêu cầu là căn cứ khi lịch đề cương bị lệch; các đường dẫn/mã W9 trong bằng chứng là định danh triển khai đã sử dụng.
 
 - **Ngày thực hiện:** 18–21/11/2026
 - **Người phụ trách:** Trần Tuấn Cường (B, B22DCVT073)
