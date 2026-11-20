@@ -1,9 +1,9 @@
 # Báo cáo kết quả thực hiện W9-01 (Trần Tuấn Cường)
 
-- **Ngày thực hiện:** 18–20/11/2026
+- **Ngày thực hiện:** 18–21/11/2026
 - **Người phụ trách:** Trần Tuấn Cường (B, B22DCVT073)
 - **Nhánh tích hợp:** `codex/w9-integration`, ghép phần LMS tại `818a9c3` với Ayo của Dương tại `77f9259`; nền chung `8b180aa`.
-- **Trạng thái:** Đã ghép code LMS và Ayo, nối hoàn thành học liệu và kiểm hợp đồng hint. Kiểm thử tự động trên bản chung đạt. Nghiệm thu model thật và demo xuyên suốt E01–E10 còn chờ kiểm thực tế.
+- **Trạng thái:** Đã ghép và triển khai LMS + Ayo, kiểm demo LMS trên trình duyệt ngày 20/11, kiểm model thật qua API và Nginx ngày 21/11. Gói bằng chứng phần Cường đã sẵn sàng để Dương tổng hợp Evidence/W09; các giới hạn kiểm tra ghi ở mục 5–6.
 
 ---
 
@@ -127,8 +127,41 @@ Demo thực tế dùng Compose project `smart-lms-w9-demo`, DB `w9_demo_w9integr
 
 Ảnh trong thư mục log riêng gồm `student-pdf-completed.png`, `student-submitted.png`, `teacher-results-pending.png`, `teacher-results-graded.png`, `student-results-after-restart.png`. Dữ liệu demo đã thay đổi qua thao tác nộp/chấm thật, nên S1 ở 75% và tự luận 8/10 thay cho trạng thái seed ban đầu. Command seed sẽ báo conflict nếu chạy lại vào các bản ghi đã thay đổi; dùng DB demo mới khi cần kịch bản từ đầu.
 
-## 5. Những mục còn chờ nghiệm thu nhóm
+## 5. Kiểm Ayo với Kaggle thật ngày 21/11/2026
 
-- Địa chỉ Kaggle trong Docker trả HTTP 404 ở `/health` khi kiểm ngày 20/11. Người chạy xác nhận notebook báo thiếu checkpoint nền NF4 trong Input. Cần gắn lại dataset `ohayo-model` đã dùng ở notebook Qwen cũ, khởi động runtime và cung cấp URL hoạt động để kiểm model thật trên bản tích hợp, gồm hint PRACTICE, TEST, nguồn nhiều trang, memory, summary và câu hỏi gợi ý.
-- Đã kiểm luồng PDF → tự luận → chấm/công bố → restart → học viên xem lại trên trình duyệt. Quyền API/media, quiz, video/checkpoint và xung đột được kiểm bằng test tự động; các kịch bản AI và nghiệm thu E01–E10 đầy đủ cần nối tiếp khi có runtime thật.
-- Chuyển log/ảnh/config đã khử bí mật và SHA bản chạy cuối cho Dương tổng hợp `Evidence/W09/`. Chỉ đóng milestone nhóm sau khi E01–E10 được kiểm đủ.
+URL người dùng cung cấp khớp cấu hình Docker. Gateway `/health` trả ready, 2 replica, cấu hình Qwen2.5-7B-Instruct đúng revision và đủ capability cho QA, history, citation, summary. Học liệu CPU hiện công bố đúng checksum `602b731153749027a9d62e1b361b369b9cfa932c22994030a355c06be5d85b41`, version `b879fdaf-fa8d-4947-b713-e4ee6cb63939`.
+
+Bộ nghiệm thu chính dùng DB PostgreSQL test riêng, JWT và API/permission/retrieval thực, gọi Kaggle thật. Đối chiếu nội dung với các đoạn CPU đã trích xuất, không chỉ dựa vào citation ID. File kết quả thô và đoạn nguồn nằm riêng ngoài Git tại `.private/w9/live-20261121/`.
+
+| Nhóm kiểm | Kết quả quan sát |
+|---|---|
+| 10 câu QA | 8 câu có nguồn được trả lời đúng nội dung; 2 câu lịch thi/RTX 5090 thiếu căn cứ và không gán nguồn |
+| Chu kỳ lệnh CPU | Đủ 10 bước theo slide, gồm tăng PC và lặp ở trang 9; nguồn trang 8–9, có nhãn trích học liệu |
+| Memory | 2 hội thoại độc lập; ALU → đại từ Nó → CU → đại từ Nó. Câu CU độc lập bỏ lịch sử ALU; hội thoại mới bắt đầu turns_used=0 |
+| Câu hỏi gợi ý | Chọn một gợi ý tạo đúng lượt trong hội thoại; gửi lại cùng client_message_id không tăng số lượt |
+| Hint PRACTICE | Nhận bài tập công khai qua API, hướng dẫn tự đọc, yêu cầu chép đáp án vẫn giữ chế độ hướng dẫn |
+| Summary trang 7–9 | COMPLETED, 3/3 trang, 3 chunk và 5/5 phần, có định nghĩa, bước xử lý, tăng PC/lặp và ví dụ; khoảng 31 giây ở lượt test |
+| TEST và lifecycle | TEST còn hiệu lực trả 403 AI_NOT_ALLOWED; gỡ TEST thì QA hoạt động lại. Các lỗi timeout/index/busy/thu hồi quyền được kiểm bằng regression cô lập |
+| Qua Nginx thật | Hai câu ALU nối tiếp và một summary trang 7–9 đều thành công qua frontend → backend → retrieval → Kaggle |
+| Sau thay container backend | Đọc lại đúng 2 lượt hội thoại và bản summary cũ, giữ nguyên answer và coverage, health qua frontend `ok` |
+
+### Sửa lỗi phát hiện trong nghiệm thu
+
+Hint ban đầu tìm nguồn theo câu nhắc chung của học viên, nên dẫn tới trang 27 liệt kê đề bài. Commit `40e9789` bổ sung tiêu đề, prompt và mô tả công khai của bài PRACTICE vào query truy xuất, giới hạn 8000 ký tự. Giữ việc loại đáp án, hint riêng, rubric và explanation riêng khỏi query/model.
+
+Hai regression test xác nhận lỗi trước sửa; sau sửa toàn bộ AI/OpenAPI đạt **147/147 tests**. Kiểm lại hai hint bằng Qwen thật chuyển sang trang 23 nội dung ALU. Lượt hint cũ trong `live-results.json` được đánh dấu đã thay thế bằng `hint-after.json`; `effective-results.json` chứa 23 ca logic cuối, và `content-review.json` ghi kết luận từng ca.
+
+Không có thay đổi frontend trong lần sửa hint. Bộ 366 test frontend và demo LMS ngày 20/11 vẫn là bằng chứng giao diện của bản ghép. Backend đã build/nạp lại với commit `40e9789`, không thiếu migration, các dịch vụ đang healthy.
+
+### Giới hạn đã ghi nhận
+
+- Hint hiện là hướng dẫn đọc có nguồn, còn chung về cách diễn đạt. Một số lượt giải thích thêm lặp lại ý đã được nguồn hỗ trợ.
+- Kiểm summary ở phạm vi trang 7–9; chưa coi là kiểm toàn bộ PDF 28 trang. API hiện cho chọn tối đa 20 trang mỗi công việc.
+- Thao tác kiểm lại giao diện Edge ngày 21/11 bị công cụ dừng vì không xác định chắc URL đang mở. Không ghi lượt này thành nghiệm thu UI hint với model thật. Đường HTTP/Nginx/model và hợp đồng UI hint đã có bằng chứng riêng.
+- Đây là kiểm tích hợp có phạm vi theo học liệu CPU; không phải benchmark mới hoặc xác nhận chất lượng cho mọi câu hỏi/học liệu.
+
+## 6. Bàn giao để tổng hợp Evidence/W09
+
+Phần Cường gồm code tích hợp, test, demo LMS, QA/citation/memory/hint/summary thật và kiểm lưu trữ đã có kết quả. Gói riêng `.private/w9/w9-lms-ayo-integration-final-evidence.zip` gồm bằng chứng LMS ngày 20/11 và kết quả model thật ngày 21/11, kèm manifest/receipt để kiểm lại. Gói có nội dung học liệu và phản hồi, chỉ chuyển riêng.
+
+Dương tổng hợp kết quả hai phần vào `Evidence/W09/` theo phân công, cập nhật số liệu/manifest của bản cuối và ghi các giới hạn ở trên. Khi chuẩn bị nộp, đối chiếu checklist E01–E10 với phạm vi API, test tự động, demo trình duyệt và các trường hợp chưa có ảnh UI model thật; không ghi các phạm vi khác nhau thành cùng một lượt kiểm.
