@@ -44,6 +44,9 @@ def activate(course, classroom, student):
         enrollment.status = Enrollment.Status.ACTIVE
         enrollment.enrolled_at = timezone.now()
         enrollment.save(update_fields=["status", "enrolled_at"])
+    from .progress_services import refresh_classroom_progress
+    refresh_classroom_progress(classroom_id=classroom.pk)
+    enrollment.refresh_from_db()
     return enrollment
 
 

@@ -1,9 +1,10 @@
 from apps.courses.models import Classroom
+from django.db import connection
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.courses.services import create_course, update_course
 from apps.users.models import User
-from common.testing import authenticate_client
+from common.testing import authenticate_client, close_response
 
 class ClassroomSessionTests(TestCase):
     def test_delete_session_hides_session_and_materials_but_retains_records(self):
@@ -129,13 +130,17 @@ class ClassroomSessionTests(TestCase):
             self.assertEqual(image.status_code, 200)
             self.assertEqual(self.client.post(image_url, {}, format='json').status_code, 405)
             self.assertEqual(image['Content-Type'], 'image/png')
-            image.close()
+            close_response(image)
+            self.assertTrue(image.closed)
+            self.assertFalse(connection.connection.closed)
             student = authenticate_client(APIClient(), self.student)
             self.assertEqual(student.get(image_url).status_code, 404)
             join_by_code(actor=self.student, class_code=self.room.class_code)
             allowed = student.get(image_url)
             self.assertEqual(allowed.status_code, 200)
-            allowed.close()
+            close_response(allowed)
+            self.assertTrue(allowed.closed)
+            self.assertFalse(connection.connection.closed)
             self.assertEqual(APIClient().get(image_url).status_code, 401)
             invalid = self.client.post(url, {'content': 'No', 'image': SimpleUploadedFile('fake.png', b'not an image', 'image/png')}, format='multipart')
             self.assertEqual(invalid.status_code, 400)

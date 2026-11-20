@@ -10,6 +10,8 @@ from .announcement_views import ClassroomAnnouncementsView, ClassroomAnnouncemen
 
 from .people_views import ClassroomPeopleView
 from .comment_views import AnnouncementCommentsView, AnnouncementCommentDetailView, AnnouncementCommentVoteView, ClassroomCommentMuteView
+from .progress_views import ClassroomProgressView, DocumentCompleteView
+from .classroom_results_views import ClassroomResultsView, ClassroomResultsExportView
 
 app_name = "courses"
 
@@ -51,6 +53,10 @@ urlpatterns = [
     path('<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/comments/<uuid:comment_id>/vote/', AnnouncementCommentVoteView.as_view(), name='announcement-comment-vote'),
     path('<uuid:course_id>/classrooms/<uuid:classroom_id>/comment-mutes/<uuid:user_id>/', ClassroomCommentMuteView.as_view(), name='classroom-comment-mute'),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/people/", ClassroomPeopleView.as_view(), name="classroom-people"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/progress/", ClassroomProgressView.as_view(), name="classroom-progress"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/progress/documents/<uuid:version_id>/complete/", DocumentCompleteView.as_view(), name="classroom-progress-document-complete"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/results/", ClassroomResultsView.as_view(), name="classroom-results"),
+    path("<uuid:course_id>/classrooms/<uuid:classroom_id>/results/export/", ClassroomResultsExportView.as_view(), name="classroom-results-export"),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/sessions/<uuid:session_id>/", ClassroomSessionDetailView.as_view(), name="classroom-session-update"),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/<uuid:announcement_id>/image/", ClassroomAnnouncementImageView.as_view(), name="classroom-announcement-image"),
     path("<uuid:course_id>/classrooms/<uuid:classroom_id>/announcements/", ClassroomAnnouncementsView.as_view(), name="classroom-announcements"),

@@ -91,15 +91,22 @@ class SessionVideoDetailView(VideoAccessView):
         for field, value in data.validated_data.items():
             setattr(video, field, value)
         video.save()
+        if 'is_published' in data.validated_data:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=video.session.classroom_id)
         return Response(VideoSummary(video).data)
 
     @extend_schema(tags=['Videos'], summary='Gỡ video khỏi buổi học', description='Chủ khóa học gỡ video, giữ nội bộ tệp và lịch sử trả lời. Video đã gỡ không được xem hoặc trả lời.', responses={204: None})
     @transaction.atomic
     def delete(self, request, **kwargs):
         video = self.get_video(request, **kwargs, manage=True, lock=True)
+        was_published = video.is_published
         video.removed_at = timezone.now()
         video.is_published = False
         video.save(update_fields=['removed_at', 'is_published'])
+        if was_published:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=video.session.classroom_id)
         return Response(status=204)
 
 
@@ -131,6 +138,9 @@ class VideoQuestionsView(VideoAccessView):
         data = QuestionInput(data=request.data, context={'video': video})
         data.is_valid(raise_exception=True)
         question = VideoQuestion.objects.create(video=video, **data.validated_data)
+        if video.is_published and not video.session.is_draft:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=video.session.classroom_id)
         return Response(QuestionOutput(question, context={'manage': True}).data, status=201)
 
 
@@ -151,6 +161,9 @@ class VideoQuestionDetailView(VideoAccessView):
                 setattr(question, key, value)
             question.revision += 1
             question.save()
+            if video.is_published and not video.session.is_draft:
+                from apps.courses.progress_services import refresh_classroom_progress
+                refresh_classroom_progress(classroom_id=video.session.classroom_id)
         return Response(QuestionOutput(question, context={'manage': True}).data)
 
     @extend_schema(tags=['Videos'], summary='Gỡ câu hỏi video', description='Chủ khóa học gỡ câu hỏi khỏi trình phát, giữ lại lịch sử câu trả lời.', responses={204: None})
@@ -162,6 +175,9 @@ class VideoQuestionDetailView(VideoAccessView):
             raise NotFound('Câu hỏi không khả dụng.')
         question.removed_at = timezone.now()
         question.save(update_fields=['removed_at'])
+        if video.is_published and not video.session.is_draft:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=video.session.classroom_id)
         return Response(status=204)
 
 

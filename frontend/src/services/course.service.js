@@ -150,3 +150,36 @@ export const createAnnouncementComment = (id, roomId, announcementId, values) =>
 export const deleteAnnouncementComment = (id, roomId, announcementId, commentId) => writeRequest(`${commentsPath(id, roomId, announcementId)}${commentId}/`, 'DELETE')
 export const voteAnnouncementComment = (id, roomId, announcementId, commentId, value) => writeRequest(`${commentsPath(id, roomId, announcementId)}${commentId}/vote/`, 'PUT', { value })
 export const setClassroomCommentMute = (id, roomId, userId, isMuted) => writeRequest(`/courses/${id}/classrooms/${roomId}/comment-mutes/${userId}/`, 'PUT', { is_muted: isMuted })
+
+export const getClassroomProgress = (courseId, classroomId, signal) => apiRequest(`/courses/${courseId}/classrooms/${classroomId}/progress/`, { signal })
+export const completeClassroomDocument = (courseId, classroomId, versionId, signal) => apiRequest(`/courses/${courseId}/classrooms/${classroomId}/progress/documents/${versionId}/complete/`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({}),
+  signal,
+})
+
+function resultsQuery(params = {}) {
+  const query = new URLSearchParams()
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') query.set(key, String(value))
+  })
+  const text = query.toString()
+  return text ? `?${text}` : ''
+}
+
+export const getClassroomResults = (courseId, classroomId, params = {}, signal) =>
+  apiRequest(`/courses/${courseId}/classrooms/${classroomId}/results/${resultsQuery(params)}`, { signal })
+
+export async function exportClassroomResults(courseId, classroomId, params = {}) {
+  const blob = await apiRequest(`/courses/${courseId}/classrooms/${classroomId}/results/export/${resultsQuery(params)}`, {
+    responseType: 'xlsx',
+    timeoutMs: 120000,
+  })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `ket-qua-lop-${classroomId}.xlsx`
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
