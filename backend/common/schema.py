@@ -121,6 +121,9 @@ def align_request_constraints(result, generator, request, public):
             schemas[name]["additionalProperties"] = False
     if "PatchedCourseUpdateRequest" in schemas:
         schemas["PatchedCourseUpdateRequest"]["minProperties"] = 1
+    for name in ('ChatRequestRequest', 'ConversationSelectorRequest', 'ConversationSelector', 'ChatFeedbackRequestRequest'):
+        if name in schemas:
+            schemas[name]['additionalProperties'] = False
     for name in ("PatchedClassroomInputRequest", "PatchedPolicyUpdateRequest"):
         if name in schemas:
             schemas[name]["minProperties"] = 1

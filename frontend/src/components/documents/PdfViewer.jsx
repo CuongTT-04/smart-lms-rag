@@ -22,6 +22,11 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
   useEffect(()=>{
     const controller=new AbortController()
     let objectUrl, timer
+    function unavailable(message) {
+      if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null }
+      setUrl(''); setError(message)
+      onUnavailable(message)
+    }
     function valid(status) {
       return status.policy_revision===revision && status.material_policy===document.material_policy &&
         (status.published_version_id || null)===(document.published_version_id || null)
@@ -30,10 +35,12 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
       try {
         const status=await documentStatus(document.document_id,version,controller.signal)
         if (controller.signal.aborted) return false
-        if (!valid(status)) { onUnavailable('Học liệu hoặc chính sách đã thay đổi. Hãy làm mới danh sách.');return false }
+        if (!valid(status)) { unavailable('Học liệu hoặc chính sách đã thay đổi. Hãy làm mới danh sách.');return false }
         return true
-      } catch {
-        if (!controller.signal.aborted) onUnavailable('Học liệu không còn khả dụng. Hãy kiểm tra lại quyền truy cập.')
+      } catch (failure) {
+        if (!controller.signal.aborted) unavailable([401,403,404].includes(failure.status)
+          ? 'Học liệu không còn khả dụng. Hãy kiểm tra lại quyền truy cập.'
+          : 'Chưa kiểm tra được học liệu do lỗi kết nối máy chủ. Vui lòng tải lại sau.')
         return false
       }
     }
@@ -49,8 +56,10 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
         if (controller.signal.aborted || !await check()) return
         objectUrl=URL.createObjectURL(blob);setError('');setUrl(objectUrl)
         timer=setTimeout(watch,2000)
-      } catch {
-        if (!controller.signal.aborted) setError('Không thể mở PDF. Bản xem có thể chưa sẵn sàng hoặc bạn đã mất quyền.')
+      } catch (failure) {
+        if (!controller.signal.aborted) setError([401,403,404].includes(failure.status)
+          ? 'Không thể mở PDF. Học liệu không khả dụng hoặc bạn không có quyền.'
+          : 'Không thể mở PDF lúc này. Vui lòng tải lại hoặc kiểm tra kết nối máy chủ.')
       }
     }
     load()

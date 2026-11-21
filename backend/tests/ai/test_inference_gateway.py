@@ -28,7 +28,7 @@ class GatewayTests(TestCase):
     def request(self, path='/generate', token='x' * 40, data=None):
         body = json.dumps(data or {'question': 'Q', 'mode': 'qa', 'contexts': [],
                                  'exercise': None, 'config': {'model': 'Qwen'}}).encode()
-        return urlopen(Request(self.url + path, data=body if path == '/generate' else None,
+        return urlopen(Request(self.url + path, data=body if path in ('/generate', '/summary') else None,
             headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}), timeout=2)
 
     def test_auth_before_model_and_health(self):
@@ -37,11 +37,39 @@ class GatewayTests(TestCase):
         self.assertEqual(error.exception.code, 401)
         self.assertEqual(self.calls, [])
         with self.request('/health') as response:
-            self.assertTrue(json.load(response)['ready'])
+            health = json.load(response)
+            self.assertTrue(health['ready'])
+            self.assertIn('qa_completeness_v1', health['capabilities'])
+            self.assertIn('qa_atomic_evidence_v1', health['capabilities'])
+            self.assertIn('qa_source_descriptions_v1', health['capabilities'])
+            self.assertIn('qa_source_selection_v1', health['capabilities'])
+            self.assertIn('coherent_summary_v1', health['capabilities'])
+            self.assertIn('summary_topic_paragraphs_v1', health['capabilities'])
+            self.assertIn('summary_validation_details_v1', health['capabilities'])
+            self.assertIn('summary_text_grammar_v1', health['capabilities'])
+            self.assertIn('summary_json_quotes_v1', health['capabilities'])
+
+    def test_summary_uses_shared_gateway_auth_config_and_provider(self):
+        from unittest.mock import patch
+        self.pipeline.provider = object()
+        payload = dict(phase='map', records=[dict(id='B1', source_id='S1', text='Source')], config={'model':'Qwen'})
+        with self.assertRaises(HTTPError) as error:
+            self.request('/summary', token='wrong', data=payload)
+        self.assertEqual(error.exception.code, 401)
+        expected=dict(protocol='coherent_summary_v1',phase='map',consumed=1,input_tokens=100,paragraphs=[])
+        with patch('apps.ai.rag.summary.step', return_value=expected) as generate:
+            with self.request('/summary', data=payload) as response:
+                self.assertEqual(json.load(response), expected)
+        generate.assert_called_once_with(self.pipeline.provider, 'map', payload['records'])
+        with self.assertRaises(HTTPError) as error:
+            self.request('/summary', data={**payload,'config':{}})
+        self.assertEqual(error.exception.code, 409)
 
     def test_validation_reason_is_allowlisted_without_private_output(self):
         from apps.ai.providers.base import GenerationError
         for reason, expected in [('INCOMPLETE_EVIDENCE_COVERAGE', {'code':'INVALID_GENERATION','reason':'INCOMPLETE_EVIDENCE_COVERAGE'}),
+                                 ('INCOMPLETE_ENUMERATION', {'code':'INVALID_GENERATION','reason':'INCOMPLETE_ENUMERATION'}),
+                                 ('INCOMPLETE_ANSWER_BODY', {'code':'INVALID_GENERATION','reason':'INCOMPLETE_ANSWER_BODY'}),
                                  ('EVIDENCE_QUOTE_MISMATCH', {'code':'INVALID_GENERATION','reason':'EVIDENCE_QUOTE_MISMATCH'}),
                                  ('MISSING_CITATION', {'code':'INVALID_GENERATION','reason':'MISSING_CITATION'}),
                                  ('PRIVATE prompt/token', {'code':'INVALID_GENERATION'}),
@@ -53,6 +81,21 @@ class GatewayTests(TestCase):
             self.pipeline.generate_answer = invalid
             with self.assertRaises(HTTPError) as caught: self.request()
             self.assertEqual(json.load(caught.exception), expected)
+
+    def test_summary_validation_reason_is_safe_and_shared_lock_is_released(self):
+        from unittest.mock import patch
+        from apps.ai.providers.base import GenerationError
+        self.pipeline.provider=object()
+        payload=dict(phase='reduce',records=[],config={'model':'Qwen'})
+        for reason in ('SUMMARY_EMBEDDED_CITATION','PRIVATE text/token',['SUMMARY_TEXT']):
+            failure=GenerationError('INVALID_GENERATION','PRIVATE generated content')
+            failure.validation_reason=reason
+            with patch('apps.ai.rag.summary.step',side_effect=failure):
+                with self.assertRaises(HTTPError) as error: self.request('/summary',data=payload)
+            expected={'code':'INVALID_GENERATION'}
+            if reason=='SUMMARY_EMBEDDED_CITATION': expected['reason']=reason
+            self.assertEqual(json.load(error.exception),expected)
+        self.assertTrue(self.server.wait_idle(timeout=1))
 
     def test_memory_capability_and_history_reach_the_pipeline(self):
         original = self.pipeline.generate_answer

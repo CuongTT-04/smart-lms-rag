@@ -14,6 +14,44 @@ class NoRedirect(HTTPRedirectHandler):
         return None
 
 
+def summarize_step(*, phase, records, config):
+    """One bounded map/reduce operation; callers persist progress between requests."""
+    try:
+        url = os.environ['AI_INFERENCE_URL'].rstrip('/')
+        parsed = urlsplit(url)
+        token = os.environ['AI_INFERENCE_TOKEN']
+        if (parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password
+                or parsed.query or parsed.fragment or parsed.path or len(token) < 32):
+            raise ValueError('Invalid configuration')
+        request = Request(url + '/summary', data=json.dumps(dict(phase=phase, records=records, config=config)).encode(),
+            headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'})
+        with build_opener(NoRedirect()).open(request, timeout=min(config['timeout_seconds'] + 15, 100)) as response:
+            raw = response.read(131073)
+        if len(raw) > 131072:
+            raise ValueError('Oversized summary')
+        return json.loads(raw)
+    except HTTPError as error:
+        if error.code in (404, 409):
+            raise DocumentError('GENERATION_CONFIG_MISMATCH', 'Notebook chưa hỗ trợ tóm tắt mạch lạc hoặc cấu hình chưa khớp. Cần import notebook mới.', 503) from error
+        if error.code == 429:
+            raise DocumentError('GENERATION_BUSY', 'AI đang bận. Tiến trình tóm tắt chưa mất.', 429) from error
+        from .rag.summary import VALIDATION_REASONS
+        failure = DocumentError('SUMMARY_GENERATION_FAILED', 'Chưa tổng hợp được bản tóm tắt hoàn chỉnh. Vui lòng thử lại.', 503)
+        try:
+            body = json.loads(error.read(4096))
+            code, reason = body.get('code'), body.get('reason')
+            if code in {'INVALID_REQUEST', 'INVALID_GENERATION', 'GENERATION_TIMEOUT',
+                        'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'OUT_OF_MEMORY', 'GENERATION_UNAVAILABLE'}:
+                failure.remote_code = code
+            if code == 'INVALID_GENERATION' and isinstance(reason, str) and reason in VALIDATION_REASONS:
+                failure.validation_reason = reason
+        except (ValueError, TypeError, AttributeError):
+            pass
+        raise failure from error
+    except Exception as error:
+        raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ tóm tắt.', 503) from error
+
+
 def generate_answer(*, question, mode, contexts, exercise, config, history=None):
     try:
         url = os.environ['AI_INFERENCE_URL'].rstrip('/')

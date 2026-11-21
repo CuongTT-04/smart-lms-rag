@@ -103,12 +103,14 @@ class CourseDocumentsView(DocumentAPIView):
         op = upload_document(request.user, course, request.FILES.get("file"), request.data.get("title"), request.headers.get("Idempotency-Key"), session=session)
         return Response(operation_payload(op), status=202)
 
-    @extend_schema(tags=["Documents"], summary='Danh sách học liệu', description='Trả học liệu theo quyền khóa học hoặc buổi học. Học viên chỉ thấy bản đang công bố; không trả đường dẫn lưu trữ riêng tư.',
+    @extend_schema(tags=["Documents"], summary='Danh sách học liệu', description='Trả học liệu theo quyền khóa học hoặc buổi học. Học viên chỉ thấy bản đang công bố trong buổi đã hoàn tất và lớp còn quyền. Không trả học liệu của buổi/lớp đã gỡ hoặc đường dẫn lưu trữ riêng tư.',
                    responses={200: OpenApiTypes.OBJECT, 401: OpenApiTypes.OBJECT, 404: OpenApiTypes.OBJECT})
     def get(self, request, course_id):
         course = course_model().objects.get(pk=course_id)
         require_access(request.user, course)
-        documents = KnowledgeDocument.objects.filter(course=course, removed_at__isnull=True).order_by("-created_at")
+        documents = KnowledgeDocument.objects.filter(course=course, removed_at__isnull=True).filter(
+            Q(session__isnull=True) | Q(session__removed_at__isnull=True, session__classroom__removed_at__isnull=True)
+        ).order_by("-created_at")
         session=self.session(request, course, request.query_params.get('session_id'))
         if session:documents=documents.filter(session=session)
         elif request.query_params.get('scope')=='course':documents=documents.filter(session__isnull=True)
@@ -118,7 +120,9 @@ class CourseDocumentsView(DocumentAPIView):
             if exc.status != 404: raise
             from apps.courses.models import Enrollment
             rooms=Enrollment.objects.filter(student__user=request.user,status__in=['ACTIVE','COMPLETED'],classroom__course_id=course.pk).values('classroom_id')
-            documents = documents.filter(is_published=True,published_version__isnull=False).filter(Q(session__isnull=True)|Q(session__classroom_id__in=rooms))
+            documents = documents.filter(is_published=True,published_version__isnull=False,
+                published_version__removed_at__isnull=True).filter(
+                    Q(session__isnull=True) | Q(session__classroom_id__in=rooms, session__is_draft=False))
         paginator = PageNumberPagination()
         page = paginator.paginate_queryset(documents, request)
         rows = []
@@ -290,8 +294,9 @@ class DocumentViewView(DocumentAPIView):
                 identity=request.user.email.strip() or request.user.username
                 try:content=watermarked_pdf_bytes(io.BytesIO(source),document.pk,version.version_number,identity)
                 except Exception as exc:raise DocumentError("VIEW_UNAVAILABLE","Personalized view unavailable.",503) from exc
-            request.user.refresh_from_db();require_access(request.user,document.course,manage=not document.is_published)
-            if document.session_id:require_session_access(request.user,document.session,document.course,manage=not document.is_published)
+            # Reload relations: cached session/course objects may predate a revocation during file I/O.
+            request.user.refresh_from_db()
+            document = self.document(request, document.pk)
             response=HttpResponse(content,content_type="application/pdf")
             from django.utils.http import content_disposition_header
             response["Content-Disposition"]=content_disposition_header(self.download,version.file_name)

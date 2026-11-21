@@ -23,7 +23,9 @@ def require_access(user,course,manage=False):
 
 
 def require_session_access(user, session, course, manage=False):
-    from apps.courses.permissions import can_view_classroom
+    from apps.courses.permissions import can_manage_course, can_view_classroom
     require_access(user, course, manage=manage)
     if session.removed_at or session.classroom.removed_at or session.classroom.course_id != course.pk or (not manage and not can_view_classroom(user, session.classroom)):
+        raise DocumentError('NOT_FOUND', 'Resource unavailable.', 404)
+    if session.is_draft and not can_manage_course(user, course):
         raise DocumentError('NOT_FOUND', 'Resource unavailable.', 404)

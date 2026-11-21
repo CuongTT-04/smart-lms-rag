@@ -27,6 +27,13 @@ def retrieve_authorized(user,query,scope,retriever,top_k=5,*,catalog,include_pro
         raise DocumentError('INVALID_TOP_K','top_k must be an integer between 1 and 10.',400)
     current=live_scope(user,scope)
     if not current.allowed_version_ids:return []
+    # An explicitly selected published source absent from the loaded catalog is
+    # an indexing/runtime problem, not a negative academic search result.
+    if current.document_ids:
+        indexed_versions = {chunk.version_id for chunk in catalog.values() if isinstance(chunk, Chunk)}
+        if set(current.allowed_version_ids) - indexed_versions:
+            raise DocumentError('RETRIEVAL_NOT_READY',
+                'Học liệu đã chọn chưa sẵn sàng cho AI. Chờ lập chỉ mục hoàn tất rồi thử lại.', 503)
     try:hits=retriever.search(query=query.strip(),allowed_version_ids=current.allowed_version_ids,top_k=top_k)
     except DocumentError:
         raise

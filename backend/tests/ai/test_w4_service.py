@@ -37,6 +37,51 @@ class ChatServiceTests(ScopeFixture):
         self.runtime.generate.assert_not_called()
         self.retrieval.assert_not_called()
 
+    def test_followups_are_optional_and_do_not_add_a_generation_call(self):
+        self.hit['text'] = 'b) Đối tượng của triết học\nNguồn hiện tại.'
+        result = self.call()
+        self.assertTrue(2 <= len(result['suggested_questions']) <= 3)
+        self.assertIn('Đối tượng của triết học', result['suggested_questions'][0])
+        self.runtime.generate.assert_called_once()
+
+    def test_followup_failure_preserves_answer_and_citations(self):
+        with patch('apps.ai.followups.build_questions', side_effect=ValueError('private text')):
+            with self.assertLogs('apps.ai.followups', level='WARNING'):
+                result = self.call()
+        self.assertEqual(result['answer'], 'Nội dung [1].')
+        self.assertEqual(result['citations'][0]['excerpt'], 'Nguồn thật')
+        self.assertEqual(result['suggested_questions'], [])
+
+    def test_literal_cross_page_quote_keeps_its_source_context(self):
+        previous = 'Cách thứ nhất xử lý từng yêu cầu riêng biệt để giảm thời gian chờ.'
+        transition = 'Bên cạnh cách thứ nhất, hệ thống còn xử lý theo'
+        following = 'lô. Các yêu cầu được xử lý chung khi có đủ tài nguyên.'
+        first = {**self.hit, 'text': previous + '\n' + transition}
+        second = {**self.hit, 'chunk_id': 'chunk-2', 'text': following,
+                  'source': {**self.hit['source'], 'page_number': 2}}
+        self.retrieval.return_value = [first, second]
+        self.runtime.generate.return_value = {**self.output,
+            'answer': f'Trích học liệu:\n\n1. {transition} [1]\n2. {following} [2]',
+            'references': [{'label': 1, 'source_id': 'S1'}, {'label': 2, 'source_id': 'S2'}]}
+        result = self.call()
+        self.assertIn(previous + ' [1]', result['answer'])
+        self.assertIn(transition + ' [1] ' + following + ' [2]', result['answer'])
+        self.assertEqual(result['citations'][0]['excerpt'], first['text'])
+        self.assertEqual(result['citations'][1]['excerpt'], following)
+
+    def test_indexing_not_ready_is_not_reported_as_academic_insufficiency(self):
+        self.retrieval.side_effect = DocumentError('RETRIEVAL_NOT_READY', 'Chờ lập chỉ mục.', 503)
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual(caught.exception.code, 'RETRIEVAL_NOT_READY')
+        self.runtime.generate.assert_not_called()
+
+    def test_incomplete_body_validation_is_preserved_without_procedure_fallback(self):
+        self.runtime.generate.side_effect = DocumentError('GENERATION_INCOMPLETE_CONTENT', 'Thiếu nội dung.', 503)
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual(caught.exception.code, 'GENERATION_INCOMPLETE_CONTENT')
+
     def test_history_retrieval_stays_within_query_limit_and_preserves_current_question(self):
         self.data['question'] = 'Q' * 8000
         history = [dict(question='Old topic', answer='Previous answer is not evidence')]
@@ -118,7 +163,7 @@ class ChatServiceTests(ScopeFixture):
 
     def test_test_started_during_generation_prevents_answer(self):
         def generate(**kwargs):
-            assessment=Assessment.objects.create(session=self.session,title='Exam',kind='TEXT',mode='TEST',due_at=timezone.now()+timedelta(hours=1))
+            assessment=Assessment.objects.create(session=self.session,title='Exam',kind='TEXT',mode='TEST',is_published=True,due_at=timezone.now()+timedelta(hours=1))
             AssessmentAttempt.objects.create(assessment=assessment,student=self.student,request_id=uuid4(),number=1,expires_at=assessment.due_at)
             return self.output
         self.runtime.generate.side_effect=generate

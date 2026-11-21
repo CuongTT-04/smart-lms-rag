@@ -1,5 +1,5 @@
 from django.contrib.staticfiles import finders
-from django.test import SimpleTestCase
+from django.test import TestCase
 from django.urls import reverse
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.validation import validate_schema
@@ -9,7 +9,7 @@ from apps.courses.models import Course, CourseMember, Enrollment, JoinRequest
 from apps.users.models import User
 
 
-class OpenAPITests(SimpleTestCase):
+class OpenAPITests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -115,6 +115,13 @@ class OpenAPITests(SimpleTestCase):
             (assessment_attempt, 'get'), (assessment_attempt, 'patch'),
             (assessment_attempt+'submit/', 'post'), (assessment_attempt+'events/', 'post'),
             (assessment_attempt+'grade/', 'patch'), (assessment_attempt+'file/', 'get'),
+        })
+        expected.update({
+            ('/api/ai/chat/', 'post'),
+            ('/api/ai/chat/{answer_id}/feedback/', 'patch'),
+            ('/api/ai/conversations/', 'get'), ('/api/ai/conversations/', 'post'),
+            ('/api/ai/conversations/{conversation_id}/', 'get'),
+            ('/api/ai/summaries/{summary_id}/', 'get'), ('/api/ai/summaries/{summary_id}/', 'post'),
         })
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]
@@ -297,6 +304,10 @@ class OpenAPITests(SimpleTestCase):
                 if "400" not in operation["responses"]:
                     continue
                 content = operation["responses"]["400"]["content"]["application/json"]
+                if 'AI' in operation.get('tags', []):
+                    self.assertEqual(set(self.component(content['schema'])['properties']),
+                        {'request_id', 'code', 'message'})
+                    continue
                 alternatives = content["schema"]["additionalProperties"]["oneOf"]
                 self.assertEqual({option["type"] for option in alternatives}, {"array", "string"})
                 self.assertTrue(content["examples"])
@@ -401,3 +412,33 @@ class OpenAPITests(SimpleTestCase):
         download = self.schema['paths']['/api/documents/{document_id}/download/']['get']['description']
         self.assertIn('Giáo viên', download)
         self.assertIn('PUBLIC_DOWNLOAD', download)
+
+    def test_ai_operations_document_auth_errors_and_task_failure_semantics(self):
+        for path, methods in self.schema['paths'].items():
+            if not path.startswith('/api/ai/'):
+                continue
+            for method, operation in methods.items():
+                with self.subTest(path=path, method=method):
+                    for status in ('400', '401', '403', '404', '409', '429', '503'):
+                        self.assertIn(status, operation['responses'])
+        advance = self.schema['paths']['/api/ai/summaries/{summary_id}/']['post']
+        self.assertNotIn('requestBody', advance)
+        self.assertIn('FAILED', advance['description'])
+        self.assertIn('100 giây', advance['description'])
+        self.assertEqual(set(advance['responses']) & {'200', '202'}, {'200', '202'})
+        task = self.schema['components']['schemas']['SummaryTaskResponse']
+        progress = self.component(task['properties']['progress'])
+        self.assertEqual(set(progress['required']), {'phase', 'blocks_read', 'blocks_total', 'steps'})
+
+    def test_ai_examples_are_valid_and_reject_private_or_client_owned_fields(self):
+        from apps.ai.api.serializers import ChatRequest
+        operation = self.schema['paths']['/api/ai/chat/']['post']
+        body = operation['requestBody']['content']['application/json']
+        self.assertFalse(self.component(body['schema'])['additionalProperties'])
+        examples = body['examples']
+        self.assertEqual(len(examples), 2)
+        for example in examples.values():
+            data = example['value']
+            self.assertTrue(ChatRequest(data=data).is_valid())
+            for field in ('correct_ids', 'rubric', 'is_test', 'allowed_version_ids', 'history'):
+                self.assertFalse(ChatRequest(data={**data, field:'private'}).is_valid())
