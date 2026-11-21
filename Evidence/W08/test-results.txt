@@ -1,0 +1,192 @@
+W08 VERIFICATION
+Date: 2026-11-21 (Asia/Saigon)
+Branch: TranTuanCuong_B22DCVT073_W8Tasks
+Git HEAD: 589b79c6d8ed6d4acaedbd7cb0585816a648d52b
+Source checkpoint SHA-256: 5a30b13178e774ee84122353592ecc530fd2f31741a597c7d31fc4601676617b
+The source checkpoint includes the modified/untracked code files listed in manifest.json.
+
+
+README REVIEW
+The ten supplied images remain byte-for-byte copies. README.md was updated with user authorization.
+Holdout metrics and adapter hash match supplied evidence and the W7 training audit.
+README now reports current 433 backend / 374 frontend results and eight real-model hint progression calls. Historical 84 runtime / 27 upload-worker checks remain dated 20/11.
+Fresh full suites below report 433 backend and 374 frontend tests.
+PR #19 resolves as merged. User requested the PR #20 link in README in advance of creating that PR. PR #20 remains pending creation at this checkpoint.
+Historical screenshots illustrate their recorded state, before the latest hint progression UI.
+
+
+HOLDOUT RECHECK
+232 outputs, 116 inputs, two arms. Verified archive receipt, artifact/package inventory,
+adapter bytes, prompt/payload bindings, unique output identities, per-output scores and aggregate metrics.
+Adapter SHA-256: 51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7
+Scoring reuses normalize/score/summarize from current scripts/comparison/holdout.py.
+This CPU check uses saved outputs; GPU generation/tokenizer execution is retained from handoff evidence.
+
+
+FRESH BACKEND COMMAND
+docker compose exec -T backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --settings=config.settings.test --noinput --verbosity=1
+Found 433 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+........../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+.../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+.............................................................................................................................................Updated 1 enrollment(s) for classroom bd1dea4c-cc97-4c93-bf2a-4b9cd9264a7c.
+..........OpenCV: FFMPEG: tag 0x30385056/'VP80' is not supported with codec id 139 and format 'webm / WebM'
+.........W2 scenario 01: PASS | Health | 200; status=ok
+W2 scenario 02: PASS | Teacher login + bearer profile | 200/200; bearer access; refresh cookie; safe user fields and profiles
+W2 scenario 03: PASS | Create and publish course | 201 DRAFT owner; 200 PUBLISHED with timestamp
+W2 scenario 04: PASS | Join and student read | 201 join; 200 list/detail for student
+W2 scenario 05: PASS | Student management denial | 403 x3 with valid student bearer token
+W2 scenario 06: PASS | Missing bearer token | 401 x3
+W2 scenario 07: PASS | JWT refresh rotation | 200 access; refresh rotated and previous JTI blacklisted
+W2 scenario 08: PASS | Logout revocation | 204; refresh cookie cleared; refresh endpoint 401
+W2 scenario 09: PASS | Invalid login | 401 x3; identical generic detail
+W2 scenario 10: PASS | CSRF endpoint removed | 404; no CSRF API remains
+..................../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+......................Không thể phát tín hiệu thông báo; lịch sử vẫn được lưu.
+...Warning: enum naming encountered a non-optimally resolvable collision for fields named "kind". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "KindD55Enum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
+Warning: enum naming encountered a non-optimally resolvable collision for fields named "mode". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "ModeAeeEnum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
+................Warning: enum naming encountered a non-optimally resolvable collision for fields named "kind". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "KindD55Enum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
+Warning: enum naming encountered a non-optimally resolvable collision for fields named "mode". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "ModeAeeEnum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
+...............................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 433 tests in 66.987s
+
+OK
+Destroying test database for alias 'default'...
+
+
+FRESH FRONTEND COMMAND (cwd frontend)
+npm.cmd test -- --maxWorkers=2
+
+> ohayo-frontend@0.1.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 D:/Đồ án tốt nghiệp/smart-lms-rag/frontend
+
+
+ Test Files  56 passed (56)
+      Tests  374 passed (374)
+   Start at  21:12:43
+   Duration  121.10s (environment 52%, tests 28%, setup 10%, import 8%, transform 1%)
+
+Environment  jsdom was created 56 times · 118.74s total, 52% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+
+FRESH LINT COMMAND (cwd frontend)
+npm.cmd run lint
+
+> ohayo-frontend@0.1.0 lint
+> eslint . --max-warnings 0
+
+
+
+FRESH BUILD COMMAND (cwd frontend)
+npm.cmd run build
+
+> ohayo-frontend@0.1.0 build
+> vite build
+
+vite v8.3.3 building client environment for production...
+transforming...
+✓ 1984 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/w2/documents.html                                                  0.45 kB │ gzip:   0.31 kB
+dist/w2/index.html                                                      0.83 kB │ gzip:   0.44 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-400-normal-BuGn0gnm.woff       6.56 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-600-normal-DkpCIyan.woff       6.88 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-500-normal-CfdwVo8-.woff       6.88 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-700-normal-By_5yT39.woff       6.89 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-400-normal-DYBYyMQr.woff        8.90 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-700-normal-4Hjo2OtD.woff        9.18 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-500-normal-CK0UkkKf.woff        9.20 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-600-normal-BeUwKxhG.woff        9.22 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-400-normal-CRcqvyg1.woff2     11.53 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-500-normal-DREgrEoJ.woff2     12.17 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-600-normal-nyU-ZL2p.woff2     12.17 kB
+dist/w2/assets/be-vietnam-pro-vietnamese-700-normal-Csr0PCuG.woff2     12.46 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-400-normal-CiZNW1ec.woff2      13.05 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-500-normal-h0Fp6aX0.woff2      13.54 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-600-normal-BNd8euf0.woff2      13.60 kB
+dist/w2/assets/be-vietnam-pro-latin-ext-700-normal-C8_gqRu2.woff2      13.85 kB
+dist/w2/assets/be-vietnam-pro-latin-400-normal-bXgqVju9.woff           16.43 kB
+dist/w2/assets/be-vietnam-pro-latin-700-normal-C2EtzaOi.woff           16.90 kB
+dist/w2/assets/be-vietnam-pro-latin-500-normal-BJkVuMHw.woff           16.99 kB
+dist/w2/assets/be-vietnam-pro-latin-600-normal-5IO4e7bK.woff           17.01 kB
+dist/w2/assets/be-vietnam-pro-latin-400-normal-PpnXBOrz.woff2          21.16 kB
+dist/w2/assets/be-vietnam-pro-latin-500-normal-B6LVzGNe.woff2          21.89 kB
+dist/w2/assets/be-vietnam-pro-latin-600-normal-BZDkUTrt.woff2          22.03 kB
+dist/w2/assets/be-vietnam-pro-latin-700-normal-DlW1Zbsh.woff2          22.15 kB
+dist/w2/assets/pdf.worker.min-CjEcRF4W.mjs                          1,264.34 kB
+dist/w2/assets/main-D2hTlTK4.css                                       67.05 kB │ gzip:  13.22 kB
+dist/w2/assets/src-BjVKgmSg.css                                        81.66 kB │ gzip:  15.77 kB
+dist/w2/assets/documents-C7k2VcP3.js                                    1.86 kB │ gzip:   0.92 kB
+dist/w2/assets/main-CGrb-yi5.js                                       283.78 kB │ gzip:  72.04 kB
+dist/w2/assets/src-QssgSCxs.js                                        721.07 kB │ gzip: 219.76 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.47s
+
+
+RETAINED INTEGRATION EVIDENCE (20-21/11/2026)
+429 backend, 84 documents runtime, 27 isolated upload/worker, 366 frontend.
+The later 147 AI/OpenAPI check overlaps backend tests; do not add its count.
+Scoped CPU live checks and eight later hint progression calls remain separate from unit tests.
+Known limitations: authored hint scaffolding, no semantic grading of student drafts, summary tested on pages 7-9,
+holdout ID/format/exact-match scores do not establish factuality for all outputs.

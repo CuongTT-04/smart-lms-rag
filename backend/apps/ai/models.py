@@ -52,6 +52,7 @@ class ChatResponseRecord(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     turn = models.OneToOneField(ChatTurn, null=True, blank=True, related_name='feedback', on_delete=models.SET_NULL)
+    hint_state = models.JSONField(null=True, blank=True)
     rating = models.CharField(max_length=7, choices=[('LIKE', 'Thích'), ('DISLIKE', 'Không thích')], null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

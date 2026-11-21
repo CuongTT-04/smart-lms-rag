@@ -1,0 +1,290 @@
+{
+  "schema_version": 3,
+  "week": "W08",
+  "updated_at": "2026-11-21",
+  "status": "EVIDENCE_COMPILED_CHECKPOINT_VERIFIED_README_UPDATED",
+  "layout": [
+    "README.md",
+    "metrics.csv",
+    "test-results.txt",
+    "manifest.json",
+    "figures/"
+  ],
+  "git_head": "589b79c6d8ed6d4acaedbd7cb0585816a648d52b",
+  "source_checkpoint": {
+    "git_head": "589b79c6d8ed6d4acaedbd7cb0585816a648d52b",
+    "branch": "TranTuanCuong_B22DCVT073_W8Tasks",
+    "working_tree_dirty": true,
+    "modified_code_files": {
+      "backend/apps/ai/api/serializers.py": {
+        "sha256": "0ff574c145dd78f2ef72790cf092596af982a9ce20e43eed1adf9c73a67742f7",
+        "size_bytes": 8783
+      },
+      "backend/apps/ai/api/views.py": {
+        "sha256": "04d594acd6f1d61c4432d0685aa9160c316479e9cacab063a22951530cdb51ab",
+        "size_bytes": 10491
+      },
+      "backend/apps/ai/hints.py": {
+        "sha256": "17888008493374f9a17c656fbac27f55e9497997fcaf32471bbda69c2b177099",
+        "size_bytes": 4471
+      },
+      "backend/apps/ai/migrations/0004_chatresponserecord_hint_state.py": {
+        "sha256": "68cc0ca086677de6de023fb839071d122120d18ca3c7ec11b89d54111f7c8849",
+        "size_bytes": 293
+      },
+      "backend/apps/ai/models.py": {
+        "sha256": "60d16ab87e92996ee9cb574a65a2d4e4b71640af522c2c71dd6b623e140da521",
+        "size_bytes": 4630
+      },
+      "backend/tests/ai/test_hint_progress.py": {
+        "sha256": "f73857702f03c8668d79a05d3c1eb5ae9411991494445b76b188f7109d6f663b",
+        "size_bytes": 3367
+      },
+      "frontend/src/components/SessionWorkspace.ai.test.jsx": {
+        "sha256": "4bf518b47ce4f5f243130bc842508a034e4dd1ed883694e6ab199500284a98ea",
+        "size_bytes": 6122
+      },
+      "frontend/src/components/SessionWorkspace.jsx": {
+        "sha256": "85927a8123aae41bb2ae9f0f4552c4de5d80e4f4f32986009d373211ef0e796e",
+        "size_bytes": 17100
+      },
+      "frontend/src/components/ai/SessionAssistant.jsx": {
+        "sha256": "d8d574779c79c83a6c5c0c29961902ad043329add7d9fd5a7c76b46fc3258531",
+        "size_bytes": 7184
+      },
+      "frontend/src/components/ai/SessionAssistant.test.jsx": {
+        "sha256": "581656c40d38c15acb84b53254fa9dc7e1b4807456a1494ae67463c8d19ca40c",
+        "size_bytes": 12370
+      },
+      "frontend/src/components/ai/assistant.css": {
+        "sha256": "349fb6ff1fef6728608be20ee1e669057f097856195a4fe922e563da2d8c372e",
+        "size_bytes": 12882
+      },
+      "frontend/src/components/assessments/SessionAssessments.jsx": {
+        "sha256": "48e9ac292d9c8260dc6210e5b5d3b195456262729cd16dd930b4d801696a1026",
+        "size_bytes": 7696
+      },
+      "frontend/src/session-workspace.css": {
+        "sha256": "1f3f184a57bfa29f39d7100a5f08b808628860e5d72bca6a2c0c79aa80c60d76",
+        "size_bytes": 10859
+      }
+    }
+  },
+  "source_checkpoint_sha256": "5a30b13178e774ee84122353592ecc530fd2f31741a597c7d31fc4601676617b",
+  "objective": "Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant",
+  "supplied_assets": {
+    "readme": {
+      "sha256": "7ef2c683de31fb5f2af520df8cc11a734d627cd0226bb6850c0aa85e111b248d",
+      "size_bytes": 9522
+    },
+    "readme_original_name": "README (1).md",
+    "figures_zip": {
+      "sha256": "ac0138b04ccc657c5240c0d6c7a11f5d683684dcc0b5d4a9e8cca7c234dd1c2d",
+      "size_bytes": 404355
+    },
+    "all_supplied_files_preserved": false,
+    "all_figures_preserved": true,
+    "readme_updated_with_user_authorization": true,
+    "readme_update_scope": "Current test counts, test dates and live hint call count. PR #20 link retained at user request before PR creation."
+  },
+  "holdout": {
+    "status": "CHECKPOINT_HASH_AND_232_SCORES_RECHECKED",
+    "rows": 232,
+    "adapter_sha256": "51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7",
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "archive_sha256": "90b51c7061007c29d8b3678bffb305cc6dbcb2a690fe863cc64eaf703b8bf414",
+    "metrics": {
+      "rag": {
+        "rows": 116,
+        "status_counts": {
+          "completed": 116
+        },
+        "completion_token_weighted_loss": 0.7172547476316515,
+        "perplexity": 2.048801007453543,
+        "format_valid_rate": 0.9913793103448276,
+        "valid_citation_rate_answerable": 0.9905660377358491,
+        "reference_exact_rate": 0.20689655172413793,
+        "refusal_precision": 1.0,
+        "refusal_recall": 1.0,
+        "false_refusals": 0,
+        "generation_seconds": 541.5511905769995,
+        "peak_allocated_bytes": 6106124800,
+        "tasks": {
+          "hint": {
+            "rows": 10,
+            "reference_exact_rate": 0.9,
+            "mean_reference_item_recall": 0.0
+          },
+          "insufficient_evidence": {
+            "rows": 10,
+            "reference_exact_rate": 1.0,
+            "mean_reference_item_recall": 0.0
+          },
+          "qa": {
+            "rows": 74,
+            "reference_exact_rate": 0.05405405405405406,
+            "mean_reference_item_recall": 0.14864864864864866
+          },
+          "summary": {
+            "rows": 22,
+            "reference_exact_rate": 0.045454545454545456,
+            "mean_reference_item_recall": 0.045454545454545456
+          }
+        }
+      },
+      "tuned_rag": {
+        "rows": 116,
+        "status_counts": {
+          "completed": 116
+        },
+        "completion_token_weighted_loss": 0.31679556348427584,
+        "perplexity": 1.3727219087534521,
+        "format_valid_rate": 1.0,
+        "valid_citation_rate_answerable": 1.0,
+        "reference_exact_rate": 0.3879310344827586,
+        "refusal_precision": 1.0,
+        "refusal_recall": 1.0,
+        "false_refusals": 0,
+        "generation_seconds": 709.2059116550017,
+        "peak_allocated_bytes": 6101410304,
+        "tasks": {
+          "hint": {
+            "rows": 10,
+            "reference_exact_rate": 1.0,
+            "mean_reference_item_recall": 0.0
+          },
+          "insufficient_evidence": {
+            "rows": 10,
+            "reference_exact_rate": 1.0,
+            "mean_reference_item_recall": 0.0
+          },
+          "qa": {
+            "rows": 74,
+            "reference_exact_rate": 0.28378378378378377,
+            "mean_reference_item_recall": 0.2972972972972973
+          },
+          "summary": {
+            "rows": 22,
+            "reference_exact_rate": 0.18181818181818182,
+            "mean_reference_item_recall": 0.18181818181818182
+          }
+        }
+      }
+    },
+    "scoring_source_sha256": "0b4ae59c7e1c0025486b4475dc855fe3a047be63ca53c05f1f7e55ffa3505e8c",
+    "scope": "CPU checksum, package inventory, payload bindings, scores and aggregate recomputation from saved outputs. Tokenization and GPU generation retained from supplied evidence.",
+    "source_archive": "ayo-handoff.zip",
+    "private_raw_outputs_included": false
+  },
+  "tests": {
+    "fresh_backend_main": 433,
+    "fresh_frontend": 374,
+    "frontend_files": 56,
+    "lint": "PASS",
+    "build": "PASS_WITH_LARGE_CHUNK_WARNING",
+    "historical_documents_runtime": 84,
+    "historical_upload_worker": 27,
+    "counts_are_not_added_across_dates": true
+  },
+  "readme_review": {
+    "checkpoint_and_metrics": "MATCH",
+    "image_links": "10/10_RESOLVE",
+    "test_counts": "UPDATED_TO_VERIFIED_433_BACKEND_374_FRONTEND",
+    "historical": {
+      "backend": 429,
+      "frontend": 366,
+      "ai_recheck": 147
+    },
+    "current": {
+      "backend": 433,
+      "frontend": 374
+    },
+    "pull_requests": {
+      "19": "MERGED",
+      "20": "LINK_RETAINED_AT_USER_REQUEST_PENDING_CREATION"
+    },
+    "hint_screenshot": "SUPPLIED_PRE_PROGRESS_UI_SNAPSHOT"
+  },
+  "serving_config": {
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "prompt_version": "bounded_guidance",
+    "max_input_tokens": 3584,
+    "max_output_tokens": 1024,
+    "timeout_seconds": 90.0,
+    "temperature": 0.0
+  },
+  "live_acceptance": {
+    "cpu_qa_cases": 10,
+    "cpu_source_sha256": "602b731153749027a9d62e1b361b369b9cfa932c22994030a355c06be5d85b41",
+    "summary_page_range": [
+      7,
+      9
+    ],
+    "hint_progress_calls": 8,
+    "execution": "RETAINED_VERIFIED_LOCAL_RECORDS"
+  },
+  "limitations": [
+    "Figures retain the supplied historical snapshots. The 84/27 runtime/worker checks are retained results dated 20/11.",
+    "PR #20 link is retained at user request; PR creation is pending at this checkpoint.",
+    "Current source includes uncommitted hint changes recorded by checksum.",
+    "Loss, format and citation-ID validity do not prove all-output semantic quality.",
+    "The latest hints use authored scaffolding and do not grade student drafts."
+  ],
+  "files": {
+    "figures/class-results-student.jpg": {
+      "sha256": "e9b07a8a155a176257020b7296693656663b225ea8840842b422125ab619dd84",
+      "size_bytes": 38458
+    },
+    "figures/class-results-teacher.jpg": {
+      "sha256": "7befd632d22ff36ad627f2c9b0a0daa7a44ee354a64e6b31fbd8af693277383a",
+      "size_bytes": 40086
+    },
+    "figures/follow-up-suggestions.png": {
+      "sha256": "96cb8d8107e1307227027ae887f8f30d90d31f0e6c0f1a52b77f23d31e63a9a5",
+      "size_bytes": 72612
+    },
+    "figures/holdout-format.png": {
+      "sha256": "c1ddc2696e3eafb8d6b579fd876ebf2eab32f47d5bd823791e02688df7ce4443",
+      "size_bytes": 26168
+    },
+    "figures/holdout-loss.png": {
+      "sha256": "fae8d32e3401bad1efd19b80bda219edd2fa482eae191cd1dc2524c2753f8b00",
+      "size_bytes": 26606
+    },
+    "figures/learning-progress.jpg": {
+      "sha256": "62be86c6092205f33bc7faa833a9a57171ab58eda46852e3825e15b6f8a042b1",
+      "size_bytes": 39236
+    },
+    "figures/material-summary.png": {
+      "sha256": "9acb237df74f567dce27cc4792e35cb973e9804befacd36596b8f4d2b773eb6c",
+      "size_bytes": 67728
+    },
+    "figures/practice-hint-source.jpg": {
+      "sha256": "0654436c2606ed31eed1a091ae9a1524ec8870386bf5b53bf3d37cf56dd52f70",
+      "size_bytes": 64895
+    },
+    "figures/practice-hint.jpg": {
+      "sha256": "110bfc779cd18ea5c1430f9dc70426677de9bc996169a8df59033a0f4192175f",
+      "size_bytes": 87430
+    },
+    "figures/summary-sources.png": {
+      "sha256": "7bdf6d9a9e21f01c661676a6fe6191e4ab1ce44a2a351cbc24ecf34c9b44d105",
+      "size_bytes": 51569
+    },
+    "metrics.csv": {
+      "sha256": "f36d1d58b1ab41b14f90396d76f98775b4edf374d88932a9fe38aa9f50347301",
+      "size_bytes": 3673
+    },
+    "README.md": {
+      "sha256": "fe78f46d3921c418eaa34a618f36ecf9c8a70f7fb36c02dbf9e6336fc057697f",
+      "size_bytes": 10075
+    },
+    "test-results.txt": {
+      "sha256": "41cf956d6eb6b52f2ea4c09d76e01b2f061906633e6f25f585cb12b859cde945",
+      "size_bytes": 15509
+    }
+  },
+  "manifest_hashes_itself": false
+}

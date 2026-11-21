@@ -165,7 +165,13 @@ export default function SessionWorkspace({ course, room, session, onBack, onSave
           <button type="button" className="icon-button" aria-label="Đóng ayo" onClick={() => { setAssistant(false); aiTrigger.current?.focus() }}><X size={20} /></button>
         </div>
       </div>
-      <div className="class-assistant-scope"><BookOpen size={17} /><span title={active?.title || 'Chưa chọn học liệu'}>{active?.title || 'Chưa chọn học liệu'}</span></div>{!testSelected && <SessionAssistant visible={assistant} toolbarTarget={assistantActions} documentId={active?.document_id} documentVersion={active?.published_version_id || active?.version_id} requireDocument scope={{course_id:course.id,classroom_id:room.id,session_id:session.id}} exercise={currentExercise} onOpenCitation={setCitation} />}
+      <div className={`class-assistant-scope ${currentExercise ? 'ai-exercise-scope' : ''}`}>{currentExercise ? <>
+        <ClipboardList size={18} aria-hidden="true" />
+        <div><div className="ai-exercise-heading"><span>Gợi ý cho bài</span><button type="button" onClick={() => setExercise(null)}>Hỏi đáp học liệu</button></div><strong>{currentExercise.assessment_title || currentAssessment.title}</strong>
+          {currentExercise.question_number > 0 && <small>Câu {currentExercise.question_number}</small>}
+          {currentExercise.question_prompt && <p title={currentExercise.question_prompt}>{currentExercise.question_prompt}</p>}
+        </div>
+      </> : <><BookOpen size={17} /><span title={active?.title || 'Chưa chọn học liệu'}>{active?.title || 'Chưa chọn học liệu'}</span></>}</div>{!testSelected && <SessionAssistant visible={assistant} toolbarTarget={assistantActions} documentId={active?.document_id} documentVersion={active?.published_version_id || active?.version_id} requireDocument scope={{course_id:course.id,classroom_id:room.id,session_id:session.id}} exercise={currentExercise} onOpenCitation={setCitation} />}
     </aside>
     {citation && <CitationViewer key={`${citation.document_id}:${citation.version_id}:${citation.page_number}`} citation={citation} onClose={() => setCitation(null)} />}
   </section>, document.body)
