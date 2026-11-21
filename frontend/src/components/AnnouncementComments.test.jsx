@@ -103,3 +103,48 @@ it('shows a read-only message when the student is muted', async () => {
   expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Trả lời Minh Anh' })).toBeDisabled()
 })
+
+it('starts collapsed when defaultOpen is false and expands comments and reply threads on demand', async () => {
+  listAnnouncementComments.mockResolvedValue({
+    ...payload,
+    results: [
+      comment,
+      { ...comment, id: 'cm2', author_id: 'u2', author_name: 'Nam Dương', parent_id: 'cm1', content: 'Phản hồi thứ nhất' },
+      { ...comment, id: 'cm3', author_id: 'u3', author_name: 'Tuấn Cường', parent_id: 'cm2', content: 'Phản hồi lồng nhau' },
+    ],
+  })
+  render(<AnnouncementComments courseId="c1" roomId="r1" announcementId="a1" defaultOpen={false} />)
+  const toggle = await screen.findByRole('button', { name: '3 bình luận' })
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(screen.queryByText('Em có câu hỏi')).not.toBeInTheDocument()
+  await userEvent.click(toggle)
+  expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  expect(screen.getByText('Em có câu hỏi')).toBeVisible()
+  expect(screen.queryByText('Phản hồi thứ nhất')).not.toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: 'Xem 2 phản hồi' }))
+  expect(screen.getByText('Phản hồi thứ nhất')).toBeVisible()
+  expect(screen.getByText('Phản hồi lồng nhau')).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: 'Ẩn 2 phản hồi' }))
+  expect(screen.queryByText('Phản hồi thứ nhất')).not.toBeInTheDocument()
+  await userEvent.click(toggle)
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(screen.queryByText('Em có câu hỏi')).not.toBeInTheDocument()
+})
+
+it('auto-opens comments and nested reply thread when focusCommentId targets a reply', async () => {
+  listAnnouncementComments.mockResolvedValue({
+    ...payload,
+    results: [
+      comment,
+      { ...comment, id: 'cm2', author_id: 'u2', author_name: 'Nam Dương', parent_id: 'cm1', content: 'Phản hồi được nhắc tới' },
+    ],
+  })
+  render(<AnnouncementComments courseId="c1" roomId="r1" announcementId="a1" defaultOpen={false} focusCommentId="cm2" />)
+  expect(await screen.findByText('Phản hồi được nhắc tới')).toBeVisible()
+})
+
+it('opens and focuses composer when clicking Viết bình luận on a collapsed post', async () => {
+  render(<AnnouncementComments courseId="c1" roomId="r1" announcementId="a1" defaultOpen={false} />)
+  await userEvent.click(await screen.findByRole('button', { name: 'Viết bình luận' }))
+  expect(screen.getByRole('textbox', { name: 'Nội dung bình luận' })).toHaveFocus()
+})
