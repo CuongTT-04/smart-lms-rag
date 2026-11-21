@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react'
+import { StrictMode } from 'react'
 import userEvent from '@testing-library/user-event'
 import { vi, expect, it, beforeEach } from 'vitest'
 import SessionAssistant from './SessionAssistant'
@@ -144,8 +145,56 @@ it('shows service errors and allows retry', async () => {
 })
 
 it('starts in hint mode when opened from a practice question', async () => {
-  render(<SessionAssistant scope={scope} exercise={{assessment_id:'a1',question_id:'q1'}} />)
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Giúp tôi bắt đầu')
-  await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
-  expect(sendChat.mock.calls[0][0]).toMatchObject({mode:'hint',assessment_id:'a1',question_id:'q1'})
+  render(<StrictMode><SessionAssistant scope={scope} exercise={{assessment_id:'a1',question_id:'q1',assessment_title:'CPU',question_number:2,question_prompt:'ALU là gì?'}} /></StrictMode>)
+  await waitFor(() => expect(sendChat).toHaveBeenCalledTimes(1))
+  expect(sendChat.mock.calls[0][0]).toEqual({...scope,mode:'hint',hint_action:'initial',assessment_id:'a1',question_id:'q1',question:expect.any(String)})
+  expect(screen.queryByRole('combobox',{name:'Cách hỗ trợ'})).not.toBeInTheDocument()
+  expect(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'})).toHaveAttribute('placeholder','Bạn đang vướng ở bước nào?')
+  await screen.findByRole('button',{name:'Gợi ý bước tiếp theo'})
+  await userEvent.click(screen.getByRole('button',{name:'Gợi ý bước tiếp theo'}))
+  await waitFor(() => expect(sendChat).toHaveBeenCalledTimes(2))
+  expect(sendChat.mock.calls[1][0]).toMatchObject({mode:'hint',assessment_id:'a1',question_id:'q1',hint_action:'next_step',previous_hint_id:'answer-1'})
+})
+
+it('offers a draft at the last step and keeps explanation at the server-owned step', async () => {
+  sendChat.mockResolvedValue({...response,hint:{step:2,can_advance:false}})
+  render(<SessionAssistant scope={scope} exercise={{assessment_id:'a1'}} />)
+  await userEvent.click(await screen.findByRole('button',{name:'Thử trả lời'}))
+  expect(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'})).toHaveFocus()
+  expect(screen.queryByRole('button',{name:'Gợi ý bước tiếp theo'})).not.toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button',{name:'Giải thích rõ yêu cầu đề'}))
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(2))
+  expect(sendChat.mock.calls[1][0]).toMatchObject({hint_action:'explain_task',previous_hint_id:'answer-1'})
+})
+
+it('waits until visible and keeps the hint when reopened or the material selection changes', async () => {
+  const exercise={assessment_id:'a1',question_id:'q1'}
+  const view=render(<SessionAssistant scope={scope} exercise={exercise} documentId="d1" visible={false} />)
+  expect(sendChat).not.toHaveBeenCalled()
+  view.rerender(<SessionAssistant scope={scope} exercise={exercise} documentId="d1" visible />)
+  await screen.findByRole('button',{name:'Trích dẫn [1]'})
+  view.rerender(<SessionAssistant scope={scope} exercise={exercise} documentId="d1" visible={false} />)
+  view.rerender(<SessionAssistant scope={scope} exercise={{...exercise}} documentId="d2" visible />)
+  expect(screen.getByRole('button',{name:'Trích dẫn [1]'})).toBeVisible()
+  expect(sendChat).toHaveBeenCalledTimes(1)
+})
+
+it('shows an initial hint failure and retries only after an explicit click', async () => {
+  sendChat.mockRejectedValueOnce(new Error('offline'))
+  render(<SessionAssistant scope={scope} exercise={{assessment_id:'a1'}} />)
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không thể sử dụng AI.')
+  expect(sendChat).toHaveBeenCalledTimes(1)
+  await userEvent.click(screen.getByRole('button',{name:'Thử lại gợi ý'}))
+  await screen.findByRole('button',{name:'Trích dẫn [1]'})
+  expect(sendChat).toHaveBeenCalledTimes(2)
+})
+
+it('retries a failed next step with the original action and previous hint', async () => {
+  render(<SessionAssistant scope={scope} exercise={{assessment_id:'a1'}} />)
+  const next=await screen.findByRole('button',{name:'Gợi ý bước tiếp theo'})
+  sendChat.mockRejectedValueOnce(new Error('offline'))
+  await userEvent.click(next)
+  await userEvent.click(await screen.findByRole('button',{name:'Thử lại gợi ý'}))
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(3))
+  expect(sendChat.mock.calls[2][0]).toEqual(sendChat.mock.calls[1][0])
 })

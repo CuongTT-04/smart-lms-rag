@@ -57,7 +57,7 @@ def map_output(output, contexts):
     return status, answer.strip(), citations
 
 
-def answer_chat(*, user, data, request_id, runtime=None, history=None):
+def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=None):
     if data['mode'] == 'summary':
         from .summary import answer_summary
         return answer_summary(user=user, data=data, request_id=request_id, runtime=runtime)
@@ -76,6 +76,11 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
     memory=None
     from .rag.conversation import extract_procedure_answer, is_full_procedure_question, retrieval_query
     retrieval_question=retrieval_query(data['question'],history)
+    if exercise:
+        prompt = (exercise.get('question') or {}).get('prompt', '')
+        retrieval_question = '\n'.join(filter(None, (
+            exercise['title'], prompt, exercise['description'], retrieval_question,
+        )))[:8000]
     if scope.allowed_version_ids:
         runtime=runtime or get_runtime()
         try:
@@ -95,6 +100,8 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None):
             arguments=dict(question=data['question'], mode=data['mode'], contexts=contexts, exercise=exercise, config=runtime.config)
             if history is not None:
                 arguments['history']=history
+            if tutoring is not None:
+                arguments['tutoring']=tutoring
             output=runtime.generate(**arguments)
             if history is not None:
                 output=dict(output)

@@ -84,6 +84,8 @@ class ClassroomSessionDetailView(ClassroomSessionsView):
                 remove_document(request.user, material)
             session.removed_at = timezone.now()
             session.save(update_fields=['removed_at'])
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=room.pk)
         return Response(status=204)
 
     @extend_schema(tags=['Classrooms'], operation_id='classroom_session_update', summary='Cập nhật hoặc hoàn tất tạo buổi học', description='Chủ khóa học đổi tên hoặc gửi is_draft=false để hoàn tất buổi học. Không tự công bố PDF và không chuyển ngược về bản nháp.', request=SessionUpdateInput, responses=SessionSerializer)
@@ -102,4 +104,7 @@ class ClassroomSessionDetailView(ClassroomSessionsView):
                 session.is_draft = False
             if serializer.validated_data:
                 session.save(update_fields=list(serializer.validated_data))
+            if 'is_draft' in serializer.validated_data:
+                from apps.courses.progress_services import refresh_classroom_progress
+                refresh_classroom_progress(classroom_id=room.pk)
         return Response(SessionSerializer(session, context={'request': request}).data)

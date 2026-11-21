@@ -39,7 +39,7 @@ def dashboard(assessment, params):
     latest_attempts = [next(a for a in attempts if str(a.pk) == r['latest']['id']) for r in rows if r['latest']]
     scores = [float(a.score) for a in latest_attempts if a.score is not None]
     bins = [{'label': label, 'count': sum(lo <= score < hi for score in scores)} for label, lo, hi in [('0–<2', 0, 2), ('2–<4', 2, 4), ('4–<6', 4, 6), ('6–<8', 6, 8), ('8–10', 8, 11)]]
-    questions = [{'id': q['id'], 'prompt': q['prompt'], 'answered': sum(q['id'] in a.answers for a in latest_attempts),
+    questions = [{'id': q['id'], 'prompt': q['prompt'], 'answered': sum(bool(selected_ids(a.answers.get(q['id']))) for a in latest_attempts),
         'correct': sum(is_correct(q, a.answers.get(q['id'])) for a in latest_attempts), 'total': len(latest_attempts)} for q in assessment.questions]
     daily = Counter(timezone.localtime(a.submitted_at).strftime('%d/%m/%Y') for a in latest_attempts)
     return {'summary': {'total': len(rows), 'submitted': len(latest_attempts), 'not_submitted': len(rows)-len(latest_attempts),

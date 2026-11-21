@@ -60,7 +60,7 @@ function RosterRecords({ course, room, status, onMembersChanged }) {
       {filtered.map((item) => <article className="enrollment-row roster-row" key={item.id}>
         <div className="roster-student"><UserAvatar user={item.student} /><div><strong>{item.student.full_name || item.student.username}</strong><small>{item.student.email || item.student.username}</small><small>Tham gia {new Date(item.enrolled_at).toLocaleDateString('vi-VN')}</small></div></div>
         <span className={`request-state enrollment-${item.status.toLowerCase()}`}>{STATES[item.status]}</span>
-        <div className="roster-progress"><progress max={100} value={item.progress_percent} aria-label={`Tiến độ của ${item.student.full_name || item.student.username}`} /><span>{item.progress_percent}%</span></div>
+        <div className="roster-progress"><progress max={100} value={Number(item.progress_percent ?? 0)} aria-label={`Tiến độ của ${item.student.full_name || item.student.username}`} /><span>{Math.round(Number(item.progress_percent ?? 0) * 100) / 100}%</span></div>
         {item.status !== 'WITHDRAWN' && <button type="button" className="revoke-button" disabled={pending} onClick={() => setConfirm(item)} aria-label={`Thu hồi ghi danh của ${item.student.full_name || item.student.username}`}><UserMinus size={16} /> Thu hồi ở lớp</button>}
       </article>)}
       {!filtered.length && <p className="enrollment-empty">{term ? 'Không tìm thấy học viên phù hợp.' : 'Chưa có học viên ở trạng thái này.'}</p>}

@@ -37,12 +37,38 @@ class ChatServiceTests(ScopeFixture):
         self.runtime.generate.assert_not_called()
         self.retrieval.assert_not_called()
 
+    def test_hint_retrieval_uses_public_text_exercise_and_stays_bounded(self):
+        assessment = Assessment.objects.create(session=self.session, kind='TEXT', mode='PRACTICE',
+            title='Vai trò ALU và CU', description='Nội dung đề công khai. ' * 500,
+            hint='PRIVATE_TEACHER_HINT', due_at=timezone.now()+timedelta(days=1), is_published=True)
+        self.data.update(mode='hint', question='Gợi ý cách đọc đề. ' * 400, assessment_id=str(assessment.pk))
+        self.call()
+        query = self.retrieval.call_args.args[1]
+        self.assertIn(assessment.title, query)
+        self.assertIn('Nội dung đề công khai.', query)
+        self.assertLessEqual(len(query), 8000)
+        self.assertNotIn('PRIVATE_TEACHER_HINT', query)
+
     def test_followups_are_optional_and_do_not_add_a_generation_call(self):
         self.hit['text'] = 'b) Đối tượng của triết học\nNguồn hiện tại.'
         result = self.call()
         self.assertTrue(2 <= len(result['suggested_questions']) <= 3)
         self.assertIn('Đối tượng của triết học', result['suggested_questions'][0])
         self.runtime.generate.assert_called_once()
+
+    def test_tutoring_forwards_real_draft_with_only_public_exercise_fields(self):
+        assessment = Assessment.objects.create(session=self.session, kind='TEXT', mode='PRACTICE',
+            title='Vai trò ALU', description='Hãy nêu các nhóm phép toán.', hint='PRIVATE_TEACHER_HINT',
+            due_at=timezone.now()+timedelta(days=1), is_published=True)
+        self.data.update(mode='hint', question='Bản nháp: ALU chỉ cộng.', assessment_id=str(assessment.pk))
+        tutoring = dict(action='practice', step=2, history=[])
+        result = answer_chat(user=self.student, data=self.data, runtime=self.runtime,
+            request_id=str(uuid4()), tutoring=tutoring)
+        args = self.runtime.generate.call_args.kwargs
+        self.assertEqual(args['question'], self.data['question'])
+        self.assertEqual(args['tutoring'], tutoring)
+        self.assertNotIn('PRIVATE_TEACHER_HINT', str(args))
+        self.assertEqual(result['answer'], self.output['answer'])
 
     def test_followup_failure_preserves_answer_and_citations(self):
         with patch('apps.ai.followups.build_questions', side_effect=ValueError('private text')):

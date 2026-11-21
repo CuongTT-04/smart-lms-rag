@@ -272,3 +272,4 @@ class ClassroomCommentMute(models.Model):
 
 from .video_models import SessionVideo, VideoQuestion, VideoProgress, VideoAnswer  # noqa: E402,F401
 from .assessment_models import Assessment, AssessmentAttempt, AssessmentEvent, AssessmentGradeAudit  # noqa: E402,F401
+from .progress_models import DocumentCompletion  # noqa: E402,F401

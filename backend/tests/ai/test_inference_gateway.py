@@ -39,6 +39,8 @@ class GatewayTests(TestCase):
         with self.request('/health') as response:
             health = json.load(response)
             self.assertTrue(health['ready'])
+            self.assertIn('staged_hint_v1', health['capabilities'])
+            self.assertIn('diagnosed_hint_v1', health['capabilities'])
             self.assertIn('qa_completeness_v1', health['capabilities'])
             self.assertIn('qa_atomic_evidence_v1', health['capabilities'])
             self.assertIn('qa_source_descriptions_v1', health['capabilities'])
@@ -64,6 +66,21 @@ class GatewayTests(TestCase):
         with self.assertRaises(HTTPError) as error:
             self.request('/summary', data={**payload,'config':{}})
         self.assertEqual(error.exception.code, 409)
+
+    def test_tutoring_context_reaches_pipeline_only_for_public_practice_hint(self):
+        payload = dict(question='Bản nháp của tôi', mode='hint', contexts=[], config={'model': 'Qwen'},
+            exercise=dict(assessment_id='a1', title='ALU', description='Vai trò?', kind='TEXT', question=None),
+            tutoring=dict(action='practice', step=2, history=[dict(user='Gợi ý?', assistant='Đọc nguồn [1].')]))
+        with self.request(data=payload) as response:
+            self.assertEqual(response.status, 200)
+        self.assertEqual(self.calls[-1]['question'], 'Bản nháp của tôi')
+        self.assertEqual(self.calls[-1]['tutoring'], payload['tutoring'])
+        for invalid in ({**payload, 'mode': 'qa'}, {**payload, 'tutoring': {'step': 2}},
+                        {**payload, 'exercise': {**payload['exercise'], 'correct_ids': ['a']}}):
+            with self.assertRaises(HTTPError) as caught:
+                self.request(data=invalid)
+            self.assertEqual(caught.exception.code, 400)
+        self.assertEqual(len(self.calls), 1)
 
     def test_validation_reason_is_allowlisted_without_private_output(self):
         from apps.ai.providers.base import GenerationError

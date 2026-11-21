@@ -8,7 +8,7 @@ vi.mock('./documents/CourseDocuments',()=>({default:({onDocumentsChanged})=><but
   {document_id:'doc-1',title:'Chương một: Kiến thức nền tảng'},
   {document_id:'doc-2',title:'Chương hai: Phân tích dữ liệu và các ứng dụng thực tiễn trong hệ thống học tập'},
 ])}>Nạp học liệu thử</button>}))
-vi.mock('./assessments/SessionAssessments',()=>({default:({rows,selectedId,onRequestAssistance})=><button onClick={()=>onRequestAssistance({assessment_id:selectedId || rows[0].id,question_id:'q1'})}>Yêu cầu gợi ý</button>}))
+vi.mock('./assessments/SessionAssessments',()=>({default:({rows,selectedId,onRequestAssistance})=><button onClick={()=>onRequestAssistance({assessment_id:selectedId || rows[0].id,question_id:'q1',question_number:1,question_prompt:'ALU thực hiện những phép toán nào?'})}>Yêu cầu gợi ý</button>}))
 vi.mock('../services/assessment.service',()=>({assessmentPath:()=>'/assessments/',listAssessments:vi.fn(async()=>[
   {id:'a1',title:'Bài A',mode:'PRACTICE'}, {id:'a2',title:'Bài B',mode:'PRACTICE'}])}))
 vi.mock('../services/video.service',()=>({videoPath:()=>'/videos/',listSessionVideos:vi.fn(async()=>[])}))
@@ -23,12 +23,34 @@ it('aborts the previous exercise hint when another assessment is selected', asyn
   await userEvent.click(screen.getByRole('button',{name:'Bài tập',exact:true}))
   await userEvent.click(await screen.findByRole('button',{name:/^Bài A/}))
   await userEvent.click(screen.getByRole('button',{name:'Yêu cầu gợi ý'}))
-  await userEvent.type(screen.getByRole('textbox',{name:'Câu hỏi cho ayo'}),'Tôi nên bắt đầu ra sao?')
-  await userEvent.click(screen.getByRole('button',{name:'Gửi câu hỏi'}))
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(1))
+  expect(screen.getByText('Gợi ý cho bài')).toBeVisible()
+  expect(screen.getByText('Câu 1')).toBeVisible()
+  expect(screen.getByText('ALU thực hiện những phép toán nào?')).toBeVisible()
+  expect(sendChat.mock.calls[0][0]).toMatchObject({
+    course_id:'c1', classroom_id:'r1', session_id:'assessment-scope',
+    mode:'hint', assessment_id:'a1', question_id:'q1',
+  })
+  expect(sendChat.mock.calls[0][0]).not.toHaveProperty('conversation_id')
   const signal=sendChat.mock.calls[0][1].signal
   await userEvent.click(screen.getByRole('button',{name:/^Bài B/}))
   await waitFor(()=>expect(signal.aborted).toBe(true))
   expect(screen.queryByRole('combobox',{name:'Cách hỗ trợ'})).not.toBeInTheDocument()
+})
+
+it('returns from exercise hints to material questions and aborts the pending hint', async()=>{
+  sendChat.mockImplementation(()=>new Promise(()=>{}))
+  render(<SessionWorkspace course={{id:'c1'}} room={{id:'r1'}} session={{id:'return-to-material',title:'Buổi học'}} canManage={false} />)
+  await userEvent.click(screen.getByRole('button',{name:'Bài tập',exact:true}))
+  await userEvent.click(await screen.findByRole('button',{name:/^Bài A/}))
+  await userEvent.click(screen.getByRole('button',{name:'Yêu cầu gợi ý'}))
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(1))
+  const signal=sendChat.mock.calls[0][1].signal
+  await userEvent.click(screen.getByRole('button',{name:'Hỏi đáp học liệu',exact:true}))
+  await waitFor(()=>expect(signal.aborted).toBe(true))
+  expect(screen.queryByText('Gợi ý cho bài')).not.toBeInTheDocument()
+  expect(screen.queryByText('ALU thực hiện những phép toán nào?')).not.toBeInTheDocument()
+  expect(sendChat).toHaveBeenCalledTimes(1)
 })
 
 it('keeps the conversation when the assistant is closed and reopened', async()=>{

@@ -1,0 +1,31 @@
+group,metric,value,unit,denominator,source,note
+rag,completed,116,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,completion_token_weighted_loss,0.7172547476316515,NLL,,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,format_valid,115,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,valid_citation_ids,105,outputs,106,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,reference_exact,24,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,hint_action_exact,9,outputs,10,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,correct_refusals,10,outputs,10,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+rag,mean_generation_seconds,4.668544746353444,seconds,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,completed,116,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,completion_token_weighted_loss,0.31679556348427584,NLL,,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,format_valid,116,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,valid_citation_ids,106,outputs,106,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,reference_exact,45,outputs,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,hint_action_exact,10,outputs,10,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,correct_refusals,10,outputs,10,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+tuned_rag,mean_generation_seconds,6.113844065991394,seconds,116,ayo-handoff.zip/holdout/results; 232 saved outputs,"CPU recomputation; supplied evidence, no new GPU run"
+holdout,loss_reduction_percent,55.832211005877205,percent,,holdout-recheck,"Loss reduction, not accuracy improvement"
+tests_current,backend_main_passed,447,tests,447,test-results.txt,Fresh LMS/AI/schema suite
+tests_current,frontend_passed,374,tests,374,test-results.txt,"Fresh full frontend suite, 56 files"
+tests_historical,documents_runtime_passed,84,tests,84,integration-20261120/documents-runtime.txt,"Retained run, not added to fresh test total"
+tests_historical,upload_worker_passed,27,tests,27,integration-20261120/documents-isolated.txt,Retained run with isolated settings
+demo,student_s1_progress,75,percent,100,integration-20261120/verification.json,Observed submitted/graded demo state
+demo,student_s1_quiz_score,0,points,10,integration-20261120/verification.json,
+demo,student_s1_essay_score,8,points,10,integration-20261120/verification.json,
+live_cpu,qa_cases,10,cases,10,live-20261121/content-review.json,8 grounded + 2 insufficient; retained scoped acceptance
+live_cpu,summary_pages,3,pages,3,live-20261121/content-review.json,"Pages 7-9, not entire PDF"
+live_hint_progress,answered_requests,8,requests,8,hint-progress-live.json,Historical eight-call check before peer-review fixes; not current diagnosed-hint acceptance
+live_diagnosed_hint,answered_requests,13,requests,13,test-results.txt,"Real Qwen; current student input, staged actions, source readback and content review"
+live_diagnosed_hint,test_mode_blocked,1,requests,1,test-results.txt,HTTP 403; no model call
+tests_current,kaggle_cell_tests_passed,13,tests,13,test-results.txt,CPU mocks; provider identity and tunnel retained; not GPU quality tests

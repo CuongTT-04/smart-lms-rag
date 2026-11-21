@@ -106,7 +106,7 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                     count = busy_count()
                     self.reply(200, {'ready': not draining, 'busy': count == len(pipelines),
                         'replicas': len(pipelines), 'in_flight': count, 'config': public_config,
-                        'capabilities': ['chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1', 'qa_completeness_v1', 'qa_atomic_evidence_v1', 'qa_source_descriptions_v1', 'qa_source_selection_v1', 'coherent_summary_v1', 'summary_topic_paragraphs_v1', 'summary_validation_details_v1', 'summary_text_grammar_v1', 'summary_json_quotes_v1']})
+                        'capabilities': ['diagnosed_hint_v1', 'staged_hint_v1', 'chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1', 'qa_completeness_v1', 'qa_atomic_evidence_v1', 'qa_source_descriptions_v1', 'qa_source_selection_v1', 'coherent_summary_v1', 'summary_topic_paragraphs_v1', 'summary_validation_details_v1', 'summary_text_grammar_v1', 'summary_json_quotes_v1']})
                 else:
                     self.reply(404, {'code': 'NOT_FOUND'})
 
@@ -123,8 +123,13 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                     return self.reply(413, {'code': 'REQUEST_TOO_LARGE'})
                 data = json.loads(self.rfile.read(length))
                 required = {'question', 'mode', 'contexts', 'exercise', 'config'}
-                if not isinstance(data, dict) or not required.issubset(data) or set(data)-required-{'history','history_protocol'}:
+                if not isinstance(data, dict) or not required.issubset(data) or set(data)-required-{'history','history_protocol','tutoring'}:
                     raise ValueError('Invalid fields')
+                if 'tutoring' in data:
+                    from apps.ai.rag.tutoring import validate_tutoring
+                    validate_tutoring(data['tutoring'])
+                    if data['mode'] != 'hint' or data['exercise'] is None or 'history' in data or 'history_protocol' in data:
+                        raise ValueError('Invalid tutoring mode')
                 has_history = 'history' in data or 'history_protocol' in data
                 if has_history:
                     from apps.ai.rag.conversation import validate_history
@@ -150,6 +155,8 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
                 arguments = dict(question=data['question'], mode=data['mode'], contexts=data['contexts'], exercise=exercise)
                 if has_history:
                     arguments['history'] = data['history']
+                if 'tutoring' in data:
+                    arguments['tutoring'] = data['tutoring']
                 result = pipelines[index].generate_answer(**arguments)
                 used = list(result.trace.used_source_ids)
                 output = result.to_dict()

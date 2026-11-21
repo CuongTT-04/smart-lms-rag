@@ -19,6 +19,8 @@ class ChatRequest(serializers.Serializer):
     page_start = serializers.IntegerField(min_value=1, required=False)
     page_end = serializers.IntegerField(min_value=1, required=False)
     summary_request_id = serializers.UUIDField(required=False)
+    hint_action = serializers.ChoiceField(choices=['initial', 'explain_task', 'next_step', 'practice'], required=False)
+    previous_hint_id = serializers.UUIDField(required=False)
 
     def to_internal_value(self, data):
         if not isinstance(data, dict) or set(data) - set(self.fields):
@@ -26,6 +28,10 @@ class ChatRequest(serializers.Serializer):
         return super().to_internal_value(data)
 
     def validate(self, data):
+        if data['mode'] != 'hint' and any(key in data for key in ('hint_action', 'previous_hint_id')):
+            raise serializers.ValidationError('Thao tác gợi ý chỉ dùng cho bài ôn tập.')
+        if data.get('hint_action') in ('next_step', 'practice') and not data.get('previous_hint_id'):
+            raise serializers.ValidationError('Cần lượt gợi ý trước để tiếp tục.')
         if bool(data.get('conversation_id')) != bool(data.get('client_message_id')):
             raise serializers.ValidationError('Phiên chat cần mã lượt hỏi để tránh gửi trùng.')
         if data.get('conversation_id') and data['mode'] != 'qa':
@@ -91,6 +97,7 @@ class ChatResponse(serializers.Serializer):
     turn_id = serializers.UUIDField(required=False)
     memory = serializers.DictField(required=False)
     coverage = serializers.DictField(required=False)
+    hint = serializers.DictField(required=False)
     suggested_questions = serializers.ListField(child=serializers.CharField(max_length=240), max_length=3, required=False,
         help_text='Tối đa 3 câu hỏi tiếp theo từ nguồn hiện tại; không tự gửi hoặc gọi model thêm. Có thể rỗng nếu không có gợi ý phù hợp.')
     rating = serializers.ChoiceField(choices=['LIKE', 'DISLIKE'], required=False, allow_null=True)

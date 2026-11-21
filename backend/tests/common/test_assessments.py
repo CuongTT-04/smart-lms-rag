@@ -224,3 +224,35 @@ class AssessmentTests(TestCase):
         self.assertEqual(self.teacher.patch(self.attempt+'grade/', {'score': 11}, format='json').status_code, 400)
         outsider = authenticate_client(APIClient(), self.other)
         self.assertEqual(outsider.get(self.attempt+'file/').status_code, 404)
+
+    def test_question_stats_ignores_empty_arrays_blank_strings_and_missing_keys(self):
+        from apps.courses.assessment_models import AssessmentAttempt
+        questions = [
+            {'id': 'q1', 'prompt': 'Chọn nhiều', 'multiple': True, 'choices': [{'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}], 'correct_ids': ['a']},
+            {'id': 'q2', 'prompt': 'Chọn một', 'multiple': False, 'choices': [{'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}], 'correct_ids': ['a']},
+            {'id': 'q3', 'prompt': 'Không trả lời', 'multiple': False, 'choices': [{'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}], 'correct_ids': ['a']},
+            {'id': 'q4', 'prompt': 'Trả lời đúng', 'multiple': False, 'choices': [{'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}], 'correct_ids': ['a']},
+        ]
+        created = self.create(questions=questions)
+        attempt = self.start()
+        # Simulate empty list [], blank string "", missing key, and valid selection.
+        AssessmentAttempt.objects.filter(pk=attempt['id']).update(
+            status='SUBMITTED',
+            submitted_at=timezone.now(),
+            answers={'q1': [], 'q2': '', 'q4': 'a'},
+        )
+        report = self.teacher.get(self.detail + 'dashboard/').json()
+        by_id = {row['id']: row for row in report['question_stats']}
+        self.assertEqual(by_id['q1']['answered'], 0)
+        self.assertEqual(by_id['q2']['answered'], 0)
+        self.assertEqual(by_id['q3']['answered'], 0)
+        self.assertEqual(by_id['q4']['answered'], 1)
+        self.assertEqual(by_id['q4']['correct'], 1)
+
+        # Teacher from another course cannot view dashboard, export, or grade this assessment.
+        other_teacher = User.objects.create_user('assessment-other-teacher', role='TEACHER')
+        other_client = authenticate_client(APIClient(), other_teacher)
+        self.assertEqual(other_client.get(self.detail + 'dashboard/').status_code, 404)
+        self.assertEqual(other_client.get(self.detail + 'export/').status_code, 404)
+        self.assertEqual(other_client.patch(self.attempt + 'grade/', {'score': 5}, format='json').status_code, 404)
+        self.assertTrue(created['id'])

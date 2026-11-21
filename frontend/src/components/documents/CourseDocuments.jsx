@@ -3,6 +3,8 @@ import '../../documents.css'
 import MaterialActions from './MaterialActions'
 import PdfViewer from './PdfViewer'
 import FilePicker from '../FilePicker'
+import { DocumentCompletionButton } from '../learning/LearningProgress'
+import { useClassroomProgress } from '../../hooks/useClassroomProgress'
 import { FileText } from 'lucide-react'
 import { listDocuments, uploadDocument, documentStatus, retryDocument, documentExtraction, renameDocument } from '../../services/document.service'
 
@@ -16,7 +18,7 @@ function message(error) {
   return ERRORS[error.data?.error?.code] || 'Không thể hoàn tất yêu cầu. Vui lòng thử lại.'
 }
 
-export default function CourseDocuments({ courseId, sessionId, canManage = false, workspace = false, selectedDocumentId, draftId, onDraftUploaded, onDocumentsChanged, refreshToken = 0 }) {
+export default function CourseDocuments({ courseId, classroomId, sessionId, canManage = false, workspace = false, selectedDocumentId, draftId, onDraftUploaded, onDocumentsChanged, refreshToken = 0 }) {
   const [documents, setDocuments] = useState([])
   const [loadedScope, setLoadedScope] = useState(null)
   const scope = `${courseId}:${sessionId || ''}:${refreshToken}`
@@ -30,6 +32,8 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
   const [error, setError] = useState('')
   const [inspection, setInspection] = useState(null)
   const [closedPreviewKey, setClosedPreviewKey] = useState(null)
+  const [loadedPreviewKey, setLoadedPreviewKey] = useState(null)
+  const { progress, applyProgress } = useClassroomProgress(courseId, classroomId, workspace && !canManage && Boolean(sessionId))
   const operations = useRef(new Map())
   const retries = useRef(new Map())
   const input = useRef(null)
@@ -49,6 +53,11 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
   const previewAvailable = currentDocument && (workspace ? currentReady : (currentDocument.is_published || currentReady))
   const previewKey = currentDocument ? `${currentDocument.document_id}:${currentDocument.version_id}:${currentDocument.policy_revision}:${currentDocument.published_version_id}` : ''
   const previewClosed = closedPreviewKey === previewKey
+  const pdfReady = useCallback((ready) => { setLoadedPreviewKey(ready ? previewKey : null) }, [previewKey])
+  const publishedVersion = currentDocument?.published_version_id || currentDocument?.version_id
+  const documentCompleted = progress?.sessions?.find((row) => row.session_id === sessionId)?.activities?.some(
+    (item) => item.kind === 'PDF' && item.version_id === publishedVersion && item.completed,
+  ) || false
   const unavailablePreview = useCallback((text) => { setClosedPreviewKey(previewKey); setError(text) }, [previewKey])
   const visibleInspection = !workspace || inspection?.documentId === currentDocument?.document_id ? inspection : null
   const active = documents.filter((d) => ['QUEUED', 'PROCESSING'].includes(d.extraction_status)
@@ -169,7 +178,12 @@ export default function CourseDocuments({ courseId, sessionId, canManage = false
     {error && <p className="error-banner" role="alert">{error}</p>}
     {loading ? <p role="status">Đang tải học liệu…</p> : !canManage && documents.length === 0 && <p>Chưa có học liệu.</p>}
     {workspace && !canManage && !loading && currentDocument && <h2 className="session-student-material-title" title={currentDocument.title}>{currentDocument.title}</h2>}
-    {workspace && !draftId && <div className="session-pdf-preview" aria-label="Bản xem trước tài liệu">{previewAvailable && !previewClosed ? <PdfViewer key={previewKey} document={currentDocument} preferCurrent={canManage} annotatable showFeedback={!canManage} hideHeader={!canManage} onRename={canManage ? rename : undefined} onClose={() => setClosedPreviewKey(previewKey)} onUnavailable={unavailablePreview} /> : <div className="session-pdf-empty"><FileText size={44} /><h3>{canManage ? 'Bản xem trước tài liệu' : 'Học liệu chưa sẵn sàng'}</h3><p>{!canManage ? 'Vui lòng tải lại hoặc liên hệ với giáo viên' : currentDocument ? 'Nhấn Xem PDF khi bản xem đã sẵn sàng.' : 'Tải PDF lên để xem tài liệu tại đây.'}</p></div>}</div>}
+    {workspace && !draftId && <div className="session-pdf-preview" aria-label="Bản xem trước tài liệu">{previewAvailable && !previewClosed ? <PdfViewer onReady={pdfReady} key={previewKey} document={currentDocument} preferCurrent={canManage} annotatable showFeedback={!canManage} hideHeader={!canManage} onRename={canManage ? rename : undefined} onClose={() => { setLoadedPreviewKey(null); setClosedPreviewKey(previewKey) }} onUnavailable={unavailablePreview} /> : <div className="session-pdf-empty"><FileText size={44} /><h3>{canManage ? 'Bản xem trước tài liệu' : 'Học liệu chưa sẵn sàng'}</h3><p>{!canManage ? 'Vui lòng tải lại hoặc liên hệ với giáo viên' : currentDocument ? 'Nhấn Xem PDF khi bản xem đã sẵn sàng.' : 'Tải PDF lên để xem tài liệu tại đây.'}</p></div>}</div>}
+    {workspace && !canManage && classroomId && sessionId && !loading && currentDocument && <DocumentCompletionButton
+      key={`completion:${previewKey}`} courseId={courseId} classroomId={classroomId} versionId={publishedVersion}
+      documentLoaded={previewAvailable && !previewClosed && loadedPreviewKey === previewKey}
+      completed={documentCompleted} onCompleted={applyProgress}
+    />}
     {workspace && !canManage && !loading && currentDocument && <MaterialActions key={previewKey} document={currentDocument} downloadOnly />}
     {!(workspace && !canManage) && <div className="materials-list">{(workspace ? documents.filter((document) => document.document_id === currentDocument?.document_id) : documents).map((document) => <article key={document.document_id} className="material-row">
       <h3>{document.title}</h3><p>{document.file_name || ''}{document.page_count ? ` · ${document.page_count} trang` : ''}</p>

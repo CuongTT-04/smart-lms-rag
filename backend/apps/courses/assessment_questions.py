@@ -6,7 +6,11 @@ def correct_ids(question):
 
 
 def selected_ids(answer):
-    return answer if isinstance(answer, list) else [answer] if isinstance(answer, str) else []
+    if isinstance(answer, list):
+        return [item for item in answer if isinstance(item, str) and item.strip()]
+    if isinstance(answer, str) and answer.strip():
+        return [answer]
+    return []
 
 
 def is_correct(question, answer):

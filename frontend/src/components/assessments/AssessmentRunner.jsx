@@ -22,7 +22,6 @@ export default function AssessmentRunner({ path, info, onRefresh, onTestActive, 
   const [noticeVariant, setNoticeVariant] = useState('success')
   const showNotice = useCallback((text, variant = 'success') => { setNotice(text); setNoticeVariant(variant) }, [])
   const [confirm, setConfirm] = useState(false)
-  const [hint, setHint] = useState(null)
   const [now, setNow] = useState(() => Date.now())
   const [fullscreen, setFullscreen] = useState(Boolean(document.fullscreenElement))
   const root = useRef(null)
@@ -182,7 +181,26 @@ export default function AssessmentRunner({ path, info, onRefresh, onTestActive, 
       {(file || attempt.file_name) && !removeFile && <div className="assessment-actions">{!editable && <span>{attempt.file_name}</span>}{editable ? <button type="button" className="outline-button" disabled={busy} onClick={() => edit({ file: null, removeFile: true })}>Bỏ tệp</button> : <button type="button" className="outline-button" onClick={() => downloadAssessmentFile(`${attemptPath(attempt.id)}file/`, attempt.file_name).catch((err) => setError(courseErrorMessage(err)))}><Download size={16} />Tải bài nộp</button>}</div>}</div>}
       {editable ? <div className="assessment-actions"><button type="button" className="outline-button" disabled={busy || expired} onClick={() => persist().then(() => showNotice('Đã lưu bản nháp.')).catch((err) => setError(courseErrorMessage(err)))}><Save size={17} />Lưu bản nháp</button><button type="button" className="solid-button" disabled={busy || expired} onClick={() => test ? setConfirm(true) : submit()}><Send size={17} />{busy ? 'Đang nộp...' : 'Nộp bài'}</button></div> : <div className="assessment-result"><strong>{attempt.score == null ? 'Đang chờ chấm hoặc công bố kết quả' : `Điểm: ${attempt.score}/10`}</strong>{attempt.feedback && <p className="assessment-prewrap">{attempt.feedback}</p>}<p>Nộp lúc {dateLabel(attempt.submitted_at)}</p>{!test && !deadlinePassed && <button className="outline-button" type="button" onClick={() => { setAttempt(null); current.current = null; startId.current = crypto.randomUUID() }}>Làm lại / chỉnh sửa bài</button>}</div>}
     </>}
-    {!test && <aside className="assessment-assistance"><h3><Sparkles size={18} />Hỗ trợ ôn tập</h3>{info.kind === 'TEXT' && onRequestAssistance && <button type="button" className="outline-button" onClick={() => onRequestAssistance({assessment_id:info.id})}><Sparkles size={16} />Gợi ý bằng AI</button>}{info.hint && <p className="assessment-prewrap">{info.hint}</p>}<button type="button" className="outline-button" onClick={async () => { try { const data = await assessmentWrite(`${path}assistance/`, 'POST', {}); setHint(data.message) } catch (err) { setError(courseErrorMessage(err)) } }}>Trợ giúp AI</button>{hint && <p role="status">{hint}</p>}</aside>}
+    {!test && <aside className="assessment-assistance">
+      <h3><Sparkles size={18} />Hỗ trợ ôn tập</h3>
+      {info.kind === 'TEXT' && onRequestAssistance && (
+        <button type="button" className="outline-button" onClick={() => onRequestAssistance({ assessment_id: info.id })}>
+          <Sparkles size={16} />Gợi ý bằng AI
+        </button>
+      )}
+      {info.kind === 'QUIZ' && onRequestAssistance && (
+        <p className="assessment-muted">Chọn “Gợi ý bằng AI” ở từng câu hỏi để nhận hướng dẫn từ trợ lý Ayo.</p>
+      )}
+      {info.hint && (
+        <div className="assessment-static-hint">
+          <strong>Gợi ý tĩnh của giáo viên</strong>
+          <p className="assessment-prewrap">{info.hint}</p>
+        </div>
+      )}
+      {!info.hint && !onRequestAssistance && (
+        <p className="assessment-muted">Chưa có gợi ý của giáo viên cho bài ôn tập này.</p>
+      )}
+    </aside>}
     {!editable && <div className="assessment-history"><h3>Lịch sử bài làm</h3>{!info.attempts?.length && <p className="assessment-muted">Chưa có lượt làm.</p>}{info.attempts?.map((a) => <button type="button" className="assessment-history-row" key={a.id} onClick={async () => { try { const data = await getAssessment(attemptPath(a.id)); if (data.status === 'DRAFT') { await start(); return } accept(data, true) } catch (err) { setError(courseErrorMessage(err)) } }}><span>Lượt {a.number} · {a.status === 'DRAFT' ? 'Đang làm' : dateLabel(a.submitted_at)}</span><strong>{a.score == null ? 'Chưa có điểm công bố' : `${a.score}/10`}</strong></button>)}</div>}
     {confirm && <VideoDialog title="Xác nhận nộp bài kiểm tra" pending={busy} onClose={() => setConfirm(false)}><p>Bạn chỉ được nộp chính thức một lần. Sau khi nộp, bạn không thể chỉnh sửa hoặc nộp lại bài này.</p>{error && <p role="alert" className="error-banner">{error}</p>}<div className="video-dialog-actions"><button type="button" className="outline-button" disabled={busy} onClick={() => setConfirm(false)}>Hủy</button><button type="button" className="solid-button" disabled={busy} onClick={submit}>Xác nhận nộp</button></div></VideoDialog>}
   </section>

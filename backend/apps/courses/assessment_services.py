@@ -25,6 +25,8 @@ def finalize(attempt, automatic=False):
         correct = sum(is_correct(q, attempt.answers.get(q['id'])) for q in assessment.questions)
         attempt.score = (Decimal(correct) * 10 / len(assessment.questions)).quantize(Decimal('.01'))
     attempt.save()
+    from .progress_services import refresh_classroom_progress
+    refresh_classroom_progress(classroom_id=assessment.session.classroom_id)
 
 
 def expire(attempt):

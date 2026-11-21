@@ -70,6 +70,9 @@ class AssessmentsView(AssessmentAccessView):
         session = self.video_session(request, course_id, classroom_id, session_id, manage=True)
         values = self.validated(AssessmentInput, request)
         obj = Assessment.objects.create(session=session, **values)
+        if obj.is_published and not session.is_draft:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=session.classroom_id)
         return Response(assessment_output(obj, True), status=201)
 
 
@@ -97,12 +100,19 @@ class AssessmentDetailView(AssessmentAccessView):
         for k, v in values.items():
             setattr(obj, k, v)
         obj.save()
+        if 'is_published' in values and not obj.session.is_draft:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=obj.session.classroom_id)
         return Response(assessment_output(obj, True))
 
     @schema('Gỡ bài tập, giữ lịch sử bài làm')
     def delete(self, request, **kwargs):
         obj, _ = self.assessment(request, manage=True, **kwargs)
+        was_published = obj.is_published
         obj.removed_at = timezone.now(); obj.is_published = False; obj.save()
+        if was_published and not obj.session.is_draft:
+            from apps.courses.progress_services import refresh_classroom_progress
+            refresh_classroom_progress(classroom_id=obj.session.classroom_id)
         return Response(status=204)
 
 

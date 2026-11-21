@@ -9,6 +9,24 @@ from apps.documents.exceptions import DocumentError
 
 
 class RemoteTests(SimpleTestCase):
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_tutoring_is_forwarded_and_old_gateway_is_reported_as_config_mismatch(self, build):
+        tutoring = dict(action='practice', step=2, history=[])
+        build.return_value.open.return_value = io.BytesIO(json.dumps(dict(
+            output=dict(status='ANSWERED', answer='Đọc lại [1].', references=[dict(label=1, source_id='S1')], usage=None),
+            used_source_ids=['S1'])).encode())
+        args = dict(question='Bản nháp', mode='hint', contexts=[dict(source_id='S1')], exercise={},
+            config=dict(timeout_seconds=30), tutoring=tutoring)
+        result = generate_answer(**args)
+        payload = json.loads(build.return_value.open.call_args.args[0].data)
+        self.assertEqual(payload['question'], 'Bản nháp')
+        self.assertEqual(payload['tutoring'], tutoring)
+        self.assertEqual(result['answer'], 'Đọc lại [1].')
+        build.return_value.open.side_effect = HTTPError('https://example.test/generate', 400, 'Bad request', {}, io.BytesIO(b'{}'))
+        with self.assertRaises(DocumentError) as error:
+            generate_answer(**args)
+        self.assertEqual(error.exception.code, 'GENERATION_CONFIG_MISMATCH')
     def call(self):
         return generate_answer(question='Q', mode='qa', contexts=[{'source_id': 'S1'}],
                                exercise=None, config={'timeout_seconds': 30})

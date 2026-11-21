@@ -52,7 +52,7 @@ def summarize_step(*, phase, records, config):
         raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ tóm tắt.', 503) from error
 
 
-def generate_answer(*, question, mode, contexts, exercise, config, history=None):
+def generate_answer(*, question, mode, contexts, exercise, config, history=None, tutoring=None):
     try:
         url = os.environ['AI_INFERENCE_URL'].rstrip('/')
         parsed = urlsplit(url)
@@ -63,6 +63,8 @@ def generate_answer(*, question, mode, contexts, exercise, config, history=None)
         payload = dict(question=question, mode=mode, contexts=contexts, exercise=exercise, config=config)
         if history is not None:
             payload.update(history=history, history_protocol='chat_history_v1')
+        if tutoring is not None:
+            payload['tutoring'] = tutoring
         body = json.dumps(payload).encode('utf-8')
         request = Request(url + '/generate', data=body, headers={
             'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json',
@@ -114,7 +116,7 @@ def generate_answer(*, question, mode, contexts, exercise, config, history=None)
         if (exc.code, remote) in errors:
             raise DocumentError(*errors[(exc.code, remote)]) from exc
         if exc.code == 400:
-            if history is not None:
+            if history is not None or tutoring is not None:
                 raise DocumentError('GENERATION_CONFIG_MISMATCH', 'Gateway chưa hỗ trợ context nhiều lượt hoặc cấu hình chưa khớp.', 503) from exc
             raise DocumentError('INVALID_REQUEST', 'Yêu cầu không phù hợp với chính sách trợ lý.', 400) from exc
         raise DocumentError('GENERATION_UNAVAILABLE', 'Dịch vụ AI chưa sẵn sàng. Vui lòng thử lại.', 503) from exc

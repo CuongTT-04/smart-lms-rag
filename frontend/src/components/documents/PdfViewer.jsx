@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import PdfCanvas from './PdfCanvas'
 import { materialPdf, documentStatus } from '../../services/document.service'
 
-export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false, annotatable = true, hideHeader = false, showFeedback = true, initialPage = 1, expectedVersionId }) {
+export default function PdfViewer({ document, onClose, onRename, onUnavailable, preferCurrent = false, annotatable = true, hideHeader = false, showFeedback = true, initialPage = 1, expectedVersionId, onReady }) {
   const [url,setUrl]=useState('')
   const [error,setError]=useState('')
   const [renaming, setRenaming] = useState(false)
@@ -73,6 +73,6 @@ export default function PdfViewer({ document, onClose, onRename, onUnavailable, 
       <button type="button" className="outline-button" disabled={saving} onClick={() => setRenaming(false)}>Hủy</button>
       {renameError && <p role="alert">{renameError}</p>}
     </form>}
-    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas initialPage={initialPage} allowCopy={document.material_policy === 'PUBLIC_DOWNLOAD'} key={`${url}:${initialPage}`} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
+    {error ? <p role="alert">{error}</p> : url ? <PdfCanvas onReady={onReady} initialPage={initialPage} allowCopy={document.material_policy === 'PUBLIC_DOWNLOAD'} key={`${url}:${initialPage}`} url={url} title={document.title} annotatable={annotatable} showFeedback={showFeedback} documentId={document.document_id} versionId={version} /> : <p role="status">Đang mở PDF…</p>}
   </section>
 }

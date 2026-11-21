@@ -568,6 +568,36 @@ Swagger ở `/api/docs/`, OpenAPI ở `/api/schema/` có ví dụ hint/summary, 
 
 ### Kiểm Chứng Và Giới Hạn
 
+#### Gợi ý theo bước và bản nháp học viên
+
+UI gửi `hint_action` (`initial`, `explain_task`, `next_step`, `practice`) và `previous_hint_id`
+của lượt đã thành công. Backend tự kiểm chủ sở hữu, bài/câu hỏi và phiên bản nguồn, giữ tối đa
+ba lượt trước trong `ChatResponseRecord.hint_state`. Không nhận lịch sử hoặc số bước do client khai báo.
+Câu hỏi/bản nháp hiện tại được chuyển nguyên vẹn tới mô hình cùng đề công khai và nguồn được phép.
+Qwen chọn loại ý đang vướng, mã đoạn nguồn và mã ý trích nguyên từ bản nháp. Gateway kiểm các mã
+rồi dựng câu gợi mở theo loại vấn đề và bước hiện tại; không nhận lời giải tự do từ model. Backend
+giữ kết quả này và chỉ thêm metadata tiến trình. Hai bản nháp khác nhau được xét riêng, không bị
+ghi đè thành một hướng dẫn chung. Đây là hỗ trợ tự học, không phải điểm hoặc đáp án đã được chấm.
+
+Gateway cần capability `diagnosed_hint_v1` và `staged_hint_v1`. Cell khởi động xuất từ source hiện tại đã gồm giao thức này:
+
+```powershell
+python scripts/append_kaggle_dual_gpu.py --export .private/ayo-startup.py
+```
+
+Với phiên T4 x2 đã nạp Qwen, có thể cập nhật riêng gateway mà giữ model và URL:
+
+```powershell
+python scripts/export_kaggle_tutoring_patch.py --export .private/ayo-hint-update-cell.py
+```
+
+Dán toàn bộ file vừa xuất vào một cell cuối notebook và chạy riêng cell đó, không Run All/restart.
+Chờ `STAGED_HINT_READY`. Nếu session đã mất, khởi động lại bằng cell startup mới trước.
+Gateway cũ từ chối trường mới sẽ trả lỗi cấu hình rõ ràng, không giả lập gợi ý thành công.
+Giữ chặn TEST và không gửi đáp án/rubric riêng. Kiểm schema và mã nguồn không đủ chứng minh
+chất lượng hướng dẫn hoặc ngăn mọi cách lộ lời giải; cần kiểm với Qwen thật trên câu hỏi, bản nháp,
+yêu cầu xin đáp án và đổi bài/câu hỏi sau mỗi thay đổi prompt.
+
 | Nhóm kiểm | Kết quả |
 |---|---|
 | Backend AI/engine/gateway, quyền tài liệu, buổi học và OpenAPI | 596/596 test đạt trong PostgreSQL test riêng; có TEST bắt đầu giữa lúc sinh, thu hồi quyền, không rò đáp án/rubric và lỗi model/index |

@@ -1,4 +1,5 @@
 from apps.courses.models import Classroom
+from django.db import connection
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.courses.services import create_course, update_course
@@ -132,6 +133,7 @@ class ClassroomSessionTests(TestCase):
             # The test client's streaming wrapper closes safely inside TestCase's transaction.
             self.assertTrue(b''.join(image.streaming_content).startswith(b'\x89PNG'))
             self.assertTrue(image.closed)
+            self.assertFalse(connection.connection.closed)
             student = authenticate_client(APIClient(), self.student)
             self.assertEqual(student.get(image_url).status_code, 404)
             join_by_code(actor=self.student, class_code=self.room.class_code)
@@ -139,6 +141,7 @@ class ClassroomSessionTests(TestCase):
             self.assertEqual(allowed.status_code, 200)
             self.assertTrue(b''.join(allowed.streaming_content).startswith(b'\x89PNG'))
             self.assertTrue(allowed.closed)
+            self.assertFalse(connection.connection.closed)
             self.assertEqual(APIClient().get(image_url).status_code, 401)
             invalid = self.client.post(url, {'content': 'No', 'image': SimpleUploadedFile('fake.png', b'not an image', 'image/png')}, format='multipart')
             self.assertEqual(invalid.status_code, 400)
