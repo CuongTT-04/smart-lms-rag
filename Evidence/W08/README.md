@@ -104,7 +104,7 @@ Log và phạm vi từng lượt kiểm được ghi trong [test-results.txt](te
 
 | Thành phần | Tham chiếu |
 | --- | --- |
-| Repository / PR | [smart-lms-rag](https://github.com/CuongTT-04/smart-lms-rag), [PR #19 của Dương](https://github.com/CuongTT-04/smart-lms-rag/pull/19), [PR #20 của Cường](https://github.com/CuongTT-04/smart-lms-rag/pull/20) |
+| Repository / PR | [smart-lms-rag](https://github.com/CuongTT-04/smart-lms-rag), [PR #19 của Dương](https://github.com/CuongTT-04/smart-lms-rag/pull/19), [PR #20 của Cường](https://github.com/CuongTT-04/smart-lms-rag/pull/22) |
 | Commit tiêu biểu | `77f9259`: holdout và hai chức năng Ayo; `818a9c3`, `1163002`: LMS và tích hợp; `40e9789`: sửa gợi ý theo đề ôn tập |
 | Milestone | Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant |
 | Minh chứng hình ảnh | Hai biểu đồ holdout và tám ảnh giao diện trong [figures/](figures/) |
