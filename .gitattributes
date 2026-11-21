@@ -7,3 +7,9 @@ Evidence/W05/** -text whitespace=cr-at-eol
 Evidence/W06/** -text whitespace=cr-at-eol
 # Keep the supplied Markdown hard line breaks without changing its bytes.
 Evidence/W06/README.md whitespace=-blank-at-eol,cr-at-eol
+
+# W08 manifests bind the same LF text bytes in Windows and Git checkouts.
+Evidence/W08/*.md text eol=lf
+Evidence/W08/*.csv text eol=lf
+Evidence/W08/*.txt text eol=lf
+Evidence/W08/*.json text eol=lf

@@ -1,31 +1,20 @@
-W08 VERIFICATION
+W08 PEER-REVIEW FIX VERIFICATION
 Date: 2026-11-21 (Asia/Saigon)
 Branch: TranTuanCuong_B22DCVT073_W8Tasks
-Git HEAD: 589b79c6d8ed6d4acaedbd7cb0585816a648d52b
-Source checkpoint SHA-256: 5a30b13178e774ee84122353592ecc530fd2f31741a597c7d31fc4601676617b
-The source checkpoint includes the modified/untracked code files listed in manifest.json.
+Git HEAD: 36344db346797f0150a607dde8f54645625d1c22
+Source checkpoint SHA-256: 682ef4730125c7204314f609e063da91c2cfa6e1f6787c05a7bfb0828779467f
+Byte basis: canonical Git index blobs (LF for W08 text). Manifest does not hash itself.
 
 
-README REVIEW
-The ten supplied images remain byte-for-byte copies. README.md was updated with user authorization.
-Holdout metrics and adapter hash match supplied evidence and the W7 training audit.
-README now reports current 433 backend / 374 frontend results and eight real-model hint progression calls. Historical 84 runtime / 27 upload-worker checks remain dated 20/11.
-Fresh full suites below report 433 backend and 374 frontend tests.
-PR #19 resolves as merged. User requested the PR #20 link in README in advance of creating that PR. PR #20 remains pending creation at this checkpoint.
-Historical screenshots illustrate their recorded state, before the latest hint progression UI.
+REGRESSIONS
+Video: answering revised/added checkpoints resynchronizes saved enrollment after old completion.
+Results/Excel: expire eligible QUIZ drafts under assessment/attempt locks, preserve unpublished scores, student scope and repeated read idempotency; TEXT drafts retain existing behavior.
+Hints: real student draft, owned history, public exercise only, source/span IDs, distinct stages, unknown IDs/free-text solutions/incomplete output rejected.
 
 
-HOLDOUT RECHECK
-232 outputs, 116 inputs, two arms. Verified archive receipt, artifact/package inventory,
-adapter bytes, prompt/payload bindings, unique output identities, per-output scores and aggregate metrics.
-Adapter SHA-256: 51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7
-Scoring reuses normalize/score/summarize from current scripts/comparison/holdout.py.
-This CPU check uses saved outputs; GPU generation/tokenizer execution is retained from handoff evidence.
-
-
-FRESH BACKEND COMMAND
-docker compose exec -T backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --settings=config.settings.test --noinput --verbosity=1
-Found 433 test(s).
+BACKEND COMMAND
+docker compose exec -T backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --settings=config.settings.test --noinput
+Found 447 test(s).
 Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
 /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
@@ -70,9 +59,9 @@ System check identified no issues (0 silenced).
   return self._jws.encode(
 .../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
-.............................................................................................................................................Updated 1 enrollment(s) for classroom bd1dea4c-cc97-4c93-bf2a-4b9cd9264a7c.
-..........OpenCV: FFMPEG: tag 0x30385056/'VP80' is not supported with codec id 139 and format 'webm / WebM'
-.........W2 scenario 01: PASS | Health | 200; status=ok
+Updated 1 enrollment(s) for classroom 8b801c01-3185-4dfc-9f85-3f3b7cf10bd5.
+..........................................................................................................................................................OpenCV: FFMPEG: tag 0x30385056/'VP80' is not supported with codec id 139 and format 'webm / WebM'
+W2 scenario 01: PASS | Health | 200; status=ok
 W2 scenario 02: PASS | Teacher login + bearer profile | 200/200; bearer access; refresh cookie; safe user fields and profiles
 W2 scenario 03: PASS | Create and publish course | 201 DRAFT owner; 200 PUBLISHED with timestamp
 W2 scenario 04: PASS | Join and student read | 201 join; 200 list/detail for student
@@ -82,7 +71,7 @@ W2 scenario 07: PASS | JWT refresh rotation | 200 access; refresh rotated and pr
 W2 scenario 08: PASS | Logout revocation | 204; refresh cookie cleared; refresh endpoint 401
 W2 scenario 09: PASS | Invalid login | 401 x3; identical generic detail
 W2 scenario 10: PASS | CSRF endpoint removed | 404; no CSRF API remains
-..................../usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+............................./usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
 /usr/local/lib/python3.12/site-packages/jwt/api_jwt.py:149: InsecureKeyLengthWarning: The HMAC key is 9 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   return self._jws.encode(
@@ -95,45 +84,104 @@ W2 scenario 10: PASS | CSRF endpoint removed | 404; no CSRF API remains
 Warning: enum naming encountered a non-optimally resolvable collision for fields named "mode". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "ModeAeeEnum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
 ................Warning: enum naming encountered a non-optimally resolvable collision for fields named "kind". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "KindD55Enum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
 Warning: enum naming encountered a non-optimally resolvable collision for fields named "mode". The same name has been used for multiple choice sets in multiple components. The collision was resolved with "ModeAeeEnum". add an entry to ENUM_NAME_OVERRIDES to fix the naming.
-...............................................................................................................................................................................................
+..........................................................................................................................................................................................................
 ----------------------------------------------------------------------
-Ran 433 tests in 66.987s
+Ran 447 tests in 60.847s
 
 OK
 Destroying test database for alias 'default'...
 
 
-FRESH FRONTEND COMMAND (cwd frontend)
-npm.cmd test -- --maxWorkers=2
+FRONTEND COMMAND
+npm test -- --reporter=dot --maxWorkers=2
 
 > ohayo-frontend@0.1.0 test
-> vitest run --maxWorkers=2
+> vitest run --reporter=dot --maxWorkers=2
 
 
  RUN  v5.0.3 D:/Đồ án tốt nghiệp/smart-lms-rag/frontend
 
+stderr | src/components/ClassroomWorkspace.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/pages/StudentHomePage.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/pages/TeacherHomePage.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/pages/ClassroomNavigation.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/components/ai/DocumentAssistant.test.jsx > shows followups without sending automatically and uses the same conversation when clicked
+Encountered two children with the same key, `turn`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+
+stderr | src/components/SessionWorkspace.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/components/SessionWorkspace.ai.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/AppNavigation.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/App.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/components/documents/CourseDocuments.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/components/documents/MaterialActions.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+stderr | src/pages/CourseMaterials.integration.test.jsx
+Warning: Please use the `legacy` build in Node.js environments.
+
+······················································································································································································································································································································································································
 
  Test Files  56 passed (56)
       Tests  374 passed (374)
-   Start at  21:12:43
-   Duration  121.10s (environment 52%, tests 28%, setup 10%, import 8%, transform 1%)
+   Start at  22:35:46
+   Duration  111.16s (environment 53%, tests 27%, setup 10%, import 7%, transform 2%)
 
-Environment  jsdom was created 56 times · 118.74s total, 52% of tracked time
+Environment  jsdom was created 56 times · 110.46s total, 53% of tracked time
              create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
              learn more: https://vitest.dev/guide/improving-performance#test-environments
 
 
 
-FRESH LINT COMMAND (cwd frontend)
-npm.cmd run lint
+FRONTEND RUN NOTE
+The initial default-worker run had seven timeouts and one DOM failure in a timed-out suite. Rerun with two workers passed all 374 tests using the same assertions and timeouts. No frontend source changed.
+
+
+KAGGLE CELL UNIT TESTS (CPU MOCKS, NOT GPU ACCEPTANCE)
+STAGED_HINT_READY | diagnosed_hint_v1 | actual draft diagnosis | models preserved
+AI_INFERENCE_URL=https://retained.example
+CPU torch threads: 2 | tokenizer parallelism: false
+Nap/kiem tra Qwen tren cuda:0...
+Nap/kiem tra Qwen tren cuda:1...
+Nap/kiem tra Qwen tren cuda:0...
+Nap/kiem tra Qwen tren cuda:1...
+SAN SANG (dung lai dich vu): https://example.test
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.565s
+
+OK
+
+
+GRAMMAR PREFLIGHT
+DIAGNOSED_HINT_GRAMMAR_PREFLIGHT_PASSED: enum-only JSON; EOS forbidden until closing object; no generated free-text answer field.
+
+
+LINT
 
 > ohayo-frontend@0.1.0 lint
 > eslint . --max-warnings 0
 
 
 
-FRESH BUILD COMMAND (cwd frontend)
-npm.cmd run build
+BUILD
 
 > ohayo-frontend@0.1.0 build
 > vite build
@@ -181,12 +229,62 @@ dist/w2/assets/src-QssgSCxs.js                                        721.07 kB 
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 1.47s
+✓ built in 1.68s
 
 
-RETAINED INTEGRATION EVIDENCE (20-21/11/2026)
-429 backend, 84 documents runtime, 27 isolated upload/worker, 366 frontend.
-The later 147 AI/OpenAPI check overlaps backend tests; do not add its count.
-Scoped CPU live checks and eight later hint progression calls remain separate from unit tests.
-Known limitations: authored hint scaffolding, no semantic grading of student drafts, summary tested on pages 7-9,
-holdout ID/format/exact-match scores do not establish factuality for all outputs.
+REAL QWEN ACCEPTANCE (PRIVATE SOURCE TEXT/RESPONSES OMITTED)
+{
+  "status": "ACCEPTED",
+  "date": "2026-11-21",
+  "gateway": "diagnosed_hint_v1",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "replicas": 2,
+  "answered_requests": 13,
+  "scope": "Isolated demo database; frontend Nginx -> Django -> authorized CPU retrieval -> real Kaggle Qwen",
+  "stage_actions_per_exercise": [
+    "initial",
+    "explain_task",
+    "next_step_1",
+    "next_step_2",
+    "practice_draft_1",
+    "practice_draft_2"
+  ],
+  "exercises": [
+    "ALU_TEXT_PRACTICE",
+    "CU_QUIZ_PRACTICE"
+  ],
+  "current_student_input_and_history_used": true,
+  "different_drafts_produced_distinct_guidance": true,
+  "free_text_model_solutions_disabled": true,
+  "source_identity_verified": true,
+  "source_pages": [
+    21,
+    22,
+    23,
+    24
+  ],
+  "content_review": {
+    "method": "Automated checks plus scoped content inspection",
+    "findings": [
+      "ALU operation/function draft and reversed I/O draft receive different self-check questions.",
+      "CU arithmetic-function draft and control-signal/clock draft receive different self-check questions.",
+      "CU page 21 describes clock-based control; page 22 describes inputs. ALU pages 23-24 cover I/O and operations.",
+      "Scaffolds do not add operation lists, port counts or selected quiz answers; quoted text belongs to the student.",
+      "Initial/explain/outline/draft prompts are distinct; guidance is formative and does not award grades."
+    ],
+    "limitation": "13 CPU cases only; diagnosis relevance is not established for every course or document."
+  },
+  "full_answer_request": "GUIDANCE_ONLY",
+  "test_mode_block": {
+    "http": 403,
+    "code": "AI_NOT_ALLOWED"
+  },
+  "scope_changed_block": {
+    "http": 409,
+    "code": "SCOPE_CHANGED"
+  },
+  "private_report_sha256": "faeaea83170e04c51f101c5f00246ccb74ba9e9b944eb06e3ce29e8ca1cefb3d"
+}
+
+RETAINED PRIOR EVIDENCE
+Holdout: 232 supplied outputs / 116 inputs; adapter checksum and supplied metrics unchanged. Earlier 84 document-runtime and 27 upload-worker tests are dated 20/11 and not added to the current 447 tests. Earlier eight hint calls exercised the pre-review authored scaffolding and are superseded for current acceptance. The ten figures remain supplied historical screenshots. PR #20 link retained at user request; creation not asserted.

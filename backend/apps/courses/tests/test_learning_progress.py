@@ -87,6 +87,31 @@ def _create_published_assessment(session, kind='QUIZ', mode='PRACTICE', title='B
 
 
 class LearningProgressServiceTests(TestCase):
+    def test_answering_changed_or_added_checkpoint_resyncs_completed_enrollment(self):
+        from apps.courses.video_models import VideoQuestion
+        from apps.courses.video_services import submit_answer
+
+        for changed in (True, False):
+            with self.subTest(changed=changed):
+                _, student, _, _, room, enrollment, _, session = _setup_classroom_fixture()
+                video = _create_published_video(session)
+                question = VideoQuestion.objects.create(video=video, kind='MCQ', prompt='CPU?',
+                    choices=[{'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}],
+                    correct_ids=['a'], start_time=10, rewind_time=0, revision=2 if changed else 1)
+                progress = VideoProgress.objects.create(video=video, student=student,
+                    position=120, watched_until=120, completed_at=timezone.now(),
+                    passed={str(question.pk): 1} if changed else {})
+                refresh_classroom_progress(classroom_id=room.pk)
+                enrollment.refresh_from_db()
+                self.assertEqual(enrollment.status, Enrollment.Status.ACTIVE)
+                submit_answer(video, question, student, dict(revision=question.revision,
+                    request_id=uuid.uuid4(), selected_ids=['a']))
+                enrollment.refresh_from_db()
+                self.assertEqual(enrollment.status, Enrollment.Status.COMPLETED)
+                self.assertEqual(enrollment.progress_percent, 100)
+                progress.refresh_from_db()
+                self.assertIsNotNone(progress.completed_at)
+
     def test_document_publication_and_removal_sync_saved_enrollment(self):
         from apps.documents.services import remove_document, set_publication
 

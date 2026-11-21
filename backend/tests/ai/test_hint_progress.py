@@ -30,7 +30,7 @@ class HintProgressTests(ScopeFixture):
         with patch('apps.ai.api.views.answer_chat', side_effect=lambda **kw: dict(self.output)):
             return self.client.post('/api/ai/chat/', payload, format='json')
 
-    def test_steps_explanation_retry_and_end_are_distinct(self):
+    def test_steps_keep_model_output_and_pass_server_owned_history(self):
         initial = self.send('initial').json()
         explained = self.send('explain_task', initial['request_id']).json()
         self.assertEqual(explained['hint']['step'], 0)
@@ -40,8 +40,21 @@ class HintProgressTests(ScopeFixture):
         self.assertEqual(first['hint']['step'], 1)
         last = self.send('next_step', first['request_id']).json()
         self.assertFalse(last['hint']['can_advance'])
-        self.assertEqual(len({r['answer'] for r in (initial, explained, first, last)}), 4)
+        self.assertEqual(last['answer'], self.output['answer'])
         self.assertNotIn('correct_ids', str(last))
+
+    def test_actual_student_question_and_previous_response_reach_generation(self):
+        initial = self.send('initial').json()
+        self.payload['question'] = 'Bản nháp của tôi: ALU chỉ thực hiện phép cộng. Tôi thiếu nhóm nào?'
+        with patch('apps.ai.api.views.answer_chat', return_value=dict(self.output)) as generate:
+            result = self.client.post('/api/ai/chat/', dict(self.payload, hint_action='practice',
+                previous_hint_id=initial['request_id']), format='json')
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.json()['answer'], self.output['answer'])
+        args = generate.call_args.kwargs
+        self.assertEqual(args['data']['question'], self.payload['question'])
+        self.assertEqual(args['tutoring']['action'], 'practice')
+        self.assertEqual(args['tutoring']['history'][-1]['assistant'], self.output['answer'])
 
     def test_foreign_missing_and_changed_exercise_history_are_rejected(self):
         initial = self.send('initial').json()

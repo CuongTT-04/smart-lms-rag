@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework.exceptions import NotFound, ValidationError
@@ -10,6 +11,23 @@ from .progress_services import bulk_enrollment_progress
 
 SUBMISSION_STATUSES = ('NOT_SUBMITTED', 'DRAFT', 'SUBMITTED')
 GRADING_STATUSES = ('NOT_APPLICABLE', 'PENDING', 'GRADED')
+
+
+def _expire_quiz_drafts(assessment_ids, user_ids):
+    from .assessment_services import expire
+    overdue = AssessmentAttempt.objects.filter(assessment_id__in=assessment_ids,
+        student_id__in=user_ids, assessment__kind='QUIZ', status='DRAFT').filter(
+        Q(expires_at__lte=timezone.now()) | Q(assessment__due_at__lte=timezone.now()))
+    changed = False
+    for assessment_id in sorted(set(overdue.values_list('assessment_id', flat=True))):
+        # Match assessment endpoints: lock the assessment before its attempts.
+        with transaction.atomic():
+            assessment = Assessment.objects.select_for_update(of=('self',)).select_related('session').get(pk=assessment_id)
+            for attempt in overdue.filter(assessment_id=assessment_id).select_for_update(of=('self',)).order_by('pk'):
+                attempt.assessment = assessment
+                expire(attempt)
+                changed = changed or attempt.status == 'SUBMITTED'
+    return changed
 
 
 def validate_result_filters(params):
@@ -160,6 +178,9 @@ def classroom_results(*, actor, classroom_id, filters):
         )
     all_assessments = active_assessments + [a for a in removed_with_attempts if a.pk not in {x.pk for x in active_assessments}]
     assessment_ids = [assessment.pk for assessment in all_assessments]
+
+    if _expire_quiz_drafts([a.pk for a in active_assessments], user_ids):
+        enrollments = list(enrollments_qs.all())
 
     attempts_by_key = {}
     if user_ids and assessment_ids:

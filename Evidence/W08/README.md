@@ -91,12 +91,15 @@ Sửa truy xuất gợi ý bằng cách bổ sung tiêu đề và đề bài cô
 
 | Phạm vi kiểm thử | Kết quả và mốc kiểm chứng |
 | --- | --- |
-| Backend chính, kiểm lại ngày 21/11 | 433/433 test đạt |
+| Backend chính, kiểm lại ngày 21/11 | 447/447 test đạt |
 | Runtime/xử lý tài liệu, cấu hình riêng | 84 test đạt trong lượt kiểm ngày 20/11 |
 | Upload/worker, cấu hình riêng | 27 test đạt trong lượt kiểm ngày 20/11 |
 | Frontend, kiểm lại ngày 21/11 | 374/374 test thuộc 56 tệp đạt |
-| Gợi ý ôn tập theo từng bước, kiểm với Qwen thật ngày 21/11 | 8/8 lượt thành công trên ALU và CU; nguồn trang 23 và 22 |
+| Gợi ý ôn tập theo từng bước, kiểm với Qwen thật ngày 21/11 | 13/13 lượt thành công trên ALU và CU; kiểm bản nháp khác nhau, xin đáp án và nguồn trang 21–24; TEST bị chặn |
 | Lint và build, kiểm lại ngày 21/11 | Hoàn tất; build còn cảnh báo kích thước gói JavaScript |
+
+
+Bổ sung sau review ngày 21/11: gợi ý dùng Qwen chọn vấn đề cần tự kiểm, nguồn và ý trong bản nháp; ứng dụng dựng câu gợi mở từ các mã hợp lệ, không nhận lời giải tự do. Đã sửa đồng bộ tiến độ sau checkpoint video thay đổi và tự chốt quiz hết giờ trước khi tổng hợp bảng lớp/Excel.
 
 Log và phạm vi từng lượt kiểm được ghi trong [test-results.txt](test-results.txt). Các lượt kiểm có phạm vi hoặc ngày chạy khác nhau được ghi riêng; không cộng thành tổng số test của cùng một lần chạy.
 

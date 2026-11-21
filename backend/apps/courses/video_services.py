@@ -52,12 +52,11 @@ def update_progress(video, user, position):
     progress.watched_until = max(progress.watched_until, progress.position)
     if progress.replay_position is not None:
         progress.replay_position = max(progress.replay_position, progress.position)
-    just_completed = False
+    was_completed = completed
     if question is None and progress.watched_until >= video.duration - min(0.1, video.duration * 0.01) and progress.completed_at is None:
         progress.completed_at = timezone.now()
-        just_completed = True
     progress.save(update_fields=['position', 'watched_until', 'replay_position', 'completed_at', 'playback_credit', 'updated_at'])
-    if just_completed:
+    if not was_completed and progress_output(video, progress)['completed']:
         from .progress_services import refresh_classroom_progress
         refresh_classroom_progress(classroom_id=video.session.classroom_id)
     return progress_output(video, progress)
@@ -72,6 +71,7 @@ def submit_answer(video, question, user, values):
             raise ValidationError('Mã yêu cầu đã được dùng cho nội dung khác.')
         return existing
     progress = progress_for(video, user)
+    was_completed = progress_output(video, progress)['completed']
     pending = pending_question(video, progress)
     if not pending or pending.pk != question.pk or progress.position < question.start_time - 0.5:
         raise ValidationError('Bạn cần xem đến đúng mốc câu hỏi trước khi trả lời.')
@@ -97,12 +97,10 @@ def submit_answer(video, question, user, values):
         progress.position = rewind
         progress.replay_position = rewind
         progress.playback_credit = 0
-    just_completed = False
     if pending_question(video, progress) is None and progress.watched_until >= video.duration - min(0.1, video.duration * 0.01) and progress.completed_at is None:
         progress.completed_at = timezone.now()
-        just_completed = True
     progress.save(update_fields=['position', 'replay_position', 'completed_at', 'playback_credit', 'passed', 'updated_at'])
-    if just_completed:
+    if not was_completed and progress_output(video, progress)['completed']:
         from .progress_services import refresh_classroom_progress
         refresh_classroom_progress(classroom_id=video.session.classroom_id)
     return answer

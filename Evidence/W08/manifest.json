@@ -2,7 +2,7 @@
   "schema_version": 3,
   "week": "W08",
   "updated_at": "2026-11-21",
-  "status": "EVIDENCE_COMPILED_CHECKPOINT_VERIFIED_README_UPDATED",
+  "status": "PEER_REVIEW_FIXES_VERIFIED",
   "layout": [
     "README.md",
     "metrics.csv",
@@ -10,67 +10,96 @@
     "manifest.json",
     "figures/"
   ],
-  "git_head": "589b79c6d8ed6d4acaedbd7cb0585816a648d52b",
+  "git_head": "36344db346797f0150a607dde8f54645625d1c22",
   "source_checkpoint": {
-    "git_head": "589b79c6d8ed6d4acaedbd7cb0585816a648d52b",
+    "git_head": "36344db346797f0150a607dde8f54645625d1c22",
     "branch": "TranTuanCuong_B22DCVT073_W8Tasks",
     "working_tree_dirty": true,
+    "byte_basis": "GIT_INDEX_BLOBS",
     "modified_code_files": {
-      "backend/apps/ai/api/serializers.py": {
-        "sha256": "0ff574c145dd78f2ef72790cf092596af982a9ce20e43eed1adf9c73a67742f7",
-        "size_bytes": 8783
+      ".gitattributes": {
+        "sha256": "8118f620f772c950fe08a21de22792c2ee71b3c1d43fb42f9d631c9836864cac",
+        "size_bytes": 614
       },
       "backend/apps/ai/api/views.py": {
-        "sha256": "04d594acd6f1d61c4432d0685aa9160c316479e9cacab063a22951530cdb51ab",
-        "size_bytes": 10491
+        "sha256": "6b284ebf23f66b3128b7dd0b0a7b2e156095305805b3ea2c5415141f0607f310",
+        "size_bytes": 10773
       },
       "backend/apps/ai/hints.py": {
-        "sha256": "17888008493374f9a17c656fbac27f55e9497997fcaf32471bbda69c2b177099",
-        "size_bytes": 4471
+        "sha256": "b704c2c7ad0d3c110956b412a621ad6c6f25ff06a7d8e3fc1dab4135784d3a46",
+        "size_bytes": 2140
       },
-      "backend/apps/ai/migrations/0004_chatresponserecord_hint_state.py": {
-        "sha256": "68cc0ca086677de6de023fb839071d122120d18ca3c7ec11b89d54111f7c8849",
-        "size_bytes": 293
+      "backend/apps/ai/inference_gateway.py": {
+        "sha256": "776b55c6cc99ccc1fa60a0eac805ba7f9eafc3f01ed2397f25c1e46eaf5a1f93",
+        "size_bytes": 11921
       },
-      "backend/apps/ai/models.py": {
-        "sha256": "60d16ab87e92996ee9cb574a65a2d4e4b71640af522c2c71dd6b623e140da521",
-        "size_bytes": 4630
+      "backend/apps/ai/rag/pipeline.py": {
+        "sha256": "fbbd7ba3918a54b39e215640a19a00763148af8b67bcc911719e9ed81c2ac28c",
+        "size_bytes": 11615
+      },
+      "backend/apps/ai/rag/tutoring.py": {
+        "sha256": "f321b486ae7feed8c744a6a1feea81590892c6473f0ff7315223f42d855afa71",
+        "size_bytes": 8893
+      },
+      "backend/apps/ai/remote.py": {
+        "sha256": "31993265e765bb2474c6fe6091cadb7e5d492c94c9a0b85db0aff02c7c62a7fd",
+        "size_bytes": 7880
+      },
+      "backend/apps/ai/services.py": {
+        "sha256": "e636d3485a24949ac4659d1a2644a229db26796503f20b2141cd71158a01ea2a",
+        "size_bytes": 8411
+      },
+      "backend/apps/courses/classroom_results.py": {
+        "sha256": "40219011e496302c7cacd57c40b090e4de4cee2079bb3e0260bdbddf42653d69",
+        "size_bytes": 15365
+      },
+      "backend/apps/courses/tests/test_classroom_results.py": {
+        "sha256": "d3f0b5ad068a82ea2d9c65960c1cb079583f67a4350ee856ff56df754b609edd",
+        "size_bytes": 17051
+      },
+      "backend/apps/courses/tests/test_learning_progress.py": {
+        "sha256": "1dd0189cea515eda6484705c2897db82851dada2e98ccd883e9023494d71ef1d",
+        "size_bytes": 16796
+      },
+      "backend/apps/courses/video_services.py": {
+        "sha256": "396cb18a818322fc76c754ece706e80963ff234049414ea57a6c49fba414f052",
+        "size_bytes": 6195
       },
       "backend/tests/ai/test_hint_progress.py": {
-        "sha256": "f73857702f03c8668d79a05d3c1eb5ae9411991494445b76b188f7109d6f663b",
-        "size_bytes": 3367
+        "sha256": "d2f0598fe37fbe922bfb3a3c60c68586968dcc299753028a3f3c7654167acb78",
+        "size_bytes": 4206
       },
-      "frontend/src/components/SessionWorkspace.ai.test.jsx": {
-        "sha256": "4bf518b47ce4f5f243130bc842508a034e4dd1ed883694e6ab199500284a98ea",
-        "size_bytes": 6122
+      "backend/tests/ai/test_inference_gateway.py": {
+        "sha256": "7c4fe75d8eef41e90b46a06a15639a4ce3517cec16c7bad6693556441f4f4553",
+        "size_bytes": 12852
       },
-      "frontend/src/components/SessionWorkspace.jsx": {
-        "sha256": "85927a8123aae41bb2ae9f0f4552c4de5d80e4f4f32986009d373211ef0e796e",
-        "size_bytes": 17100
+      "backend/tests/ai/test_remote_generation.py": {
+        "sha256": "fad515ecc824893b22a52fd1f8bdfd23ac37e31160b2b9c6abca0a6ebd6fb3f1",
+        "size_bytes": 7093
       },
-      "frontend/src/components/ai/SessionAssistant.jsx": {
-        "sha256": "d8d574779c79c83a6c5c0c29961902ad043329add7d9fd5a7c76b46fc3258531",
-        "size_bytes": 7184
+      "backend/tests/ai/test_tutoring.py": {
+        "sha256": "b7e7cf81e25810f706fa5da1d8c1767a2cd5bd72694e4dc6fd6845615a69ae9d",
+        "size_bytes": 5614
       },
-      "frontend/src/components/ai/SessionAssistant.test.jsx": {
-        "sha256": "581656c40d38c15acb84b53254fa9dc7e1b4807456a1494ae67463c8d19ca40c",
-        "size_bytes": 12370
+      "backend/tests/ai/test_w4_service.py": {
+        "sha256": "d0d3ae6756b88a6e62a31459cd1182f9381ac53a50381f2785a521062fabd8dd",
+        "size_bytes": 12774
       },
-      "frontend/src/components/ai/assistant.css": {
-        "sha256": "349fb6ff1fef6728608be20ee1e669057f097856195a4fe922e563da2d8c372e",
-        "size_bytes": 12882
+      "docs/ayo.md": {
+        "sha256": "0e565dfeb3afadf4191fe0fb049fd441012771d9ff9c3d63730988ec819548ae",
+        "size_bytes": 91482
       },
-      "frontend/src/components/assessments/SessionAssessments.jsx": {
-        "sha256": "48e9ac292d9c8260dc6210e5b5d3b195456262729cd16dd930b4d801696a1026",
-        "size_bytes": 7696
+      "scripts/export_kaggle_tutoring_patch.py": {
+        "sha256": "d0ad9bff80bbce4b8a032541fd4b00121062828f6ef6bb5168fc1c4b1ba1437f",
+        "size_bytes": 2978
       },
-      "frontend/src/session-workspace.css": {
-        "sha256": "1f3f184a57bfa29f39d7100a5f08b808628860e5d72bca6a2c0c79aa80c60d76",
-        "size_bytes": 10859
+      "scripts/tests/test_kaggle_tutoring.py": {
+        "sha256": "6c0010ab9080acc31bcebb6fa92bf095946e2b6e3e66efbebdd77d798ff7bbd7",
+        "size_bytes": 2872
       }
     }
   },
-  "source_checkpoint_sha256": "5a30b13178e774ee84122353592ecc530fd2f31741a597c7d31fc4601676617b",
+  "source_checkpoint_sha256": "682ef4730125c7204314f609e063da91c2cfa6e1f6787c05a7bfb0828779467f",
   "objective": "Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant",
   "supplied_assets": {
     "readme": {
@@ -85,7 +114,7 @@
     "all_supplied_files_preserved": false,
     "all_figures_preserved": true,
     "readme_updated_with_user_authorization": true,
-    "readme_update_scope": "Current test counts, test dates and live hint call count. PR #20 link retained at user request before PR creation."
+    "readme_update_scope": "Current tests, live diagnosed-hint acceptance and peer-review fixes; PR #20 link retained."
   },
   "holdout": {
     "status": "CHECKPOINT_HASH_AND_232_SCORES_RECHECKED",
@@ -178,33 +207,34 @@
     "private_raw_outputs_included": false
   },
   "tests": {
-    "fresh_backend_main": 433,
+    "fresh_backend_main": 447,
     "fresh_frontend": 374,
     "frontend_files": 56,
     "lint": "PASS",
     "build": "PASS_WITH_LARGE_CHUNK_WARNING",
     "historical_documents_runtime": 84,
     "historical_upload_worker": 27,
-    "counts_are_not_added_across_dates": true
+    "counts_are_not_added_across_dates": true,
+    "kaggle_cell_cpu_mocks": 13
   },
   "readme_review": {
     "checkpoint_and_metrics": "MATCH",
     "image_links": "10/10_RESOLVE",
-    "test_counts": "UPDATED_TO_VERIFIED_433_BACKEND_374_FRONTEND",
+    "test_counts": "UPDATED_TO_VERIFIED_447_BACKEND_374_FRONTEND",
     "historical": {
       "backend": 429,
       "frontend": 366,
       "ai_recheck": 147
     },
     "current": {
-      "backend": 433,
+      "backend": 447,
       "frontend": 374
     },
     "pull_requests": {
       "19": "MERGED",
       "20": "LINK_RETAINED_AT_USER_REQUEST_PENDING_CREATION"
     },
-    "hint_screenshot": "SUPPLIED_PRE_PROGRESS_UI_SNAPSHOT"
+    "hint_screenshot": "SUPPLIED_HISTORICAL_PRE_DIAGNOSIS_SNAPSHOT"
   },
   "serving_config": {
     "model": "Qwen/Qwen2.5-7B-Instruct",
@@ -223,14 +253,68 @@
       9
     ],
     "hint_progress_calls": 8,
-    "execution": "RETAINED_VERIFIED_LOCAL_RECORDS"
+    "execution": "FRESH_DIAGNOSED_HINT_PLUS_RETAINED_QA_SUMMARY",
+    "diagnosed_hint": {
+      "status": "ACCEPTED",
+      "date": "2026-11-21",
+      "gateway": "diagnosed_hint_v1",
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "replicas": 2,
+      "answered_requests": 13,
+      "scope": "Isolated demo database; frontend Nginx -> Django -> authorized CPU retrieval -> real Kaggle Qwen",
+      "stage_actions_per_exercise": [
+        "initial",
+        "explain_task",
+        "next_step_1",
+        "next_step_2",
+        "practice_draft_1",
+        "practice_draft_2"
+      ],
+      "exercises": [
+        "ALU_TEXT_PRACTICE",
+        "CU_QUIZ_PRACTICE"
+      ],
+      "current_student_input_and_history_used": true,
+      "different_drafts_produced_distinct_guidance": true,
+      "free_text_model_solutions_disabled": true,
+      "source_identity_verified": true,
+      "source_pages": [
+        21,
+        22,
+        23,
+        24
+      ],
+      "content_review": {
+        "method": "Automated checks plus scoped content inspection",
+        "findings": [
+          "ALU operation/function draft and reversed I/O draft receive different self-check questions.",
+          "CU arithmetic-function draft and control-signal/clock draft receive different self-check questions.",
+          "CU page 21 describes clock-based control; page 22 describes inputs. ALU pages 23-24 cover I/O and operations.",
+          "Scaffolds do not add operation lists, port counts or selected quiz answers; quoted text belongs to the student.",
+          "Initial/explain/outline/draft prompts are distinct; guidance is formative and does not award grades."
+        ],
+        "limitation": "13 CPU cases only; diagnosis relevance is not established for every course or document."
+      },
+      "full_answer_request": "GUIDANCE_ONLY",
+      "test_mode_block": {
+        "http": 403,
+        "code": "AI_NOT_ALLOWED"
+      },
+      "scope_changed_block": {
+        "http": 409,
+        "code": "SCOPE_CHANGED"
+      },
+      "private_report_sha256": "faeaea83170e04c51f101c5f00246ccb74ba9e9b944eb06e3ce29e8ca1cefb3d"
+    },
+    "hint_progress_calls_scope": "HISTORICAL_PRE_REVIEW_SCAFFOLDING"
   },
   "limitations": [
-    "Figures retain the supplied historical snapshots. The 84/27 runtime/worker checks are retained results dated 20/11.",
-    "PR #20 link is retained at user request; PR creation is pending at this checkpoint.",
-    "Current source includes uncommitted hint changes recorded by checksum.",
-    "Loss, format and citation-ID validity do not prove all-output semantic quality.",
-    "The latest hints use authored scaffolding and do not grade student drafts."
+    "Ten figures are preserved historical snapshots; 84/27 runtime/worker checks retain their 20/11 date.",
+    "PR #20 link is retained at user request; PR creation is not asserted.",
+    "Source includes uncommitted review fixes bound to canonical Git index blobs.",
+    "Loss, format and citation-ID validity do not establish all-output semantic quality.",
+    "Hints use model-selected diagnosis/source/student span and bounded authored questions; no automatic grade or model-written solution.",
+    "Live hint content review is limited to the CPU scenarios recorded here, not all exercises."
   ],
   "files": {
     "figures/class-results-student.jpg": {
@@ -274,17 +358,18 @@
       "size_bytes": 51569
     },
     "metrics.csv": {
-      "sha256": "f36d1d58b1ab41b14f90396d76f98775b4edf374d88932a9fe38aa9f50347301",
-      "size_bytes": 3673
+      "sha256": "7a6f76f4fc1049b3220dd417f9790288e4e7d0249afc2b5cf7f1cdc2c6b82f9d",
+      "size_bytes": 4068
     },
     "README.md": {
-      "sha256": "fe78f46d3921c418eaa34a618f36ecf9c8a70f7fb36c02dbf9e6336fc057697f",
-      "size_bytes": 10075
+      "sha256": "66d183a5796535c8b3190a3d8e80ad5b5a491a79b0c911f55c1997ea1556a5e3",
+      "size_bytes": 10397
     },
     "test-results.txt": {
-      "sha256": "41cf956d6eb6b52f2ea4c09d76e01b2f061906633e6f25f585cb12b859cde945",
-      "size_bytes": 15509
+      "sha256": "e7f61d734a1ac422ae3a165ffe3a75f4e616fb8d124fc302b44fde3ee0f08696",
+      "size_bytes": 19681
     }
   },
-  "manifest_hashes_itself": false
+  "manifest_hashes_itself": false,
+  "checksum_byte_basis": "GIT_INDEX_BLOBS; W08 text LF"
 }

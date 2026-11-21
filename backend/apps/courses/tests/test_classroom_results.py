@@ -19,6 +19,58 @@ from common.testing import authenticate_client
 
 
 class ClassroomResultsTests(TestCase):
+    def test_results_and_export_expire_quiz_drafts_without_publishing_scores(self):
+        from apps.courses.models import Enrollment
+        for export in (False, True):
+            with self.subTest(export=export):
+                room = Classroom.objects.create(course=self.course, name='Expired quiz')
+                _, enrollment, _ = join_by_code(actor=self.student1, class_code=room.class_code)
+                session = ClassroomSession.objects.create(classroom=room, title='Quiz', is_draft=False)
+                assessment = Assessment.objects.create(session=session, title='Quiz hết giờ', kind='QUIZ',
+                    mode='TEST', is_published=True, due_at=timezone.now() + timedelta(days=1),
+                    questions=[{'id': 'q1', 'prompt': '?', 'choices': [{'id': 'a', 'text': 'A'}], 'correct_ids': ['a']}])
+                attempt = AssessmentAttempt.objects.create(assessment=assessment, student=self.student1,
+                    number=1, request_id=uuid.uuid4(), answers={'q1': 'a'},
+                    expires_at=timezone.now() - timedelta(minutes=1))
+                url = f'/api/courses/{self.course.pk}/classrooms/{room.pk}/results/'
+                response = self.teacher_client.get(url + ('export/' if export else ''))
+                self.assertEqual(response.status_code, 200)
+                if not export:
+                    self.assertEqual(response.json()['results'][0]['enrollment_status'], 'COMPLETED')
+                attempt.refresh_from_db()
+                self.assertEqual(attempt.status, 'SUBMITTED')
+                self.assertTrue(attempt.auto_submitted)
+                self.assertEqual(attempt.score, 10)
+                enrollment.refresh_from_db()
+                self.assertEqual(enrollment.status, Enrollment.Status.COMPLETED)
+                self.assertEqual(enrollment.progress_percent, 100)
+                first_submitted = attempt.submitted_at
+                body = self.teacher_client.get(url).json()
+                self.assertEqual(body['results'][0]['enrollment_status'], 'COMPLETED')
+                self.assertEqual(body['results'][0]['assessments'][0]['score'], 10)
+                attempt.refresh_from_db()
+                self.assertEqual(attempt.submitted_at, first_submitted)
+                student = self.s1_client.get(url).json()['results'][0]['assessments'][0]
+                self.assertEqual(student['submission_status'], 'SUBMITTED')
+                self.assertIsNone(student['score'])
+
+    def test_student_result_view_does_not_expire_another_students_attempt(self):
+        join_by_code(actor=self.student1, class_code=self.room.class_code)
+        join_by_code(actor=self.student2, class_code=self.room.class_code)
+        session = ClassroomSession.objects.create(classroom=self.room, title='Quiz', is_draft=False)
+        assessment = Assessment.objects.create(session=session, title='Quiz', kind='QUIZ', mode='TEST',
+            is_published=True, due_at=timezone.now() + timedelta(days=1),
+            questions=[{'id': 'q1', 'prompt': '?', 'choices': [{'id': 'a', 'text': 'A'}], 'correct_ids': ['a']}])
+        attempts = [AssessmentAttempt.objects.create(assessment=assessment, student=student,
+            number=1, request_id=uuid.uuid4(), expires_at=timezone.now() - timedelta(minutes=1))
+            for student in (self.student1, self.student2)]
+        self.assertEqual(self.s1_client.get(self.url).status_code, 200)
+        for attempt in attempts:
+            attempt.refresh_from_db()
+        self.assertEqual(attempts[0].status, 'SUBMITTED')
+        self.assertEqual(attempts[0].score, 0)
+        self.assertEqual(attempts[1].status, 'DRAFT')
+
     def setUp(self):
         self.teacher = User.objects.create_user('res-teacher', full_name='Cô Lan', role='TEACHER')
         self.other_teacher = User.objects.create_user('res-other-teacher', role='TEACHER')

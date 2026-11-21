@@ -67,13 +67,18 @@ class ChatView(APIView):
         if serializer.validated_data['mode'] == 'hint' and serializer.validated_data.get('hint_action'):
             from ..hints import prepare_hint
             hint_context = prepare_hint(request.user, serializer.validated_data)
-        result=answer_chat(user=request.user,data=serializer.validated_data,request_id=self.request_id)
+        options = {}
+        if hint_context:
+            state = hint_context[1]
+            options['tutoring'] = dict(action=serializer.validated_data['hint_action'],
+                step=state['step'], history=state['history'])
+        result=answer_chat(user=request.user,data=serializer.validated_data,request_id=self.request_id, **options)
         if serializer.validated_data['mode'] == 'summary':
             return Response(result, status=202)
         hint_state = None
         if hint_context:
             from ..hints import apply_hint
-            hint_state = apply_hint(result, *hint_context, serializer.validated_data['hint_action'])
+            hint_state = apply_hint(result, *hint_context, serializer.validated_data['hint_action'], serializer.validated_data['question'])
         ChatResponseRecord.objects.create(id=self.request_id, user=request.user, hint_state=hint_state)
         result['request_id'] = self.request_id
         return Response(result)

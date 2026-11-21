@@ -22,7 +22,13 @@ class RAGPipeline:
                 or config.model.fingerprint() != self.provider.config.fingerprint()):
             raise GenerationError("INVALID_REQUEST", "Pipeline and provider configurations must agree.")
 
-    def generate_answer(self, *, question, mode, contexts, exercise=None, config=None, history=None):
+    def generate_answer(self, *, question, mode, contexts, exercise=None, config=None, history=None, tutoring=None):
+        if tutoring is not None:
+            from .tutoring import generate
+            self._check_config(self.config if config is None else config)
+            if history is not None:
+                raise GenerationError('INVALID_REQUEST', 'QA history cannot be combined with tutoring.')
+            return generate(self, question=question, mode=mode, contexts=contexts, exercise=exercise, tutoring=tutoring)
         started=perf_counter()
         arguments=dict(question=question,mode=mode,contexts=contexts,exercise=exercise,config=config,history=history)
         import inspect

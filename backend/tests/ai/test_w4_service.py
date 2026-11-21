@@ -56,6 +56,20 @@ class ChatServiceTests(ScopeFixture):
         self.assertIn('Đối tượng của triết học', result['suggested_questions'][0])
         self.runtime.generate.assert_called_once()
 
+    def test_tutoring_forwards_real_draft_with_only_public_exercise_fields(self):
+        assessment = Assessment.objects.create(session=self.session, kind='TEXT', mode='PRACTICE',
+            title='Vai trò ALU', description='Hãy nêu các nhóm phép toán.', hint='PRIVATE_TEACHER_HINT',
+            due_at=timezone.now()+timedelta(days=1), is_published=True)
+        self.data.update(mode='hint', question='Bản nháp: ALU chỉ cộng.', assessment_id=str(assessment.pk))
+        tutoring = dict(action='practice', step=2, history=[])
+        result = answer_chat(user=self.student, data=self.data, runtime=self.runtime,
+            request_id=str(uuid4()), tutoring=tutoring)
+        args = self.runtime.generate.call_args.kwargs
+        self.assertEqual(args['question'], self.data['question'])
+        self.assertEqual(args['tutoring'], tutoring)
+        self.assertNotIn('PRIVATE_TEACHER_HINT', str(args))
+        self.assertEqual(result['answer'], self.output['answer'])
+
     def test_followup_failure_preserves_answer_and_citations(self):
         with patch('apps.ai.followups.build_questions', side_effect=ValueError('private text')):
             with self.assertLogs('apps.ai.followups', level='WARNING'):
