@@ -13,7 +13,7 @@ def redis_client():
 def issue_ticket(user, auth):
     secret = secrets.token_urlsafe(32)
     expiry = int(auth['exp']) if auth else int(time.time()) + 300
-    data = json.dumps({'user_id': str(user.pk), 'expires': expiry})
+    data = json.dumps({'user_id': str(user.pk), 'auth_version': user.auth_version, 'expires': expiry})
     try:
         redis_client().set(f'notification-ticket:{secret}', data, ex=30)
     except Exception:

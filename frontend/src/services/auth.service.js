@@ -58,6 +58,14 @@ export async function confirmPasswordReset(data) {
   return result
 }
 
+export function sendEmailVerification() {
+  return apiRequest('/users/email-verification/send/', { method: 'POST' })
+}
+
+export function confirmEmailVerification(token) {
+  return publicPost('/users/email-verification/confirm/', { token })
+}
+
 export function accountFieldErrors(error) {
   if (error.status !== 400 || !error.data) return {}
   const messages = {

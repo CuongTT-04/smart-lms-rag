@@ -14,3 +14,5 @@ PASSWORD_HASHERS = [
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 CHANNEL_LAYERS = {'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}}
+# Avoid cross-test 127.0.0.1 saturation during full suites; rate-limit tests override explicitly.
+LOGIN_MAX_ATTEMPTS_PER_IP = 1000

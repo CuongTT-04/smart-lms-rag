@@ -120,11 +120,16 @@ class UserProfileAPITests(TestCase):
         self.assertEqual(self.client.get(self.url).status_code, 401)
         self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
         self.assertEqual(self.client.get(reverse("users:session")).json(), {"authenticated": False})
+        csrf = self.client.cookies["csrftoken"].value
         self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
-        self.assertEqual(self.client.post(reverse("users:token-refresh")).status_code, 401)
+        self.assertEqual(self.client.post(reverse("users:token-refresh"), HTTP_X_CSRFTOKEN=csrf).status_code, 401)
         self.client.credentials()
         for password, expected in ((PASSWORD, 401), (NEW_PASSWORD, 200)):
-            login = self.client.post(reverse("users:login"), {"username": self.user.username, "password": password}, format="json")
+            login = self.client.post(
+                reverse("users:login"),
+                {"username": self.user.username, "password": password},
+                format="json", HTTP_X_CSRFTOKEN=csrf,
+            )
             self.assertEqual(login.status_code, expected)
 
     def test_invalid_password_change_does_not_save_any_fields(self):

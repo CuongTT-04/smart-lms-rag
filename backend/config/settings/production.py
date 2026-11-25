@@ -3,6 +3,7 @@ from .base import env_bool
 
 
 DEBUG = env_bool("DJANGO_DEBUG", False)
+PASSWORD_RESET_PREVIEW = False
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = True

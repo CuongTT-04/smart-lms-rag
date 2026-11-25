@@ -61,8 +61,12 @@ class PasswordResetAPITests(TestCase):
         self.assertTrue(self.user.check_password(self.password))
         self.assertEqual(self.user.role, "STUDENT")
         login_url = reverse("users:login")
+        csrf = self.client.get(reverse("users:csrf")).cookies["csrftoken"].value
         for password, expected in (("Old-Ohayo-839!", 401), (self.password, 200)):
-            login = self.client.post(login_url, {"username": self.user.username, "password": password}, format="json")
+            login = self.client.post(
+                login_url, {"username": self.user.username, "password": password},
+                format="json", HTTP_X_CSRFTOKEN=csrf,
+            )
             self.assertEqual(login.status_code, expected)
 
     @override_settings(DEBUG=True, PASSWORD_RESET_PREVIEW=True)
@@ -172,9 +176,11 @@ class PasswordResetAPITests(TestCase):
         self.client.credentials()
         for refresh in refreshes:
             self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
-            self.assertEqual(self.client.get(reverse("users:session")).json(), {"authenticated": False})
+            session = self.client.get(reverse("users:session"))
+            self.assertEqual(session.json(), {"authenticated": False})
+            csrf = self.client.cookies["csrftoken"].value
             self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
-            self.assertEqual(self.client.post(reverse("users:token-refresh")).status_code, 401)
+            self.assertEqual(self.client.post(reverse("users:token-refresh"), HTTP_X_CSRFTOKEN=csrf).status_code, 401)
 
     def test_direct_password_change_also_invalidates_jwts(self):
         refresh = RefreshToken.for_user(self.user)
@@ -182,8 +188,9 @@ class PasswordResetAPITests(TestCase):
         self.user.save(update_fields=["password"])
         self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
         self.assertEqual(self.client.get(reverse("users:session")).json(), {"authenticated": False})
+        csrf = self.client.cookies["csrftoken"].value
         self.client.cookies[settings.JWT_REFRESH_COOKIE_NAME] = str(refresh)
-        self.assertEqual(self.client.post(reverse("users:token-refresh")).status_code, 401)
+        self.assertEqual(self.client.post(reverse("users:token-refresh"), HTTP_X_CSRFTOKEN=csrf).status_code, 401)
 
     def test_request_email_limit_is_case_insensitive(self):
         for email in (self.user.email, self.user.email.upper(), self.user.email):

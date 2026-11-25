@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from apps.users.authentication import VersionedJWTAuthentication
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import DocumentUploadRequest, DocumentRetryRequest
@@ -51,7 +51,7 @@ def is_manager(user,course):
 
 
 class DocumentAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [VersionedJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def finalize_response(self, request, response, *args, **kwargs):

@@ -218,11 +218,16 @@ class CourseAccessAPITests(TestCase):
     def test_role_change_does_not_inherit_access_from_mismatched_membership(self):
         self.student.role = User.Role.TEACHER
         self.student.save(update_fields=["role"])
+        # Existing token from previous role is immediately revoked by auth_version.
+        self.assertEqual(self.client.get(self.list_url).status_code, 401)
+        self.client = self.authenticated_client(self.student)
         self.assertEqual(self.listed_ids(), set())
         self.assertEqual(self.client.get(self.detail_url(self.published)).status_code, 403)
         teacher_client = self.authenticated_client(self.teacher)
         self.teacher.role = User.Role.STUDENT
         self.teacher.save(update_fields=["role"])
+        self.assertEqual(teacher_client.get(self.list_url).status_code, 401)
+        teacher_client = self.authenticated_client(self.teacher)
         self.assertEqual(self.listed_ids(teacher_client), set())
         self.assertEqual(teacher_client.get(self.detail_url(self.published)).status_code, 403)
 

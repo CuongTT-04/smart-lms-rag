@@ -2,9 +2,11 @@ from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError
 from django.db.models import Q
+from django.middleware.csrf import get_token, rotate_token
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import ensure_csrf_cookie
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
@@ -18,8 +20,14 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework_simplejwt.utils import get_md5_hash_password
 
+from apps.users.authentication import issue_refresh_token, validate_token_auth_version
+from apps.users.csrf import enforce_csrf_and_origin
+from apps.users.email_verification import (
+    EmailVerificationRateLimited, confirm_email_verification, send_email_verification,
+)
 from apps.users.models import User
 from apps.users.avatars import upload_avatar
+from apps.users.rate_limit import check_and_increment, check_counter, clear_counter, client_ip
 from apps.users.services import authenticate_user, register_user, request_password_reset, confirm_password_reset, update_user_profile
 from apps.users.throttles import PasswordResetRequestThrottle, PasswordResetEmailThrottle, PasswordResetConfirmThrottle
 from common.schema import AVATAR_BAD_REQUEST, FORBIDDEN, LOGIN_BAD_REQUEST, REGISTER_BAD_REQUEST, RESET_BAD_REQUEST, USER_UPDATE_BAD_REQUEST, DetailSerializer, UNAUTHORIZED
@@ -31,6 +39,10 @@ from .serializers import (
     PasswordResetResponseSerializer,
     UserUpdateSerializer, UserUpdateResponseSerializer,
     AvatarUploadSerializer,
+    CsrfTokenResponseSerializer,
+    EmailVerificationConfirmSerializer,
+    EmailVerificationConfirmResponseSerializer,
+    EmailVerificationSendResponseSerializer,
 )
 
 
@@ -65,11 +77,74 @@ def active_user_from_access(access):
         user = User.objects.get(pk=access["user_id"])
     except (User.DoesNotExist, KeyError) as error:
         raise AuthenticationFailed("Account unavailable.") from error
-    if not user.is_active:
-        raise AuthenticationFailed("Account unavailable.")
+    validate_token_auth_version(user, access)
     if jwt_settings.CHECK_REVOKE_TOKEN and access.get(jwt_settings.REVOKE_TOKEN_CLAIM) != get_md5_hash_password(user.password):
         raise AuthenticationFailed("Password changed; sign in again.")
     return user
+
+
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(ensure_csrf_cookie, name="get")
+class CsrfTokenView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        operation_id="users_csrf", tags=["Authentication"],
+        summary="Lấy cookie CSRF cho trình duyệt", auth=[], request=None,
+        description="Thiết lập cookie csrftoken và trả mã CSRF hiện tại để trình duyệt gửi trong header X-CSRFToken.",
+        responses={200: CsrfTokenResponseSerializer},
+    )
+    def get(self, request):
+        return Response({"csrfToken": get_token(request._request)})
+
+
+@method_decorator(never_cache, name="dispatch")
+class EmailVerificationSendView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        operation_id="users_email_verification_send", tags=["Authentication"],
+        summary="Gửi lại liên kết xác minh email", request=None,
+        description="Gửi liên kết xác minh dùng một lần (hạn 24 giờ) tới email đang lưu trên server. Giới hạn 3 lần/giờ và cách nhau 60 giây.",
+        responses={200: EmailVerificationSendResponseSerializer, 400: DetailSerializer, 401: UNAUTHORIZED, 429: DetailSerializer},
+    )
+    def post(self, request):
+        try:
+            result = send_email_verification(actor=request.user)
+        except EmailVerificationRateLimited as error:
+            response = Response({"detail": error.detail}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+            response["Retry-After"] = str(error.retry_after)
+            return response
+        except DjangoValidationError as error:
+            raise ValidationError(error.message_dict) from error
+        detail = (
+            "Email is already verified."
+            if result["already_verified"]
+            else "Verification instructions have been sent to your registered email address."
+        )
+        return Response({"detail": detail, **result})
+
+
+@method_decorator(never_cache, name="dispatch")
+class EmailVerificationConfirmView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        operation_id="users_email_verification_confirm", tags=["Authentication"],
+        summary="Xác nhận liên kết xác minh email", auth=[], request=EmailVerificationConfirmSerializer,
+        description="Xác thực token một lần từ email và đánh dấu tài khoản đã xác minh email.",
+        responses={200: EmailVerificationConfirmResponseSerializer, 400: RESET_BAD_REQUEST},
+    )
+    def post(self, request):
+        serializer = EmailVerificationConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            confirm_email_verification(**serializer.validated_data)
+        except DjangoValidationError as error:
+            raise ValidationError(error.message_dict) from error
+        return Response({"detail": "Email verified successfully.", "email_verified": True})
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -159,17 +234,51 @@ class LoginView(APIView):
         },
     )
     def post(self, request):
+        enforce_csrf_and_origin(request)
+        ip = client_ip(request)
+        ip_ok, ip_retry = check_and_increment(
+            "login_ip", ip,
+            limit=int(getattr(settings, "LOGIN_MAX_ATTEMPTS_PER_IP", 30)),
+            window_seconds=int(getattr(settings, "LOGIN_IP_WINDOW_SECONDS", 60)),
+        )
+        if not ip_ok:
+            response = Response(
+                {"detail": "Too many login attempts. Please wait and try again."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+            response["Retry-After"] = str(ip_retry)
+            return response
+
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        account_key = serializer.validated_data["username"].strip().lower()
+        account_limit = int(getattr(settings, "LOGIN_MAX_ATTEMPTS_PER_ACCOUNT", 10))
+        account_window = int(getattr(settings, "LOGIN_ACCOUNT_WINDOW_SECONDS", 900))
+        account_ok, account_retry = check_counter(
+            "login_account", account_key, limit=account_limit, window_seconds=account_window,
+        )
+        if not account_ok:
+            response = Response(
+                {"detail": "Too many failed login attempts for this account. Please wait and try again."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+            response["Retry-After"] = str(account_retry)
+            return response
+
         user = authenticate_user(**serializer.validated_data)
         if user is None:
+            check_and_increment(
+                "login_account", account_key, limit=account_limit, window_seconds=account_window,
+            )
             return Response(
                 {"detail": "Invalid credentials or account unavailable."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+        clear_counter("login_account", account_key)
         user.last_login = timezone.now()
         user.save(update_fields=["last_login"])
-        refresh = RefreshToken.for_user(user)
+        refresh = issue_refresh_token(user)
+        rotate_token(request._request)
         response = Response({"user": UserSerializer(user).data, "access": str(refresh.access_token)})
         set_refresh_cookie(response, refresh)
         return response
@@ -184,20 +293,27 @@ class TokenRefreshView(APIView):
         operation_id="users_token_refresh", tags=["Authentication"],
         summary='Làm mới access token', request=None, auth=[],
         description='Dùng cookie phiên đăng nhập để cấp mã truy cập mới. Không gửi nội dung yêu cầu; phiên hết hạn cần đăng nhập lại.',
-        responses={200: TokenRefreshResponseSerializer, 401: UNAUTHORIZED},
+        responses={200: TokenRefreshResponseSerializer, 401: UNAUTHORIZED, 403: FORBIDDEN},
     )
     def post(self, request):
+        enforce_csrf_and_origin(request)
         refresh_value = request.COOKIES.get(settings.JWT_REFRESH_COOKIE_NAME)
         if not refresh_value:
             return refresh_unauthorized("Refresh token missing.")
         serializer = TokenRefreshSerializer(data={"refresh": refresh_value})
         try:
-            active_user_from_access(RefreshToken(refresh_value).access_token)
+            incoming = RefreshToken(refresh_value)
+            user = active_user_from_access(incoming.access_token)
             serializer.is_valid(raise_exception=True)
             access = AccessToken(serializer.validated_data["access"])
             active_user_from_access(access)
         except (TokenError, AuthenticationFailed):
             return refresh_unauthorized("Refresh token invalid, expired, or unavailable.")
+        if incoming.get("auth_version") != user.auth_version:
+            new_refresh = issue_refresh_token(user)
+            response = Response({"access": str(new_refresh.access_token)})
+            set_refresh_cookie(response, new_refresh)
+            return response
         response = Response({"access": serializer.validated_data["access"]})
         if refresh := serializer.validated_data.get("refresh"):
             set_refresh_cookie(response, refresh)
@@ -205,6 +321,7 @@ class TokenRefreshView(APIView):
 
 
 @method_decorator(never_cache, name="dispatch")
+@method_decorator(ensure_csrf_cookie, name="get")
 class SessionView(APIView):
     """Restore a browser session without treating an anonymous visitor as an error."""
 
@@ -225,6 +342,7 @@ class SessionView(APIView):
             refresh = RefreshToken(refresh_value)
             access = refresh.access_token
             user = active_user_from_access(access)
+            access["auth_version"] = user.auth_version
         except (TokenError, AuthenticationFailed):
             response = Response({"authenticated": False})
             clear_refresh_cookie(response)
@@ -246,6 +364,7 @@ class LogoutView(APIView):
         request=None, responses={204: None, 401: UNAUTHORIZED, 403: FORBIDDEN},
     )
     def post(self, request):
+        enforce_csrf_and_origin(request)
         refresh_value = request.COOKIES.get(settings.JWT_REFRESH_COOKIE_NAME)
         if refresh_value:
             try:

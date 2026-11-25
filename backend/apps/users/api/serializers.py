@@ -176,6 +176,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(source="date_joined", read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
     student_profile = StudentProfileSerializer(read_only=True, required=False)
     teacher_profile = TeacherProfileSerializer(read_only=True, required=False)
 
@@ -190,10 +191,31 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "id", "username", "email", "full_name", "avatar_url", "phone", "role", "status",
+            "id", "username", "email", "email_verified", "email_verified_at",
+            "full_name", "avatar_url", "phone", "role", "status",
             "created_at", "updated_at", "last_login", "student_profile", "teacher_profile",
         )
         read_only_fields = fields
+
+
+class EmailVerificationConfirmSerializer(PasswordResetRequestSerializer):
+    email = None
+    token = serializers.CharField(max_length=256, write_only=True, trim_whitespace=False)
+
+
+class EmailVerificationSendResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField(read_only=True)
+    already_verified = serializers.BooleanField(read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
+
+
+class EmailVerificationConfirmResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField(read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
+
+
+class CsrfTokenResponseSerializer(serializers.Serializer):
+    csrfToken = serializers.CharField(read_only=True)
 
 
 class CurrentUserSerializer(serializers.Serializer):

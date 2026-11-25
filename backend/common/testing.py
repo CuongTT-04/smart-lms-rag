@@ -1,11 +1,11 @@
 from django.core.signals import request_finished
 from django.db import close_old_connections
-from rest_framework_simplejwt.tokens import AccessToken
+from apps.users.authentication import issue_access_token
 
 
 def authenticate_client(client, user):
     """Attach a short-lived bearer token to a DRF APIClient."""
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {AccessToken.for_user(user)}")
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {issue_access_token(user)}")
     return client
 
 

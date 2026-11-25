@@ -39,7 +39,8 @@ class AIntegrationTests(TestCase):
         self.url=f"/api/courses/{self.course_id}/documents/"
     def login(self,username,password):
         self.client.defaults.pop("HTTP_AUTHORIZATION",None)
-        response=self.client.post("/api/users/login/",{"username":username,"password":password},content_type="application/json")
+        csrf=self.client.get("/api/users/csrf/").cookies["csrftoken"].value
+        response=self.client.post("/api/users/login/",{"username":username,"password":password},content_type="application/json",HTTP_X_CSRFTOKEN=csrf)
         self.assertEqual(response.status_code,200,response.content)
         self.client.defaults["HTTP_AUTHORIZATION"]="Bearer "+response.json()["access"]
         return response

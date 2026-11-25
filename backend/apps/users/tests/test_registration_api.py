@@ -53,9 +53,10 @@ class RegistrationAPITests(TestCase):
         self.assertIn("no-store", response["Cache-Control"])
         self.assertFalse(CourseMember.objects.filter(user=user).exists())
 
+        csrf = self.client.get(reverse("users:csrf")).cookies["csrftoken"].value
         login = self.client.post(reverse("users:login"), {
             "username": user.username, "password": self.payload["password"],
-        }, format="json")
+        }, format="json", HTTP_X_CSRFTOKEN=csrf)
         self.assertEqual(login.status_code, 200)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login.json()['access']}")
         me = self.client.get(reverse("users:me"))
@@ -77,9 +78,10 @@ class RegistrationAPITests(TestCase):
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
         self.assertFalse(CourseMember.objects.filter(user=user).exists())
+        csrf = self.client.get(reverse("users:csrf")).cookies["csrftoken"].value
         login = self.client.post(reverse("users:login"), {
             "username": user.username, "password": self.payload["password"],
-        }, format="json")
+        }, format="json", HTTP_X_CSRFTOKEN=csrf)
         self.assertEqual(login.status_code, 200)
         self.assertEqual(login.json()["user"]["role"], "TEACHER")
         self.assertNotIn("student_profile", login.json()["user"])

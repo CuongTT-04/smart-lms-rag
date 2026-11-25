@@ -23,6 +23,34 @@ def revoke_refresh_tokens(user):
         BlacklistedToken.objects.get_or_create(token=outstanding)
 
 
+def _schedule_close_user_sockets(user_id):
+    from asgiref.sync import async_to_sync
+    from channels.layers import get_channel_layer
+
+    def close_sockets():
+        try:
+            async_to_sync(get_channel_layer().group_send)(
+                f"notifications.{user_id}", {"type": "session.close"},
+            )
+        except Exception:
+            logger.warning("Could not close realtime sockets for user %s; ticket expiry will apply.", user_id)
+
+    transaction.on_commit(close_sockets)
+
+
+@transaction.atomic
+def bump_auth_version(user, *, revoke_tokens=True, close_sockets=True):
+    """Invalidate all existing access/refresh/WS sessions for a user immediately."""
+    locked = User.objects.select_for_update().get(pk=user.pk)
+    locked.auth_version += 1
+    locked.save(update_fields=["auth_version"])
+    if revoke_tokens:
+        revoke_refresh_tokens(locked)
+    if close_sockets:
+        _schedule_close_user_sockets(locked.pk)
+    return locked
+
+
 @transaction.atomic
 def update_user_profile(*, actor, changes):
     user = User.objects.select_for_update().get(pk=actor.pk)
