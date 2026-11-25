@@ -65,3 +65,42 @@ def resolve_scope(user,course_id,classroom_id=None,session_id=None,document_ids=
             allowed.append(str(version.pk))
     return RetrievalScope(str(user.pk),str(course.pk),str(classroom.pk) if classroom else None,
         str(session.pk) if session else None,document_ids,tuple(sorted(allowed)),mode,preview)
+
+
+def verify_citation_access(user, *, document_id, version_id, page_number=None, scope=None):
+    """Authoritative live permission check when validating or opening a citation."""
+    doc_pk = identifier(document_id)
+    ver_pk = identifier(version_id)
+    try:
+        document = KnowledgeDocument.objects.select_related(
+            'course', 'session__classroom', 'published_version', 'active_version',
+        ).get(pk=doc_pk, removed_at__isnull=True)
+    except KnowledgeDocument.DoesNotExist as exc:
+        raise unavailable() from exc
+    require_access(user, document.course)
+    preview = bool(scope.preview) if scope is not None else False
+    if preview and not can_manage_course(user, document.course):
+        raise unavailable()
+    if document.session_id:
+        require_session_access(user, document.session, document.course, manage=preview)
+        if document.session.is_draft and not preview:
+            raise unavailable()
+    manager = can_manage_course(user, document.course)
+    if not document.is_published and not (preview and manager):
+        raise unavailable()
+    allowed_version = (document.active_version or document.published_version) if (preview and manager) else document.published_version
+    if not allowed_version or allowed_version.removed_at or allowed_version.document_id != document.pk:
+        raise unavailable()
+    if allowed_version.status not in ('EXTRACTED', 'READY'):
+        raise DocumentError('SCOPE_CHANGED', 'Phiên bản nguồn trích dẫn chưa sẵn sàng.', 409)
+    if str(allowed_version.pk) != ver_pk:
+        raise DocumentError('SCOPE_CHANGED', 'Phiên bản nguồn trích dẫn đã thay đổi.', 409)
+    if page_number is not None:
+        if type(page_number) is not int or not 1 <= page_number <= allowed_version.page_count:
+            raise DocumentError('SCOPE_CHANGED', 'Trang nguồn trích dẫn không hợp lệ.', 409)
+    if scope is not None:
+        from .retrieval_adapter import live_scope
+        current = live_scope(user, scope)
+        if ver_pk not in current.allowed_version_ids:
+            raise DocumentError('SCOPE_CHANGED', 'Nguồn trích dẫn không còn trong phạm vi được phép.', 409)
+    return document, allowed_version

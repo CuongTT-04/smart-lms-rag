@@ -15,6 +15,21 @@ def live_scope(user,scope):
     return current
 
 
+def assert_scope_and_citations_live(user, scope, *, citations=()):
+    """Re-verify live scope and every cited (document_id, version_id, page_number)."""
+    from .retrieval_scope import verify_citation_access
+    current = live_scope(user, scope)
+    for citation in citations:
+        verify_citation_access(
+            user,
+            document_id=citation.get('document_id'),
+            version_id=citation.get('version_id'),
+            page_number=citation.get('page_number'),
+            scope=current,
+        )
+    return current
+
+
 def retrieve_authorized(user,query,scope,retriever,top_k=5,*,catalog,include_procedure_continuations=False):
     """Catalog must come from load_catalog(server_owned_manifest), not request data.
 
