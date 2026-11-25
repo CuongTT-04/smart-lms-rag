@@ -1,18 +1,18 @@
-# W9-01 – Kế hoạch triển khai phần LMS của Cường
+# W8-01 – Kế hoạch triển khai phần LMS của Cường
 
 > Dành cho agent thực thi: đọc bản phân công và SRS trước, dùng skill `executing-plans` nếu có. Làm tuần tự theo các tác vụ bên dưới; mỗi tác vụ có kiểm chứng trước khi chuyển bước. Chỉ dùng subagent nếu phiên thực thi cho phép. Chưa được tự commit, push, merge, gửi tin cho Dương hoặc triển khai lên môi trường dùng thật.
 
-**Ngày lập:** 18/11/2026. **Người phụ trách:** Trần Tuấn Cường. **Mã việc:** W9-01 (chưa phải số Issue GitHub).
+**Ngày lập:** 18/11/2026. **Người phụ trách:** Trần Tuấn Cường. **Mã việc:** W8-01 (chưa phải số Issue GitHub).
 
 **Goal:** Hoàn thiện tiến độ, kết quả lớp, quiz/submission và ghép Ayo để demo LMS xuyên suốt; có code, migration, tests, dữ liệu giả lập và bằng chứng tái lập.
 
-**Căn cứ nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant” theo mốc W8 giảng viên giao. Tiêu đề và nội dung yêu cầu là căn cứ khi lịch đề cương bị lệch; các mã W9 trong kế hoạch là định danh hồ sơ đã sử dụng.
+**Căn cứ nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant” theo mốc W8 giảng viên giao. Tài liệu được chuyển về W8 ngày 24/11/2026. Các tên lệnh `seed_w9_demo`, biến `W9_DEMO_*` và đường log `.private/w9/` bên dưới là định danh kỹ thuật để chạy lại code và tra cứu bằng chứng W8.
 
 **Architecture:** Tái sử dụng courses/assessments/video/documents hiện có; đặt phép tính tiến độ và kết quả lớp trong các service/selectors riêng của `apps.courses`. Chỉ lưu mới dấu xác nhận hoàn thành PDF; video và bài nộp lấy từ dữ liệu nghiệp vụ sẵn có. Frontend gọi API có kiểm quyền, không tự suy ra điểm hoặc phần trăm.
 
 **Tech Stack:** Django/DRF, PostgreSQL, React/Vite/Vitest, Docker Compose. Không thêm thư viện nếu stack hiện tại đáp ứng.
 
-**Spec:** `docs/weekly/W9/phan-cong-w9.md`, `docs/SRS.md`. Kế hoạch này chi tiết hóa phần L1–L4; Dương giữ W9-02 (AI/học liệu).
+**Spec:** `docs/weekly/W8/phan-cong-w8.md`, `docs/SRS.md`. Kế hoạch này chi tiết hóa phần L1–L4; Dương giữ W8-02 (AI/học liệu).
 
 ## 1. Giới hạn và nguyên tắc chạy
 
@@ -88,7 +88,7 @@ Mỗi session trả `session_id`, counts và `activities`; mỗi activity có `k
 ### T0. Khóa đầu vào và bàn giao Ayo đang có
 
 **Đọc:** bản phân công, `backend/apps/ai/{services,runtime,remote,policy,conversations}.py`, UI `components/ai/`, `docker-compose.yml`; log kiểm ngày 17/11.
-**Tạo:** `docs/weekly/W9/ban-giao-ayo-cho-duong.md`.
+**Tạo:** `docs/weekly/W8/ban-giao-ayo-cho-duong.md`.
 
 - [ ] Ghi nhánh/HEAD, dirty files liên quan, đường dẫn cell thực tế (kiểm file tồn tại, không dùng tên nhớ từ hội thoại nếu chưa xác minh).
 - [ ] Mô tả UI → conversations/chat API → retrieval/runtime → Kaggle; liệt kê tên env cần có, không sao chép giá trị bí mật.
@@ -180,7 +180,7 @@ self.assertIsNone(progress['completed_at'])
 
 ### T6. Dữ liệu demo và bảng kết quả mong đợi
 
-**Tạo:** `backend/apps/courses/management/commands/seed_w9_demo.py`, `backend/apps/courses/tests/test_w9_demo.py`, `docs/weekly/W9/demo-w9-01.md`.
+**Tạo:** `backend/apps/courses/management/commands/seed_w9_demo.py`, `backend/apps/courses/tests/test_w9_demo.py`, `docs/weekly/W8/demo-w8-01.md`.
 
 - [ ] Command chỉ chạy khi `W9_DEMO_ENABLED=1` và tên DB bắt đầu `w9_demo_`; từ chối mặc định kể cả người dùng quên tham số. Không in mật khẩu; nhận mật khẩu demo qua env riêng và truyền cho người chạy ngoài Git.
 - [ ] Dùng prefix và khóa ổn định để get_or_create, không xóa dữ liệu. Nếu bản ghi cùng khóa khác cấu hình seed, báo conflict thay vì ghi đè. Test gọi hai lần không tăng count.
@@ -192,14 +192,14 @@ self.assertIsNone(progress['completed_at'])
 
 ### T7. Tích hợp Dương, chạy cuối và bàn giao
 
-**Tạo:** `docs/weekly/W9/ket-qua-w9-01.md`; log/raw riêng tại `.private/w9/member-b/`. Dương tổng hợp Evidence/W09 cuối.
+**Tạo:** `docs/weekly/W8/ket-qua-w8-01.md`; log/raw riêng tại `.private/w9/member-b/`. Dương tổng hợp Evidence/W08 cuối.
 
 - [ ] Ghi commit/patch Dương bàn giao, diff các file chung, kiểm migration dependency và tên API. Không ghi đè SessionWorkspace/CourseDocuments đang được Dương sửa.
 - [ ] Chạy test mới từng nhóm, rồi toàn bộ frontend test/build/lint và bộ backend liên quan. Kiểm schema cả endpoint mới và của Dương; remaining failure ghi đúng tên, không đếm thành PASS.
 - [ ] Chạy demo trong môi trường riêng: teacher tạo/công bố → student mở PDF/hoàn thành video/nộp quiz+TEXT → teacher chấm/công bố → student reload thấy điểm/progress → restart giữ dữ liệu → thu hồi quyền chặn API/media. Quay/chụp các mốc thực tế.
 - [ ] Kiểm AI sau tích hợp theo E05–E07 bản phân công: nguồn nhiều trang, ALU, memory/chuyển chủ đề, hint, summary, gợi ý tiếp theo, indexing chờ và Kaggle ngắt. Nếu chưa nhận code/model thì chỉ phần này chờ, tiếp tục hoàn thiện T0–T6.
 - [ ] Gói bàn giao Cường: code/migration/test, hướng dẫn seed/demo, expected table, lệnh chạy và exit/count thực, ảnh/log đã lọc, commit/config hash khi có thật, danh sách findings đã đóng/còn mở. Gửi cho người dùng để chuyển Dương; không tự gửi ra ngoài.
-- [ ] Đánh dấu checklist theo bằng chứng, chỉ ghi W9-01 hoàn tất khi phần LMS đạt và tích hợp phụ thuộc đã kiểm; milestone nhóm cần E01–E10 đều đạt.
+- [ ] Đánh dấu checklist theo bằng chứng, chỉ ghi W8-01 hoàn tất khi phần LMS đạt và tích hợp phụ thuộc đã kiểm; milestone nhóm cần E01–E10 đều đạt.
 
 ## 4. Lệnh kiểm chứng
 

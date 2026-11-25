@@ -1,18 +1,18 @@
 # Báo cáo hoàn thiện LMS core và AI assistant (Trần Tuấn Cường)
 
-- **Yêu cầu nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant”, theo mốc W8 giảng viên giao. Nội dung yêu cầu là căn cứ khi lịch đề cương bị lệch; các đường dẫn/mã W9 trong bằng chứng là định danh triển khai đã sử dụng.
+- **Yêu cầu nghiệm thu:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant”, theo mốc W8 giảng viên giao. Tài liệu được chuyển về W8 ngày 24/11/2026. Các tên nhánh, lệnh, DB và đường log có nhãn `w9` bên dưới ghi đúng định danh kỹ thuật của những lần chạy W8 để tra cứu kết quả.
 
 - **Ngày thực hiện:** 18–21/11/2026
 - **Người phụ trách:** Trần Tuấn Cường (B, B22DCVT073)
 - **Nhánh tích hợp:** `codex/w9-integration`, ghép phần LMS tại `818a9c3` với Ayo của Dương tại `77f9259`; nền chung `8b180aa`.
-- **Trạng thái:** Đã ghép và triển khai LMS + Ayo, kiểm demo LMS trên trình duyệt ngày 20/11, kiểm model thật qua API và Nginx ngày 21/11. Gói bằng chứng phần Cường đã sẵn sàng để Dương tổng hợp Evidence/W09; các giới hạn kiểm tra ghi ở mục 5–6.
+- **Trạng thái:** Đã ghép và triển khai LMS + Ayo, kiểm demo LMS trên trình duyệt ngày 20/11, kiểm model thật qua API và Nginx ngày 21/11. Gói bằng chứng phần Cường đã sẵn sàng để Dương tổng hợp Evidence/W08; các giới hạn kiểm tra ghi ở mục 5–6.
 
 ---
 
 ## 1. Tóm tắt kết quả theo từng tác vụ (T0–T7)
 
 ### T0. Khóa đầu vào và bàn giao Ayo hiện có
-- Tạo tài liệu bàn giao tại `docs/weekly/W9/ban-giao-ayo-cho-duong.md`, ghi rõ nhánh/HEAD, danh sách biến môi trường (không sao chép secret), đường dẫn cell Kaggle thực tế (`notebooks/generation_setup.ipynb` cell `ohayo-chat-memory-startup`), luồng gọi UI → API → Retrieval/Runtime → Kaggle, các lỗi ghi nhận ngày 17/11 và ranh giới ownership file.
+- Tạo tài liệu bàn giao tại `docs/weekly/W8/ban-giao-ayo-cho-duong.md`, ghi rõ nhánh/HEAD, danh sách biến môi trường (không sao chép secret), đường dẫn cell Kaggle thực tế (`notebooks/generation_setup.ipynb` cell `ohayo-chat-memory-startup`), luồng gọi UI → API → Retrieval/Runtime → Kaggle, các lỗi ghi nhận ngày 17/11 và ranh giới ownership file.
 
 ### T1. Điều tra và sửa kiểm thử LMS (`ClassroomSessionTests`)
 - **Nguyên nhân gốc đã xác định:** Trong `tests/common/test_classroom_sessions.py`, `ClassroomAnnouncementImageView` trả về `FileResponse` (`streaming=True`). Django `ClientHandler.__call__` chỉ ngắt `close_old_connections` khỏi signal `request_finished` cho non-streaming response; khi test gọi `image.close()` trên streaming response bên trong transaction `TestCase` (`autocommit=False != settings['AUTOCOMMIT']`), `close_old_connections()` gọi `BaseDatabaseWrapper.close()`, làm đóng socket `psycopg` trong khi `in_atomic_block=True` nên giữ nguyên `self.connection` đã đóng cho toàn bộ các test sau trong class.
@@ -45,15 +45,15 @@
 - **Kiểm chứng:** `tests.common.test_assessments` (`11/11 OK`), `AssessmentRunner.test.jsx` (`12/12 OK`), `AssessmentDashboard.test.jsx` (`3/3 OK`).
 
 ### T6. Dữ liệu demo và bảng kết quả mong đợi
-- **Tạo:** `backend/apps/courses/management/commands/seed_w9_demo.py`, `backend/apps/courses/tests/test_w9_demo.py`, `docs/weekly/W9/demo-w9-01.md`.
+- **Tạo:** `backend/apps/courses/management/commands/seed_w9_demo.py`, `backend/apps/courses/tests/test_w9_demo.py`, `docs/weekly/W8/demo-w8-01.md`.
 - Command khóa an toàn kép (`W9_DEMO_ENABLED=1`, tên DB `w9_demo_*`, mật khẩu qua `W9_DEMO_PASSWORD` không in ra stdout); tạo PDF 2 trang thật bằng ReportLab kèm derivative watermark đọc được qua `/api/documents/{id}/view/` (`PdfReader`) và video WebM VP8 phát được dài `12.0s` (checkpoint `5.0s`, kiểm 12 frame qua `cv2.VideoCapture` và `/videos/{id}/file/`); kiểm tra conflict đầy đủ trên toàn bộ trường quyết định kết quả (attempt status/score/answers/grade_published, VideoProgress chưa hoàn thành, DocumentCompletion, enrollment/session/assessment) và không tự ghi đè dữ liệu đã thay đổi.
 - **Kiểm chứng:** `test_w9_demo` (`2/2 OK`).
 
 ---
 
-## 2. Patch phối hợp bàn giao cho Vũ Nam Dương (`W9-02`)
+## 2. Patch phối hợp bàn giao cho Vũ Nam Dương (`W8-02`)
 
-Do tuân thủ ranh giới ownership file trong `phan-cong-w9.md`, Cường **không sửa trực tiếp** các file thuộc quyền giữ của Dương. Dưới đây là 2 điểm ghép nối sẵn sàng tích hợp khi Dương hoàn tất W9-02:
+Do tuân thủ ranh giới ownership file trong `phan-cong-w8.md`, Cường **không sửa trực tiếp** các file thuộc quyền giữ của Dương. Dưới đây là 2 điểm ghép nối sẵn sàng tích hợp khi Dương hoàn tất W8-02:
 
 1. **`backend/apps/documents/services.py` (tại `set_publication` và `remove_document`):**
    Sau khi thay đổi `published_version` / `is_published` / `removed_at` thành công (bên trong transaction hoặc ngay sau khi lưu):
@@ -79,12 +79,12 @@ Log chi tiết được lưu tại `.private/w9/member-b/`.
 | `docker compose exec -T backend python manage.py check` | `System check identified no issues (0 silenced)` (exit 0) |
 | `git diff --check` | Không lỗi trailing whitespace / conflict marker (exit 0) |
 | `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.courses.tests.test_learning_progress apps.courses.tests.test_progress_api apps.courses.tests.test_classroom_results apps.courses.tests.test_w9_demo --noinput` | **11/11 tests OK** (`4.177s`) |
-| `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --noinput` | Chạy **365 tests**, báo **7 failures + 1 error** đều nằm trong `tests.common.test_schema.OpenAPITests` cho phần `/api/ai/*` của W9-02 (Dương); 100% test LMS (bao gồm 4 endpoint mới của Cường trong `test_schema.py`) đều đạt (`51.816s`). |
+| `docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings.test backend python manage.py test apps.users.tests apps.courses.tests tests.common tests.ai tests.documents.test_material_access tests.documents.test_study_annotations --noinput` | Chạy **365 tests**, báo **7 failures + 1 error** đều nằm trong `tests.common.test_schema.OpenAPITests` cho phần `/api/ai/*` của W8-02 (Dương); 100% test LMS (bao gồm 4 endpoint mới của Cường trong `test_schema.py`) đều đạt (`51.816s`). |
 | `npm.cmd run lint` (trong `frontend/`) | **0 errors, 0 warnings** (`eslint . --max-warnings 0`) |
 | `npm.cmd run build` (trong `frontend/`) | **Thành công** (`vite build` trong `809ms`) |
 | `npm.cmd test -- --run --maxWorkers=2` (trong `frontend/`) | **54/54 file test PASS, 346/346 tests PASS** (`85.09s`) |
 
-### Chi tiết các failure còn lại trong `tests.common.test_schema.OpenAPITests` (phụ thuộc W9-02)
+### Chi tiết các failure còn lại trong `tests.common.test_schema.OpenAPITests` (phụ thuộc W8-02)
 - `test_error_responses_include_real_shapes_and_pagination_not_found` (`KeyError: 'additionalProperties'`)
 - `test_every_operation_has_concise_vietnamese_documentation` cho 4 endpoints AI (`/api/ai/conversations/` GET/POST, `/api/ai/conversations/{conversation_id}/` GET, `/api/ai/chat/{answer_id}/feedback/` PATCH)
 - `test_schema_validates_and_documents_all_business_operations` (thiếu 5 endpoints `/api/ai/*` trong tập expected)
@@ -162,8 +162,8 @@ Không có thay đổi frontend trong lần sửa hint. Bộ 366 test frontend v
 - Thao tác kiểm lại giao diện Edge ngày 21/11 bị công cụ dừng vì không xác định chắc URL đang mở. Không ghi lượt này thành nghiệm thu UI hint với model thật. Đường HTTP/Nginx/model và hợp đồng UI hint đã có bằng chứng riêng.
 - Đây là kiểm tích hợp có phạm vi theo học liệu CPU; không phải benchmark mới hoặc xác nhận chất lượng cho mọi câu hỏi/học liệu.
 
-## 6. Bàn giao để tổng hợp Evidence/W09
+## 6. Bàn giao để tổng hợp Evidence/W08
 
 Phần Cường gồm code tích hợp, test, demo LMS, QA/citation/memory/hint/summary thật và kiểm lưu trữ đã có kết quả. Gói riêng `.private/w9/w9-lms-ayo-integration-final-evidence.zip` gồm bằng chứng LMS ngày 20/11 và kết quả model thật ngày 21/11, kèm manifest/receipt để kiểm lại. Gói có nội dung học liệu và phản hồi, chỉ chuyển riêng.
 
-Dương tổng hợp kết quả hai phần vào `Evidence/W09/` theo phân công, cập nhật số liệu/manifest của bản cuối và ghi các giới hạn ở trên. Khi chuẩn bị nộp, đối chiếu checklist E01–E10 với phạm vi API, test tự động, demo trình duyệt và các trường hợp chưa có ảnh UI model thật; không ghi các phạm vi khác nhau thành cùng một lượt kiểm.
+Dương tổng hợp kết quả hai phần vào `Evidence/W08/` theo phân công, cập nhật số liệu/manifest của bản cuối và ghi các giới hạn ở trên. Khi chuẩn bị nộp, đối chiếu checklist E01–E10 với phạm vi API, test tự động, demo trình duyệt và các trường hợp chưa có ảnh UI model thật; không ghi các phạm vi khác nhau thành cùng một lượt kiểm.

@@ -4,7 +4,9 @@
 
 **Căn cứ nghiệm thu theo giảng viên:** “Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant”, thuộc mốc W8 theo lịch giảng viên giao. Ưu tiên tiêu đề và nội dung yêu cầu này khi lịch trong tài liệu đề cương bị lệch. Đầu ra là demo LMS tích hợp với dữ liệu hoạt động giả lập và bằng chứng kiểm chứng.
 
-**Tiêu đề milestone:** `Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant`. Mã việc `W9-01`, `W9-02` và đường dẫn `weekly/W9`, `Evidence/W09` là các định danh đã dùng trong hồ sơ triển khai; nghiệm thu theo nội dung yêu cầu giảng viên ở trên. Các mã kế hoạch chưa phải số Issue GitHub. Khi tạo Issue mới dùng số thật cho `Refs`/`Closes`.
+**Tiêu đề milestone:** `W8 – Hoàn thiện LMS core: course/lesson/quiz/submission + AI assistant`. Mã việc `W8-01`, `W8-02`, tài liệu `docs/weekly/W8/` và bằng chứng `Evidence/W08/` theo tuần thực tế giảng viên giao. Tài liệu được chuyển từ thư mục W9 về W8 ngày 24/11/2026. Các mã kế hoạch chưa phải số Issue GitHub. Khi tạo Issue mới dùng số thật cho `Refs`/`Closes`.
+
+**Tra cứu hồ sơ kỹ thuật:** Lệnh `seed_w9_demo`, biến `W9_DEMO_*`, nhánh và đường log `.private/w9/` là tên đã dùng trong code và các lần chạy của W8. Dùng đúng các tên này khi chạy lại hoặc tra bằng chứng.
 
 **Thành viên:** Trần Tuấn Cường (B, B22DCVT073), Vũ Nam Dương (A, B22DCVT119).
 
@@ -12,21 +14,21 @@
 
 ## 1. Hiện trạng và ranh giới
 
-**Căn cứ phân công cập nhật:** Trước W9, Cường phụ trách tích hợp AI vào LMS, Dương phụ trách train model. Theo thống nhất mới, Dương tiếp nhận toàn bộ phần Ayo đang có, gồm backend/gateway/RAG, giao diện trợ lý, memory, citation, gợi ý làm bài, tóm tắt và câu hỏi gợi ý tiếp theo. Cường phụ trách hoàn thiện LMS: course/lesson, tiến độ, kết quả lớp, quiz/submission và dữ liệu demo. Việc chuyển trách nhiệm W9 không thay đổi người thực hiện công việc trước đây. Không yêu cầu train lại để hoàn thành W9.
+**Căn cứ phân công cập nhật:** Trước W8, Cường phụ trách tích hợp AI vào LMS, Dương phụ trách train model. Theo thống nhất mới, Dương tiếp nhận toàn bộ phần Ayo đang có, gồm backend/gateway/RAG, giao diện trợ lý, memory, citation, gợi ý làm bài, tóm tắt và câu hỏi gợi ý tiếp theo. Cường phụ trách hoàn thiện LMS: course/lesson, tiến độ, kết quả lớp, quiz/submission và dữ liệu demo. Việc chuyển trách nhiệm W8 không thay đổi người thực hiện công việc trước đây. Không yêu cầu train lại để hoàn thành W8.
 
 Đã có tài khoản, khóa học/lớp, tham gia/duyệt lớp, buổi học, PDF và pipeline indexing, video tương tác, quiz, tự luận/file, chấm điểm, dashboard từng bài, lịch sử Ayo và gợi ý ôn tập. Mở rộng các luồng đang có, không xây lại LMS.
 
-Kiểm ngày 17/11: 6 dịch vụ Docker đang chạy, không còn migration chờ; 40 chunk không sai provenance. Hai câu CPU qua backend–Kaggle đều `ANSWERED`; chu kỳ CPU lấy trang 8–9, nhưng câu ALU còn citation chưa hỗ trợ hết ý. Bộ backend chạy trong Docker: 353 test, 7 failure và 11 error. Các số này là đầu vào điều tra, không phải kết quả hoàn thành W9.
+Kiểm ngày 17/11: 6 dịch vụ Docker đang chạy, không còn migration chờ; 40 chunk không sai provenance. Hai câu CPU qua backend–Kaggle đều `ANSWERED`; chu kỳ CPU lấy trang 8–9, nhưng câu ALU còn citation chưa hỗ trợ hết ý. Bộ backend chạy trong Docker: 353 test, 7 failure và 11 error. Các số này là đầu vào điều tra, không phải kết quả hoàn thành W8.
 
 Tài liệu gốc: `docs/SRS.md`, `D:/ĐATN_Đề cương chi tiết.docx`. Log kiểm ban đầu tại `.private/lms-live-audit-20261117/`; không đưa nội dung học liệu riêng, token, tài khoản hoặc log thô nhạy cảm lên Git.
 
-Trong W9 phải hoàn thiện tiến độ, thống kê lớp, tính bền vững, quyền và luồng trợ lý tích hợp. OCR, DOCX/PPTX/TXT, thanh toán/doanh thu và dashboard quản trị nền tảng tiếp tục là phạm vi sản phẩm cuối; không coi hoàn thành W9 là hoàn thành toàn bộ SRS. Không huấn luyện lại hoặc thay benchmark W7 trong công việc này.
+Trong W8 phải hoàn thiện tiến độ, thống kê lớp, tính bền vững, quyền và luồng trợ lý tích hợp. OCR, DOCX/PPTX/TXT, thanh toán/doanh thu và dashboard quản trị nền tảng tiếp tục là phạm vi sản phẩm cuối; không coi hoàn thành W8 là hoàn thành toàn bộ SRS. Không huấn luyện lại hoặc thay benchmark W7 trong công việc này.
 
-## 2. W9-01 – Cường: tiến độ, kết quả lớp và độ ổn định LMS
+## 2. W8-01 – Cường: tiến độ, kết quả lớp và độ ổn định LMS
 
-**Kế hoạch thực thi cho agent:** [plan-w9-01-cuong.md](plan-w9-01-cuong.md) – tác vụ T0–T7, hợp đồng API, test và bàn giao.
+**Kế hoạch thực thi cho agent:** [plan-w8-01-cuong.md](plan-w8-01-cuong.md) – tác vụ T0–T7, hợp đồng API, test và bàn giao.
 
-**Tiêu đề Issue:** `W9-01 – Trần Tuấn Cường – Hoàn thiện tiến độ học, kết quả lớp và luồng quiz/submission`.
+**Tiêu đề Issue:** `W8-01 – Trần Tuấn Cường – Hoàn thiện tiến độ học, kết quả lớp và luồng quiz/submission`.
 
 **Đầu vào:** Code hiện tại, SRS về học/đánh giá/thống kê, models Enrollment/VideoProgress/AssessmentAttempt, dashboard từng bài; hợp đồng nguồn/học liệu do Dương bàn giao tại mục 4.
 
@@ -68,9 +70,9 @@ Trong W9 phải hoàn thiện tiến độ, thống kê lớp, tính bền vữn
 
 **Đầu ra bổ sung:** ghi chú bàn giao đủ để Dương chạy lại Ayo hiện có và bản demo tích hợp có thể kiểm lại.
 
-## 3. W9-02 – Dương: tích hợp Ayo, học liệu và quyền vào LMS
+## 3. W8-02 – Dương: tích hợp Ayo, học liệu và quyền vào LMS
 
-**Tiêu đề Issue:** `W9-02 – Vũ Nam Dương – Hoàn thiện Ayo có nguồn và tích hợp học liệu vào LMS`.
+**Tiêu đề Issue:** `W8-02 – Vũ Nam Dương – Hoàn thiện Ayo có nguồn và tích hợp học liệu vào LMS`.
 
 **Đầu vào:** pipeline tại `backend/apps/ai/`, `backend/apps/documents/`, UI trợ lý/học liệu, cell Kaggle hiện dùng, PDF CPU đã được phép kiểm tra nội bộ; API/trạng thái LMS từ Cường.
 
@@ -90,7 +92,7 @@ Trong W9 phải hoàn thiện tiến độ, thống kê lớp, tính bền vữn
 - [ ] Giữ trả lời quy trình nhiều trang đầy đủ; không cắt về một trang để né lỗi. Tài liệu không đủ thì nêu giới hạn, không bịa phần tiếp nối.
 - [ ] Hoàn thiện tóm tắt theo tài liệu/phạm vi chọn, có nguồn và giới hạn bao phủ rõ. Bổ sung mode/schema/gateway/UI/test đồng bộ; không gọi tóm tắt toàn tài liệu nếu mới đọc top-5 đoạn.
 - [ ] Kiểm câu nối “Nó có mấy cổng?” sau ALU, chuyển chủ đề CU, câu thiếu căn cứ và hai hội thoại độc lập; lịch sử không trở thành bằng chứng nguồn.
-- [ ] Dương triển khai 2–3 câu hỏi gợi ý tiếp theo dưới câu trả lời Ayo, sau khi citation và memory ổn định. Gợi ý bám nội dung và phạm vi học liệu hiện tại, tránh lặp câu vừa hỏi hoặc giả định thông tin chưa có căn cứ. Bấm gợi ý tạo lượt hỏi mới trong đúng hội thoại, dùng cùng kiểm quyền và chống gửi trùng như nhập tay. Không tự gửi khi chưa bấm; nếu sinh gợi ý lỗi thì vẫn hiển thị câu trả lời chính. Kiểm thử bấm gợi ý, giữ memory, chuyển hội thoại và lỗi sinh gợi ý. Đây là phần bổ sung trải nghiệm do nhóm chọn cho W9, không phải tiêu chí bắt buộc riêng được trích từ đề cương.
+- [ ] Dương triển khai 2–3 câu hỏi gợi ý tiếp theo dưới câu trả lời Ayo, sau khi citation và memory ổn định. Gợi ý bám nội dung và phạm vi học liệu hiện tại, tránh lặp câu vừa hỏi hoặc giả định thông tin chưa có căn cứ. Bấm gợi ý tạo lượt hỏi mới trong đúng hội thoại, dùng cùng kiểm quyền và chống gửi trùng như nhập tay. Không tự gửi khi chưa bấm; nếu sinh gợi ý lỗi thì vẫn hiển thị câu trả lời chính. Kiểm thử bấm gợi ý, giữ memory, chuyển hội thoại và lỗi sinh gợi ý. Đây là phần bổ sung trải nghiệm do nhóm chọn cho W8, không phải tiêu chí bắt buộc riêng được trích từ đề cương.
 - [ ] Sửa `ai/policy.py` để lượt kiểm tra bị gỡ/mất quyền không chặn AI vô thời hạn; khi kiểm tra còn hiệu lực vẫn chặn đúng. Gợi ý chỉ gửi đề/choices được phép, không gửi đáp án/rubric riêng tới model.
 - [ ] Cung cấp một hợp đồng gợi ý thống nhất cho Cường nối UI. Khi Kaggle ngắt/bận/timeout/config lệch, báo đúng lỗi; phần LMS vẫn học/lưu/nộp/chấm được.
 - [ ] Dương đối chiếu thông tin model/revision, adapter/checksum/config từ phần train mình phụ trách; xác minh trạng thái triển khai thật. Ghi model/revision, adapter bật hay tắt, prompt/config và phiên bản cell thật. Adapter W7 không tự được coi là đã bật trên web; không tuyên bố tuned tốt hơn khi chưa có bằng chứng.
@@ -101,7 +103,7 @@ Trong W9 phải hoàn thiện tiến độ, thống kê lớp, tính bền vữn
 
 - [ ] Sửa mô tả/response/schema các API chat mới; cập nhật test schema cho endpoint thực và điều tra `DatabaseOperationForbidden`, không bỏ assertion để lấy kết quả xanh.
 - [ ] Kiểm độc lập tiến độ/kết quả do Cường bàn giao bằng seed và bảng đáp án số liệu; Cường kiểm lại QA/hint/summary và quyền của Dương.
-- [ ] Bàn giao Cường kết quả kiểm nguồn, memory, hint/summary, câu hỏi tiếp theo, lỗi Kaggle và quyền học liệu để ghép demo. Dương nhận bằng chứng LMS từ Cường và tổng hợp `Evidence/W09/` theo cấu trúc Evidence tuần đã dùng: README, test results, metrics, manifest và figures/log. Bằng chứng phải thuộc cùng bản code/config chạy cuối.
+- [ ] Bàn giao Cường kết quả kiểm nguồn, memory, hint/summary, câu hỏi tiếp theo, lỗi Kaggle và quyền học liệu để ghép demo. Dương nhận bằng chứng LMS từ Cường và tổng hợp `Evidence/W08/` theo cấu trúc Evidence tuần đã dùng: README, test results, metrics, manifest và figures/log. Bằng chứng phải thuộc cùng bản code/config chạy cuối.
 - [ ] Lưu cấu hình đã khử bí mật, thời gian chạy, số test thực, trạng thái từng kịch bản và known limitations. Log dùng `.txt` để được Git theo dõi; checkpoint/PDF/token/log thô đặt riêng nếu cần, ghi checksum và đường dẫn bàn giao.
 
 **Đầu ra bàn giao Cường:** code/migration/test, hợp đồng AI cuối, hướng dẫn chạy Kaggle/backend, báo cáo nguồn/latency và gói Evidence cuối có thể kiểm lại. Evidence chưa được gọi là hoàn thành nếu kịch bản còn lỗi.
@@ -149,4 +151,4 @@ Kiểm Docker tham khảo: `docker compose ps`; `docker compose exec backend pyt
 
 Backend test phải dùng `config.settings.test` và database test riêng; không dùng migration/flush/xóa dữ liệu trên DB đang chạy để “làm sạch” kết quả. Frontend dùng `npm.cmd test -- --maxWorkers=2`, `npm.cmd run build`, `npm.cmd run lint` trong `frontend/`.
 
-Milestone chỉ đóng khi cả W9-01 và W9-02 đạt cùng bảng E01–E10. Có code hoặc container healthy chưa đủ. Các thiếu sót ngoài W9 được ghi rõ thành việc sản phẩm cuối, không ghi hoàn thành thay.
+Milestone chỉ đóng khi cả W8-01 và W8-02 đạt cùng bảng E01–E10. Có code hoặc container healthy chưa đủ. Các thiếu sót ngoài W8 được ghi rõ thành việc sản phẩm cuối, không ghi hoàn thành thay.

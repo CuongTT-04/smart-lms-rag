@@ -1,9 +1,11 @@
-# Bàn giao phần Ayo hiện có cho Vũ Nam Dương (W9-01 / T0)
+# Bàn giao phần Ayo hiện có cho Vũ Nam Dương (W8-01 / T0)
+
+**Quy ước hồ sơ:** Tài liệu thuộc W8, được chuyển về `docs/weekly/W8/` ngày 24/11/2026. Thông tin HEAD và trạng thái môi trường bên dưới ghi nhận tại ngày bàn giao 18/11.
 
 - **Ngày lập:** 18/11/2026
 - **Người bàn giao:** Trần Tuấn Cường (B, B22DCVT073)
 - **Người nhận:** Vũ Nam Dương (A, B22DCVT119)
-- **Mục đích:** Bàn giao baseline Ayo đang chạy, đường dẫn/lệnh khởi động, log lỗi kiểm thử ngày 17/11 và hợp đồng LMS/file ownership để Dương triển khai W9-02.
+- **Mục đích:** Bàn giao baseline Ayo đang chạy, đường dẫn/lệnh khởi động, log lỗi kiểm thử ngày 17/11 và hợp đồng LMS/file ownership để Dương triển khai W8-02.
 
 ---
 
@@ -11,7 +13,7 @@
 
 - **Nhánh làm việc:** `TranTuanCuong_B22DCVT073_W8Tasks`
 - **HEAD hiện tại:** `8b180aa` (*Merge pull request #18 from CuongTT-04/VuNamDuong_B22DCVT119_W7Tasks*)
-- **Dirty / Untracked files liên quan W9:** `docs/weekly/W9/phan-cong-w9.md`, `docs/weekly/W9/plan-w9-01-cuong.md` (chưa commit).
+- **Dirty / Untracked files liên quan W8:** `docs/weekly/W8/phan-cong-w8.md`, `docs/weekly/W8/plan-w8-01-cuong.md` (chưa commit).
 - **Dịch vụ Docker (`docker-compose.yml`):** gồm 6 service `redis`, `database` (PostgreSQL 16, port host `5433`), `backend` (Django/DRF, port `8000`), `ingestion-worker` (`run_ingestion_worker`), `indexing-worker` (`run_indexing_worker`), `frontend` (React/Vite qua Nginx, port `5173`).
 - **Kiểm tra trạng thái thực tế ngày 18/11:** cả 6 container đều đang chạy (`backend`, `database`, `frontend`, `redis` trạng thái `healthy`).
 
@@ -73,13 +75,13 @@ Log kiểm ban đầu được lưu tại `.private/lms-live-audit-20261117/`:
     - `test_schema_swagger_and_health_are_public` và `test_write_operations_use_bearer_security_without_csrf_header` (`DatabaseOperationForbidden` trên `SimpleTestCase`)
     *(Nhóm OpenAPI/schema chat này thuộc phạm vi I3 của Dương).*
 - **Giới hạn trạng thái hiện tại:**
-  - Baseline hiện tại **mới có QA và hint**; chưa triển khai mode `summary` và `câu hỏi gợi ý tiếp theo` (thuộc W9-02 do Dương triển khai). Chưa thực hiện review đầy đủ cho summary và multi-turn memory với model thật trên tập kịch bản W9.
+  - Baseline hiện tại **mới có QA và hint**; chưa triển khai mode `summary` và `câu hỏi gợi ý tiếp theo` (thuộc W8-02 do Dương triển khai). Chưa thực hiện review đầy đủ cho summary và multi-turn memory với model thật trên tập kịch bản W8.
   - Quyền buổi học nháp (`session_views.py`, `documents/access.py`), lưu trữ bền vững `study_notes.py` (hiện vẫn dùng `LocMemCache`), và lỗi `ai/policy.py` giữ khóa AI khi bài kiểm tra bị gỡ/thu hồi quyền thuộc phần I1/I2 của Dương.
-  - Phụ thuộc phía Cường ở W9-01 (T5): `AssessmentRunner.jsx` hiện còn nút `"Trợ giúp AI"` gọi `POST .../assistance/` trả về thông báo tĩnh `"Chưa kết nối mô hình AI..."` từ `AssessmentAssistanceView`; cần hợp đồng hint thống nhất từ Dương để hợp nhất hai nút trợ giúp.
+  - Phụ thuộc phía Cường ở W8-01 (T5): `AssessmentRunner.jsx` hiện còn nút `"Trợ giúp AI"` gọi `POST .../assistance/` trả về thông báo tĩnh `"Chưa kết nối mô hình AI..."` từ `AssessmentAssistanceView`; cần hợp đồng hint thống nhất từ Dương để hợp nhất hai nút trợ giúp.
 
 ---
 
-## 4. Hợp đồng LMS & Ranh giới Ownership W9
+## 4. Hợp đồng LMS & Ranh giới Ownership W8
 
 ### Hợp đồng trạng thái bài tập, tiến độ và quyền LMS (phía Cường quản lý)
 - **Định nghĩa hoạt động tính tiến độ:** PDF đã công bố (theo `published_version`), Video đã công bố, Assessment đã công bố trong buổi học không nháp (`is_draft=False`) và không bị gỡ (`removed_at__isnull=True`).
@@ -93,9 +95,9 @@ Log kiểm ban đầu được lưu tại `.private/lms-live-audit-20261117/`:
   - `Enrollment.status`: `ACTIVE`, `COMPLETED`, `WITHDRAWN` (khi bị thu hồi `WITHDRAWN`, không cho phép đọc/ghi học liệu hoặc dùng AI trong lớp đó).
   - Tuyệt đối không đưa đáp án đúng (`correct_choice_ids` / `solutions_published` / rubric) vào context của AI.
 
-### Ranh giới Ownership file theo `phan-cong-w9.md`
-- **Cường (W9-01):** `apps/courses/` (progress models/services/APIs, classroom results/analytics, assessment reports/views, demo seed), `frontend/src/components/ClassroomResults.jsx`, `LearningProgress.jsx`, `ClassroomRoster.jsx`, `ClassroomWorkspace.jsx`, `AssessmentRunner.jsx` (nhận hợp đồng hint từ Dương).
-- **Dương (W9-02):** `backend/apps/ai/`, `backend/apps/documents/` (access, session draft permissions, `study_notes.py`), OpenAPI schema (`test_schema.py` cho AI/documents), UI trợ lý (`components/ai/`), `SessionWorkspace.jsx`, `documents/CourseDocuments.jsx`.
+### Ranh giới Ownership file theo `phan-cong-w8.md`
+- **Cường (W8-01):** `apps/courses/` (progress models/services/APIs, classroom results/analytics, assessment reports/views, demo seed), `frontend/src/components/ClassroomResults.jsx`, `LearningProgress.jsx`, `ClassroomRoster.jsx`, `ClassroomWorkspace.jsx`, `AssessmentRunner.jsx` (nhận hợp đồng hint từ Dương).
+- **Dương (W8-02):** `backend/apps/ai/`, `backend/apps/documents/` (access, session draft permissions, `study_notes.py`), OpenAPI schema (`test_schema.py` cho AI/documents), UI trợ lý (`components/ai/`), `SessionWorkspace.jsx`, `documents/CourseDocuments.jsx`.
 - **Phối hợp file chung / callback:**
   - Khi Dương hoàn tất sửa đổi publish/replace/remove tài liệu trong `apps/documents/`, sẽ cần gắn callback `refresh_classroom_progress(classroom_id=...)` do Cường cung cấp tại T2.
   - `AssessmentRunner.jsx` do Cường giữ, chờ hợp đồng endpoint/payload hint cuối từ Dương để nối hoàn chỉnh ở T5.
