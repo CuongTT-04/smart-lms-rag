@@ -1,11 +1,13 @@
 from uuid import uuid4
-from django.db import transaction
+from django.db import transaction, DatabaseError
 from django.utils.decorators import method_decorator
+from django.utils.cache import patch_vary_headers
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_spectacular.utils import extend_schema, PolymorphicProxySerializer, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 from apps.documents.exceptions import DocumentError
 from ..services import answer_chat
 from ..models import ChatResponseRecord
@@ -25,12 +27,21 @@ class ChatView(APIView):
     permission_classes=[IsAuthenticated]
     http_method_names=['post','options']
 
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super().finalize_response(request, response, *args, **kwargs)
+        response['Cache-Control'] = 'private, no-store'
+        patch_vary_headers(response, ('Authorization', 'Cookie'))
+        return response
+
     def initial(self, request, *args, **kwargs):
         self.request_id=str(uuid4())
         super().initial(request,*args,**kwargs)
 
     def handle_exception(self, exc):
         request_id=getattr(self,'request_id',str(uuid4()))
+        if isinstance(exc, DatabaseError):
+            return Response({'request_id':request_id, 'code':'GENERATION_UNAVAILABLE',
+                'message':'Dịch vụ AI chưa sẵn sàng. Vui lòng thử lại sau.'}, status=503)
         if isinstance(exc,DocumentError):
             code=exc.code
             if exc.status==404: message='Tài nguyên không khả dụng hoặc bạn không có quyền truy cập.'
@@ -163,3 +174,18 @@ class ConversationDetailView(ChatView):
         except (ValueError, TypeError) as exc:
             raise DocumentError('INVALID_REQUEST', 'Trang hội thoại không hợp lệ.', 400) from exc
         return Response(conversation_detail(request.user, conversation_id, before))
+
+
+class AIOperationsView(ChatView):
+    http_method_names = ['get', 'options']
+
+    @extend_schema(tags=['AI'], operation_id='ai_operations', summary='Tín hiệu vận hành AI dành cho Admin',
+        description='Chỉ số tổng hợp 24 giờ, quota/hàng đợi và health gateway. Không trả prompt, đáp án, học liệu, tài khoản hoặc cấu hình kết nối.',
+        responses={200: OpenApiTypes.OBJECT, **AI_ERRORS})
+    def get(self, request):
+        from apps.documents.access import refresh_live_user
+        refresh_live_user(request.user)
+        if request.user.role != 'ADMIN':
+            raise DocumentError('FORBIDDEN', 'Chỉ quản trị viên được xem vận hành AI.', 403)
+        from ..operations import operations_snapshot
+        return Response(operations_snapshot())

@@ -14,6 +14,12 @@ it('explains output limits and busy generation separately from unavailable AI',(
   expect(chatErrorMessage({data:{code:'GENERATION_BUSY'}})).toContain('đang xử lý')
 })
 
+it('distinguishes AI quota, full queue and waiting timeout without showing provider details', () => {
+  expect(chatErrorMessage({ status: 429, data: { code: 'AI_QUOTA_EXCEEDED', message: 'PRIVATE' } })).toContain('vẫn có thể đọc')
+  expect(chatErrorMessage({ status: 429, data: { code: 'AI_QUEUE_FULL' } })).toContain('Hàng đợi')
+  expect(chatErrorMessage({ status: 429, data: { code: 'AI_QUEUE_TIMEOUT' } })).toContain('chưa đến lượt')
+})
+
 it('explains verified validation failures without guessing details or displaying raw provider text',()=>{
   expect(chatErrorMessage({data:{code:'GENERATION_MISSING_CITATION',message:'PRIVATE provider text'}})).toContain('thiếu dẫn nguồn')
   expect(chatErrorMessage({data:{code:'GENERATION_INVALID_CITATION'}})).toContain('không có trong học liệu')

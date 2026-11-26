@@ -176,6 +176,7 @@ def send_conversation(*, user, data):
             current = ChatTurn.objects.select_for_update().get(pk=turn.pk)
             if current.status != 'PENDING' or current.lease_token != turn.lease_token or current.lease_expires_at <= timezone.now():
                 raise DocumentError('CHAT_SUPERSEDED', 'Lượt hỏi đã hết hiệu lực. Vui lòng tải lại phiên chat.', 409)
+            owned_conversation(user, conversation.pk)
             current.status = 'COMPLETED'; current.result = result; current.lease_token = None
             current.save(update_fields=['status', 'result', 'lease_token', 'updated_at'])
             ChatResponseRecord.objects.create(id=turn.pk, user=user, turn=current)

@@ -58,6 +58,9 @@ export function chatErrorMessage(error) {
     INCOMPLETE_GENERATION: 'AI chưa hoàn tất câu trả lời. Vui lòng thử lại.',
     GENERATION_TIMEOUT: 'AI xử lý quá lâu. Vui lòng thử lại hoặc chia nhỏ câu hỏi.',
     GENERATION_BUSY: 'AI đang xử lý các yêu cầu khác. Vui lòng thử lại sau.',
+    AI_QUOTA_EXCEEDED: 'Bạn đã dùng hết hạn mức AI trong một giờ. Bạn vẫn có thể đọc học liệu và thử AI lại sau.',
+    AI_QUEUE_FULL: 'Hàng đợi AI đã đầy. Vui lòng thử lại sau.',
+    AI_QUEUE_TIMEOUT: 'AI chưa đến lượt xử lý yêu cầu của bạn. Vui lòng thử lại sau.',
     OUT_OF_MEMORY: 'Dịch vụ AI thiếu bộ nhớ xử lý. Vui lòng thử lại sau.',
     GENERATION_CONFIG_MISMATCH: 'Cấu hình trợ lý AI chưa đồng bộ với Kaggle. Vui lòng liên hệ người quản trị.',
     CONVERSATION_BUSY: 'Phiên chat đang xử lý một câu hỏi. Vui lòng đợi.',
@@ -72,6 +75,6 @@ export function chatErrorMessage(error) {
   }
   if (error.status === 0) return 'Mất kết nối tới máy chủ. Vui lòng kiểm tra kết nối rồi thử lại.'
   if ([502, 504].includes(error.status)) return 'Máy chủ chưa phản hồi kịp. Vui lòng thử lại sau.'
-  if (error.status === 429) return 'Có quá nhiều yêu cầu. Vui lòng đợi rồi thử lại.'
+  if (error.status === 429) return messages[error.data?.code] || 'Có quá nhiều yêu cầu. Vui lòng đợi rồi thử lại.'
   return messages[error.data?.code] || 'Không thể gửi câu hỏi lúc này. Vui lòng thử lại.'
 }

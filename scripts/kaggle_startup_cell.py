@@ -47,6 +47,8 @@ def _ohayo_start(runtime_factory=None, service_signature='single-v1', source_bun
     from packaging.specifiers import SpecifierSet
     requirements = {'transformers': '==4.57.6', 'bitsandbytes': '==0.48.2',
                     'accelerate': '>=1.6,<2', 'pyngrok': '>=7,<10', 'lm-format-enforcer': '==0.11.3'}
+    if globals().get('OHAYO_SERVING_ARM') == 'tuned_rag':
+        requirements['peft'] = '==0.17.1'
     missing = []
     for name, constraint in requirements.items():
         try:
@@ -203,7 +205,8 @@ def _ohayo_start(runtime_factory=None, service_signature='single-v1', source_bun
     # OHAYO_GATEWAY_SOURCE is embedded in this same cell; no extra source upload needed.
     gateway = {}
     exec(OHAYO_GATEWAY_SOURCE, gateway)
-    server = gateway['start_gateway'](pipeline, api_token, public_config)
+    server = gateway['start_gateway'](pipeline, api_token, public_config,
+        identity_provider=globals().get('_ohayo_serving_identity'))
     from pyngrok import ngrok, conf
     # pyngrok 9 defaults to /api/endpoints. Our bind_tls/inspect options use
     # the supported tunnels schema; select it explicitly (agent remains v3).

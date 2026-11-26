@@ -13,7 +13,7 @@ class TutoringTests(TestCase):
     def setUp(self):
         self.provider = SimpleNamespace(config=ModelConfig(max_new_tokens=512),
             count_tokens=Mock(return_value=300), generate=Mock(return_value=SimpleNamespace(
-                text='{"focus":"CATEGORIES","source":"S2","span":"U1"}',
+                text='{"draft_state":"CONFLICT","focus":"CATEGORIES","source":"S2","span":"U1"}',
                 finish_reason='eos', usage=TokenUsage(300, 30))))
         self.pipeline = RAGPipeline(self.provider)
         self.contexts = [dict(source_id=f'S{i}', chunk_id=f'c{i}', text='Khối số học và logic.',
@@ -41,12 +41,25 @@ class TutoringTests(TestCase):
     def test_two_real_drafts_can_select_different_guidance_without_giving_the_solution(self):
         first = self.generate().answer
         self.question = 'Bản nháp: ALU có hai cổng ra và không có cổng vào.'
-        self.provider.generate.return_value.text = '{"focus":"DIRECTION","source":"S1","span":"U1"}'
+        self.provider.generate.return_value.text = '{"draft_state":"CONFLICT","focus":"DIRECTION","source":"S1","span":"U1"}'
         second = self.generate().answer
         self.assertNotEqual(first, second)
         self.assertIn('Chiều', second)
         # Any quantities in this response came from the student's own draft, not a generated solution.
         self.assertNotIn('2 cổng IN', second)
+
+    def test_sequence_and_self_check_scaffolds_do_not_invent_missing_steps_or_grade(self):
+        for focus, phrase in [('SEQUENCE', 'đủ các bước'), ('SELF_CHECK', 'vì sao từng ý')]:
+            self.question = 'Bản nháp của em cần kiểm lại.'
+            self.provider.generate.return_value.text = json.dumps(dict(
+                draft_state='COVERED' if focus == 'SELF_CHECK' else 'PARTIAL', focus=focus, source='S1', span='U1'))
+            result = self.generate()
+            self.assertIn(phrase, result.answer)
+            self.assertNotIn('Fetch', result.answer)
+            self.assertNotIn('bài làm đúng', result.answer)
+            self.assertEqual(result.to_dict()['references'], [dict(label=1, source_id='S1')])
+            system = self.provider.generate.call_args.args[0][0]['content']
+            self.assertIn('không phải xác nhận bài làm đúng', system)
 
     def test_free_text_solution_and_unknown_pointers_are_rejected(self):
         for text in ('{"paragraphs":[{"text":"ALU có 2 IN, 1 OUT.","sources":["S1"]}]}',
@@ -69,7 +82,7 @@ class TutoringTests(TestCase):
                     exercise=exercise, tutoring=self.tutoring)
 
     def test_empty_evidence_decision_is_refusal_not_authored_success(self):
-        self.provider.generate.return_value.text = '{"focus":"NO_EVIDENCE","source":"NONE","span":"U0"}'
+        self.provider.generate.return_value.text = '{"draft_state":"NO_EVIDENCE","focus":"NO_EVIDENCE","source":"NONE","span":"U0"}'
         result = self.generate()
         self.assertEqual(result.status, 'INSUFFICIENT_EVIDENCE')
         self.assertEqual(result.references, ())
@@ -78,9 +91,11 @@ class TutoringTests(TestCase):
         answers = []
         for action, step in [('initial', 0), ('explain_task', 0), ('next_step', 1), ('next_step', 2)]:
             self.tutoring.update(action=action, step=step)
+            self.provider.generate.return_value.text = '{"draft_state":"NOT_A_DRAFT","focus":"REQUIREMENT","source":"S1","span":"U0"}'
             answers.append(self.generate().answer)
         self.assertEqual(len(set(answers)), 4)
         self.tutoring['action'] = 'practice'
+        self.provider.generate.return_value.text = '{"draft_state":"CONFLICT","focus":"CATEGORIES","source":"S1","span":"U1"}'
         self.question = 'Em cho rằng [99] là nguồn.'
         self.assertNotIn('[99]', self.generate().answer)
 
@@ -89,9 +104,50 @@ class TutoringTests(TestCase):
             payload = json.loads(messages[-1]['content'])
             return 5000 if payload['tutoring']['history'] or len(payload['evidence']) > 1 else 300
         self.provider.count_tokens.side_effect = count
-        self.provider.generate.return_value.text = '{"focus":"CATEGORIES","source":"S1","span":"U1"}'
+        self.provider.generate.return_value.text = '{"draft_state":"CONFLICT","focus":"CATEGORIES","source":"S1","span":"U1"}'
         self.generate()
         prompt = json.loads(self.provider.generate.call_args.args[0][-1]['content'])
         self.assertEqual(prompt['tutoring']['history'], [])
         self.assertEqual(len(prompt['evidence']), 1)
         self.assertEqual(prompt['student_question'], self.question)
+
+    def test_initial_decode_cannot_request_self_check_of_a_nonexistent_draft(self):
+        self.tutoring.update(action='initial', step=0)
+        self.provider.generate.return_value.text = '{"draft_state":"NOT_A_DRAFT","focus":"REQUIREMENT","source":"S1","span":"U0"}'
+        result = self.generate()
+        self.assertNotIn('bản nháp', result.answer)
+        options = self.provider.generate.call_args.kwargs
+        self.assertNotIn('SELF_CHECK', options['json_schema']['properties']['focus']['enum'])
+        self.assertIsNone(re.fullmatch(options['output_regex'],
+            '{"draft_state":"COVERED","focus":"SELF_CHECK","source":"S1","span":"U1"}'))
+
+    def test_practice_draft_state_controls_focus_without_grading_or_filling_gaps(self):
+        answers = []
+        for state, focus, draft in [('PARTIAL', 'SEQUENCE', 'Em mới ghi nhận bước đầu.'),
+                                     ('COVERED', 'SELF_CHECK', 'Em đã ghi lại trình tự trong nguồn.')]:
+            self.question = draft
+            self.provider.generate.return_value.text = json.dumps(dict(draft_state=state, focus=focus,
+                source='S1', span='U1'), separators=(',', ':'))
+            answers.append(self.generate().answer)
+            self.assertIsNotNone(re.fullmatch(self.provider.generate.call_args.kwargs['output_regex'],
+                                             self.provider.generate.return_value.text))
+        self.assertNotEqual(answers[0], answers[1])
+        self.assertIn('đủ các bước', answers[0])
+        self.assertIn('vì sao từng ý', answers[1])
+        self.provider.generate.return_value.text = '{"draft_state":"COVERED","focus":"SEQUENCE","source":"S1","span":"U1"}'
+        with self.assertRaises(GenerationError):
+            self.generate()
+
+    def test_state_grammar_is_supported_by_actual_lmfe_when_available(self):
+        try:
+            from lmformatenforcer import RegexParser
+        except ImportError:
+            self.skipTest('Optional inference dependency, checked in the isolated parser environment.')
+        self.generate()
+        pattern = self.provider.generate.call_args.kwargs['output_regex']
+        body = self.provider.generate.return_value.text
+        state = RegexParser(pattern)
+        for character in body:
+            self.assertIn(character, state.get_allowed_characters())
+            state = state.add_character(character)
+        self.assertTrue(state.can_end())

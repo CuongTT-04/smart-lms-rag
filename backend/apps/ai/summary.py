@@ -8,12 +8,13 @@ from django.db import transaction
 from django.utils import timezone
 from apps.documents.exceptions import DocumentError
 from apps.documents.models import DocumentVersion
-from apps.documents.retrieval_adapter import live_scope
+from apps.documents.retrieval_adapter import live_scope, assert_scope_and_citations_live
 from apps.documents.retrieval_contracts import Chunk
 from apps.documents.retrieval_scope import resolve_scope
 from .models import ChatResponseRecord, SummaryTask
 from .policy import enforce_chat_policy
 from .rag.summary import PROTOCOL, VALIDATION_REASONS, validate_paragraphs
+from .rag.guardrails import check_output_policy
 from .remote import summarize_step
 from .runtime import get_runtime
 
@@ -54,8 +55,11 @@ def separate_source_footers(paragraphs):
 def task_scope(user, selector):
     user.refresh_from_db()
     enforce_chat_policy(user, {**selector, 'question': 'Tóm tắt học liệu', 'mode': 'qa'})
-    return resolve_scope(user, selector['course_id'], selector.get('classroom_id'),
+    scope = resolve_scope(user, selector['course_id'], selector.get('classroom_id'),
         selector.get('session_id'), selector['document_ids'], 'qa')
+    if scope.document_ids and len(scope.allowed_version_ids) != len(scope.document_ids):
+        raise DocumentError('NOT_FOUND', 'Học liệu không khả dụng hoặc bạn không có quyền truy cập.', 404)
+    return scope
 
 
 def owned_task(user, task_id):
@@ -65,6 +69,8 @@ def owned_task(user, task_id):
     scope = task_scope(user, task.selector)
     if scope.allowed_version_ids != (str(task.version_id),) or task.version.checksum_sha256 != task.state['checksum']:
         raise DocumentError('SCOPE_CHANGED', 'Học liệu hoặc quyền đã thay đổi.', 409)
+    sources = task.state.get('sources', (task.result or {}).get('citations', []))
+    assert_scope_and_citations_live(user, scope, citations=sources)
     return task
 
 
@@ -201,7 +207,11 @@ def advance_summary(user, task_id, runtime=None):
         if runtime.config != state['config']:
             raise DocumentError('GENERATION_CONFIG_MISMATCH', 'Cấu hình đã đổi giữa tiến trình tóm tắt. Vui lòng tạo lại.', 503)
         generate = getattr(runtime, 'summarize', summarize_step)
-        output = generate(phase=generation_phase, records=generation_records, config=runtime.config)
+        owned_task(user, task.pk)
+        from .operations import generation_slot
+        with generation_slot(user, 'summary') as admitted:
+            owned_task(user, task.pk)
+            output = admitted(generate, phase=generation_phase, records=generation_records, config=runtime.config)
         if (not isinstance(output, dict) or set(output) != {'protocol', 'phase', 'consumed', 'input_tokens', 'paragraphs'}
                 or output['protocol'] != PROTOCOL or output['phase'] != generation_phase
                 or type(output['consumed']) is not int or not (1 if generation_phase == 'map' else 2) <= output['consumed'] <= len(generation_records)
@@ -213,6 +223,8 @@ def advance_summary(user, task_id, runtime=None):
         allowed = {r['source_id'] for r in generation_records[:consumed]} if generation_phase == 'map' else {
             s for note in records[:consumed] for p in note['paragraphs'] for s in p['sources']}
         validate_paragraphs(output['paragraphs'], allowed, require_complete=source_sections)
+        check_output_policy('\n'.join(p['text'] for p in output['paragraphs']),
+                            [source['excerpt'] for source in state['sources']])
         paragraphs, adjustments = separate_source_footers(output['paragraphs'])
         if adjustments:
             state.setdefault('formatting_adjustments', []).append(dict(step=state['steps']+1, changes=adjustments))
@@ -258,6 +270,7 @@ def advance_summary(user, task_id, runtime=None):
             current = SummaryTask.objects.select_for_update().get(pk=task.pk)
             if current.lease_token != lease or current.lease_expires_at <= timezone.now():
                 raise DocumentError('CHAT_SUPERSEDED', 'Bước tóm tắt đã hết hiệu lực.', 409)
+            owned_task(user, task.pk)
             current.state, current.status = state, 'COMPLETED' if completed else 'PENDING'
             current.error_code = ''
             current.lease_token, current.lease_expires_at = None, None
@@ -271,7 +284,8 @@ def advance_summary(user, task_id, runtime=None):
     except Exception as error:
         code = getattr(error, 'code', 'SUMMARY_GENERATION_FAILED')
         safe = code if code in ('GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH', 'GENERATION_UNAVAILABLE',
-            'SUMMARY_SOURCE_INCOMPLETE', 'SCOPE_CHANGED', 'CHAT_SUPERSEDED') else 'SUMMARY_GENERATION_FAILED'
+            'SUMMARY_SOURCE_INCOMPLETE', 'SCOPE_CHANGED', 'CHAT_SUPERSEDED',
+            'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT', 'GENERATION_TIMEOUT') else 'SUMMARY_GENERATION_FAILED'
         details = {}
         remote_code = getattr(error, 'remote_code', None)
         if remote_code in {'INVALID_REQUEST', 'INVALID_GENERATION', 'GENERATION_TIMEOUT',
@@ -290,8 +304,8 @@ def advance_summary(user, task_id, runtime=None):
                     lease_token=None,lease_expires_at=None,state={**task.state,'source_retries':retries})
                 return descriptor(owned_task(user,task.pk))
         SummaryTask.objects.filter(pk=task.pk, lease_token=lease).update(
-            status='PENDING' if safe == 'GENERATION_BUSY' else 'FAILED', error_code=safe,
+            status='PENDING' if safe in ('GENERATION_BUSY', 'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT') else 'FAILED', error_code=safe,
             lease_token=None, lease_expires_at=None, state={**task.state, 'failure_details': details})
-        if safe == 'SCOPE_CHANGED':
+        if safe in ('SCOPE_CHANGED', 'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT'):
             raise error
         return descriptor(owned_task(user, task.pk))

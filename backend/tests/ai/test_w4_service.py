@@ -79,6 +79,8 @@ class ChatServiceTests(ScopeFixture):
         self.assertEqual(result['suggested_questions'], [])
 
     def test_literal_cross_page_quote_keeps_its_source_context(self):
+        self.version.page_count = 2
+        self.version.save(update_fields=['page_count'])
         previous = 'Cách thứ nhất xử lý từng yêu cầu riêng biệt để giảm thời gian chờ.'
         transition = 'Bên cạnh cách thứ nhất, hệ thống còn xử lý theo'
         following = 'lô. Các yêu cầu được xử lý chung khi có đủ tài nguyên.'
@@ -153,6 +155,8 @@ class ChatServiceTests(ScopeFixture):
         self.assertNotIn('secret',caught.exception.message)
 
     def test_incomplete_model_procedure_returns_cited_source_steps(self):
+        self.version.page_count = 2
+        self.version.save(update_fields=['page_count'])
         self.retrieval.return_value = [
             {**self.hit, 'text': 'Quy trình đăng ký (cont.)\nCác bước sau:\nChuẩn bị hồ sơ.\nGửi hồ sơ.\n<!-- image -->\nTên giảng viên'},
             {**self.hit, 'chunk_id': 'chunk-2', 'source': {**self.hit['source'], 'page_number': 2},

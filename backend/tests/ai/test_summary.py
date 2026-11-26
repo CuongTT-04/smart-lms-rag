@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from django.utils import timezone
 from rest_framework.test import APIClient
+from django.test import override_settings
 from apps.ai.api.serializers import ChatRequest
 from apps.ai.models import SummaryTask
 from apps.ai.services import answer_chat
@@ -118,6 +119,24 @@ class SummaryTests(ScopeFixture):
 
     def create(self):
         return answer_chat(user=self.student, data=self.data, request_id=str(uuid4()), runtime=self.runtime)
+
+    @override_settings(AI_HOURLY_STUDENT=1)
+    def test_summary_quota_preserves_progress_and_raises_429_without_infinite_polling(self):
+        from apps.ai.models import GenerationEvent
+        task = self.create()
+        self.assertFalse(GenerationEvent.objects.exists())
+        first = advance_summary(self.student, task['id'], self.runtime)
+        self.assertEqual(first['status'], 'PENDING')
+        with self.assertRaises(DocumentError) as caught:
+            advance_summary(self.student, task['id'], self.runtime)
+        self.assertEqual((caught.exception.code, caught.exception.status), ('AI_QUOTA_EXCEEDED', 429))
+        current = SummaryTask.objects.get(pk=task['id'])
+        self.assertEqual(current.status, 'PENDING')
+        self.assertEqual(current.state['cursor'], 1)
+        self.assertIsNone(current.lease_token)
+        self.assertEqual(self.runtime.summarize.call_count, 1)
+        GenerationEvent.objects.update(created_at=timezone.now()-timedelta(hours=1, seconds=1))
+        self.assertEqual(advance_summary(self.student, task['id'], self.runtime)['progress']['blocks_read'], 2)
 
     def finish(self, task_id):
         for _ in range(20):

@@ -10,6 +10,7 @@ from apps.ai.rag.conversation import (build_evidence_units, render_structured_an
                                       render_source_selection, source_selection_schema,
                                       validate_description_coverage, validate_answer_body,
                                       validate_enumeration_coverage)
+from apps.ai.rag.conversation import multipart_evidence_groups, validate_multipart_coverage
 from apps.ai.rag.errors import public_validation_error
 from apps.ai.tests.test_chat_recovery import SequenceProvider
 from apps.ai.tests import test_rag_pipeline as fixtures
@@ -89,6 +90,33 @@ class AnswerCompletenessTests(TestCase):
         self.assertEqual(render_structured_answer('{"items":[]}', [self.context], require_proof=True),
                          'INSUFFICIENT_EVIDENCE')
 
+    def test_absence_only_claims_are_not_published_as_grounded_answers(self):
+        raw = json.dumps(dict(items=[dict(text='Không có thông tin về vấn đề này.', evidence_id='E1.1'),
+                                     dict(text='Chủ đề này không được đề cập.', evidence_id='E1.2')]))
+        self.assertEqual(render_structured_answer(raw, [self.context], require_proof=True),
+                         'INSUFFICIENT_EVIDENCE')
+
+    def test_explicit_negative_fact_in_source_is_not_automatically_a_refusal(self):
+        context = replace(self.context, text='Phụ lục ghi rõ: Không có thông tin về tác giả trong hồ sơ.')
+        raw = json.dumps(dict(items=[dict(text='Không có thông tin về tác giả trong hồ sơ.', evidence_id='E1.1')]))
+        self.assertIn('[1]', render_structured_answer(raw, [context], require_proof=True))
+
+    def test_absence_notice_does_not_acquire_citations_in_pipeline(self):
+        class Constrained(SequenceProvider):
+            def generate(inner, messages, *, timeout_seconds=None, json_schema=None):
+                return super().generate(messages, timeout_seconds=timeout_seconds)
+        provider = Constrained([json.dumps(dict(items=[dict(text='Không có thông tin về chủ đề này.',
+                                                            evidence_id='E1.1')]))])
+        result = self.run_chat(provider)
+        self.assertEqual(result.status, 'INSUFFICIENT_EVIDENCE')
+        self.assertEqual(result.references, ())
+
+    def test_mixed_grounded_answer_and_unsupported_absence_is_not_silently_trimmed(self):
+        raw = json.dumps(dict(items=[dict(text='Con người có vốn hiểu biết.', evidence_id='E1.2'),
+                                     dict(text='Không có thông tin về chủ đề khác.', evidence_id='E1.1')]))
+        with self.assertRaises(GenerationError):
+            render_structured_answer(raw, [self.context], require_proof=True)
+
     def test_structured_retry_gets_actionable_feedback_not_identical_prompt(self):
         class Constrained(SequenceProvider):
             def generate(inner, messages, *, timeout_seconds=None, json_schema=None):
@@ -118,6 +146,52 @@ class AnswerCompletenessTests(TestCase):
         code, message, status = public_validation_error('INCOMPLETE_ANSWER_BODY')
         self.assertEqual((code, status), ('GENERATION_INCOMPLETE_CONTENT', 503))
         self.assertIn('câu dẫn', message)
+
+
+class MultipartCoverageTests(TestCase):
+    def setUp(self):
+        fixture = fixtures.RAGPipelineTests()
+        fixture.setUp()
+        self.contexts = [replace(fixture.first, text='Chu kỳ lệnh gồm nạp, giải mã và thực thi.'),
+                         replace(fixture.second, text='Các phép toán logic gồm AND, OR, XOR, NOT.')]
+        self.question = 'Nêu chu kỳ lệnh và các phép toán logic, trích nguồn cho từng ý.'
+
+    def test_missing_requested_topic_is_repaired_with_its_actual_source(self):
+        class Constrained(SequenceProvider):
+            def generate(inner, messages, *, timeout_seconds=None, json_schema=None):
+                return super().generate(messages, timeout_seconds=timeout_seconds)
+        first = dict(text='Các phép toán logic gồm AND, OR, XOR, NOT.', evidence_id='E2.1')
+        second = dict(text='Chu kỳ lệnh gồm nạp, giải mã và thực thi.', evidence_id='E1.1')
+        provider = Constrained([json.dumps(dict(items=[first])), json.dumps(dict(items=[second, first]))])
+        result = RAGPipeline(provider).generate_answer(question=self.question, mode='qa',
+                                                     contexts=self.contexts, history=[])
+        self.assertEqual(provider.generate_calls, 2)
+        self.assertIn('Chu kỳ lệnh', result.answer)
+        first_prompt = json.loads(provider.requests[0][-1]['content'])
+        self.assertEqual(len(first_prompt['question_parts']), 2)
+        repaired = json.loads(provider.requests[1][-1]['content'])
+        self.assertEqual(repaired['repair_feedback']['required_evidence_ids'], ['E1.1'])
+
+    def test_empty_answer_single_topic_and_ambiguous_shared_evidence_are_not_forced(self):
+        validate_multipart_coverage(self.question, '{"items":[]}', self.contexts)
+        self.assertEqual(multipart_evidence_groups('Chu kỳ lệnh là gì?', self.contexts), [])
+        shared = [replace(self.contexts[0], text='Chu kỳ lệnh và các phép toán logic cùng được mô tả ở đây.')]
+        self.assertEqual(multipart_evidence_groups(self.question, shared), [])
+
+    def test_unrelated_extra_source_is_not_required(self):
+        contexts = [*self.contexts, replace(self.contexts[0], source_id='S99', text='Tài liệu khác không liên quan.')]
+        raw = json.dumps(dict(items=[dict(text='Ý một.', evidence_id='E1.1'),
+                                     dict(text='Ý hai.', evidence_id='E2.1')]))
+        validate_multipart_coverage(self.question, raw, contexts)
+
+    def test_accented_question_matches_unaccented_source_without_changing_source_text(self):
+        contexts = [replace(self.contexts[0], text='Chu ky lenh gom nap, giai ma va thuc thi.'),
+                    replace(self.contexts[1], text='Cac phep toan logic gom AND, OR, XOR, NOT.')]
+        raw = json.dumps(dict(items=[dict(text='Các phép toán logic gồm AND, OR, XOR, NOT.',
+                                         evidence_id='E2.1')]))
+        with self.assertRaises(GenerationError) as caught:
+            validate_multipart_coverage(self.question, raw, contexts)
+        self.assertEqual(caught.exception.missing_evidence[0]['text'], contexts[0].text)
 
 
 class EnumerationCoverageTests(TestCase):

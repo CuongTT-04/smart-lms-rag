@@ -4,7 +4,7 @@ import re
 from time import monotonic
 from apps.documents.exceptions import DocumentError
 from apps.documents.retrieval_scope import resolve_scope
-from apps.documents.retrieval_adapter import live_scope
+from apps.documents.retrieval_adapter import assert_scope_and_citations_live
 from .policy import enforce_chat_policy
 from .runtime import get_runtime
 from .rag.errors import public_validation_error, VALIDATION_ERROR_CODES
@@ -64,6 +64,12 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
     started=monotonic()
     user.refresh_from_db()
     exercise=enforce_chat_policy(user,data)
+    from .providers.base import GenerationError
+    from .rag.guardrails import check_request_policy, check_output_policy
+    try:
+        check_request_policy(data['question'])
+    except GenerationError as exc:
+        raise DocumentError('INVALID_REQUEST', 'Không hỗ trợ yêu cầu vượt chính sách hoặc tiết lộ thông tin riêng.', 400) from exc
     # Hint retrieval is restricted to the exercise's actual session even if UI omitted it.
     scope=resolve_scope(user,data['course_id'],data.get('classroom_id'),
         data.get('session_id'),data.get('document_ids'),data['mode'])
@@ -72,6 +78,8 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
         assessment=Assessment.objects.get(pk=exercise['assessment_id'])
         scope=resolve_scope(user,data['course_id'],data.get('classroom_id'),assessment.session_id,
             data.get('document_ids'),data['mode'])
+    if scope.document_ids and len(scope.allowed_version_ids) != len(scope.document_ids):
+        raise DocumentError('NOT_FOUND', 'Học liệu không khả dụng hoặc bạn không có quyền truy cập.', 404)
     contexts=[]
     memory=None
     from .rag.conversation import extract_procedure_answer, is_full_procedure_question, retrieval_query
@@ -96,13 +104,23 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
         contexts=[{'source_id':f'S{i}', 'chunk_id':hit['chunk_id'],'text':hit['text'],
             **{key:value for key,value in hit['source'].items() if key!='course_id'}} for i,hit in enumerate(hits,1)]
     if contexts:
+        # Retrieval and runtime setup may have taken long enough for access to change.
+        if enforce_chat_policy(user, data) != exercise:
+            raise DocumentError('SCOPE_CHANGED', 'Nội dung bài tập đã thay đổi. Vui lòng tải lại.', 409)
+        assert_scope_and_citations_live(user, scope, citations=contexts)
         try:
             arguments=dict(question=data['question'], mode=data['mode'], contexts=contexts, exercise=exercise, config=runtime.config)
             if history is not None:
                 arguments['history']=history
             if tutoring is not None:
                 arguments['tutoring']=tutoring
-            output=runtime.generate(**arguments)
+            from .operations import generation_slot
+            with generation_slot(user, data['mode']) as generate:
+                # Waiting may outlive a permission change; recheck before sending any source.
+                if enforce_chat_policy(user, data) != exercise:
+                    raise DocumentError('SCOPE_CHANGED', 'Nội dung bài tập đã thay đổi.', 409)
+                assert_scope_and_citations_live(user, scope, citations=contexts)
+                output=generate(runtime.generate, **arguments)
             if history is not None:
                 output=dict(output)
                 memory=output.pop('_memory',None)
@@ -120,7 +138,9 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
                 if exc.code in VALIDATION_ERROR_CODES: raise
                 if exc.status==400 and exc.code=='INVALID_REQUEST': raise
                 if exc.code in {'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'GENERATION_TIMEOUT',
-                        'OUT_OF_MEMORY', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH'}: raise
+                        'OUT_OF_MEMORY', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH',
+                        'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT',
+                        'NOT_FOUND', 'SCOPE_CHANGED', 'AI_NOT_ALLOWED'}: raise
                 raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
         except Exception as exc:
             raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
@@ -128,6 +148,10 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
         if status == 'ANSWERED' and data['mode'] == 'qa':
             from .source_quotes import complete_quote_context
             answer = complete_quote_context(answer, citations)
+        try:
+            check_output_policy(answer, [context['text'] for context in contexts])
+        except GenerationError as exc:
+            raise invalid_generation() from exc
     else:
         status,answer,citations='INSUFFICIENT_EVIDENCE','Chưa đủ căn cứ trong học liệu được phép để trả lời câu hỏi này.',[]
         if history is not None:
@@ -136,7 +160,7 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
     final_exercise=enforce_chat_policy(user,data)
     if final_exercise!=exercise:
         raise DocumentError('SCOPE_CHANGED','Nội dung bài tập đã thay đổi. Vui lòng tải lại.',409)
-    live_scope(user,scope)
+    assert_scope_and_citations_live(user,scope,citations=citations)
     elapsed=(monotonic()-started)*1000
     if not math.isfinite(elapsed): raise invalid_generation()
     result={'request_id':request_id,'status':status,'mode':data['mode'],'answer':answer,

@@ -137,10 +137,12 @@ class RAGPipeline:
             text=render_structured_answer(text,prepared.contexts,require_proof='json_schema' in options)
             if 'json_schema' in options:
                 from .conversation import (validate_copied_claim_sources, validate_description_coverage,
-                                           validate_enumeration_coverage, validate_procedure_coverage)
+                                           validate_enumeration_coverage, validate_procedure_coverage,
+                                           validate_multipart_coverage)
                 validate_procedure_coverage(question,output.text,prepared.contexts)
                 validate_enumeration_coverage(question,output.text,prepared.contexts)
                 validate_description_coverage(question,output.text,prepared.contexts)
+                validate_multipart_coverage(question,output.text,prepared.contexts)
                 validate_copied_claim_sources(output.text,prepared.contexts)
         if mode == "hint" and config.prompt_version in ("bounded_guidance", "concise_grounded_qa", "direct_grounded_qa", "routed_grounded_qa", "frozen_baseline", "efficient_grounded"):
             status, answer, references, mapping = parse_reading_hint(text, prepared.contexts)
