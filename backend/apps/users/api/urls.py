@@ -1,4 +1,5 @@
 from django.urls import path
+from .institution_views import InstitutionLookupView
 
 from .views import (
     CsrfTokenView,
@@ -13,6 +14,7 @@ from .views import (
 app_name = "users"
 
 urlpatterns = [
+    path('institutions/', InstitutionLookupView.as_view(), name='institutions'),
     path("csrf/", CsrfTokenView.as_view(), name="csrf"),
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),

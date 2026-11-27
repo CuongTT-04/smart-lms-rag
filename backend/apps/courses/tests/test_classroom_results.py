@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from datetime import timedelta
 from io import BytesIO
 import uuid
@@ -72,8 +73,8 @@ class ClassroomResultsTests(TestCase):
         self.assertEqual(attempts[1].status, 'DRAFT')
 
     def setUp(self):
-        self.teacher = User.objects.create_user('res-teacher', full_name='Cô Lan', role='TEACHER')
-        self.other_teacher = User.objects.create_user('res-other-teacher', role='TEACHER')
+        self.teacher = approved_teacher(User.objects.create_user('res-teacher', full_name='Cô Lan', role='TEACHER'))
+        self.other_teacher = approved_teacher(User.objects.create_user('res-other-teacher', role='TEACHER'))
         self.student1 = User.objects.create_user('res-s1', full_name='=SUM(A1:A2)', role='STUDENT')
         self.student2 = User.objects.create_user('res-s2', full_name='Bình An', role='STUDENT')
         self.outsider = User.objects.create_user('res-outsider', role='STUDENT')

@@ -349,8 +349,8 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .header-profile-role { display: block; color: #3d7059; font-size: 14px; font-weight: 600; }
 .header-profile-summary p { margin: 5px 0 0; font-size: 14px; color: #7b8981; overflow-wrap: anywhere; }
 .header-profile-body { padding: 16px 20px; overflow: auto; min-height: 0; }
-.header-profile-contact { display: flex; align-items: flex-start; gap: 9px; margin: 0 0 12px; color: #53675c; font-size: 15px; line-height: 1.6; }
-.header-profile-contact svg { flex-shrink: 0; margin-top: 2px; }
+.header-profile-contact { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; color: #53675c; font-size: 15px; line-height: 1.6; }
+.header-profile-contact svg { display: block; flex-shrink: 0; margin-top: 0; transform: translateY(1px); }
 .header-profile-contact span { min-width: 0; overflow-wrap: anywhere; }
 .header-profile-details { display: grid; gap: 14px; margin: 15px 0 0; }
 .header-profile-details dt { font-size: 14px; font-weight: 600; color: #7b8981; margin-bottom: 5px; }

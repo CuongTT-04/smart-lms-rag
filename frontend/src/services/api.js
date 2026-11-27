@@ -137,6 +137,9 @@ export async function apiRequest(path, options = {}) {
   }
   const data = await response.json().catch(() => null)
   if (!response.ok) {
+    if (response.status === 403 && (data?.code === 'TEACHER_NOT_APPROVED' || data?.error?.code === 'TEACHER_NOT_APPROVED')) {
+      window.dispatchEvent(new Event('ohayo:teaching-access-denied'))
+    }
     if (!SAFE_METHODS.has(method) && !skipCsrfRetry && response.status === 403 && data?.code === 'CSRF_FAILED') {
       await ensureCsrfCookie(fetchOptions.signal)
       return apiRequest(path, { ...options, skipCsrfRetry: true })

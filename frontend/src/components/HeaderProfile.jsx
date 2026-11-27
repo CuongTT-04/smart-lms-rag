@@ -11,7 +11,7 @@ export default function HeaderProfile({ user, onAccount }) {
   const closeTimer = useRef(null)
   const id = useId()
   const teacher = user.role === 'TEACHER'
-  const role = teacher ? 'Giáo viên' : 'Học viên'
+  const role = teacher ? 'Giáo viên' : user.role === 'ADMIN' ? 'Quản trị viên' : 'Học viên'
 
   useEffect(() => {
     function outside(event) {

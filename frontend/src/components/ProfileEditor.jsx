@@ -77,8 +77,10 @@ export default function ProfileEditor({ user, onUserUpdated, onSessionExpired, o
     const names = tab === 'identity' ? IDENTITY : roleFields
     if (tab === 'security') {
       if (!passwords.current_password) errors.current_password = 'Vui lòng nhập mật khẩu hiện tại.'
-      if (passwordError(passwords.password)) errors.password = passwordError(passwords.password)
-      if (!passwords.password_confirm || passwords.password_confirm !== passwords.password) errors.password_confirm = 'Mật khẩu xác nhận không khớp.'
+      if (!passwords.password) errors.password = 'Vui lòng nhập mật khẩu mới.'
+      else if (passwordError(passwords.password)) errors.password = passwordError(passwords.password)
+      if (!passwords.password_confirm) errors.password_confirm = 'Vui lòng nhập xác nhận mật khẩu.'
+      else if (passwords.password_confirm !== passwords.password) errors.password_confirm = 'Mật khẩu xác nhận không khớp.'
       changes = passwords
     } else {
       const original = draftOf(user)

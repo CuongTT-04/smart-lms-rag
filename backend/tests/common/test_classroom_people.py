@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.users.models import User
@@ -8,7 +9,7 @@ from common.testing import authenticate_client
 
 class ClassroomPeopleTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('people-owner', role='TEACHER', full_name='Teacher')
+        self.owner = approved_teacher(User.objects.create_user('people-owner', role='TEACHER', full_name='Teacher'))
         self.student = User.objects.create_user('people-student', role='STUDENT', full_name='Student')
         self.other = User.objects.create_user('people-other', role='STUDENT')
         self.course = create_course(actor=self.owner, title='Course')

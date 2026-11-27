@@ -9,6 +9,7 @@ from rest_framework.test import APIClient
 from apps.courses.models import CourseMember
 from apps.courses.services import create_course
 from apps.users.services import register_user
+from common.testing import approved_teacher
 from django.core.exceptions import ValidationError
 from apps.users.models import StudentProfile, TeacherProfile, User
 
@@ -66,8 +67,8 @@ class RegistrationAPITests(TestCase):
         denied = self.client.post(reverse("courses:create"), {"title": "Forbidden"}, format="json")
         self.assertEqual(denied.status_code, 403)
 
-    def test_teacher_registration_populates_profile_and_grants_only_own_course_access(self):
-        response = self.register(role="TEACHER", learning_goal="", bio="Python instructor", specialization="Python")
+    def test_teacher_registration_requires_approval_then_grants_only_own_course_access(self):
+        response = self.register(role="TEACHER", learning_goal="", bio="Python instructor", specialization="Python", institution_other_name="School declared by teacher")
         self.assertEqual(response.status_code, 201, response.content)
         user = User.objects.get(username="new_student")
         self.assertEqual(response.json()["user"]["role"], "TEACHER")
@@ -86,10 +87,14 @@ class RegistrationAPITests(TestCase):
         self.assertEqual(login.json()["user"]["role"], "TEACHER")
         self.assertNotIn("student_profile", login.json()["user"])
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login.json()['access']}")
+        denied = self.client.post(reverse("courses:create"), {"title": "Before approval"}, format="json")
+        self.assertEqual(denied.status_code, 403)
+        self.assertEqual(denied.json()['code'], 'TEACHER_NOT_APPROVED')
+        approved_teacher(user)
         created = self.client.post(reverse("courses:create"), {"title": "My course"}, format="json")
         self.assertEqual(created.status_code, 201, created.content)
         self.assertTrue(CourseMember.objects.filter(user=user, role=CourseMember.Role.OWNER).exists())
-        other = User.objects.create_user("other_teacher", role=User.Role.TEACHER)
+        other = approved_teacher(User.objects.create_user("other_teacher", role=User.Role.TEACHER))
         course = create_course(actor=other, title="Other course")
         url = f"/api/courses/{course.pk}/"
         self.assertEqual(self.client.get(url).status_code, 403)
@@ -115,6 +120,7 @@ class RegistrationAPITests(TestCase):
     def test_teacher_registration_accepts_empty_optional_profiles(self):
         payload = {key: value for key, value in self.payload.items() if key != "learning_goal"}
         payload["role"] = "TEACHER"
+        payload['institution_other_name'] = 'School declared by teacher'
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(User.objects.get().teacher_profile.bio, "")

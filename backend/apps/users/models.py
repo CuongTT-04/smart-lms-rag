@@ -1,10 +1,13 @@
 import uuid
+from hashlib import sha256
 
 from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserManager
 from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.db.models.functions import Lower
 from django.utils import timezone
+
+from .institution_fields import normalize_search, validate_aliases, validate_levels
 
 
 class UserManager(DjangoUserManager):
@@ -69,6 +72,10 @@ class User(AbstractUser):
         return self.email_verified_at is not None
 
     class Meta(AbstractUser.Meta):
+        permissions = [
+            ('assign_user_role', 'Can assign application user roles'),
+            ('view_platform_overview', 'Can view platform overview'),
+        ]
         constraints = [
             models.UniqueConstraint(Lower("username"), name="users_unique_username_ci"),
             models.UniqueConstraint(
@@ -134,6 +141,8 @@ class User(AbstractUser):
                 EmailVerificationToken.objects.using(db_alias).filter(
                     user_id=self.pk, used_at__isnull=True, invalidated_at__isnull=True,
                 ).update(invalidated_at=timezone.now())
+                from .teacher_approval import teacher_email_changed
+                teacher_email_changed(self, previous_email_version=previous['email_version'], using=db_alias or self._state.db)
             if creating:
                 if self.role == self.Role.STUDENT:
                     StudentProfile.objects.using(db_alias).get_or_create(user=self)
@@ -156,16 +165,137 @@ class StudentProfile(models.Model):
         return f"Student profile: {self.user.username}"
 
 
+class Institution(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    code = models.SlugField(max_length=64, unique=True)
+    name = models.CharField(max_length=255)
+    aliases = models.JSONField(default=list, blank=True, validators=[validate_aliases])
+    province = models.CharField(max_length=100)
+    campus = models.CharField(max_length=150, blank=True, default='')
+    levels = models.JSONField(validators=[validate_levels])
+    external_code = models.CharField(max_length=64, blank=True, default='')
+    source_url = models.URLField(max_length=500)
+    source_checked_at = models.DateField()
+    active = models.BooleanField(default=True)
+    search_text = models.TextField(editable=False)
+    province_key = models.CharField(max_length=150, editable=False)
+    identity_key = models.CharField(max_length=64, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('name', 'code')
+
+    def prepare_search(self):
+        for field in ('name', 'province', 'campus'):
+            setattr(self, field, ' '.join(getattr(self, field).split()))
+        self.aliases = list(dict.fromkeys(v.strip() for v in self.aliases))
+        self.province_key = normalize_search(self.province)
+        identity = [normalize_search(self.name), self.province_key, normalize_search(self.campus)]
+        self.identity_key = sha256('\x1f'.join(identity).encode()).hexdigest()
+        self.search_text = normalize_search(' '.join([self.name, *self.aliases, self.province, self.campus]))
+
+    def save(self, *args, **kwargs):
+        self.prepare_search()
+        if kwargs.get('update_fields') is not None:
+            kwargs['update_fields'] = set(kwargs['update_fields']) | {'search_text', 'province_key', 'identity_key', 'aliases'}
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.name} — {self.campus or self.province}'
+
+
 class TeacherProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="teacher_profile")
     bio = models.TextField(blank=True, default="")
     specialization = models.CharField(max_length=255, blank=True, default="")
+    institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True, blank=True, related_name='teacher_profiles')
+    institution_other_name = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        constraints = [models.CheckConstraint(
+            condition=models.Q(institution__isnull=True) | models.Q(institution_other_name=''),
+            name='users_teacher_one_institution_choice',
+        )]
+
+    def save(self, *args, **kwargs):
+        using = kwargs.get('using') or self._state.db or 'default'
+        approval_actor = kwargs.pop('approval_actor', None)
+        with transaction.atomic(using=using):
+            # Use the same User-first lock order as verification and admin decisions.
+            User.objects.using(using).select_for_update().get(pk=self.user_id)
+            old = type(self).objects.using(using).filter(pk=self.pk).values(
+                'institution_id', 'institution_other_name').first()
+            result = super().save(*args, **kwargs)
+            from .teacher_approval import ensure_teacher_approval, teacher_affiliation_changed
+            ensure_teacher_approval(self, using=using)
+            if old is not None:
+                teacher_affiliation_changed(self, old, actor=approval_actor, using=using)
+            return result
+
     def __str__(self):
         return f"Teacher profile: {self.user.username}"
+
+
+class TeacherApproval(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        APPROVED = 'APPROVED', 'Approved'
+        REJECTED = 'REJECTED', 'Rejected'
+        REVOKED = 'REVOKED', 'Revoked'
+
+    class Source(models.TextChoices):
+        AUTO_EDU_VN = 'AUTO_EDU_VN', 'Verified education email'
+        ADMIN = 'ADMIN', 'Administrator'
+        LEGACY = 'LEGACY', 'Existing teacher migration'
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    teacher_profile = models.OneToOneField(TeacherProfile, on_delete=models.CASCADE, related_name='approval')
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    source = models.CharField(max_length=12, choices=Source.choices, blank=True, default='')
+    reason = models.CharField(max_length=1000, blank=True, default='')
+    revision = models.PositiveIntegerField(default=1)
+    email_version_at_approval = models.PositiveIntegerField(null=True, blank=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='teacher_approvals_granted')
+    decided_at = models.DateTimeField(null=True, blank=True)
+    decided_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='teacher_approvals_decided')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(revision__gte=1), name='users_teacher_approval_revision_positive'),
+            models.CheckConstraint(condition=(
+                models.Q(status='PENDING', source='', approved_at__isnull=True,
+                         approved_by__isnull=True, email_version_at_approval__isnull=True)
+                | models.Q(status='APPROVED', source__in=['AUTO_EDU_VN', 'ADMIN', 'LEGACY'],
+                           approved_at__isnull=False, decided_at__isnull=False)
+                | models.Q(status__in=['REJECTED', 'REVOKED'], source='ADMIN', decided_at__isnull=False)
+            ), name='users_teacher_approval_valid_decision'),
+        ]
+
+
+class TeacherApprovalEvent(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    approval = models.ForeignKey(TeacherApproval, on_delete=models.SET_NULL, null=True, related_name='events')
+    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                              related_name='teacher_approval_events')
+    action = models.CharField(max_length=24)
+    reason = models.CharField(max_length=1000)
+    revision = models.PositiveIntegerField()
+    before = models.JSONField(default=dict)
+    after = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('created_at', 'id')
+        constraints = [models.UniqueConstraint(fields=['approval', 'revision'], name='users_teacher_approval_event_revision')]
 
 
 class EmailVerificationToken(models.Model):

@@ -6,6 +6,7 @@ export async function login(username, password) {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username: username.trim(), password }),
   })
+  clearApprovalNotices()
   setAccessToken(access)
   return user
 }
@@ -22,7 +23,13 @@ export async function currentUser(signal) {
 }
 
 export async function logout() {
-  try { await apiRequest('/users/logout/', { method: 'POST' }) } finally { clearAccessToken() }
+  try { await apiRequest('/users/logout/', { method: 'POST' }) } finally { clearAccessToken(); clearApprovalNotices() }
+}
+
+function clearApprovalNotices() {
+  try {
+    Object.keys(sessionStorage).filter(key => key.startsWith('ohayo:approval-banner:')).forEach(key => sessionStorage.removeItem(key))
+  } catch { /* Notices are optional when storage is disabled. */ }
 }
 
 function publicPost(path, data) {
@@ -73,6 +80,8 @@ export function accountFieldErrors(error) {
     email: 'Email không hợp lệ hoặc đã được sử dụng.',
     full_name: 'Vui lòng nhập họ và tên hợp lệ.',
     role: 'Vui lòng chọn Học viên hoặc Giáo viên.',
+    institution_id: 'Vui lòng chọn trường đang hoạt động hoặc khai báo trường chưa có trong danh sách.',
+    institution_other_name: 'Vui lòng nhập tên trường hợp lệ, tối đa 255 ký tự.',
     password: PASSWORD_REQUIREMENTS,
     password_confirm: 'Mật khẩu xác nhận không khớp.',
     token: 'Liên kết không hợp lệ, đã hết hạn hoặc đã được sử dụng.',

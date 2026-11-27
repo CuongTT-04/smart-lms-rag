@@ -1,7 +1,18 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { apiRequest, clearAccessToken, clearCsrfFallback, setAccessToken } from './api'
+import { apiRequest, clearAccessToken, clearCsrfFallback, hasAccessToken, setAccessToken } from './api'
 beforeEach(() => { vi.stubGlobal('fetch', vi.fn()); setAccessToken('access'); clearCsrfFallback(); document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' })
 afterEach(() => { clearAccessToken(); clearCsrfFallback(); document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'; vi.unstubAllGlobals() })
+it.each([{ code: 'TEACHER_NOT_APPROVED' }, { error: { code: 'TEACHER_NOT_APPROVED' } }])('signals teaching denial without logging out or retrying the write', async data => {
+  const listener = vi.fn()
+  window.addEventListener('ohayo:teaching-access-denied', listener)
+  try {
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(data), { status: 403 }))
+    await expect(apiRequest('/courses/', { method: 'POST' })).rejects.toMatchObject({ status: 403 })
+    expect(listener).toHaveBeenCalledTimes(1)
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(hasAccessToken()).toBe(true)
+  } finally { window.removeEventListener('ohayo:teaching-access-denied', listener) }
+})
 it('rejects a shared refresh cookie that belongs to a different account', async () => {
   const jwt = (id) => `e30.${btoa(JSON.stringify({ user_id: id }))}.signature`
   setAccessToken(jwt('account-a'))

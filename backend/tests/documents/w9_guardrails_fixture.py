@@ -4,6 +4,7 @@ Creates synthetic, non-sensitive PDFs with unique scope sentinel tokens so both
 access-control tests and real-model guardrail/citation tests can verify zero
 cross-scope leakage without sending real classroom data to external services.
 """
+from common.testing import approved_teacher
 from dataclasses import dataclass
 from datetime import timedelta
 import hashlib
@@ -277,14 +278,14 @@ def build_w9_guardrails_fixture(prefix='w9gr'):
     Caller should wrap test storage with override_settings(DOCUMENTS_STORAGE_ROOT=tmp_dir).
     """
     User = get_user_model()
-    teacher_main = User.objects.create_user(
+    teacher_main = approved_teacher(User.objects.create_user(
         f'{prefix}-teacher-1', email=f'{prefix}-teacher-1@w9gr.test',
         password='W9Teacher1!', role='TEACHER', full_name='Giao vien Chinh',
-    )
-    teacher_other = User.objects.create_user(
+    ))
+    teacher_other = approved_teacher(User.objects.create_user(
         f'{prefix}-teacher-2', email=f'{prefix}-teacher-2@w9gr.test',
         password='W9Teacher2!', role='TEACHER', full_name='Giao vien Khac',
-    )
+    ))
     student_a = User.objects.create_user(
         f'{prefix}-student-a', email=f'{prefix}-student-a@w9gr.test',
         password='W9StudentA1!', role='STUDENT', full_name='Hoc vien Lop A',

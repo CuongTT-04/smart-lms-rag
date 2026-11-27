@@ -6,6 +6,8 @@ import ForgotPasswordPage from './ForgotPasswordPage'
 import ResetPasswordPage from './ResetPasswordPage'
 import { registerAccount, requestPasswordReset, confirmPasswordReset } from '../services/auth.service'
 
+vi.mock('../services/institution.service', () => ({ listInstitutions: vi.fn(async () => ({ results: [], has_more: false })) }))
+
 vi.mock('../services/auth.service', async (original) => ({
   ...await original(), registerAccount: vi.fn(), requestPasswordReset: vi.fn(), confirmPasswordReset: vi.fn(),
 }))
@@ -37,6 +39,12 @@ describe('registration and password recovery', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
     expect(screen.getByText('Vui lòng chọn Học viên hoặc Giáo viên.')).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Học viên' })).toHaveFocus()
+    expect(screen.getByText('Vui lòng nhập họ và tên.')).toBeVisible()
+    expect(screen.getByText('Vui lòng nhập mật khẩu.')).toBeVisible()
+    expect(screen.getByLabelText('Mật khẩu', { exact: true })).toHaveAttribute('aria-invalid', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Hiện mật khẩu', exact: true }))
+    expect(screen.getByLabelText('Mật khẩu', { exact: true })).toHaveAttribute('type', 'text')
+    await userEvent.click(screen.getByRole('button', { name: 'Ẩn mật khẩu', exact: true }))
     expect(registerAccount).not.toHaveBeenCalled()
   })
 
@@ -44,11 +52,17 @@ describe('registration and password recovery', () => {
     registerAccount.mockResolvedValueOnce({ role })
     render(<RegisterPage />)
     await fillRegistration(label)
+    if (role === 'TEACHER') {
+      await userEvent.click(screen.getByRole('combobox'))
+      await userEvent.click(screen.getByRole('option', { name: 'Chưa có trường trong danh sách' }))
+      await userEvent.type(screen.getByLabelText('Tên trường đang công tác'), 'Trường tự khai')
+    }
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
     expect(await screen.findByRole('heading', { name: 'Đăng ký thành công' })).toBeVisible()
     expect(registerAccount).toHaveBeenCalledWith({
       full_name: 'Nguyễn Minh Anh', username: 'minhanh', email: 'anh@example.com',
       role, password: 'Ohayo-Secure-839!', password_confirm: 'Ohayo-Secure-839!',
+      ...(role === 'TEACHER' ? { institution_other_name: 'Trường tự khai' } : {}),
     })
     expect(screen.getByRole('link', { name: 'Đăng nhập ngay' })).toHaveAttribute('href', '/')
   })
@@ -61,6 +75,20 @@ describe('registration and password recovery', () => {
     expect(await screen.findByText('Email không hợp lệ hoặc đã được sử dụng.')).toBeVisible()
     expect(screen.getByLabelText('Email', { exact: true })).toHaveFocus()
     expect(screen.getByRole('button', { name: 'Đăng ký', exact: true })).toBeEnabled()
+  })
+
+  it('requires teacher affiliation and clears it when switching to student', async () => {
+    render(<RegisterPage />)
+    await fillRegistration('Giáo viên')
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(screen.getByText('Vui lòng chọn trường đang công tác.')).toBeVisible()
+    expect(screen.getByRole('combobox')).toHaveFocus()
+    expect(registerAccount).not.toHaveBeenCalled()
+    await userEvent.click(screen.getByRole('option', { name: 'Chưa có trường trong danh sách' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(screen.getByText('Vui lòng nhập tên trường đang công tác.')).toBeVisible()
+    await userEvent.click(screen.getByRole('radio', { name: 'Học viên' }))
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
   })
 
   it('blocks double submission while registration is pending', async () => {

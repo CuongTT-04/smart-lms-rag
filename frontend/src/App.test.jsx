@@ -7,10 +7,11 @@ import { updateProfile } from './services/profile.service'
 
 vi.mock('./services/auth.service', async (importOriginal) => ({ ...await importOriginal(), currentUser: vi.fn(), logout: vi.fn() }))
 vi.mock('./services/profile.service', async (original) => ({ ...await original(), updateProfile: vi.fn() }))
-const user = { username: 'admin', full_name: 'Nguyễn Minh Anh', email: '', role: 'ADMIN', status: 'ACTIVE' }
+vi.mock('./admin/services/admin.service', async original => ({ ...await original(), adminRequest: vi.fn(async () => ({ user_id: 'admin-id', capabilities: {} })) }))
+const user = { id: 'admin-id', username: 'admin', full_name: 'Nguyễn Minh Anh', email: '', role: 'ADMIN', status: 'ACTIVE' }
 
 describe('authentication lifecycle', () => {
-  beforeEach(() => { currentUser.mockReset(); logout.mockReset(); updateProfile.mockReset(); window.history.replaceState(null, '', '/') })
+  beforeEach(() => { currentUser.mockReset(); logout.mockReset(); updateProfile.mockReset(); window.sessionStorage.clear(); window.history.replaceState(null, '', '/') })
 
   it.each([
     ['/register', 'Tạo tài khoản OHAYO'], ['/forgot-password', 'Quên mật khẩu?'],
@@ -33,8 +34,7 @@ describe('authentication lifecycle', () => {
     currentUser.mockResolvedValueOnce(user)
     logout.mockResolvedValueOnce(undefined)
     render(<App />)
-    expect(await screen.findByRole('heading', { name: 'Xin chào, Nguyễn Minh Anh!' })).toBeVisible()
-    expect(screen.getByText('Quản trị viên')).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Chưa có quyền truy cập' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Đăng xuất' }))
     expect(await screen.findByLabelText('Tên đăng nhập')).toBeVisible()
     expect(logout).toHaveBeenCalledTimes(1)
@@ -46,7 +46,7 @@ describe('authentication lifecycle', () => {
     render(<App />)
     await userEvent.click(await screen.findByRole('button', { name: 'Đăng xuất' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('quyền')
-    expect(screen.getByRole('heading', { name: 'Xin chào, Nguyễn Minh Anh!' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Hồ sơ cá nhân' })).toBeVisible()
   })
 
   it('returns to login when the session really expired', async () => {
@@ -67,15 +67,17 @@ describe('authentication lifecycle', () => {
     currentUser.mockResolvedValueOnce({ ...user, id: 'admin-id' })
     updateProfile.mockResolvedValueOnce({ user: { ...user, id: 'admin-id', full_name: 'Tên mới' }, requires_login: false })
     render(<App />)
+    await userEvent.click(await screen.findByRole('button', { name: 'Hồ sơ cá nhân' }))
     fireEvent.change(await screen.findByLabelText('Họ và tên'), { target: { value: 'Tên mới' } })
     await userEvent.click(screen.getByRole('button', { name: 'Lưu thay đổi' }))
-    expect(await screen.findByRole('heading', { name: 'Xin chào, Tên mới!' })).toBeVisible()
+    await waitFor(() => expect(screen.getByLabelText('Họ và tên')).toHaveValue('Tên mới'))
   })
 
   it('returns to login with a success notice after changing password', async () => {
     currentUser.mockResolvedValueOnce(user)
     updateProfile.mockResolvedValueOnce({ user, requires_login: true })
     render(<App />)
+    await userEvent.click(await screen.findByRole('button', { name: 'Hồ sơ cá nhân' }))
     await userEvent.click(await screen.findByRole('tab', { name: 'Bảo mật' }))
     for (const [label, value] of [['Mật khẩu hiện tại', 'Old-Ohayo-839!'], ['Mật khẩu mới', 'New-Ohayo-849!'], ['Xác nhận mật khẩu', 'New-Ohayo-849!']]) {
       fireEvent.change(screen.getByLabelText(label, { exact: true }), { target: { value } })

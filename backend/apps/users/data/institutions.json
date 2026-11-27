@@ -1,0 +1,9 @@
+[
+  {"code":"hanoi-ptit","name":"Học viện Công nghệ Bưu chính Viễn thông","aliases":["PTIT","BCVT"],"province":"Hà Nội","campus":"Hà Nội","levels":["UNIVERSITY"],"source_url":"https://ptit.edu.vn/","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-hust","name":"Đại học Bách khoa Hà Nội","aliases":["HUST","BKHN"],"province":"Hà Nội","campus":"","levels":["UNIVERSITY"],"source_url":"https://hust.edu.vn/","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-hnue","name":"Trường Đại học Sư phạm Hà Nội","aliases":["HNUE","SPHN"],"province":"Hà Nội","campus":"","levels":["UNIVERSITY"],"source_url":"https://hnue.edu.vn/","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-tlu","name":"Trường Đại học Thủy lợi","aliases":["TLU","Thuy Loi"],"province":"Hà Nội","campus":"Hà Nội","levels":["UNIVERSITY"],"source_url":"https://www.tlu.edu.vn/gioi-thieu","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-utc","name":"Trường Đại học Giao thông vận tải","aliases":["UTC","GTVT"],"province":"Hà Nội","campus":"Hà Nội","levels":["UNIVERSITY"],"source_url":"https://utc.edu.vn/","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-tmu","name":"Trường Đại học Thương mại","aliases":["TMU","Thuong Mai"],"province":"Hà Nội","campus":"","levels":["UNIVERSITY"],"source_url":"https://tmu.edu.vn/","source_checked_at":"2026-11-27","active":true},
+  {"code":"hanoi-hanu","name":"Trường Đại học Hà Nội","aliases":["HANU","Ha Noi University"],"province":"Hà Nội","campus":"","levels":["UNIVERSITY"],"source_url":"https://hanu.vn/","source_checked_at":"2026-11-27","active":true}
+]

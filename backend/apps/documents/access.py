@@ -31,6 +31,8 @@ def refresh_live_user(user):
 
 def require_access(user,course,manage=False):
     refresh_live_user(user)
+    from apps.users.teaching_access import require_teacher_approval
+    require_teacher_approval(user)
     name="DOCUMENTS_MANAGE_PERMISSION" if manage else "DOCUMENTS_READ_PERMISSION"
     default="apps.courses.permissions.can_manage_course" if manage else "apps.courses.permissions.can_view_course"
     try: provider=import_string(getattr(settings,name,default))

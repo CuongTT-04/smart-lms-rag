@@ -2,6 +2,7 @@
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
 
 from .models import User
 
@@ -31,6 +32,21 @@ def validate_token_auth_version(user, token):
 
 
 class VersionedJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        result = super().authenticate(request)
+        if result is not None:
+            from .teaching_access import guard_teaching_request
+            guard_teaching_request(request, result[0])
+        return result
+
     def get_user(self, validated_token):
         user = super().get_user(validated_token)
         return validate_token_auth_version(user, validated_token)
+
+
+class VersionedJWTAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = 'apps.users.authentication.VersionedJWTAuthentication'
+    name = 'jwtAuth'
+
+    def get_security_definition(self, auto_schema):
+        return {'type': 'http', 'scheme': 'bearer', 'bearerFormat': 'JWT'}

@@ -12,6 +12,8 @@ import { authErrorMessage } from '../services/auth.service'
 import ProfileEditor from '../components/ProfileEditor'
 import UserAvatar from '../components/UserAvatar'
 import HeaderProfile from '../components/HeaderProfile'
+import TeacherApprovalBanner, { TeachingAction } from '../components/TeacherApprovalBanner'
+import { TeachingAccessContext, useTeachingAccess, useTeachingStatus } from '../hooks/teaching-access'
 import { TeacherEnrollmentPanel } from '../components/EnrollmentPanels'
 import {
   courseErrorMessage, createCourse, listAllCourseMembers,
@@ -43,7 +45,7 @@ function StatusBadge({ status }) {
 }
 
 function EmptyState({ onCreate }) {
-  return <div className="teacher-empty"><BookOpen size={34} aria-hidden="true" /><h3>Chưa có khóa học nào</h3><p>Tạo khóa học đầu tiên để bắt đầu xây dựng lớp học của bạn.</p><button className="solid-button" type="button" onClick={onCreate}><Plus size={18} /> Tạo khóa học</button></div>
+  return <div className="teacher-empty"><BookOpen size={34} aria-hidden="true" /><h3>Chưa có khóa học nào</h3><p>Tạo khóa học đầu tiên để bắt đầu xây dựng lớp học của bạn.</p><TeachingAction className="solid-button" onClick={onCreate}><Plus size={18} /> Tạo khóa học</TeachingAction></div>
 }
 
 export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessionExpired }) {
@@ -61,11 +63,16 @@ export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessi
   const [createOpen, setCreateOpen] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
   const [pendingLogout, setPendingLogout] = useState(false)
+  const { effective, allowed, check, refresh, accessKey } = useTeachingStatus(user, onUserUpdated, onSessionExpired)
+  const teachingReason = 'Chỉ giáo viên đang hoạt động và đã được duyệt mới có thể tạo hoặc quản lý khóa học, lớp học.'
+  const displayCourses = useMemo(() => allowed ? courses : [], [allowed, courses])
+  const displayMembers = useMemo(() => allowed ? members : {}, [allowed, members])
 
   useEffect(() => {
     const controller = new AbortController()
     listAllCourses(controller.signal)
-      .then(async (courseList) => {
+      .then(async (received) => {
+        const courseList = allowed ? received : []
         const memberResults = await Promise.allSettled(courseList.map((course) => listAllCourseMembers(course.id, controller.signal)))
         if (!controller.signal.aborted) {
           setCourses(courseList)
@@ -81,22 +88,27 @@ export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessi
         if (!controller.signal.aborted) setLoading(false)
       })
     return () => controller.abort()
-  }, [])
+  }, [allowed])
 
-  const selectedCourse = courses.find((course) => course.id === selectedId)
-  const filteredCourses = useMemo(() => courses.filter((course) => {
+  const selectedCourse = displayCourses.find((course) => course.id === selectedId)
+  const filteredCourses = useMemo(() => displayCourses.filter((course) => {
     const matchesText = `${course.title} ${course.description}`.toLocaleLowerCase('vi').includes(search.trim().toLocaleLowerCase('vi'))
     return matchesText && (filter === 'ALL' || course.status === filter)
-  }), [courses, search, filter])
+  }), [displayCourses, search, filter])
   const stats = useMemo(() => {
-    const studentIds = new Set(Object.values(members).flat().filter((member) => member.role === 'STUDENT' && member.status === 'ACTIVE').map((member) => member.user.id))
+    const studentIds = new Set(Object.values(displayMembers).flat().filter((member) => member.role === 'STUDENT' && member.status === 'ACTIVE').map((member) => member.user.id))
     return {
-      total: courses.length,
-      published: courses.filter((course) => course.status === 'PUBLISHED').length,
-      draft: courses.filter((course) => course.status === 'DRAFT').length,
+      total: displayCourses.length,
+      published: displayCourses.filter((course) => course.status === 'PUBLISHED').length,
+      draft: displayCourses.filter((course) => course.status === 'DRAFT').length,
       students: studentIds.size,
     }
-  }, [courses, members])
+  }, [displayCourses, displayMembers])
+
+  function openCreate() {
+    if (!allowed) { setError(teachingReason); return }
+    setCreateOpen(accessKey)
+  }
 
   function openCourse(courseId) {
     setSelectedClass(null)
@@ -136,6 +148,7 @@ export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessi
   }
 
   return (
+    <TeachingAccessContext.Provider value={{ allowed, reason: teachingReason }}>
     <main className="teacher-app">
       <aside className={`teacher-sidebar ${mobileNav ? 'sidebar-open' : ''}`}>
         <div className="sidebar-brand"><Sun size={31} className="brand-sun" aria-hidden="true" />OHAYO<span className="brand-period">.</span></div>
@@ -157,22 +170,24 @@ export default function TeacherHomePage({ user, onLogout, onUserUpdated, onSessi
         </header>
 
         <div className="teacher-content">
+          {!allowed && <TeacherApprovalBanner user={effective} accessKey={accessKey} check={check} onRefresh={refresh} onAccount={() => navigate('account')} />}
           {error && <div className="error-banner page-message" role="alert"><AlertCircle size={19} />{error}<button className="icon-button" aria-label="Đóng thông báo" onClick={() => setError('')}><X size={17} /></button></div>}
           {notice && <div className="success-banner page-message" role="status"><Check size={18} />{notice}<button className="icon-button" aria-label="Đóng thông báo" onClick={() => setNotice('')}><X size={17} /></button></div>}
           {loading ? <div className="dashboard-loading"><LoaderCircle className="spin" size={24} /> Đang tải không gian giảng dạy...</div> : (
             <>
-              {view === 'overview' && <Overview user={user} courses={courses} members={members} stats={stats} onCreate={() => setCreateOpen(true)} onSeeAll={() => navigate('courses')} onOpen={openCourse} />}
-              {view === 'courses' && !selectedCourse && <CoursesView courses={filteredCourses} members={members} search={search} setSearch={setSearch} filter={filter} setFilter={setFilter} onCreate={() => setCreateOpen(true)} onOpen={openCourse} />}
+              {view === 'overview' && <Overview user={effective} courses={displayCourses} members={displayMembers} stats={stats} onCreate={openCreate} onSeeAll={() => navigate('courses')} onOpen={openCourse} />}
+              {view === 'courses' && !selectedCourse && <CoursesView courses={filteredCourses} members={displayMembers} search={search} setSearch={setSearch} filter={filter} setFilter={setFilter} onCreate={openCreate} onOpen={openCourse} />}
               {view === 'courses' && selectedCourse && <CourseDetail course={selectedCourse} members={members[selectedCourse.id] || []} onBack={() => setSelectedId(null)} onUpdated={(course, message) => { replaceCourse(course); setNotice(message) }} onRefreshMembers={() => refreshMembers(selectedCourse.id)} onError={(message) => setError(message)} onNotice={setNotice} onOpenClassroom={(room) => openClassroom(selectedCourse, room)} />}
-              {view === 'classrooms' && !selectedClass && <TeacherClassrooms courses={courses} onOpen={openClassroom} />}
-              {view === 'classrooms' && selectedClass && <ClassroomWorkspace key={`${selectedClass.room.id}:${notificationNavigation}`} course={courses.find((item) => item.id === selectedClass.course.id) ?? selectedClass.course} initialRoom={selectedClass.room} onBack={() => setSelectedClass(null)} onCourse={() => openCourse(selectedClass.course.id)} onMembersChanged={() => refreshMembers(selectedClass.course.id)} />}
-              {view === 'account' && <ProfileEditor user={user} onUserUpdated={onUserUpdated} onSessionExpired={onSessionExpired} logoutPending={pendingLogout} onLogout={handleLogout} />}
+              {view === 'classrooms' && (!selectedClass || !allowed) && <TeacherClassrooms courses={displayCourses} onOpen={openClassroom} />}
+              {view === 'classrooms' && selectedClass && allowed && <ClassroomWorkspace key={`${selectedClass.room.id}:${notificationNavigation}`} course={displayCourses.find((item) => item.id === selectedClass.course.id) ?? selectedClass.course} initialRoom={selectedClass.room} onBack={() => setSelectedClass(null)} onCourse={() => openCourse(selectedClass.course.id)} onMembersChanged={() => refreshMembers(selectedClass.course.id)} />}
+              {view === 'account' && <ProfileEditor user={effective} onUserUpdated={onUserUpdated} onSessionExpired={onSessionExpired} logoutPending={pendingLogout} onLogout={handleLogout} />}
             </>
           )}
         </div>
       </div>
-      {createOpen && <CreateCourseModal onClose={() => setCreateOpen(false)} onCreated={(course) => { setCourses((current) => [course, ...current]); setMembers((current) => ({ ...current, [course.id]: [] })); setCreateOpen(false); setNotice('Đã tạo khóa học mới.'); openCourse(course.id) }} />}
+      {allowed && createOpen === accessKey && <CreateCourseModal onClose={() => setCreateOpen(false)} onCreated={(course) => { setCourses((current) => [course, ...current]); setMembers((current) => ({ ...current, [course.id]: [] })); setCreateOpen(false); setNotice('Đã tạo khóa học mới.'); openCourse(course.id) }} />}
     </main>
+    </TeachingAccessContext.Provider>
   )
 }
 
@@ -194,7 +209,7 @@ function Overview({ user, courses, members, stats, onCreate, onSeeAll, onOpen })
 
 function CoursesView({ courses, members, search, setSearch, filter, setFilter, onCreate, onOpen }) {
   return <section className="dashboard-view" aria-labelledby="courses-title">
-    <div className="page-title"><div><span className="welcome-note"><BookOpen size={16} /> QUẢN LÝ NỘI DUNG</span><h1 id="courses-title">Khóa học của tôi</h1><p>Tạo, cập nhật và quản lý quyền truy cập khóa học.</p></div><button className="solid-button" type="button" onClick={onCreate}><Plus size={18} /> Tạo khóa học</button></div>
+    <div className="page-title"><div><span className="welcome-note"><BookOpen size={16} /> QUẢN LÝ NỘI DUNG</span><h1 id="courses-title">Khóa học của tôi</h1><p>Tạo, cập nhật và quản lý quyền truy cập khóa học.</p></div><TeachingAction className="solid-button" onClick={onCreate}><Plus size={18} /> Tạo khóa học</TeachingAction></div>
     <div className="course-toolbar"><label className="search-field"><Search size={18} /><span className="sr-only">Tìm khóa học</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm theo tên hoặc mô tả..." /></label><div className="filter-tabs" aria-label="Lọc trạng thái">{[['ALL', 'Tất cả'], ['PUBLISHED', 'Đã xuất bản'], ['DRAFT', 'Bản nháp'], ['ARCHIVED', 'Lưu trữ']].map(([value, label]) => <button className={filter === value ? 'active' : ''} key={value} type="button" onClick={() => setFilter(value)}>{label}</button>)}</div></div>
     {courses.length === 0 ? <div className="teacher-empty"><Search size={32} /><h3>Không tìm thấy khóa học</h3><p>Thử thay đổi từ khóa hoặc bộ lọc trạng thái.</p></div> : <div className="course-list detailed">{courses.map((course) => <CourseRow key={course.id} course={course} members={members[course.id] || []} onOpen={() => onOpen(course.id)} />)}</div>}
   </section>
@@ -221,11 +236,13 @@ function CourseRow({ course, members = [], onOpen }) {
 }
 
 function CreateCourseModal({ onClose, onCreated }) {
+  const { allowed, reason } = useTeachingAccess()
   const [values, setValues] = useState({ title: '', description: '' })
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   async function submit(event) {
     event.preventDefault()
+    if (!allowed) { setError(reason); return }
     if (!values.title.trim()) { setError('Vui lòng nhập tên khóa học.'); return }
     setPending(true); setError('')
     try { onCreated(await createCourse({ title: values.title.trim(), description: values.description })) }
@@ -235,17 +252,21 @@ function CreateCourseModal({ onClose, onCreated }) {
 }
 
 function CourseDetail({ course, members, onBack, onUpdated, onRefreshMembers, onError, onNotice, onOpenClassroom }) {
+  const { allowed, reason } = useTeachingAccess()
   const [tab, setTab] = useHistoryState(`teacher.course.${course.id}.tab`, 'info')
   const [values, setValues] = useState({ title: course.title, description: course.description, status: course.status })
   const [pending, setPending] = useState(false)
   const [memberPending, setMemberPending] = useState('')
   async function save(event) {
-    event.preventDefault(); setPending(true)
+    event.preventDefault()
+    if (!allowed) { onError(reason); return }
+    setPending(true)
     try { const updated = await updateCourse(course.id, { title: values.title.trim(), description: values.description, status: values.status }); onUpdated(updated, 'Đã cập nhật khóa học.') }
     catch (requestError) { onError(courseErrorMessage(requestError)) }
     finally { setPending(false) }
   }
   async function revoke(member) {
+    if (!allowed) { onError(reason); return }
     setMemberPending(member.id)
     try { await revokeStudentAccess(course.id, member.id); await onRefreshMembers(); onNotice(`Đã thu hồi quyền của ${member.user.full_name || member.user.username}.`) }
     catch (requestError) { onError(courseErrorMessage(requestError)) }

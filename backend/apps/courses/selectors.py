@@ -42,7 +42,8 @@ def list_accessible_courses(*, user):
         ),
     )
     if user.role == User.Role.TEACHER:
-        return courses
+        from apps.users.teaching_access import has_teaching_approval
+        return courses if has_teaching_approval(user) else Course.objects.none()
     if user.role == User.Role.STUDENT:
         return with_student_classrooms(courses.filter(status=Course.Status.PUBLISHED), user)
     return Course.objects.none()

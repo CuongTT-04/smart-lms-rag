@@ -36,7 +36,7 @@ class SocketTests(SimpleTestCase):
         store = Store()
         from types import SimpleNamespace
         with patch('apps.notifications.tickets.redis_client', return_value=store):
-            result = issue_ticket(SimpleNamespace(pk='student'), {'exp': int(time.time())+90})
+            result = issue_ticket(SimpleNamespace(pk='student', auth_version=1), {'exp': int(time.time())+90})
             self.assertEqual(store.assert_expiry, 30)
             self.assertEqual(consume_ticket(result['ticket'])['user_id'], 'student')
             self.assertIsNone(consume_ticket(result['ticket']))

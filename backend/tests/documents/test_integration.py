@@ -1,4 +1,5 @@
 """Integration uses A User, Course, JWT login and membership APIs unchanged."""
+from common.testing import approved_teacher
 import io
 import tempfile
 from pathlib import Path
@@ -16,9 +17,9 @@ class AIntegrationTests(TestCase):
         self.folder=tempfile.TemporaryDirectory();self.addCleanup(self.folder.cleanup)
         config=override_settings(DOCUMENTS_STORAGE_ROOT=Path(self.folder.name));config.enable();self.addCleanup(config.disable)
         User=get_user_model()
-        self.teacher=User.objects.create_user("teacher",password="Teacher123!",role="TEACHER")
+        self.teacher=approved_teacher(User.objects.create_user("teacher",password="Teacher123!",role="TEACHER"))
         self.student=User.objects.create_user("student",password="Student123!")
-        self.other=User.objects.create_user("other",password="Teacher123!",role="TEACHER")
+        self.other=approved_teacher(User.objects.create_user("other",password="Teacher123!",role="TEACHER"))
         self.admin=User.objects.create_superuser("admin",password="Admin123!")
         self.client=Client(enforce_csrf_checks=True)
         self.login("teacher","Teacher123!")
@@ -67,7 +68,8 @@ class AIntegrationTests(TestCase):
     def test_A_refresh_cookie_does_not_authenticate_document_API(self):
         self.client.defaults.pop("HTTP_AUTHORIZATION")
         self.assertEqual(self.upload().status_code,401)
-        refreshed=self.client.post("/api/users/token/refresh/")
+        csrf=self.client.get('/api/users/csrf/').json()['csrfToken']
+        refreshed=self.client.post("/api/users/token/refresh/", HTTP_X_CSRFTOKEN=csrf)
         self.assertEqual(refreshed.status_code,200,refreshed.content)
         self.client.defaults["HTTP_AUTHORIZATION"]="Bearer "+refreshed.json()["access"]
         self.assertEqual(self.upload().status_code,202)

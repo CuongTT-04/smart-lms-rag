@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Permission
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 import json
@@ -123,6 +124,7 @@ class AdmissionTests(TestCase):
         self.assertEqual(client.get('/api/ai/operations/').status_code, 403)
         self.user.role = 'ADMIN'
         self.user.save(update_fields=['role'])
+        self.user.user_permissions.add(Permission.objects.get(codename='view_generationevent'))
         with patch('apps.ai.operations.gateway_health', return_value={'status':'UNAVAILABLE'}):
             response = client.get('/api/ai/operations/')
         self.assertEqual(response.status_code, 200)
@@ -151,6 +153,7 @@ class AdmissionTests(TestCase):
     def test_unavailable_metrics_database_is_not_reported_as_zero_or_leaked(self):
         self.user.role = 'ADMIN'
         self.user.save(update_fields=['role'])
+        self.user.user_permissions.add(Permission.objects.get(codename='view_generationevent'))
         client = APIClient()
         client.force_authenticate(self.user)
         with patch('apps.ai.operations.operations_snapshot', side_effect=DatabaseError('PRIVATE SQL CONNECTION')):

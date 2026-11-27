@@ -1,5 +1,7 @@
 # Guardrails và lựa chọn cấu hình Ayo
 
+**Tiến độ mới nhất:** xem mục 9 về phiên Fine-tune đã kiểm qua backend và các mục 10–15 về Chặng 2. Bước 6 đã hoàn tất giao diện Admin; bước tiếp theo là kiểm tích hợp và bàn giao. Các mục đầu ghi hiện trạng theo từng mốc, không thay thế kết quả cập nhật sau đó.
+
 ## 1. Đầu vào và hiện trạng
 
 Chốt ngày 26/11/2026 trên nhánh `VuNamDuong_B22DCVT119_W9Tasks`, đầu vào tại commit `cf30f39`. Phạm vi bước này là khóa đầu vào và phương án so sánh; chưa đổi model phục vụ, huấn luyện hoặc nghiệm thu chất lượng mới.
@@ -542,3 +544,158 @@ Kiểm HTTP thật trên `ch01.pdf`: hỏi đáp HTTP 200/ANSWERED trong 11,469 
 Review nội dung: câu định nghĩa phù hợp trích đoạn nhưng lược bớt cụm “vai trò”; tóm tắt mạch lạc theo nguồn, lược ngày tháng và một số diễn giải. Citation tóm tắt là phạm vi nguồn đã đọc, không chứng minh từng mệnh đề. Lượt này chưa thử mới hint gắn bài tập hoặc history qua HTTP, chưa kiểm trực quan frontend và không phải benchmark mới/chứng minh Fine-tune tốt hơn Base. Các kết quả chất lượng fixed-context trước đó vẫn được giữ riêng, không gán thành kiểm online các luồng chưa chạy.
 
 Minh chứng riêng: `.private/guardrails/operations/tuned-serving-20261126T190248Z/`, `serving-tuned-online.json`, `tuned-online-20261126T190527Z.json`, `tuned-operations-final.json`, `tuned-online-review.json`. File raw có câu trả lời/trích đoạn chỉ giữ private. Bản Base rollback vẫn giữ nguyên checksum; phiên Kaggle Fine-tune cần tiếp tục hoạt động để ứng dụng sử dụng model này.
+
+## 10. Chuẩn bị Chặng 2: nền Admin
+
+**Bước 1 hoàn thành ngày 27/11/2026; có thể sang bước 2 làm danh mục trường.** Đối chiếu trên commit `8197d2d`: đã có `email_verified_at`, `email_version`, `auth_version`, token xác minh lưu băm và hook `on_email_verified(user)` chạy cùng transaction xác nhận. Xác thực JWT dùng `VersionedJWTAuthentication`; khóa tài khoản/đổi vai trò tăng phiên bản phiên. `apps.operations` còn là khung; chưa tạo thư mục giao diện Admin hoặc model mới trong bước chuẩn bị.
+
+| Kiểm tra | Kết quả |
+| --- | --- |
+| Migration DB hiện tại | Không có migration chờ; `makemigrations --check --dry-run` không phát hiện thay đổi |
+| Backend nền tài khoản | 97/97 test đạt: email một lần/hết hạn/gửi lại/đổi email, hook, thu hồi phiên, CSRF và giới hạn đăng nhập |
+| Frontend kết nối xác thực | 21/21 test đạt trong `api.test.js` và `auth.service.test.js`; không phải kiểm trực quan hoặc toàn bộ frontend |
+| Sao lưu và phục hồi thử | PostgreSQL custom dump đã phục hồi vào DB tạm bằng `pg_restore --exit-on-error`; đối chiếu khớp 2 tài khoản, 1 giáo viên, 1 hồ sơ giáo viên, 1 khóa học và 60 migration; DB thật giữ nguyên |
+| Tách dữ liệu kiểm | Test chạy trên DB test riêng và email locmem; DB phục hồi tạm đã được xóa sau khi đối chiếu, không gửi email thật hoặc gọi model |
+
+**Điểm nối cho các bước tiếp:** migration users tiếp theo phụ thuộc `0004_email_verification_and_auth_version` (kiểm lại nếu Cường bổ sung migration mới). Thêm `Institution`/`TeacherApproval` theo từng bước; không sửa lại schema xác minh email hay tạo luồng token riêng. Đăng ký handler duyệt giáo viên một lần trong `UsersConfig.ready()` qua `register_email_verified_hook`; thao tác duyệt khóa bản ghi User trước bản ghi approval để thống nhất với transaction xác minh. Không tự duyệt lại REJECTED/REVOKED, không tự gán xác minh email cho giáo viên cũ. Quản trị tài khoản tái sử dụng cơ chế tăng `auth_version`. Tab Vận hành dùng tín hiệu `ayo_operations_v1` đã có, không đổi cấu trúc tùy tiện.
+
+**Điểm còn chờ khi ghép:** SMTP thật chưa được kiểm, test chỉ dùng hộp thư trong bộ nhớ. `App.jsx` chưa có tuyến `/verify-email`, cần ghép giao diện nhận link xác minh với API hiện có trước nghiệm thu luồng tự duyệt; không nhân bản phần xác minh email của Cường. Đây không phải điều kiện phải chờ để xây danh mục trường ở bước 2. Chưa áp dụng migration LEGACY, đổi quyền tài khoản hay tạo giao diện Admin trong bước này.
+
+Bản sao và kết quả riêng tại `.private/admin/preparation/20261127T031558Z/`: `database.dump`, `backup.json`, `verification.json`. Dump 532.602 byte, SHA-256 `f336ed09e8d4acd885efa9032feae0801808ae26a2214db3e2db0853e9ea63a3`. Thư mục đã được Git ignore, chứa dữ liệu riêng, không đưa lên Evidence/Git. Bản sao chỉ bao gồm PostgreSQL, không gồm file PDF/media trong các Docker volume; cần sao lưu lại sát lúc triển khai thay đổi dữ liệu thật, không dùng bản này để phục hồi toàn bộ ứng dụng.
+
+## 11. Danh mục trường và đăng ký giáo viên
+
+**Bước 2 hoàn thành ngày 27/11/2026.** Thêm `Institution` và migration `users.0005_institutions`, nối với hồ sơ giáo viên bằng FK bảo vệ lịch sử. Giáo viên đăng ký mới phải chọn một trường đang hoạt động hoặc nhập tên trường chưa có trong danh sách; không chấp nhận cả hai. Học viên không được gửi thông tin trường của giáo viên. Tên tự khai chỉ lưu trên hồ sơ, không thêm vào danh mục chuẩn; chọn trường không xác minh email, không cấp thêm quyền hoặc tự duyệt giáo viên.
+
+- Danh mục hỗ trợ tiểu học, THCS, THPT, cao đẳng, đại học/học viện và nhiều cấp trên cùng trường. Lưu tên, viết tắt/tên khác, tỉnh/thành, cơ sở, nguồn HTTPS, ngày đối chiếu và trạng thái hoạt động. Mã nội bộ không thay đổi khi sửa tên; không đoán mã ngành giáo dục.
+- Đã đối chiếu bảy website trong tài liệu phân công và seed PTIT, HUST, HNUE, TLU, UTC, TMU, HANU tại Hà Nội. Dữ liệu nguồn ở `backend/apps/users/data/institutions.json`. Chạy `python manage.py seed_institutions` để nạp; chạy lại không tạo trùng hoặc ghi đè thay đổi của Admin.
+- `GET /api/users/institutions/?q=&province=&level=&limit=20&offset=0`: công khai, chỉ trường hoạt động; tìm có dấu/không dấu/viết tắt, lọc tỉnh/cấp; q tối đa 100 ký tự, tối đa 20 kết quả/lần, giới hạn 60 lượt/phút/IP. Response chỉ gồm trường cần hiển thị, `has_more` và `next_offset`, không trả nguồn/ngày kiểm hoặc hồ sơ người dùng.
+- API quản trị: `GET/POST /api/operations/institutions/`, `GET/PATCH /api/operations/institutions/{id}/`, `POST /api/operations/institutions/import/`. Kiểm tài khoản ADMIN đang hoạt động và permission Django tương ứng `view_institution`/`add_institution`/`change_institution`; import cần cả add và change. Có nhật ký thay đổi. Không cung cấp DELETE; ngừng hoạt động thay vì xóa trường có hồ sơ liên kết. Django Admin dùng chung service kiểm dữ liệu và quyền.
+- Import nhận multipart `file` CSV UTF-8 hoặc XLSX một sheet; `dry_run=true` mặc định, chỉ ghi khi gửi `false` và toàn bộ dòng hợp lệ. Tối đa 2 MiB, 500 dòng; giới hạn workbook sau giải nén, chặn công thức/macro/liên kết ngoài. Báo số thêm/sửa/không đổi/bị loại cùng dòng lỗi. Ghi trong transaction, không nhập dở dang; khi áp dụng vẫn kiểm lại dữ liệu, trùng mã/danh tính trường và quyền.
+- Cột import: `code,name,aliases,province,campus,levels,external_code,source_url,source_checked_at,active`. Bắt buộc `code,name,province,levels,source_url,source_checked_at`; aliases/levels dùng dấu `|`, ngày `YYYY-MM-DD`, active `true/false`. Các mã cấp là `PRIMARY`, `LOWER_SECONDARY`, `UPPER_SECONDARY`, `COLLEGE`, `UNIVERSITY`. Trùng tên vẫn được khi khác tỉnh/cơ sở; cùng danh tính chuẩn hóa bị loại.
+- Form đăng ký giáo viên có combobox debounce 300 ms, hủy và bỏ response cũ, chọn bằng bàn phím, trạng thái tải/rỗng/lỗi/thử lại và nhánh tên trường tự khai. Đã kiểm trình duyệt thật trên desktop và mobile 390×844, tìm không dấu/viết tắt, chọn bằng phím và mở nhánh tự khai; không tạo tài khoản thử trong DB thật. Chưa tạo `frontend/.../admin`, không gian Admin để bước 6.
+
+**Kiểm chứng:** backend 214/214 test trong nhóm users/courses/operations; nhóm mới về trường đạt 19/19, bao phủ phân quyền, đăng ký, nguồn/schema, trường ngừng hoạt động, dry-run/áp dụng/lặp import, file lỗi và seed hai lần. Toàn bộ frontend 384/384 test (58 file); nhóm tập trung đăng ký/kết nối/combobox đạt 50/50. Lint đạt, build đạt; vẫn có cảnh báo kích thước bundle hiện hữu. Schema API tạo được, không lỗi, còn cảnh báo chung về ánh xạ JWT và tên enum; chưa xử lý tài liệu auth toàn dự án trong bước này.
+
+**An toàn migration:** đã sao lưu PostgreSQL ngay trước nâng cấp, phục hồi vào DB tạm rồi migrate/seed hai lần. Đối chiếu hash dữ liệu tài khoản, hồ sơ giáo viên, khóa học và thành viên trước/sau đều khớp. Sau khi thử thành công mới áp dụng DB hiện tại: có đúng bảy trường, không có migration chờ, hồ sơ giáo viên cũ giữ null/chuỗi trống ở thông tin trường mới, không đổi role/status/email verification. Chưa chạy chuyển trạng thái LEGACY hoặc tự duyệt `.edu.vn` (bước 3).
+
+Minh chứng riêng tại `.private/admin/institutions/`: bản sao `before-institutions.dump`, `migration-copy.json`, `live-check.json`, log test/lint/build/schema và `verification.json`. Backup chỉ gồm PostgreSQL, không gồm volume học liệu/media; không đưa dữ liệu riêng này lên Git hoặc Evidence công khai. Trang thử đăng ký: `http://127.0.0.1:5173/register`. Phần quản trị danh mục ở bước này có API/Django Admin, chưa có trang import trong không gian Admin mới; sẽ ghép khi làm bước 6.
+
+## 12. Trạng thái duyệt giáo viên và tự duyệt email
+
+**Bước 3 hoàn thành ngày 27/11/2026.** Thêm `TeacherApproval` một-một với `TeacherProfile`, gồm PENDING/APPROVED/REJECTED/REVOKED; nguồn quyết định AUTO_EDU_VN/ADMIN/LEGACY, lý do, revision, phiên bản email tại lúc duyệt, thời điểm và người duyệt/quyết định. PENDING mới chưa có quyết định nên source rỗng, không giả ghi là Admin đã xử lý. `TeacherApprovalEvent` giữ trạng thái trước/sau, actor hoặc hệ thống, hành động, lý do và revision; không ghi mật khẩu/token hoặc địa chỉ email thô vào snapshot.
+
+| Trường hợp | Hành vi đã kiểm |
+| --- | --- |
+| Giáo viên mới | Tạo PENDING và sự kiện ban đầu trong cùng transaction tạo tài khoản/hồ sơ; lỗi ghi audit thì rollback, không để tài khoản dở dang |
+| Email .edu.vn chưa xác minh | Không tự duyệt; trường được chọn hoặc website trường không cấp quyền |
+| Xác nhận email hợp lệ | Hook xét lại User hiện hành, chỉ tự duyệt TEACHER + ACTIVE + PENDING + email đã xác minh với domain chuẩn kết thúc `.edu.vn` |
+| Domain giả | `fakeedu.vn`, `ptit.edu.vn.attacker.com`, phần local chứa edu.vn và email sai cấu trúc không đạt; domain trường và domain con hợp lệ được chấp nhận |
+| Đã REJECTED/REVOKED | Callback email không cấp lại; chỉ Admin có quyền mới có thể duyệt lại rõ ràng, có lý do và revision đúng |
+| Đổi email sau AUTO_EDU_VN | Xóa cờ xác minh theo luồng hiện có; approval về PENDING, bỏ bằng chứng duyệt cũ, ghi phiên bản email trước/sau; xác minh email mới mới xét lại |
+| Đổi email sau ADMIN/LEGACY | Giữ quyết định thủ công/di trú, không tự xác minh email mới; ghi lịch sử. REJECTED/REVOKED vẫn giữ nguyên |
+| Đổi trường công tác | Ghi sự kiện với thông tin trường trước/sau, không tự đổi trạng thái duyệt hoặc cấp thêm quyền |
+| Duyệt đồng thời | Khóa cùng User trước approval, đối chiếu revision; hai quyết định cùng revision chỉ một được ghi, quyết định còn lại nhận `ApprovalConflict` |
+
+Service `decide_teacher_approval` kiểm lại tài khoản ADMIN đang hoạt động và permission `users.change_teacherapproval`, yêu cầu lý do, revision trả từ server và bước chuyển hợp lệ. Không dùng source/revision/client-supplied status để tự ghi qua API hồ sơ. Xác nhận email, gửi lại/đổi email và quyết định duyệt cùng dùng thứ tự khóa User trước: đã chỉnh tối thiểu thứ tự khóa trong `confirm_email_verification`, không thay endpoint hay định dạng token của Cường. Hook đăng ký một lần trong `UsersConfig.ready()`, callback lặp không ghi thêm quyết định.
+
+`GET /api/users/me/` và response tài khoản giáo viên có `teacher_profile.approval` chỉ đọc, đủ cho banner/trang quản trị ở bước tiếp. Revision có thể tăng khi đổi email/trường dù trạng thái không đổi; khi nối API quản trị phải dùng revision mới nhất, không mặc định bằng 1. Django Admin chỉ cho xem approval và lịch sử, không có form sửa trực tiếp để bỏ qua service. API thao tác quản trị và giao diện quyết định sẽ nối ở bước 5/6.
+
+**Migration:** `0006_teacher_approval` tạo schema; `0007_legacy_teacher_approval` gán APPROVED/LEGACY cho giáo viên đã có tại mốc nâng cấp bằng `get_or_create`, không ghi đè approval đã tồn tại. Audit LEGACY là actor hệ thống; không gán `email_verified_at` hay giả bằng chứng xác minh email. Lần chạy lại không nâng PENDING của giáo viên mới, không khôi phục REVOKED/REJECTED và không ghi trùng audit trong các đường tạo hồ sơ được hỗ trợ.
+
+Đã sao lưu DB trước nâng cấp, tạm dừng backend khi chạy migration. Bản phục hồi thử có giáo viên đang sở hữu lớp, giáo viên chưa có lớp và giáo viên BLOCKED: cả ba được LEGACY, tài khoản khóa vẫn khóa; hash User/TeacherProfile/khóa/thành viên/danh mục trường trước/sau đều khớp. Sau khi thử đạt mới áp dụng DB hiện tại: một giáo viên cũ được LEGACY, một audit hệ thống, không tạo tài khoản test thật, dữ liệu cũ giữ nguyên. Bản sao `.private/admin/approval/before-approval.dump` có SHA-256 `6f8a582c994625efd60035ecacec86573e5bdf90b8e1b620e67fff47fc52c632`, 538.059 byte; chỉ chứa PostgreSQL, không bao gồm học liệu/media.
+
+**Kiểm chứng:** 235/235 test users/courses/operations đạt; nhóm approval gồm 21 test về đăng ký, hook/rollback, domain, email thay đổi, cấp lại thủ công, audit, migration và ba tình huống đồng thời. Sau khi chốt metadata audit, chạy lại toàn bộ users đạt 137/137; frontend đăng ký/xác thực đạt 45/45, không sửa giao diện trong bước này. Migration/model đồng bộ, không thiếu migration. Kết quả riêng ở `.private/admin/approval/`, không đưa dump/dữ liệu riêng lên Git/Evidence.
+
+**Ranh giới còn lại:** bước 4 mới siết toàn bộ nghiệp vụ giảng dạy theo TEACHER + APPROVED + ACTIVE và thêm banner/nút chờ duyệt; bước 3 chưa tuyên bố các API giảng dạy đã chặn PENDING. SMTP thật và trang `/verify-email` vẫn cần ghép/kiểm trước nghiệm thu luồng xác minh email thực tế; test hiện tại dùng email locmem hoặc token fixture cô lập. Không huấn luyện, đổi model hoặc gọi Kaggle trong bước này; chưa tổng hợp Evidence/W09.
+
+## 13. Kiểm soát quyền giảng dạy và giao diện chờ duyệt
+
+**Bước 4 hoàn thành ngày 27/11/2026.** Quyền giảng dạy chỉ được cấp khi tài khoản là TEACHER, đang ACTIVE và approval là APPROVED. Backend đọc trạng thái hiện hành từ DB, không dựa vào hồ sơ hoặc JWT đã giữ trong bộ nhớ. Với AUTO_EDU_VN, email phải còn được xác minh, đúng domain và đúng phiên bản email lúc duyệt; ADMIN/LEGACY vẫn theo quyết định tương ứng. Thiếu approval không được coi là đã duyệt.
+
+| Phạm vi | Hành vi |
+| --- | --- |
+| API giảng dạy | Kiểm tại xác thực cho các nhóm khóa/lớp, học liệu, bài kiểm tra, tiến độ và AI; service khóa học/học liệu cũng kiểm quyền hiện hành. Không đủ điều kiện trả HTTP 403, mã `TEACHER_NOT_APPROVED`, trước khi xử lý nghiệp vụ |
+| Tài khoản chờ duyệt | Vẫn đăng nhập, quản lý hồ sơ và xác minh email; danh sách khóa học của giáo viên trả rỗng để mở giao diện chờ duyệt. Quyền học viên vẫn theo cơ chế thành viên hiện có |
+| Giao diện giáo viên | Banner PENDING/REJECTED/REVOKED, thông tin lý do và nút kiểm tra lại; các nút tạo khóa/lớp bị vô hiệu hóa kèm giải thích. Dữ liệu không gian giảng dạy được ẩn khi mất quyền |
+| Form đã mở | Kiểm quyền trước khi gửi; form tạo bị đóng khi phiên bản quyền thay đổi. Backend vẫn chặn yêu cầu dùng trạng thái hoặc JWT cũ; không chỉ dựa vào nút bị khóa |
+| Đồng bộ trạng thái | Đọc cờ `teaching_allowed` chỉ đọc do server tính; kiểm lại khi quay về tab, mỗi 60 giây, khi bấm kiểm tra hoặc nhận lỗi quyền. Đây là polling, không phải thông báo đẩy tức thời |
+| Banner và phiên đăng nhập | Ẩn banner chỉ trong phiên và đúng phiên bản trạng thái; đăng nhập/đăng xuất xóa dấu ẩn cũ. Gửi email không tự mở quyền trên trình duyệt |
+| Xác minh email | Đã thêm `/verify-email`, nhận token rồi bỏ token khỏi thanh địa chỉ; người dùng bấm xác nhận để gọi API hiện có. Không tự gửi yêu cầu xác nhận chỉ vì mở link |
+
+API AI dùng chung `VersionedJWTAuthentication`, kiểm cả phiên bản phiên và quyền giảng dạy; giữ nguyên cơ chế CSRF và phạm vi học liệu. Metadata OpenAPI đã nhận đúng lớp JWT này. Fixture nghiệp vụ cũ được khai báo rõ là giáo viên đã duyệt qua helper dành cho test, không biến đăng ký mới thành tự duyệt. Các test CSRF, schema và phiên WebSocket được cập nhật theo hợp đồng xác thực hiện hành.
+
+**Kiểm chứng:** nhóm backend chính chạy 1.111 test, đạt và bỏ qua 5 test parser tùy chọn; nhóm upload/worker chạy riêng đúng `tests.documents_settings` đạt 27/27. Tổng cộng 1.138 test backend được chạy, 1.133 đạt, 5 bỏ qua, không có lỗi. Nhóm tập trung hợp đồng/quyền đạt 44/44 trước lượt tổng. Frontend đạt 397/397 test trong 60 file; lint và build đạt, còn cảnh báo kích thước bundle hiện hữu. Không phát sinh migration mới; `makemigrations --check --dry-run` và kiểm whitespace đạt.
+
+Đã kiểm trình duyệt thật bằng tài khoản tổng hợp trong DB bản sao: trạng thái chờ duyệt, tài khoản đã duyệt mở form tạo, sau thu hồi quyền không còn thấy khóa riêng và nút tạo bị khóa. HTTP xác nhận tài khoản bị thu hồi vẫn đăng nhập/xem hồ sơ được nhưng tạo khóa nhận 403 đúng mã. Màn hình 390×844 không tràn ngang, tooltip nằm trong màn hình. Test tự động kiểm riêng form đang mở khi mất quyền. Các kiểm này không chứng minh việc hủy mọi transaction đã chạy trước thời điểm thu hồi; quyền được kiểm cho yêu cầu mới và tại các điểm kiểm trong service.
+
+Hash tài khoản, hồ sơ giáo viên, khóa học, thành viên và danh mục trường của DB thật khớp trước/sau; không tạo tài khoản test hoặc đổi quyền người dùng thật. DB/container/frontend thử riêng đã dọn, backend hiện tại đã khởi động lại để nhận mã mới. Minh chứng tại `.private/admin/teaching/`: log test/lint/build, `ui-check.json`, `live-check.json` và `verification.json`; chỉ giữ riêng, không đưa dữ liệu cá nhân lên Evidence.
+
+**Bước tiếp theo:** bước 5 xây API quản trị tài khoản và quyết định duyệt; chưa tạo giao diện Admin của bước 6. Tuyến xác minh email đã ghép nhưng SMTP thật chưa được kiểm, cần nghiệm thu khi cấu hình gửi thư thực tế. Không cần chạy lại notebook hoặc train trong bước 4; chưa tổng hợp Evidence/W09.
+
+## 14. API quản trị tài khoản, duyệt giáo viên và tổng quan
+
+**Bước 5 hoàn thành ngày 27/11/2026.** Các API dưới `/api/operations/` kiểm lại tài khoản ADMIN đang hoạt động, phiên xác thực và permission Django tương ứng trên mỗi yêu cầu. Vai trò ADMIN tự nó không cấp mọi quyền. Service ghi dùng chung tại `apps/users/account_administration.py`; tái sử dụng cơ chế thu hồi refresh token/đóng WebSocket trong `services.py` và service quyết định duyệt đã có.
+
+| API | Công dụng và điều kiện |
+| --- | --- |
+| `GET/POST users/` | Danh sách có tìm tên đăng nhập/email/họ tên, lọc và phân trang; tạo STUDENT hoặc TEACHER chờ duyệt bằng quyền `view_user`/`add_user`. Tạo tài khoản không tự xác minh email hoặc cấp ADMIN |
+| `GET/PATCH users/{id}/` | Xem hồ sơ; cập nhật whitelist `full_name,email,phone,status` với `change_user`. Không nhận role, is_staff/is_superuser, groups, password hoặc phiên bản xác thực qua PATCH |
+| `POST users/{id}/role/` | Đổi vai trò bằng cả `change_user` và `assign_user_role`, bắt buộc lý do và xác nhận lại đối tượng. Cấp vai trò ADMIN không tự gán permission, staff hoặc superuser |
+| `GET users/{id}/history/` | Nhật ký tài khoản chỉ đọc, cần `view_user` và `admin.view_logentry`; không có API sửa/xóa |
+| `GET teachers/` | Lọc giáo viên theo trạng thái/nguồn duyệt, trường và email đã xác minh; cần `view_user` và `view_teacherapproval` |
+| `POST teachers/{id}/approval/` | Duyệt/từ chối/thu hồi theo service hiện hành, cần `change_teacherapproval` và `expected_revision` mới nhất; xung đột trả 409 |
+| `GET teachers/{id}/approval/history/` | Lịch sử quyết định và snapshot, cần `view_user` và `view_teacherapprovalevent`, có phân trang |
+| `GET overview/?start_date=&end_date=` | Số tài khoản theo vai trò/trạng thái, khóa, lớp, trạng thái duyệt hiện tại và lượt nộp trong kỳ; cần `view_platform_overview`, không trả dữ liệu tài chính hoặc nội dung học liệu |
+
+**Quy tắc ghi:** mọi thao tác tài khoản/quyết định duyệt cần `current_password` của Admin và `reason` tối đa 1.000 ký tự; giới hạn 20 yêu cầu ghi/phút/Admin. PATCH/đổi vai trò cần `expected_updated_at` từ server, không dùng mốc tự đoán. Server kiểm lại mật khẩu và quyền trong transaction, khóa User theo thứ tự ID; khóa transaction PostgreSQL chung bảo vệ các thao tác quản trị và phép kiểm Admin cuối cùng. Hai cập nhật cùng phiên bản chỉ một thành công, còn lại 409; không ghi dở khi audit lỗi. Lỗi định dạng/whitelist trả 400, thiếu quyền/xác nhận mật khẩu trả 403, không tìm thấy trả 404. Danh sách mặc định 20 mục, tối đa 100 mục/lần.
+
+Không tự đổi role/status của bản thân. Không vô hiệu hóa Admin hữu hiệu cuối cùng: tài khoản này phải hoạt động, có mật khẩu sử dụng được và có quyền quản lý tài khoản/cấp vai trò hoặc là superuser. Hai Admin khóa lẫn nhau đồng thời vẫn còn một người hoạt động. Khi khóa/đổi vai trò, phiên bản xác thực tăng theo model hiện có; refresh token bị blacklist và lên lịch đóng WebSocket sau commit. Mở khóa không làm JWT cũ hợp lệ lại.
+
+Đổi vai trò giữ nguyên profile, thành viên, bài nộp và lịch sử. Giáo viên còn là OWNER hoạt động của khóa chưa ARCHIVED bị chặn đổi role; phải xử lý sở hữu/lưu trữ trước. Ra khỏi TEACHER ghi thu hồi approval; quay lại TEACHER đặt PENDING và ghi lịch sử, không tự khôi phục quyết định duyệt cũ. Tạo giáo viên mới vẫn dùng quy tắc trường công tác của luồng đăng ký. Thay email xóa xác minh và xử lý lại approval qua hook đã có. Response được đọc lại sau cập nhật để không trả revision approval cũ từ cache quan hệ.
+
+Nhật ký tài khoản dùng `django_admin_log`, ghi actor, đối tượng, thời điểm, hành động, kết quả APPLIED, lý do, các trường đã đổi và snapshot role/status/phiên bản. Chỉ ghi thay đổi đã commit; không công bố đây là nhật ký đầy đủ mọi lần thử bị từ chối. Không lưu mật khẩu, token hay giá trị email/điện thoại trước/sau. Lịch sử approval tiếp tục dùng `TeacherApprovalEvent` để giữ chuỗi quyết định thống nhất.
+
+**Django Admin và nhóm quyền:** các form User/Group cũ chuyển sang chỉ đọc, chặn thêm/sửa/xóa và đường đổi mật khẩu User để không có lối ghi bỏ qua xác nhận, nhật ký hoặc bảo vệ Admin cuối cùng. Khôi phục mật khẩu vẫn theo luồng tài khoản hiện có. `python manage.py seed_admin_groups` tạo bốn nhóm: `OHAYO Admin Read`, `OHAYO Account Manager`, `OHAYO Role Manager`, `OHAYO Institution Manager`; chạy lại không tạo trùng và mặc định không gán ai. Đã nạp các nhóm này trên DB hiện tại, chưa đổi role hoặc cấp quyền mới cho tài khoản thật.
+
+Khi cần cấp nhóm ban đầu, operator dùng `seed_admin_groups --assign USERNAME --group "GROUP NAME" --actor ADMIN_USERNAME --reason "Lý do"`. Đối tượng phải đã là ADMIN đang hoạt động; actor phải là ADMIN có quyền ủy quyền nhóm và từng permission thực tế của nhóm. Command không nâng vai trò học viên/giáo viên, không cấp superuser/staff và ghi đúng actor vào audit. Không có API gán nhóm tùy ý. Migration `0008_administration_permissions` chỉ bổ sung metadata permission, không sửa các migration đã áp dụng hoặc di trú lại giáo viên.
+
+**Số liệu tổng quan:** mốc ngày theo `Asia/Ho_Chi_Minh`; ngày kết thúc được đổi thành đầu ngày kế tiếp rồi lọc khoảng nửa mở `[start,end_exclusive)`. Mặc định 30 ngày, giới hạn 366 ngày; trả `as_of`, múi giờ, phạm vi và định nghĩa. Tài khoản/khóa/lớp là số hiện tại, không gán thành số phát sinh trong kỳ; lớp đã gỡ không tính. Lượt nộp đếm `submitted_at` thực trong kỳ, loại bản nháp chưa nộp. Đã kiểm hai phía ranh giới 17:00 UTC tương ứng 00:00 giờ Việt Nam.
+
+**Kiểm chứng:** test đầu tiên thất bại đúng do route chưa tồn tại rồi mới triển khai. Lượt hồi quy users/courses/operations/common và quyền học liệu đạt 363/363; lượt tập trung mở rộng đạt 81/81. Sau chỉnh cuối về audit và Admin không có mật khẩu sử dụng được, toàn bộ 21 test operations đạt 21/21, gồm hai ca đồng thời. Schema hợp lệ; còn cảnh báo đặt tên enum, đã xử lý trùng operationId mới. Không sửa frontend ở bước này, không tính lại kết quả frontend của bước 4 thành test mới.
+
+Đã tạo bản sao PostgreSQL `.private/admin/accounts/database.dump` sau migration metadata và trước khi nạp nhóm quyền: 547.897 byte, SHA-256 `49a445c9e86e7c426ca886d34e3a420a62e3639150e3256d0fe5919e791bc0a1`. Phục hồi thử thành công, DB tạm đã xóa; hash User/TeacherProfile/khóa/thành viên/trường của bản phục hồi và DB thật khớp mốc trước. Backup không bao gồm media/học liệu. Log, `backup.json`, `live-check.json`, `verification.json` giữ riêng tại `.private/admin/accounts/`.
+
+**Bước tiếp theo:** bước 6 ghép không gian Admin trong `frontend` với các API này và tín hiệu Vận hành hiện có. Bước 5 dùng xác nhận mật khẩu trực tiếp từng thao tác, chưa bổ sung TOTP/MFA hoặc bằng chứng đặc quyền tái sử dụng; không tuyên bố hoàn tất toàn bộ SEC-01 hay mở quản trị đặc quyền ra Internet. SMTP thật vẫn cần kiểm ở bước tích hợp. Không chạy GPU, đổi model, tổng hợp Evidence hoặc commit/push trong lượt này.
+
+## 15. Không gian Admin trong frontend
+
+**Bước 6 hoàn thành ngày 27/11/2026.** Giao diện dùng chung ứng dụng React, đăng nhập, thông báo và hồ sơ cá nhân; ADMIN được điều hướng vào không gian quản trị. Đường `/admin/` tiếp tục dành cho Django Admin. Phông Be Vietnam Pro, bảng màu xanh và các nút/biểu tượng theo giao diện người dùng hiện có.
+
+Mã nằm tại `frontend/src/admin/`: `AdminPage.jsx` dựng khung; `pages/` gồm Tổng quan, Tài khoản/Giáo viên, Danh mục trường, Vận hành; `components/` chứa control, modal và định dạng; `hooks/` quản lý dữ liệu; `services/` gọi API; `admin.css` chỉ định kiểu của không gian Admin. Không tách thành ứng dụng/build hoặc cơ chế đăng nhập khác.
+
+| Mục | Kết quả |
+| --- | --- |
+| Tổng quan | Thẻ số liệu thật, cơ cấu tài khoản, trạng thái; lọc ngày và thời điểm cập nhật theo giờ Việt Nam. Thẻ tài khoản/nhóm vai trò/trạng thái mở đúng danh sách khi đủ quyền |
+| Tài khoản | Tìm kiếm, bộ lọc và phân trang; tạo học viên/giáo viên chờ duyệt, xem/sửa hồ sơ, khóa/mở và đổi vai trò. Form xác nhận hiển thị đúng đối tượng, yêu cầu lý do và mật khẩu; lỗi 409 yêu cầu tải lại, không tự gửi lại thay đổi cũ |
+| Duyệt giáo viên | Lọc chờ duyệt/đã duyệt/từ chối/thu hồi; xem trường, xác minh email, nguồn/lý do quyết định và lịch sử. Gửi đúng revision được hiển thị để duyệt/từ chối/thu hồi |
+| Danh mục trường | Tìm, lọc cấp học, phân trang, thêm/sửa/ngừng hoạt động và liên kết nguồn. Nhập CSV/XLSX bắt buộc xem trước; đổi file xóa kết quả xem trước cũ; hiển thị số thêm/sửa/giữ nguyên và lỗi từng dòng, không trình bày JSON thô |
+| Vận hành | Dùng `ayo_operations_v1`: gateway, hàng đợi, quota, lượt gọi và lỗi; tổng hợp ingestion theo quyền riêng. Mất kết nối/thiếu dữ liệu được ghi rõ, không thay bằng trạng thái sẵn sàng hoặc số 0. AI thiếu tín hiệu không làm mất phần ingestion còn đọc được |
+
+**Control và bố cục:** tất cả ô chọn mới dùng `CustomSelect` (button combobox + listbox portal), tìm trường dùng `InstitutionCombobox`; không render native `<select>`. Có Enter/Escape, phím mũi tên, Home/End và gõ chọn với danh sách hữu hạn; tìm trường có debounce và loại response cũ. Ngày dùng input date, cấp học đa lựa chọn dùng checkbox. Sidebar thu gọn trên màn hình hẹp, bảng cuộn trong vùng riêng, modal vừa khung nhìn, có quản lý focus và khôi phục focus khi đóng. Các form nhạy cảm không lưu mật khẩu vào URL, lịch sử điều hướng hoặc storage.
+
+**Quyền:** thêm `GET /api/operations/capabilities/` để lấy khả năng của Admin hiện hành, dùng cho mục điều hướng và nút thao tác; kiểm lại khi quay về cửa sổ, mỗi 60 giây hoặc sau lỗi quyền. Không suy quyền từ role hoặc coi việc ẩn nút là bảo vệ backend. Khi quyền ghi mất, form đang chuẩn bị không còn hiển thị. Hồ sơ cá nhân/đăng xuất vẫn truy cập được khi không có quyền quản trị nghiệp vụ. Yêu cầu đọc cũ bị hủy khi chuyển bộ lọc/trang, không trộn kết quả của truy vấn trước.
+
+Thêm `GET /api/operations/health/` và kiểm `ai.view_generationevent`; tín hiệu ingestion chỉ trả khi có `documents.view_ingestionjob`. Endpoint vận hành AI cũ cũng kiểm cùng permission để không tạo đường vòng. Nhóm `OHAYO Admin Read` được bổ sung hai quyền đọc tín hiệu, không cấp quyền ghi. Seed đã cập nhật định nghĩa nhóm, chưa gán tài khoản thật vào nhóm hoặc đổi vai trò ai.
+
+**Kiểm chứng:** backend users/operations/schema đạt 187/187; lượt bổ sung operations/danh mục/schema đạt 63/63; sau chốt quyền endpoint cũ, operations và kiểm AI đạt 76/76. Frontend toàn bộ đạt 405/405 trong 61 file; sau thêm ca AI thiếu tín hiệu và chỉnh cuối, nhóm Admin/xác thực đạt 19/19 (9 ca Admin và 10 ca phiên). Các nhóm có giao nhau, không cộng thành một tổng test. Lint/build cuối đạt, còn cảnh báo kích thước bundle hiện hữu. Test đăng nhập/hồ sơ cũ được cập nhật theo màn hình Admin mới, giữ kiểm logout 403/401 và thay mật khẩu.
+
+Đã kiểm trình duyệt thật trên DB bản sao: đăng nhập Admin, tổng quan desktop, lọc tài khoản bằng bàn phím, hồ sơ chờ duyệt và form xác nhận, danh mục trường, tín hiệu vận hành, menu/bảng/modal màn hình hẹp, chọn loại giáo viên và tìm PTIT bằng combobox, đăng xuất về màn hình đăng nhập. Không gửi quyết định duyệt hoặc tạo tài khoản thật qua trình duyệt; các đường ghi được kiểm bằng test trên DB test. Sau kiểm đã đóng tab thử, trả viewport mặc định, dọn frontend/container/DB tạm và khởi động lại backend chính.
+
+Hash dữ liệu tài khoản/hồ sơ/khóa/thành viên/trường của DB thật giữ nguyên; không tạo Admin thật hoặc nâng quyền tài khoản hiện tại. Giao diện được nghiệm thu bằng Admin tổng hợp trong bản sao; tài khoản Admin vận hành và việc gán nhóm được thiết lập ở lượt tích hợp theo quy trình ở mục 14. Minh chứng riêng: `.private/admin/workspace/`, gồm test/lint/build, `ui-check.json`, `live-check.json`, `verification.json`; không đưa dữ liệu riêng lên Evidence.
+
+Sau chỉnh cuối về lỗi nguồn đo, hai test workspace được chạy lại và đạt 2/2: lỗi dữ liệu vận hành AI không lộ thông tin SQL và không bị báo thành số 0. Backend chính đã khởi động lại để nhận bản cuối.
+
+**Sửa lỗi bộ lọc email:** query string không có `email_verified` từng bị DRF hiểu như checkbox HTML không được chọn và tự gán false, khiến tài khoản đã xác minh biến mất khỏi cả danh sách tài khoản và danh sách giáo viên. Đã chuẩn hóa query thành dict trước khi kiểm serializer, giữ trường không truyền ở trạng thái vắng mặt. Test hồi quy tái hiện lỗi trước sửa, kiểm cả danh sách chung/giáo viên/đã duyệt và hai bộ lọc true/false rõ ràng; không sửa trạng thái hoặc dữ liệu tài khoản để chữa lỗi hiển thị.
+
+**Tiếp theo:** bước 7 kiểm tích hợp và bàn giao, gồm tài khoản vận hành và SMTP thật khi có cấu hình. Không train, chạy notebook hoặc đổi model trong bước 6; các giới hạn MFA/SEC-01 ở mục 14 vẫn giữ nguyên. Chưa commit/push hoặc tổng hợp Evidence/W09.

@@ -1,8 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render as baseRender, screen, waitFor } from '@testing-library/react'
+import { TeachingAccessContext } from '../hooks/teaching-access'
 import userEvent from '@testing-library/user-event'
 import { StudentEnrollmentPanel, TeacherEnrollmentPanel } from './EnrollmentPanels'
 import * as service from '../services/course.service'
+
+const render = element => baseRender(<TeachingAccessContext.Provider value={{ allowed: true, reason: '' }}>{element}</TeachingAccessContext.Provider>)
 
 vi.mock('../services/course.service', async (original) => ({
   ...await original(),

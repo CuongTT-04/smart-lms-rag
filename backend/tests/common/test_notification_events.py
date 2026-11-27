@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from django.test import TestCase
 from apps.users.models import User
 from apps.courses.services import create_course, update_course
@@ -8,7 +9,7 @@ from apps.notifications.context import actor
 
 class NotificationEventTests(TestCase):
     def setUp(self):
-        self.teacher = User.objects.create_user('notification-owner', role='TEACHER')
+        self.teacher = approved_teacher(User.objects.create_user('notification-owner', role='TEACHER'))
         self.student = User.objects.create_user('notification-learner', role='STUDENT')
         self.outsider = User.objects.create_user('notification-outside', role='STUDENT')
         self.course = create_course(actor=self.teacher, title='Thông báo')

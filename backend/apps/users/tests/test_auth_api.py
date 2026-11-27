@@ -53,7 +53,7 @@ class AuthenticationAPITests(TestCase):
         self.assertEqual(
             set(me.json()["user"]),
             {"id", "username", "email", "email_verified", "email_verified_at",
-             "full_name", "avatar_url", "phone", "role", "status",
+             "full_name", "avatar_url", "phone", "role", "status", "teaching_allowed",
              "created_at", "updated_at", "last_login", "teacher_profile"},
         )
 

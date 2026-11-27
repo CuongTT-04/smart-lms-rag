@@ -135,17 +135,18 @@ def confirm_email_verification(*, token):
     if not isinstance(token, str) or not token.strip() or len(token) > 256:
         raise invalid
     token_hash = hash_verification_token(token.strip())
-    record = (
-        EmailVerificationToken.objects.select_for_update()
-        .filter(token_hash=token_hash)
-        .first()
-    )
+    record = EmailVerificationToken.objects.filter(token_hash=token_hash).only('user_id').first()
     if record is None:
         raise invalid
+    # Sending/resending and email changes lock User before touching its tokens.
+    try:
+        user = User.objects.select_for_update().get(pk=record.user_id)
+    except User.DoesNotExist as exc:
+        raise invalid from exc
+    record = EmailVerificationToken.objects.select_for_update().filter(pk=record.pk, user_id=user.pk).first()
     now = timezone.now()
-    if record.used_at is not None or record.invalidated_at is not None or record.expires_at <= now:
+    if record is None or record.used_at is not None or record.invalidated_at is not None or record.expires_at <= now:
         raise invalid
-    user = User.objects.select_for_update().get(pk=record.user_id)
     if not user.is_active or user.status != User.Status.ACTIVE:
         raise invalid
     if (

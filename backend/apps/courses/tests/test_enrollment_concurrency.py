@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
@@ -15,7 +16,7 @@ from apps.users.models import User
 @skipUnless(connection.vendor == "postgresql", "Requires PostgreSQL row locks")
 class EnrollmentConcurrencyTests(TransactionTestCase):
     def setUp(self):
-        self.owner = User.objects.create_user("concurrent_owner", role="TEACHER")
+        self.owner = approved_teacher(User.objects.create_user("concurrent_owner", role="TEACHER"))
         self.student = User.objects.create_user("concurrent_student")
         self.course = create_course(actor=self.owner, title="Concurrent")
         self.course = update_course(actor=self.owner, course=self.course, changes={"status": "PUBLISHED"})

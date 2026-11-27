@@ -5,7 +5,8 @@ from django.utils.cache import patch_vary_headers
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from apps.users.authentication import VersionedJWTAuthentication
+from apps.users.teaching_access import TeacherNotApproved
 from drf_spectacular.utils import extend_schema, PolymorphicProxySerializer, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from apps.documents.exceptions import DocumentError
@@ -23,7 +24,7 @@ AI_ERRORS = {code: ChatErrorResponse for code in (400, 401, 403, 404, 409, 429, 
 
 @method_decorator(transaction.non_atomic_requests, name='dispatch')
 class ChatView(APIView):
-    authentication_classes=[JWTAuthentication]
+    authentication_classes=[VersionedJWTAuthentication]
     permission_classes=[IsAuthenticated]
     http_method_names=['post','options']
 
@@ -39,6 +40,8 @@ class ChatView(APIView):
 
     def handle_exception(self, exc):
         request_id=getattr(self,'request_id',str(uuid4()))
+        if isinstance(exc, TeacherNotApproved):
+            return Response({'request_id': request_id, 'code': exc.code, 'message': exc.message}, status=403)
         if isinstance(exc, DatabaseError):
             return Response({'request_id':request_id, 'code':'GENERATION_UNAVAILABLE',
                 'message':'Dịch vụ AI chưa sẵn sàng. Vui lòng thử lại sau.'}, status=503)
@@ -185,7 +188,10 @@ class AIOperationsView(ChatView):
     def get(self, request):
         from apps.documents.access import refresh_live_user
         refresh_live_user(request.user)
-        if request.user.role != 'ADMIN':
+        from apps.users.account_administration import require_account_admin
+        try:
+            require_account_admin(request.user, 'ai.view_generationevent')
+        except PermissionError:
             raise DocumentError('FORBIDDEN', 'Chỉ quản trị viên được xem vận hành AI.', 403)
         from ..operations import operations_snapshot
         return Response(operations_snapshot())

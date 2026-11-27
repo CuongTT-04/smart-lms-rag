@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 import uuid
 from unittest.mock import patch
 
@@ -19,7 +20,7 @@ User = get_user_model()
 
 class CourseServiceTests(TestCase):
     def setUp(self):
-        self.teacher = User.objects.create_user("teacher", role=User.Role.TEACHER)
+        self.teacher = approved_teacher(User.objects.create_user("teacher", role=User.Role.TEACHER))
 
     def test_creation_assigns_active_owner_and_defaults_to_draft(self):
         course = create_course(actor=self.teacher, title="  New Course  ")
@@ -47,7 +48,7 @@ class CourseServiceTests(TestCase):
 
     def test_services_enforce_role_and_scope(self):
         student = User.objects.create_user("student")
-        other = User.objects.create_user("other", role=User.Role.TEACHER)
+        other = approved_teacher(User.objects.create_user("other", role=User.Role.TEACHER))
         with self.assertRaises(PermissionDenied):
             create_course(actor=student, title="Forbidden")
         course = create_course(actor=self.teacher, title="Original")
@@ -64,7 +65,7 @@ class CourseServiceTests(TestCase):
 
     def test_database_rejects_second_owner_and_coteachers(self):
         course = create_course(actor=self.teacher, title="Single owner")
-        other = User.objects.create_user("other", role=User.Role.TEACHER)
+        other = approved_teacher(User.objects.create_user("other", role=User.Role.TEACHER))
         for role in (CourseMember.Role.OWNER, CourseMember.Role.TEACHER, CourseMember.Role.ASSISTANT):
             with self.subTest(role=role), self.assertRaises(IntegrityError), transaction.atomic():
                 CourseMember.objects.create(course=course, user=other, role=role)
@@ -108,8 +109,8 @@ class CourseServiceTests(TestCase):
 class CourseAPITests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.teacher = User.objects.create_user("teacher", role=User.Role.TEACHER)
-        cls.other = User.objects.create_user("other", role=User.Role.TEACHER)
+        cls.teacher = approved_teacher(User.objects.create_user("teacher", role=User.Role.TEACHER))
+        cls.other = approved_teacher(User.objects.create_user("other", role=User.Role.TEACHER))
         cls.student = User.objects.create_user("student")
         cls.admin = User.objects.create_superuser("admin")
         cls.course = create_course(actor=cls.teacher, title="Original", description="Initial")

@@ -36,6 +36,7 @@ export function advanceSummaryTask(id, { signal } = {}) {
 
 export function chatErrorMessage(error) {
   const messages = {
+    TEACHER_NOT_APPROVED: 'Quyền giảng dạy chưa được duyệt hoặc đã bị thu hồi. Vui lòng kiểm tra trạng thái tài khoản.',
     AI_NOT_ALLOWED: 'Không thể sử dụng AI trong khi làm bài kiểm tra.',
     SCOPE_CHANGED: 'Học liệu hoặc quyền truy cập đã thay đổi. Vui lòng tải lại.',
     GENERATION_UNAVAILABLE: 'ayo chưa sẵn sàng. Vui lòng thử lại sau.',

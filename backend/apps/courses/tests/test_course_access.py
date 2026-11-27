@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 import uuid
 
@@ -44,7 +45,7 @@ class CourseSelectorTests(TestCase):
                             self.assertEqual(listed, can_view_course(user, course))
 
     def test_anonymous_and_disabled_accounts_have_no_accessible_courses(self):
-        user = User.objects.create_user("teacher", role=User.Role.TEACHER)
+        user = approved_teacher(User.objects.create_user("teacher", role=User.Role.TEACHER))
         course = create_course(actor=user, title="Course")
         self.assertFalse(list_accessible_courses(user=AnonymousUser()).exists())
         user.status = User.Status.BLOCKED
@@ -53,10 +54,11 @@ class CourseSelectorTests(TestCase):
         self.assertFalse(can_view_course(user, course))
 
     def test_serializing_courses_does_not_query_membership_per_item(self):
-        teacher = User.objects.create_user("teacher", role=User.Role.TEACHER)
+        teacher = approved_teacher(User.objects.create_user("teacher", role=User.Role.TEACHER))
         for i in range(3):
             create_course(actor=teacher, title=f"Course {i}")
-        with self.assertNumQueries(1):
+        # One live approval query plus one course query; no query per list item.
+        with self.assertNumQueries(2):
             data = CourseSerializer(list_accessible_courses(user=teacher), many=True).data
             self.assertEqual(len(data), 3)
 
@@ -64,8 +66,8 @@ class CourseSelectorTests(TestCase):
 class CourseAccessAPITests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.teacher = User.objects.create_user("teacher", role=User.Role.TEACHER)
-        cls.other_teacher = User.objects.create_user("other_teacher", role=User.Role.TEACHER)
+        cls.teacher = approved_teacher(User.objects.create_user("teacher", role=User.Role.TEACHER))
+        cls.other_teacher = approved_teacher(User.objects.create_user("other_teacher", role=User.Role.TEACHER))
         cls.student = User.objects.create_user("student")
         cls.other_student = User.objects.create_user("other_student")
         cls.admin = User.objects.create_superuser("admin")

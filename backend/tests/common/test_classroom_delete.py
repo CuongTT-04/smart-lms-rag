@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.users.models import User
@@ -9,7 +10,7 @@ from common.testing import authenticate_client
 
 class ClassroomDeleteTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('delete-class-owner', role='TEACHER')
+        self.owner = approved_teacher(User.objects.create_user('delete-class-owner', role='TEACHER'))
         self.course = create_course(actor=self.owner, title='Course')
         self.room = Classroom.objects.create(course=self.course, name='Delete me')
         self.client = authenticate_client(APIClient(), self.owner)
@@ -54,7 +55,7 @@ class ClassroomDeleteTests(TestCase):
         self.assertEqual(student_client.post('/api/courses/join/', {'class_code': self.room.class_code}, format='json').status_code, 400)
 
     def test_other_owner_cannot_delete_class(self):
-        other = User.objects.create_user('delete-class-other', role='TEACHER')
+        other = approved_teacher(User.objects.create_user('delete-class-other', role='TEACHER'))
         response = authenticate_client(APIClient(), other).delete(self.url)
         self.assertIn(response.status_code, [403, 404])
         self.assertTrue(Classroom.objects.filter(pk=self.room.pk).exists())

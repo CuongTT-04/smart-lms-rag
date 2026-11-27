@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from apps.users.authentication import VersionedJWTAuthentication
+from apps.users.teaching_access import TeacherNotApproved
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import DocumentUploadRequest, DocumentRetryRequest
@@ -61,6 +62,9 @@ class DocumentAPIView(APIView):
         return response
 
     def handle_exception(self, exc):
+        if isinstance(exc, TeacherNotApproved):
+            return Response({'error': {'code': exc.code, 'message': exc.message},
+                             'request_id': str(uuid.uuid4())}, status=403)
         if isinstance(exc, DocumentError):
             return Response({"error": {"code": exc.code, "message": exc.message},
                              "request_id": str(uuid.uuid4())}, status=exc.status)

@@ -122,14 +122,11 @@ class UserAdminTests(TestCase):
         self.assertTrue(user.is_active)
         self.assertTrue(user.check_password(PASSWORD))
 
-    def test_admin_add_and_change_pages_support_custom_user(self):
+    def test_legacy_admin_is_read_only_and_cannot_create_privileged_users(self):
         admin = User.objects.create_superuser("admin", password=PASSWORD)
         self.client.force_login(admin)
         response = self.client.get(reverse("admin:users_user_add"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'name="full_name"')
-        self.assertNotContains(response, 'name="role"')
-        self.assertContains(response, 'name="status"')
+        self.assertEqual(response.status_code, 403)
         response = self.client.post(
             reverse("admin:users_user_add"),
             {
@@ -143,11 +140,9 @@ class UserAdminTests(TestCase):
                 "_save": "Save",
             },
         )
-        self.assertEqual(response.status_code, 302)
-        teacher = User.objects.get(username="teacher")
-        self.assertTrue(teacher.check_password(PASSWORD))
-        self.assertFalse(teacher.is_staff)
-        self.assertEqual(teacher.role, User.Role.STUDENT)
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(User.objects.filter(username="teacher").exists())
+        teacher = User.objects.create_user('teacher', password=PASSWORD, role='TEACHER')
         response = self.client.get(reverse("admin:users_user_change", args=[teacher.pk]))
         self.assertEqual(response.status_code, 200)
 
@@ -159,6 +154,6 @@ class UserAdminTests(TestCase):
             "username": student.username, "email": "student@example.com",
             "full_name": "Student", "role": "TEACHER", "status": "ACTIVE", "_save": "Save",
         })
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
         student.refresh_from_db()
         self.assertEqual(student.role, User.Role.STUDENT)

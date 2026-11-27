@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import TeacherHomePage from './TeacherHomePage'
 vi.mock('../services/course.service', async (original) => ({ ...await original(), getClassroomResults: vi.fn(async () => ({ count: 0, next: null, previous: null, assessments: [], summary: { student_count: 0, active_assessment_count: 0, removed_assessment_count: 0, submitted_cells: 0, draft_cells: 0, not_submitted_cells: 0, pending_grading_cells: 0, pending_attempts: 0, average_score: null }, results: [] })), listAllCourses: vi.fn(async () => [{ id: 'c1', title: 'Python', status: 'PUBLISHED' }, { id: 'c2', title: 'Toán', status: 'PUBLISHED' }]), listAllCourseMembers: vi.fn(async () => []), listClassrooms: vi.fn(async (id) => [{ id: id === 'c1' ? 'r1' : 'r2', name: id === 'c1' ? 'Lớp sáng' : 'Lớp tối', class_code: 'ABCDEF123456', is_join_enabled: true, enrolled_count: 2 }]), listClassroomSessions: vi.fn(async () => []), createClassroomSession: vi.fn(async () => ({ id: 's1', title: 'Buổi đầu', material_count: 0 })) }))
 it('opens a classroom directly from the sidebar and filters by course', async () => {
-  render(<TeacherHomePage user={{ full_name: 'Giáo viên', role: 'TEACHER' }} />)
+  render(<TeacherHomePage user={{ id: 'teacher-nav', full_name: 'Giáo viên', role: 'TEACHER', status: 'ACTIVE', teaching_allowed: true }} />)
   await screen.findByRole('heading', { name: 'Xin chào, Giáo viên!' })
   await userEvent.click(within(screen.getByRole('navigation')).getByRole('button', { name: 'Lớp học', exact: true }))
   await screen.findByRole('button', { name: 'Mở lớp Lớp sáng' })

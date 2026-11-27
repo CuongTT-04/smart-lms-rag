@@ -1,0 +1,13 @@
+.institution-picker { position: relative; min-width: 0; }
+.institution-picker .input-wrap { min-width: 0; }
+.institution-picker .input-wrap input { min-width: 0; text-overflow: ellipsis; }
+.institution-results { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; border: 1px solid #cbd9d0; border-radius: 6px; background: #fff; box-shadow: 0 6px 16px #17382a18; overflow: hidden; }
+.institution-results ul { list-style: none; margin: 0; padding: 4px; max-height: 240px; overflow-y: auto; }
+.institution-option { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; padding: 9px 10px; cursor: pointer; color: #233e32; overflow-wrap: anywhere; }
+.institution-option.active, .institution-option:hover { background: #e9f3ed; }
+.institution-option > span { min-width: 0; }
+.institution-name { display: block; font-size: 14px; line-height: 1.5; }
+.institution-option small { display: block; color: #61766b; font-size: 12px; line-height: 1.6; }
+.institution-state { padding: 0 12px; color: #63766d; font-size: 13px; line-height: 1.7; }
+.institution-state:not(:empty) { padding-top: 10px; padding-bottom: 6px; }
+.institution-state button { background: none; border: 0; padding: 4px; color: #276546; text-decoration: underline; cursor: pointer; }

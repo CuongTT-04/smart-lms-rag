@@ -31,6 +31,7 @@ from apps.users.rate_limit import check_and_increment, check_counter, clear_coun
 from apps.users.services import authenticate_user, register_user, request_password_reset, confirm_password_reset, update_user_profile
 from apps.users.throttles import PasswordResetRequestThrottle, PasswordResetEmailThrottle, PasswordResetConfirmThrottle
 from common.schema import AVATAR_BAD_REQUEST, FORBIDDEN, LOGIN_BAD_REQUEST, REGISTER_BAD_REQUEST, RESET_BAD_REQUEST, USER_UPDATE_BAD_REQUEST, DetailSerializer, UNAUTHORIZED
+from common.schema import EMAIL_VERIFICATION_BAD_REQUEST
 
 from .serializers import (
     CurrentUserSerializer, LoginResponseSerializer, LoginSerializer,
@@ -107,7 +108,7 @@ class EmailVerificationSendView(APIView):
         operation_id="users_email_verification_send", tags=["Authentication"],
         summary="Gửi lại liên kết xác minh email", request=None,
         description="Gửi liên kết xác minh dùng một lần (hạn 24 giờ) tới email đang lưu trên server. Giới hạn 3 lần/giờ và cách nhau 60 giây.",
-        responses={200: EmailVerificationSendResponseSerializer, 400: DetailSerializer, 401: UNAUTHORIZED, 429: DetailSerializer},
+        responses={200: EmailVerificationSendResponseSerializer, 400: EMAIL_VERIFICATION_BAD_REQUEST, 401: UNAUTHORIZED, 429: DetailSerializer},
     )
     def post(self, request):
         try:
@@ -163,6 +164,8 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         try:
             user = register_user(**serializer.validated_data)
+        except DjangoValidationError as error:
+            raise ValidationError(error.message_dict if hasattr(error, 'message_dict') else error.messages) from error
         except IntegrityError as error:
             identifiers = serializer.validated_data
             if User.objects.filter(

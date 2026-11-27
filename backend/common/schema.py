@@ -44,6 +44,10 @@ def validation_error_response(*examples):
 
 
 PARSE_ERROR = OpenApiExample("Malformed JSON", value={"detail": "JSON parse error - ..."})
+EMAIL_VERIFICATION_BAD_REQUEST = validation_error_response(
+    OpenApiExample('Invalid token or email', value={'token': ['Verification link is invalid or expired.']}),
+    PARSE_ERROR,
+)
 CREATE_BAD_REQUEST = validation_error_response(
     OpenApiExample("Blank title", value={"title": ["This field may not be blank."]}),
     OpenApiExample("Unexpected field", value={"owner_id": "This field is not accepted."}),

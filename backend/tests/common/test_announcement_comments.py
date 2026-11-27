@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from django.test import TestCase
 from rest_framework.test import APIClient
 from apps.users.models import User
@@ -8,7 +9,7 @@ from common.testing import authenticate_client
 
 class AnnouncementCommentTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('comment-owner', role='TEACHER')
+        self.owner = approved_teacher(User.objects.create_user('comment-owner', role='TEACHER'))
         self.student = User.objects.create_user('comment-student', role='STUDENT', full_name='Học viên A')
         self.peer = User.objects.create_user('comment-peer', role='STUDENT')
         self.outsider = User.objects.create_user('comment-outsider', role='STUDENT')

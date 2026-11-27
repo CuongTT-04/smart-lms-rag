@@ -13,7 +13,7 @@ vi.mock('../services/course.service', async (importOriginal) => ({
   listAllCourses: vi.fn(), revokeStudentAccess: vi.fn(), updateCourse: vi.fn(),
 }))
 
-const teacher = { id: 'teacher-1', username: 'teacher_a', full_name: 'Nguyễn Minh Giáo', email: 'teacher@example.com', role: 'TEACHER', status: 'ACTIVE' }
+const teacher = { id: 'teacher-1', username: 'teacher_a', full_name: 'Nguyễn Minh Giáo', email: 'teacher@example.com', role: 'TEACHER', status: 'ACTIVE', teaching_allowed: true }
 const course = { id: 'course-1', title: 'Lập trình Python', description: 'Khóa học nền tảng', status: 'PUBLISHED', updated_at: '2026-10-07T10:00:00Z' }
 const owner = { id: 'owner-1', role: 'OWNER', status: 'ACTIVE', user: teacher }
 const student = { id: 'member-1', role: 'STUDENT', status: 'ACTIVE', user: { id: 'student-1', username: 'student_a', full_name: 'Nguyễn Minh Anh', email: 'student@example.com' } }

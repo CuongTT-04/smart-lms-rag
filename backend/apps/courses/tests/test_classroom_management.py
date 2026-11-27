@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 import uuid
 from unittest.mock import patch
@@ -19,8 +20,8 @@ from common.testing import authenticate_client
 class ClassroomManagementTests(TestCase):
     def setUp(self):
         cache.clear()
-        self.owner = User.objects.create_user("owner", role="TEACHER")
-        self.other = User.objects.create_user("other", role="TEACHER")
+        self.owner = approved_teacher(User.objects.create_user("owner", role="TEACHER"))
+        self.other = approved_teacher(User.objects.create_user("other", role="TEACHER"))
         self.student = User.objects.create_user("student")
         self.second = User.objects.create_user("second")
         self.admin = User.objects.create_superuser("admin")
