@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 import json
 import os
 from contextlib import contextmanager
@@ -29,9 +30,9 @@ class W2APIScenarioTests(TestCase):
             ("admin", User.Role.ADMIN, User.Status.ACTIVE),
             ("blocked", User.Role.STUDENT, User.Status.BLOCKED),
         ):
-            cls.users[name] = User.objects.create_user(
+            cls.users[name] = approved_teacher(User.objects.create_user(
                 name, password=PASSWORD, role=role, status=status,
-            )
+            ))
 
     def setUp(self):
         self.rows = []
@@ -159,6 +160,7 @@ class W2APIScenarioTests(TestCase):
             self.assertTrue(all(error == errors[0] for error in errors))
             row["actual"] = "401 x3; identical generic detail"
 
-        with self.case("CSRF endpoint removed", "JWT API has no CSRF bootstrap path", "404") as row:
-            self.request(self.anonymous, "get", "/api/users/csrf/", 404)
-            row["actual"] = "404; no CSRF API remains"
+        with self.case("CSRF bootstrap", "Cookie-authentication writes bootstrap CSRF before login/refresh", "200 with token") as row:
+            response = self.request(self.anonymous, "get", "/api/users/csrf/", 200)
+            self.assertTrue(response.json()['csrfToken'])
+            row["actual"] = "200; CSRF bootstrap available for cookie-authentication writes"

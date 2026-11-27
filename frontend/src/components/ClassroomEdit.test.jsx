@@ -1,8 +1,10 @@
 import { expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render as baseRender, screen, waitFor, within } from '@testing-library/react'
+import { TeachingAccessContext } from '../hooks/teaching-access'
 import userEvent from '@testing-library/user-event'
 import { TeacherEnrollmentPanel } from './EnrollmentPanels'
 import * as service from '../services/course.service'
+const render = element => baseRender(<TeachingAccessContext.Provider value={{ allowed: true, reason: '' }}>{element}</TeachingAccessContext.Provider>)
 vi.mock('../services/course.service', async (original) => ({ ...await original(), getAccessPolicy: vi.fn(), listClassrooms: vi.fn(), listJoinRequests: vi.fn(), updateClassroom: vi.fn(), deleteClassroom: vi.fn() }))
 
 it('deletes a class only after confirmation and removes its row', async () => {

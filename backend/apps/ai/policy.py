@@ -5,12 +5,12 @@ from apps.courses.assessment_models import Assessment, AssessmentAttempt
 from apps.courses.assessment_services import expire
 from apps.documents.exceptions import DocumentError
 from apps.documents.access import require_session_access
+from apps.documents.access import refresh_live_user
 from apps.documents.retrieval_scope import resolve_scope
 
 
 def enforce_chat_policy(user, data):
-    if not user.is_authenticated or not user.is_active:
-        raise DocumentError('UNAUTHENTICATED', 'Vui lòng đăng nhập lại.', 401)
+    refresh_live_user(user)
     now = timezone.now()
     if user.role == 'STUDENT':
         # Locks are held only for local lifecycle updates, never for an LLM call.

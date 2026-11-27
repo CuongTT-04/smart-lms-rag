@@ -2,6 +2,7 @@
 import json
 import os
 from urllib.error import HTTPError
+from urllib.error import URLError
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -48,6 +49,10 @@ def summarize_step(*, phase, records, config):
         except (ValueError, TypeError, AttributeError):
             pass
         raise failure from error
+    except (TimeoutError, URLError) as error:
+        if isinstance(error, TimeoutError) or isinstance(getattr(error, 'reason', None), TimeoutError):
+            raise DocumentError('GENERATION_TIMEOUT', 'Dịch vụ tóm tắt xử lý quá lâu. Vui lòng thử lại.', 503) from error
+        raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ tóm tắt.', 503) from error
     except Exception as error:
         raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ tóm tắt.', 503) from error
 
@@ -120,5 +125,9 @@ def generate_answer(*, question, mode, contexts, exercise, config, history=None,
                 raise DocumentError('GENERATION_CONFIG_MISMATCH', 'Gateway chưa hỗ trợ context nhiều lượt hoặc cấu hình chưa khớp.', 503) from exc
             raise DocumentError('INVALID_REQUEST', 'Yêu cầu không phù hợp với chính sách trợ lý.', 400) from exc
         raise DocumentError('GENERATION_UNAVAILABLE', 'Dịch vụ AI chưa sẵn sàng. Vui lòng thử lại.', 503) from exc
+    except (TimeoutError, URLError) as exc:
+        if isinstance(exc, TimeoutError) or isinstance(getattr(exc, 'reason', None), TimeoutError):
+            raise DocumentError('GENERATION_TIMEOUT', 'Dịch vụ AI xử lý quá lâu. Vui lòng thử lại.', 503) from exc
+        raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ AI.', 503) from exc
     except Exception as exc:
         raise DocumentError('GENERATION_UNAVAILABLE', 'Không kết nối được dịch vụ AI.', 503) from exc

@@ -1,20 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { apiRequest, clearAccessToken, hasAccessToken, setAccessToken } from './api'
-import { login, logout, currentUser, authErrorMessage, registerAccount, requestPasswordReset, confirmPasswordReset, accountFieldErrors } from './auth.service'
+import { apiRequest, clearAccessToken, clearCsrfFallback, hasAccessToken, setAccessToken } from './api'
+import { login, logout, currentUser, authErrorMessage, registerAccount, requestPasswordReset, confirmPasswordReset, accountFieldErrors, sendEmailVerification, confirmEmailVerification } from './auth.service'
 
 const user = { username: 'student', full_name: 'Học viên OHAYO', role: 'STUDENT', status: 'ACTIVE' }
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } })
 
 describe('JWT authentication', () => {
-  beforeEach(() => { clearAccessToken(); vi.stubGlobal('fetch', vi.fn()) })
-  afterEach(() => vi.unstubAllGlobals())
+  beforeEach(() => { clearAccessToken(); clearCsrfFallback(); document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'; vi.stubGlobal('fetch', vi.fn()) })
+  afterEach(() => { clearCsrfFallback(); document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'; vi.unstubAllGlobals() })
 
-  it('logs in without CSRF, keeps access only in memory, and preserves password spaces', async () => {
+  it('logs in with CSRF header when cookie is present, keeps access only in memory, and preserves password spaces', async () => {
+    document.cookie = 'csrftoken=csrf-login-token; path=/'
     fetch.mockResolvedValueOnce(json({ user, access: 'access-token' }))
     expect(await login(' student ', ' secret ')).toEqual(user)
     expect(fetch).toHaveBeenCalledWith('/api/users/login/', expect.objectContaining({
       method: 'POST', credentials: 'include',
-      headers: expect.not.objectContaining({ 'X-CSRFToken': expect.anything() }),
+      headers: expect.objectContaining({ 'X-CSRFToken': 'csrf-login-token' }),
       body: JSON.stringify({ username: 'student', password: ' secret ' }),
     }))
     fetch.mockResolvedValueOnce(json({ user }))
@@ -112,5 +113,19 @@ describe('JWT authentication', () => {
     const errors = accountFieldErrors({ status: 400, data: { token: ['secret-token'], password: ['raw-server-message'], unknown: ['secret'] } })
     expect(Object.keys(errors)).toEqual(['token', 'password'])
     expect(JSON.stringify(errors)).not.toMatch(/secret|raw-server/)
+  })
+
+  it('calls email verification send and confirm endpoints', async () => {
+    setAccessToken('access-token')
+    fetch.mockResolvedValueOnce(json({ detail: 'sent', already_verified: false, email_verified: false }))
+    await sendEmailVerification()
+    expect(fetch).toHaveBeenLastCalledWith('/api/users/email-verification/send/', expect.objectContaining({
+      method: 'POST', headers: expect.objectContaining({ Authorization: 'Bearer access-token' }),
+    }))
+    fetch.mockResolvedValueOnce(json({ detail: 'verified', email_verified: true }))
+    await confirmEmailVerification('raw-token')
+    expect(fetch).toHaveBeenLastCalledWith('/api/users/email-verification/confirm/', expect.objectContaining({
+      method: 'POST', body: JSON.stringify({ token: 'raw-token' }),
+    }))
   })
 })

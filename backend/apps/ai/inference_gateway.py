@@ -31,7 +31,7 @@ def public_exercise(value):
         question='\n'.join(p for p in (value.get('title'), value.get('description')) if p))
 
 
-def start_gateway(pipeline, token, public_config, *, port=8765):
+def start_gateway(pipeline, token, public_config, *, port=8765, identity_provider=None):
     if not isinstance(token, str) or len(token) < 32 or not token.isascii() or any(c.isspace() for c in token):
         raise ValueError('Use a random ASCII token of at least 32 characters')
     pipelines = tuple(pipeline) if isinstance(pipeline, (list, tuple)) else (pipeline,)
@@ -104,8 +104,15 @@ def start_gateway(pipeline, token, public_config, *, port=8765):
             if self.authorized():
                 if self.path == '/health':
                     count = busy_count()
+                    identity = {}
+                    if identity_provider is not None:
+                        try:
+                            identity['serving'] = identity_provider()
+                        except Exception:
+                            return self.reply(503, {'ready': False, 'code': 'SERVING_IDENTITY_INVALID'})
                     self.reply(200, {'ready': not draining, 'busy': count == len(pipelines),
                         'replicas': len(pipelines), 'in_flight': count, 'config': public_config,
+                        **identity,
                         'capabilities': ['diagnosed_hint_v1', 'staged_hint_v1', 'chat_history_v1', 'validation_details_v1', 'citation_retry_v1', 'inline_citations_v1', 'structured_citations_v1', 'qa_completeness_v1', 'qa_atomic_evidence_v1', 'qa_source_descriptions_v1', 'qa_source_selection_v1', 'coherent_summary_v1', 'summary_topic_paragraphs_v1', 'summary_validation_details_v1', 'summary_text_grammar_v1', 'summary_json_quotes_v1']})
                 else:
                     self.reply(404, {'code': 'NOT_FOUND'})

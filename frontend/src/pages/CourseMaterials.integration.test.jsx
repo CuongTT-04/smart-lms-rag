@@ -22,7 +22,7 @@ describe('course material integration', () => {
     getCourse.mockResolvedValue(course)
   })
   it('keeps course materials out of teacher course management', async () => {
-    render(<TeacherHomePage user={{username:'teacher',role:'TEACHER'}} onLogout={vi.fn()} />)
+    render(<TeacherHomePage user={{id:'teacher-materials',username:'teacher',role:'TEACHER',status:'ACTIVE',teaching_allowed:true}} onLogout={vi.fn()} />)
     await userEvent.click(await screen.findByRole('button',{name:/Quản lý/}))
     expect(screen.queryByRole('button',{name:'Học liệu'})).not.toBeInTheDocument()
     expect(screen.queryByRole('region',{name:'Học liệu kiểm thử'})).not.toBeInTheDocument()

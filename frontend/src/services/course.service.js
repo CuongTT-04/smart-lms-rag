@@ -91,6 +91,7 @@ export function resultsOf(data) {
 }
 
 export function courseErrorMessage(error) {
+  if (error.data?.code === 'TEACHER_NOT_APPROVED') return 'Tài khoản chưa được duyệt giảng dạy hoặc quyền đã bị thu hồi. Vui lòng kiểm tra lại trạng thái.'
   if (error.status === 401) return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
   if (error.status === 429) return 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.'
   if (error.status === 403) return 'Bạn không có quyền thực hiện thao tác này hoặc phiên đăng nhập đã hết hạn.'

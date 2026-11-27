@@ -1,4 +1,5 @@
 """Session visibility is enforced by APIs/media and the retrieval boundary."""
+from common.testing import approved_teacher
 import hashlib
 from pathlib import Path
 import tempfile
@@ -128,7 +129,7 @@ class SessionAccessTests(ScopeFixture):
     def test_other_teacher_and_unrelated_student_cannot_access(self):
         from apps.users.models import User
         for role in ('TEACHER', 'STUDENT'):
-            user = User.objects.create_user('foreign-' + role.lower(), role=role)
+            user = approved_teacher(User.objects.create_user('foreign-' + role.lower(), role=role))
             self.client = authenticate_client(APIClient(), user)
             self.assertEqual(self.client.get(self.sessions_url).status_code, 404)
             self.assert_document_hidden()

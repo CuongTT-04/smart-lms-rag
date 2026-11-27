@@ -1,0 +1,21 @@
+.teacher-approval-banner { display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; margin-bottom: 18px; border-top: 1px solid #e7cca0; border-bottom: 1px solid #e7cca0; color: #644820; background: #fffaf0; }
+.teacher-approval-banner > svg, .teacher-approval-banner > button { flex-shrink: 0; }
+.teacher-approval-copy { flex: 1; min-width: 0; }
+.teacher-approval-copy h2 { margin: 0 0 6px; font-size: 16px; line-height: 1.6; }
+.teacher-approval-copy p { margin: 4px 0; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.teacher-approval-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 4px; }
+.teacher-approval-actions > button { min-height: 40px; font-size: 13px; }
+.teaching-action { position: relative; display: inline-flex; max-width: 100%; vertical-align: middle; }
+.teaching-action > button:disabled { opacity: .48; }
+.teaching-action[tabindex="0"] > button { pointer-events: none; }
+.teaching-action:focus-visible { outline: 2px solid #44745d; outline-offset: 3px; }
+.teaching-tooltip { position: absolute; z-index: 80; top: calc(100% + 6px); right: 0; width: 240px; max-width: calc(100vw - 48px); padding: 10px 12px; background: #263d31; color: #fff; border-radius: 5px; font-size: 12px; font-weight: 400; line-height: 1.7; box-shadow: 0 3px 10px #0002; overflow-wrap: anywhere; }
+.teaching-tooltip[hidden] { display: none; }
+.teacher-empty > .teaching-action { margin-top: 12px; }
+@media (max-width: 600px) {
+  .teacher-approval-banner { gap: 8px; padding: 12px 0; }
+  .teacher-approval-banner > svg { width: 18px; }
+  .teacher-approval-actions { align-items: stretch; }
+  .teacher-approval-actions > button { white-space: normal; text-align: left; }
+  .teaching-tooltip { left: 0; right: auto; }
+}

@@ -81,6 +81,19 @@ it('resumes the same job after a network error without creating another task', a
   expect(getSummaryTask).toHaveBeenCalledWith('job', expect.anything())
 })
 
+it('stops advancing on quota denial and resumes the saved job only after explicit retry', async () => {
+  advanceSummaryTask.mockRejectedValueOnce({ status: 429, data: { code: 'AI_QUOTA_EXCEEDED' } })
+  render(<DocumentSummary scope={scope} documentId="doc" onClose={vi.fn()} />)
+  await userEvent.click(screen.getByRole('button', { name: 'Tóm tắt', exact: true }))
+  await screen.findByRole('alert')
+  expect(advanceSummaryTask).toHaveBeenCalledTimes(1)
+  expect(screen.getByRole('button', { name: 'Tóm tắt', exact: true })).toBeEnabled()
+  await userEvent.click(screen.getByRole('button', { name: 'Tóm tắt', exact: true }))
+  await screen.findByText(/4 đoạn đã đọc/)
+  expect(sendChat).toHaveBeenCalledTimes(1)
+  expect(getSummaryTask).toHaveBeenCalledWith('job', expect.anything())
+})
+
 it('reads a completed job after disconnection without another model step', async () => {
   advanceSummaryTask.mockRejectedValueOnce({ status: 0 })
   getSummaryTask.mockResolvedValueOnce({ id: 'job', status: 'COMPLETED', result })

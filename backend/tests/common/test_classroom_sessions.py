@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 from django.db import connection
 from django.test import TestCase
@@ -39,8 +40,8 @@ class ClassroomSessionTests(TestCase):
         self.assertEqual(self.client.patch(url, {'is_draft': False}, format='json').status_code, 200)
         self.assertEqual(self.client.post(self.url, {'is_draft': False}, format='json').status_code, 400)
     def setUp(self):
-        self.owner=User.objects.create_user('session-owner',role='TEACHER')
-        self.other=User.objects.create_user('session-other',role='TEACHER')
+        self.owner=approved_teacher(User.objects.create_user('session-owner',role='TEACHER'))
+        self.other=approved_teacher(User.objects.create_user('session-other',role='TEACHER'))
         self.student=User.objects.create_user('session-student')
         self.course=create_course(actor=self.owner,title='Python')
         update_course(actor=self.owner,course=self.course,changes={'status':'PUBLISHED'})

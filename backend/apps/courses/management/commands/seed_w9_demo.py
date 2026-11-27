@@ -25,7 +25,7 @@ from apps.courses.video_models import SessionVideo, VideoProgress, VideoQuestion
 from apps.documents.models import DocumentVersion, KnowledgeDocument
 from apps.documents.processors.watermark import watermarked_pdf_bytes
 from apps.documents.storage import private_path
-from apps.users.models import User
+from apps.users.models import TeacherApproval, User
 
 DEMO_NAMESPACE = uuid.UUID('8f7c4f31-6e2b-4c60-9d8a-3b19c5a90901')
 DEMO_VIDEO_DURATION = 12.0
@@ -263,6 +263,7 @@ class Command(BaseCommand):
         out = {}
         for key, username, role, full_name in specs:
             user = User.objects.filter(username=username).first()
+            created_user = user is None
             if user is None:
                 user = User.objects.create_user(
                     username=username,
@@ -273,6 +274,19 @@ class Command(BaseCommand):
                 )
             elif user.role != role or not user.is_active or user.status != User.Status.ACTIVE or user.full_name != full_name:
                 raise CommandError(f'Conflict trên tài khoản {username}: thuộc tính đã thay đổi.')
+            if role == 'TEACHER':
+                from apps.users.teacher_approval import record, snapshot
+                approval = TeacherApproval.objects.get(teacher_profile=user.teacher_profile)
+                if created_user:
+                    before = snapshot(approval, user.teacher_profile)
+                    approval.status, approval.source = 'APPROVED', 'LEGACY'
+                    approval.reason = 'Explicit teacher fixture in isolated demo database.'
+                    approval.approved_at = approval.decided_at = timezone.now()
+                    approval.revision += 1
+                    approval.save()
+                    record(approval, user.teacher_profile, before, 'DEMO_APPROVED', approval.reason)
+                elif approval.status != 'APPROVED':
+                    raise CommandError(f'Conflict trên tài khoản {username}: trạng thái duyệt đã thay đổi.')
             out[key] = user
         return out
 

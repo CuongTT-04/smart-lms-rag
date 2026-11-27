@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from datetime import timedelta
 import uuid
 
@@ -17,8 +18,8 @@ from common.testing import authenticate_client
 
 class ClassroomProgressAPITests(TestCase):
     def setUp(self):
-        self.teacher = User.objects.create_user('prog-teacher', role='TEACHER')
-        self.other_teacher = User.objects.create_user('prog-other-teacher', role='TEACHER')
+        self.teacher = approved_teacher(User.objects.create_user('prog-teacher', role='TEACHER'))
+        self.other_teacher = approved_teacher(User.objects.create_user('prog-other-teacher', role='TEACHER'))
         self.student = User.objects.create_user('prog-student', role='STUDENT')
         self.other_student = User.objects.create_user('prog-other-student', role='STUDENT')
         self.course = create_course(actor=self.teacher, title='Hệ điều hành')

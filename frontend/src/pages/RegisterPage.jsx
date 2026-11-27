@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AlertCircle, ArrowRight, BookOpen, CheckCircle2, GraduationCap, LoaderCircle, Mail, UserRound } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import AuthField from '../components/AuthField'
+import InstitutionCombobox from '../components/InstitutionCombobox'
 import { passwordError, PASSWORD_REQUIREMENTS } from '../utils/password'
 import { registerAccount, accountFieldErrors, accountErrorMessage } from '../services/auth.service'
 
@@ -11,6 +12,8 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
   const [created, setCreated] = useState(null)
+  const [institution, setInstitution] = useState(null)
+  const [otherSchool, setOtherSchool] = useState('')
   const submitting = useRef(false)
   const form = useRef(null)
   const focusTarget = useRef(null)
@@ -23,6 +26,7 @@ export default function RegisterPage() {
   }, [fields, pending])
 
   function change(name, value) {
+    if (name === 'role') { setInstitution(null); setOtherSchool('') }
     setValues((previous) => ({ ...previous, [name]: value }))
     setFields((previous) => ({ ...previous, [name]: '' }))
     setError('')
@@ -40,18 +44,25 @@ export default function RegisterPage() {
     if (submitting.current) return
     const errors = {}
     if (!values.role) errors.role = 'Vui lòng chọn Học viên hoặc Giáo viên.'
+    if (values.role === 'TEACHER' && !institution) errors.institution_id = 'Vui lòng chọn trường đang công tác.'
+    if (values.role === 'TEACHER' && institution?.other && !otherSchool.trim()) errors.institution_other_name = 'Vui lòng nhập tên trường đang công tác.'
     if (!values.full_name.trim()) errors.full_name = 'Vui lòng nhập họ và tên.'
     if (!values.username.trim()) errors.username = 'Vui lòng nhập tên đăng nhập.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = 'Vui lòng nhập email hợp lệ.'
-    if (passwordError(values.password)) errors.password = passwordError(values.password)
-    if (!values.password_confirm || values.password_confirm !== values.password) errors.password_confirm = 'Mật khẩu xác nhận không khớp.'
+    if (!values.email.trim()) errors.email = 'Vui lòng nhập email.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = 'Vui lòng nhập email hợp lệ.'
+    if (!values.password) errors.password = 'Vui lòng nhập mật khẩu.'
+    else if (passwordError(values.password)) errors.password = passwordError(values.password)
+    if (!values.password_confirm) errors.password_confirm = 'Vui lòng nhập xác nhận mật khẩu.'
+    else if (values.password_confirm !== values.password) errors.password_confirm = 'Mật khẩu xác nhận không khớp.'
     setError('')
     showFields(errors)
     if (Object.keys(errors).length) return
     submitting.current = true
     setPending(true)
     try {
-      setCreated(await registerAccount(values))
+      const affiliation = values.role !== 'TEACHER' ? {} : institution.other
+        ? { institution_other_name: otherSchool.trim() } : { institution_id: institution.id }
+      setCreated(await registerAccount({ ...values, ...affiliation }))
       setValues((previous) => ({ ...previous, password: '', password_confirm: '' }))
     } catch (failure) {
       const errors = accountFieldErrors(failure)
@@ -64,7 +75,7 @@ export default function RegisterPage() {
     {created ? <div className="auth-result" role="status">
       <CheckCircle2 size={40} aria-hidden="true" />
       <h2>Đăng ký thành công</h2>
-      <p>Tài khoản {created.role === 'TEACHER' ? 'giáo viên' : 'học viên'} của bạn đã sẵn sàng. Hãy đăng nhập để bắt đầu.</p>
+      <p>{created.role === 'TEACHER' ? 'Tài khoản giáo viên đã được tạo. Hãy đăng nhập để xác minh email và theo dõi trạng thái xét duyệt giảng dạy.' : 'Tài khoản học viên của bạn đã sẵn sàng. Hãy đăng nhập để bắt đầu.'}</p>
       <a className="primary-button" href="/">Đăng nhập ngay<ArrowRight size={19} aria-hidden="true" /></a>
     </div> : <>
       <form ref={form} className="login-form register-form" onSubmit={submit} noValidate aria-busy={pending}>
@@ -83,6 +94,13 @@ export default function RegisterPage() {
           <AuthField name="username" label="Tên đăng nhập" icon={UserRound} autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={150} placeholder="minhanh" value={values.username} onChange={(e) => change('username', e.target.value)} error={fields.username} pending={pending} />
         </div>
         <AuthField name="email" label="Email" icon={Mail} type="email" autoComplete="email" maxLength={254} placeholder="ban@example.com" value={values.email} onChange={(e) => change('email', e.target.value)} error={fields.email} pending={pending} />
+        {values.role === 'TEACHER' && <>
+          <InstitutionCombobox value={institution} disabled={pending} error={fields.institution_id}
+            onChange={selected => { setInstitution(selected); setOtherSchool(''); setFields(previous => ({ ...previous, institution_id: '', institution_other_name: '' })) }} />
+          {institution?.other && <AuthField name="institution_other_name" label="Tên trường đang công tác" maxLength={255}
+            value={otherSchool} onChange={event => { setOtherSchool(event.target.value); setFields(previous => ({ ...previous, institution_other_name: '' })) }}
+            error={fields.institution_other_name} pending={pending} autoComplete="organization" />}
+        </>}
         <div className="auth-field-grid">
           <AuthField name="password" label="Mật khẩu" password hint={PASSWORD_REQUIREMENTS} autoComplete="new-password" maxLength={128} placeholder="Mật khẩu" value={values.password} onChange={(e) => change('password', e.target.value)} error={fields.password} pending={pending} />
           <AuthField name="password_confirm" label="Xác nhận mật khẩu" password autoComplete="new-password" maxLength={128} placeholder="Nhập lại mật khẩu" value={values.password_confirm} onChange={(e) => change('password_confirm', e.target.value)} error={fields.password_confirm} pending={pending} />

@@ -19,6 +19,8 @@ FOCUS_QUESTIONS = {
     'DIRECTION': 'Chiều truyền dữ liệu trong hình hoặc đoạn mô tả có khớp với nhận định của bạn không?',
     'CATEGORIES': 'Nhận định của bạn đã xét đủ các nhóm được học liệu phân biệt chưa?',
     'DISTINCTION': 'Bạn đã phân biệt nhiệm vụ của các khối hoặc khái niệm được đề nhắc tới trong đoạn nguồn chưa?',
+    'SEQUENCE': 'Đối chiếu bản nháp với trình tự trong nguồn: bạn đã xét đủ các bước và giữ đúng thứ tự chưa?',
+    'SELF_CHECK': 'Hãy giải thích bằng lời của bạn vì sao từng ý trong bản nháp có căn cứ ở đoạn nguồn; có ý nào cần làm rõ thêm không?',
 }
 INSTRUCTION = '''Bạn hỗ trợ tự học bằng cách CHẨN ĐOÁN điều học viên đang vướng, không viết lời giải.
 Đọc student_question hiện tại, đề công khai exercise, tutoring.action/step/history và evidence hiện tại.
@@ -27,13 +29,31 @@ Chỉ chọn một focus phù hợp nhất với câu hỏi/bản nháp HIỆN T
 REQUIREMENT: hiểu đề/cần bắt đầu; FUNCTION: chức năng bị gán nhầm hoặc cần kiểm;
 QUANTITY: số lượng; DIRECTION: chiều vào/ra hoặc luồng dữ liệu;
 CATEGORIES: thiếu/nhầm nhóm hoặc phân loại; DISTINCTION: phân biệt các khối/khái niệm.
+SEQUENCE: thiếu bước, sai thứ tự hoặc cần đối chiếu một quy trình;
+SELF_CHECK: bản nháp đã đề cập các ý của yêu cầu và chưa thấy mâu thuẫn rõ với nguồn,
+cần học viên tự giải thích căn cứ; đây không phải xác nhận bài làm đúng.
 Với explain_task, ưu tiên REQUIREMENT. Với practice, đọc kỹ nhận định THỰC TẾ học viên vừa viết;
 chọn focus nhắm đúng ý cần tự kiểm. Ví dụ 'chỉ cộng, không có logic' là CATEGORIES;
 'hai cổng ra, không có cổng vào' cần kiểm DIRECTION hoặc QUANTITY; nhầm nhiệm vụ hai khối là DISTINCTION.
+So sánh yêu cầu, từng ý trong bản nháp và nguồn trước khi chọn focus. Không mặc định FUNCTION
+chỉ vì học liệu nói về một thành phần. Bản nháp mới có một bước của quy trình cần SEQUENCE;
+bản nháp đã nêu đủ trình tự theo nguồn thì ưu tiên SELF_CHECK, không tiếp tục gán lỗi thiếu bước.
+Không tự bổ sung các bước bị thiếu vào đầu ra, không lấy sự trùng từ làm bằng chứng bài làm đúng.
 Chọn source là mã S thực sự có thông tin để học viên đối chiếu; không lấy mã từ lịch sử.
 Chọn span là mã U của ý học viên cần kiểm trong student_spans; U0 nếu không có ý cụ thể.
 Nếu nguồn không liên quan, dùng focus NO_EVIDENCE, source NONE, span U0.
-Chỉ trả JSON {"focus":"CATEGORIES","source":"S1","span":"U1"}.
+Trước khi chọn focus, phân loại draft_state dựa trên câu hiện tại, yêu cầu và nguồn:
+NOT_A_DRAFT: học viên chưa trình bày nhận định/bản nháp; PARTIAL: đã viết nhưng còn thiếu ý;
+CONFLICT: có nhận định cần đối chiếu vì khác nguồn; COVERED: đã nêu các ý được yêu cầu,
+cần tự giải thích căn cứ; NO_EVIDENCE: không có nguồn liên quan. COVERED không phải điểm số
+hay xác nhận bài làm đúng. Không đoán thiếu bước chỉ vì học viên hỏi "còn thiếu gì".
+Nếu nguồn liệt kê A, B, C: bản nháp chỉ có A là PARTIAL; bản nháp đã có A, B, C
+theo cùng thứ tự là COVERED trừ khi còn yêu cầu khác chưa xét. Đây chỉ là ví dụ hình thức;
+phải đọc các nội dung thực tế, không tự bổ sung A, B, C vào câu trả lời.
+Với action initial/explain_task/next_step, dùng NOT_A_DRAFT hoặc NO_EVIDENCE;
+không hỏi về bản nháp học viên chưa gửi. Với practice, chọn draft_state trước focus.
+COVERED chỉ dùng SELF_CHECK; NOT_A_DRAFT chỉ dùng REQUIREMENT; NO_EVIDENCE dùng NO_EVIDENCE.
+Chỉ trả JSON {"draft_state":"CONFLICT","focus":"CATEGORIES","source":"S1","span":"U1"}.
 Không thêm text, lời giải, đáp án đúng hoặc điểm. Ứng dụng sẽ dựng câu hỏi gợi mở từ mã đã chọn.
 '''
 
@@ -92,11 +112,24 @@ def generate(pipeline, *, question, mode, contexts, exercise, tutoring):
             else:
                 raise
     allowed = [c.source_id for c in chosen]
-    enums = dict(focus=[*FOCUS_QUESTIONS, 'NO_EVIDENCE'], source=[*allowed, 'NONE'], span=list(spans))
+    states = {'NOT_A_DRAFT': ['REQUIREMENT'], 'NO_EVIDENCE': ['NO_EVIDENCE']}
+    if tutoring['action'] == 'practice':
+        states.update(PARTIAL=[key for key in FOCUS_QUESTIONS if key != 'SELF_CHECK'],
+                      CONFLICT=[key for key in FOCUS_QUESTIONS if key != 'SELF_CHECK'], COVERED=['SELF_CHECK'])
+    enums = dict(draft_state=list(states), focus=sorted({key for values in states.values() for key in values}),
+                 source=[*allowed, 'NONE'], span=list(spans))
     schema = dict(type='object', additionalProperties=False, required=list(enums),
         properties={key: dict(type='string', enum=values) for key, values in enums.items()})
-    pattern = r'\{' + ','.join('"' + key + '":"(?:' + '|'.join(re.escape(v) for v in values) + ')"'
-                             for key, values in enums.items()) + r'\}'
+    branches = []
+    for state, focuses in states.items():
+        choices = dict(draft_state=[state], focus=focuses,
+                       source=['NONE'] if state == 'NO_EVIDENCE' else allowed,
+                       span=['U0'] if state in ('NO_EVIDENCE', 'NOT_A_DRAFT') else list(spans)[1:])
+        if not choices['span']:
+            continue
+        branches.append(r'\{' + ','.join('"' + key + '":"(?:' + '|'.join(re.escape(v) for v in values) + ')"'
+                                        for key, values in choices.items()) + r'\}')
+    pattern = '(?:' + '|'.join(branches) + ')'
     output = pipeline.provider.generate(messages, json_schema=schema, output_regex=pattern,
         max_new_tokens=min(96, pipeline.provider.config.max_new_tokens))
     if output.finish_reason != 'eos':
@@ -109,6 +142,11 @@ def generate(pipeline, *, question, mode, contexts, exercise, tutoring):
         refused = diagnosis['focus'] == 'NO_EVIDENCE'
         if refused != (diagnosis['source'] == 'NONE') or (refused and diagnosis['span'] != 'U0'):
             raise ValueError('Inconsistent refusal')
+        state = diagnosis['draft_state']
+        if (diagnosis['focus'] not in states[state]
+                or state == 'NOT_A_DRAFT' and diagnosis['span'] != 'U0'
+                or state not in ('NO_EVIDENCE', 'NOT_A_DRAFT') and diagnosis['span'] == 'U0'):
+            raise ValueError('Diagnosis does not match current tutoring state')
     except (ValueError, TypeError) as error:
         raise GenerationError('INVALID_GENERATION', 'Invalid tutoring diagnosis.') from error
     references = ()
@@ -116,7 +154,7 @@ def generate(pipeline, *, question, mode, contexts, exercise, tutoring):
     if not refused:
         focus = FOCUS_QUESTIONS[diagnosis['focus']]
         action = tutoring['action']
-        if action == 'practice':
+        if action == 'practice' and state != 'NOT_A_DRAFT':
             quote = spans[diagnosis['span']]
             prefix = f'Với ý bạn vừa viết “{_safe_quote(quote)}”:\n\n' if quote else 'Hãy viết ý bạn đang hiểu để cùng kiểm lại.\n\n'
         elif action == 'explain_task':

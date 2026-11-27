@@ -4,6 +4,30 @@ from django.conf import settings
 from django.db import models
 
 
+class GenerationGate(models.Model):
+    """One short SQL lock shared by all HTTP workers; never locked during inference."""
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+
+
+class GenerationEvent(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    mode = models.CharField(max_length=7, choices=[(v, v) for v in ('qa', 'hint', 'summary')])
+    status = models.CharField(max_length=9, choices=[(v, v) for v in ('QUEUED', 'RUNNING', 'COMPLETED', 'FAILED', 'REJECTED')])
+    code = models.CharField(max_length=40, blank=True)
+    gateway_calls = models.PositiveSmallIntegerField(default=0)
+    input_tokens = models.PositiveIntegerField(null=True)
+    output_tokens = models.PositiveIntegerField(null=True)
+    duration_ms = models.FloatField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    finished_at = models.DateTimeField(null=True)
+
+    class Meta:
+        indexes = [models.Index(fields=['user', 'created_at'], name='ai_usage_user_window'),
+                   models.Index(fields=['status', 'expires_at'], name='ai_usage_active')]
+
+
 class ChatConversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -10,7 +11,7 @@ from apps.documents.retrieval_scope import resolve_scope
 class ScopeFixture(TestCase):
     def setUp(self):
         User=get_user_model()
-        self.owner=User.objects.create_user('w3-owner',role='TEACHER')
+        self.owner=approved_teacher(User.objects.create_user('w3-owner',role='TEACHER'))
         self.student=User.objects.create_user('w3-student',role='STUDENT')
         self.course=Course.objects.create(title='W3',status='PUBLISHED')
         CourseMember.objects.create(course=self.course,user=self.owner,role='OWNER')

@@ -126,6 +126,24 @@ class OpenAPITests(TestCase):
             ('/api/ai/conversations/', 'get'), ('/api/ai/conversations/', 'post'),
             ('/api/ai/conversations/{conversation_id}/', 'get'),
             ('/api/ai/summaries/{summary_id}/', 'get'), ('/api/ai/summaries/{summary_id}/', 'post'),
+            ('/api/ai/operations/', 'get'),
+            ('/api/users/csrf/', 'get'),
+            ('/api/users/email-verification/send/', 'post'),
+            ('/api/users/email-verification/confirm/', 'post'),
+            ('/api/users/institutions/', 'get'),
+            ('/api/operations/institutions/', 'get'), ('/api/operations/institutions/', 'post'),
+            ('/api/operations/institutions/{institution_id}/', 'get'),
+            ('/api/operations/institutions/{institution_id}/', 'patch'),
+            ('/api/operations/institutions/import/', 'post'),
+            ('/api/operations/users/', 'get'), ('/api/operations/users/', 'post'),
+            ('/api/operations/users/{user_id}/', 'get'), ('/api/operations/users/{user_id}/', 'patch'),
+            ('/api/operations/users/{user_id}/role/', 'post'),
+            ('/api/operations/users/{user_id}/history/', 'get'),
+            ('/api/operations/teachers/', 'get'),
+            ('/api/operations/teachers/{user_id}/approval/', 'post'),
+            ('/api/operations/teachers/{user_id}/approval/history/', 'get'),
+            ('/api/operations/overview/', 'get'),
+            ('/api/operations/capabilities/', 'get'), ('/api/operations/health/', 'get'),
         })
         self.assertEqual(actual, expected)
         ids = [operation["operationId"] for methods in self.schema["paths"].values() for operation in methods.values()]
@@ -137,6 +155,7 @@ class OpenAPITests(TestCase):
         self.assertEqual(scheme["scheme"], "bearer")
         self.assertEqual(scheme["bearerFormat"], "JWT")
         public = {"/api/health/", "/api/users/register/", "/api/users/login/", "/api/users/password-reset/", "/api/users/password-reset/confirm/", "/api/users/token/refresh/", "/api/users/session/"}
+        public.update({'/api/users/csrf/', '/api/users/email-verification/confirm/', '/api/users/institutions/'})
         for path, methods in self.schema["paths"].items():
             for operation in methods.values():
                 if path in public:
@@ -156,12 +175,12 @@ class OpenAPITests(TestCase):
             for operation in methods.values()
             if tag["name"] in operation["tags"]
         ]
-        self.assertEqual(operations[:17], [
-            "health_check", "users_register", "users_login", "users_password_reset_request", "users_password_reset_confirm", "users_token_refresh", "users_session", "users_logout", "users_me", "users_update_me", "users_upload_avatar",
+        self.assertEqual(operations[:20], [
+            "health_check", 'users_csrf', "users_register", "users_login", 'users_email_verification_send', 'users_email_verification_confirm', "users_password_reset_request", "users_password_reset_confirm", "users_token_refresh", "users_session", "users_logout", "users_me", "users_update_me", "users_upload_avatar",
             "courses_list", "courses_create", "courses_retrieve", "courses_update",
             "course_members_list", "course_members_revoke",
         ])
-        self.assertEqual(set(operations[17:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "classrooms_delete", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
+        self.assertEqual(set(operations[20:]), {"classrooms_join", "join_requests_mine", "join_requests_cancel", "enrollments_mine", "course_policy_retrieve", "course_policy_update", "classrooms_list", "classrooms_create", "classrooms_update", "classrooms_delete", "join_requests_list", "join_requests_review", "classroom_enrollments_list", "classroom_enrollments_revoke", "course_my_classrooms"})
 
     def test_classroom_management_schemas_expose_roster_and_own_classrooms(self):
         course = self.schema["components"]["schemas"]["Course"]
@@ -190,7 +209,7 @@ class OpenAPITests(TestCase):
         self.assertEqual(set(response["properties"]), {"user", "access"})
         user = self.component(response["properties"]["user"])
         self.assertEqual(set(user["properties"]), {
-            "id", "username", "email", "full_name", "avatar_url", "phone", "role", "status",
+            "id", "username", "email", 'email_verified', 'email_verified_at', 'teaching_allowed', "full_name", "avatar_url", "phone", "role", "status",
             "created_at", "updated_at", "last_login", "student_profile", "teacher_profile",
         })
         create = paths["/api/courses/"]["post"]
@@ -311,6 +330,10 @@ class OpenAPITests(TestCase):
                 if 'AI' in operation.get('tags', []):
                     self.assertEqual(set(self.component(content['schema'])['properties']),
                         {'request_id', 'code', 'message'})
+                    continue
+                if 'Institutions' in operation.get('tags', []):
+                    self.assertEqual(content['schema']['type'], 'object')
+                    self.assertTrue(content['examples'])
                     continue
                 alternatives = content["schema"]["additionalProperties"]["oneOf"]
                 self.assertEqual({option["type"] for option in alternatives}, {"array", "string"})

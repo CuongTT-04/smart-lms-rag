@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 import tempfile
 from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -17,7 +18,7 @@ class SessionVideoTests(TestCase):
         self.settings_override.enable()
         self.addCleanup(self.storage.cleanup)
         self.addCleanup(self.settings_override.disable)
-        self.owner = User.objects.create_user('video-owner', role='TEACHER')
+        self.owner = approved_teacher(User.objects.create_user('video-owner', role='TEACHER'))
         self.student = User.objects.create_user('video-student', role='STUDENT')
         self.other = User.objects.create_user('video-other', role='STUDENT')
         self.course = create_course(actor=self.owner, title='Video course')

@@ -144,6 +144,12 @@ class LocalModelProvider:
                   or getattr(model.config, "_name_or_path", None) != self.config.model_id):
                 raise GenerationError("INVALID_RUNTIME", "Attached model identity or revision differs.")
 
+    def _load_tokenizer(self, loader, source, kwargs):
+        tokenizer = loader.from_pretrained(source, **kwargs, fix_mistral_regex=False)
+        if self.config.checkpoint_path:
+            self.tokenizer_audit = verify_saved_qwen_pattern(tokenizer, source)
+        return tokenizer
+
     def _build_runtime(self):
         try:
             import torch
@@ -158,8 +164,7 @@ class LocalModelProvider:
                 kwargs = {"local_files_only": True, "trust_remote_code": False}
                 # This is pinned Qwen, not Mistral. Preserve its saved regex;
                 # transformers 4.57.x can misdetect locally saved non-Mistral configs.
-                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs, fix_mistral_regex=False)
-                self.tokenizer_audit = verify_saved_qwen_pattern(tokenizer, source)
+                tokenizer = self._load_tokenizer(AutoTokenizer, source, kwargs)
                 model = AutoModelForCausalLM.from_pretrained(
                     source, **kwargs, dtype=torch.float16, device_map={"": index},
                 )
@@ -171,7 +176,7 @@ class LocalModelProvider:
                     "trust_remote_code": False,
                     "cache_dir": self.config.cache_dir,
                 }
-                tokenizer = AutoTokenizer.from_pretrained(source, **kwargs, fix_mistral_regex=False)
+                tokenizer = self._load_tokenizer(AutoTokenizer, source, kwargs)
                 model = AutoModelForCausalLM.from_pretrained(
                     source, **kwargs, dtype=torch.float16, device_map={"": index},
                     quantization_config=BitsAndBytesConfig(

@@ -3,7 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError as DjangoValidationError
 
-from apps.users.models import StudentProfile, TeacherProfile, User
+from apps.users.models import Institution, StudentProfile, TeacherApproval, TeacherProfile, User
+from .institution_views import InstitutionSerializer
 from apps.users.services import REGISTRATION_ROLE_CHOICES
 from apps.users.validators import PASSWORD_REQUIREMENTS
 
@@ -15,10 +16,20 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class TeacherApprovalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeacherApproval
+        fields = ('status', 'source', 'reason', 'revision', 'email_version_at_approval',
+                  'approved_at', 'decided_at', 'updated_at')
+        read_only_fields = fields
+
+
 class TeacherProfileSerializer(serializers.ModelSerializer):
+    institution = InstitutionSerializer(read_only=True)
+    approval = TeacherApprovalSerializer(read_only=True)
     class Meta:
         model = TeacherProfile
-        fields = ("id", "bio", "specialization", "created_at", "updated_at")
+        fields = ("id", "bio", "specialization", "institution", "institution_other_name", "approval", "created_at", "updated_at")
         read_only_fields = fields
 
 
@@ -34,6 +45,8 @@ class RegistrationSerializer(serializers.Serializer):
     learning_goal = serializers.CharField(max_length=5000, required=False, allow_blank=True, default="")
     bio = serializers.CharField(max_length=5000, required=False, allow_blank=True, default="")
     specialization = serializers.CharField(max_length=255, required=False, allow_blank=True, default="")
+    institution_id = serializers.UUIDField(required=False, allow_null=True, default=None)
+    institution_other_name = serializers.CharField(max_length=255, required=False, allow_blank=True, default='')
 
     def to_internal_value(self, data):
         if isinstance(data, dict):
@@ -59,8 +72,15 @@ class RegistrationSerializer(serializers.Serializer):
             for field in ("bio", "specialization"):
                 if attrs[field]:
                     errors[field] = ["This field requires the TEACHER role."]
+            if attrs['institution_id'] or attrs['institution_other_name']:
+                errors['institution_id'] = ['School affiliation requires the TEACHER role.']
         elif attrs["learning_goal"]:
             errors["learning_goal"] = ["This field requires the STUDENT role."]
+        if attrs['role'] == User.Role.TEACHER:
+            if bool(attrs['institution_id']) == bool(attrs['institution_other_name']):
+                errors['institution_id'] = ['Choose an institution or provide an unlisted school name.']
+            elif attrs['institution_id'] and not Institution.objects.filter(pk=attrs['institution_id'], active=True).exists():
+                errors['institution_id'] = ['Select an active institution.']
         if errors:
             raise serializers.ValidationError(errors)
         if attrs["password"] != attrs["password_confirm"]:
@@ -175,9 +195,15 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    teaching_allowed = serializers.SerializerMethodField()
     created_at = serializers.DateTimeField(source="date_joined", read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
     student_profile = StudentProfileSerializer(read_only=True, required=False)
     teacher_profile = TeacherProfileSerializer(read_only=True, required=False)
+
+    def get_teaching_allowed(self, instance) -> bool:
+        from apps.users.teaching_access import has_teaching_approval
+        return has_teaching_approval(instance)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -190,10 +216,31 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "id", "username", "email", "full_name", "avatar_url", "phone", "role", "status",
+            "id", "username", "email", "email_verified", "email_verified_at",
+            "full_name", "avatar_url", "phone", "role", "status", "teaching_allowed",
             "created_at", "updated_at", "last_login", "student_profile", "teacher_profile",
         )
         read_only_fields = fields
+
+
+class EmailVerificationConfirmSerializer(PasswordResetRequestSerializer):
+    email = None
+    token = serializers.CharField(max_length=256, write_only=True, trim_whitespace=False)
+
+
+class EmailVerificationSendResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField(read_only=True)
+    already_verified = serializers.BooleanField(read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
+
+
+class EmailVerificationConfirmResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField(read_only=True)
+    email_verified = serializers.BooleanField(read_only=True)
+
+
+class CsrfTokenResponseSerializer(serializers.Serializer):
+    csrfToken = serializers.CharField(read_only=True)
 
 
 class CurrentUserSerializer(serializers.Serializer):

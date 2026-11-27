@@ -11,7 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from apps.users.authentication import VersionedJWTAuthentication
+from apps.users.teaching_access import TeacherNotApproved
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .serializers import DocumentUploadRequest, DocumentRetryRequest
@@ -51,10 +52,19 @@ def is_manager(user,course):
 
 
 class DocumentAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [VersionedJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def finalize_response(self, request, response, *args, **kwargs):
+        response = super().finalize_response(request, response, *args, **kwargs)
+        if request.method == "GET" and "Cache-Control" not in response:
+            response["Cache-Control"] = "private, no-store"
+        return response
+
     def handle_exception(self, exc):
+        if isinstance(exc, TeacherNotApproved):
+            return Response({'error': {'code': exc.code, 'message': exc.message},
+                             'request_id': str(uuid.uuid4())}, status=403)
         if isinstance(exc, DocumentError):
             return Response({"error": {"code": exc.code, "message": exc.message},
                              "request_id": str(uuid.uuid4())}, status=exc.status)
@@ -294,9 +304,21 @@ class DocumentViewView(DocumentAPIView):
                 identity=request.user.email.strip() or request.user.username
                 try:content=watermarked_pdf_bytes(io.BytesIO(source),document.pk,version.version_number,identity)
                 except Exception as exc:raise DocumentError("VIEW_UNAVAILABLE","Personalized view unavailable.",503) from exc
-            # Reload relations: cached session/course objects may predate a revocation during file I/O.
+            # Reload relations: cached session/course/version/policy objects may predate a revocation during file I/O.
             request.user.refresh_from_db()
             document = self.document(request, document.pk)
+            version.refresh_from_db()
+            final_manager = is_manager(request.user, document.course)
+            if version.removed_at:
+                raise DocumentError("NOT_FOUND", "Resource unavailable.", 404)
+            if not final_manager and document.published_version_id != version.pk:
+                raise DocumentError("SCOPE_CHANGED", "Phiên bản nguồn trích dẫn đã thay đổi.", 409)
+            if expected and str(version.pk) != expected:
+                raise DocumentError("SCOPE_CHANGED", "Phiên bản nguồn trích dẫn đã thay đổi.", 409)
+            if self.download and not final_manager and document.material_policy != "PUBLIC_DOWNLOAD":
+                raise DocumentError("DOWNLOAD_DISABLED", "Clean download is disabled.", 403)
+            if not self.download and not protected and not final_manager and document.material_policy == "PROTECTED":
+                raise DocumentError("SCOPE_CHANGED", "Chính sách bảo vệ học liệu đã thay đổi.", 409)
             response=HttpResponse(content,content_type="application/pdf")
             from django.utils.http import content_disposition_header
             response["Content-Disposition"]=content_disposition_header(self.download,version.file_name)

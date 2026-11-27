@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 import uuid
@@ -25,7 +26,7 @@ from apps.users.models import User
 
 
 def _setup_classroom_fixture():
-    teacher = User.objects.create_user(f't-{uuid.uuid4().hex[:8]}', role='TEACHER')
+    teacher = approved_teacher(User.objects.create_user(f't-{uuid.uuid4().hex[:8]}', role='TEACHER'))
     student_a = User.objects.create_user(f'sa-{uuid.uuid4().hex[:8]}', role='STUDENT')
     student_b = User.objects.create_user(f'sb-{uuid.uuid4().hex[:8]}', role='STUDENT')
     course = create_course(actor=teacher, title='Kiến trúc máy tính')

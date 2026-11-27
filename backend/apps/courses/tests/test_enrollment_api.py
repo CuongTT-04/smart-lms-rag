@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 from unittest.mock import patch
 import uuid
@@ -17,8 +18,8 @@ from common.testing import authenticate_client
 class EnrollmentAPITests(TestCase):
     def setUp(self):
         cache.clear()
-        self.owner = User.objects.create_user("owner", role="TEACHER")
-        self.other = User.objects.create_user("other", role="TEACHER")
+        self.owner = approved_teacher(User.objects.create_user("owner", role="TEACHER"))
+        self.other = approved_teacher(User.objects.create_user("other", role="TEACHER"))
         self.student = User.objects.create_user("student")
         self.second_student = User.objects.create_user("second")
         self.course = create_course(actor=self.owner, title="Python")

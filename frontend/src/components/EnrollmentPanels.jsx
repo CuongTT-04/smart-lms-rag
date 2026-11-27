@@ -3,6 +3,8 @@ import CustomSelect from './CustomSelect'
 import { Check, Copy, LoaderCircle, Pencil, Plus, RefreshCw, UsersRound, X } from 'lucide-react'
 import ClassroomRoster from './ClassroomRoster'
 import ClassroomEditDialog from './ClassroomEditDialog'
+import { TeachingAction } from './TeacherApprovalBanner'
+import { useTeachingAccess } from '../hooks/teaching-access'
 import {
   courseErrorMessage, createClassroom,
   listClassrooms, listJoinRequests, reviewJoinRequest,
@@ -16,6 +18,7 @@ function Feedback({ error, notice, warning }) {
 }
 
 export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassroom, requestsOnly = false }) {
+  const { allowed, reason } = useTeachingAccess()
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -48,6 +51,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
   }, [load])
 
   async function act(key, action, message) {
+    if (key !== 'refresh' && !allowed) { setError(reason); return }
     setBusy(key); setError(''); setNotice(''); setWarning('')
     try {
       await action()
@@ -62,7 +66,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
     catch { setError('Không thể sao chép tự động. Bạn có thể chọn và sao chép mã lớp.') }
   }
 
-  if (selectedRoom && !requestsOnly) return <ClassroomRoster course={course} room={selectedRoom} onBack={() => setSelectedRoom(null)} onMembersChanged={onMembersChanged} />
+  if (selectedRoom && !requestsOnly && allowed) return <ClassroomRoster course={course} room={selectedRoom} onBack={() => setSelectedRoom(null)} onMembersChanged={onMembersChanged} />
 
   return <section className="enrollment-panel" aria-label={requestsOnly ? 'Yêu cầu tham gia' : 'Quản lý lớp học'}>
     <div className="section-heading"><h2>{requestsOnly ? 'Yêu cầu tham gia' : 'Lớp học và quyền tham gia'}</h2><button type="button" className="icon-button" title="Làm mới" aria-label="Làm mới lớp và yêu cầu" disabled={!!busy} onClick={() => act('refresh', async () => {}, 'Đã làm mới dữ liệu.')}><RefreshCw size={18} /></button></div>
@@ -82,7 +86,7 @@ export function TeacherEnrollmentPanel({ course, onMembersChanged, onOpenClassro
     </> : <>
       {course.status !== 'PUBLISHED' && <p className="enrollment-warning">Khóa học chưa xuất bản, học viên chưa thể tham gia.</p>}
       <form className="enrollment-create" onSubmit={(e) => { e.preventDefault(); act('create', async () => { await createClassroom(course.id, { name: name.trim() }); setName('') }, 'Đã tạo lớp học mới.') }}>
-        <label>Tên lớp mới<input required maxLength={255} value={name} onChange={(e) => setName(e.target.value)} /></label><button className="solid-button" disabled={!!busy || !name.trim()}><Plus size={17} /> Tạo lớp</button>
+        <label>Tên lớp mới<input required maxLength={255} disabled={!allowed} value={name} onChange={(e) => setName(e.target.value)} /></label><TeachingAction className="solid-button" type="submit" disabled={!!busy || !name.trim()}><Plus size={17} /> Tạo lớp</TeachingAction>
       </form>
       <div className="enrollment-records">{data.classrooms.map((room) => <ClassroomRow key={room.id} room={room} busy={!!busy} copied={copiedCode === room.class_code} onCopy={copy} onRoster={() => setSelectedRoom(room)} onEdit={() => setEditingRoom(room)} onOpen={onOpenClassroom ? () => onOpenClassroom(room) : undefined} />)}</div>
     </>}

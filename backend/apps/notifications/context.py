@@ -9,10 +9,10 @@ class NotificationActorMiddleware:
 
     def __call__(self, request):
         # DRF authenticates later; evaluate its JWT authenticator for event attribution.
-        from rest_framework_simplejwt.authentication import JWTAuthentication
+        from apps.users.authentication import VersionedJWTAuthentication
         user = getattr(request, 'user', None)
         try:
-            result = JWTAuthentication().authenticate(request)
+            result = VersionedJWTAuthentication().authenticate(request)
             if result:
                 user = result[0]
         except Exception:

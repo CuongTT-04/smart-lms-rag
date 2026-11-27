@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 import uuid
 import tempfile
 from datetime import timedelta
@@ -21,7 +22,7 @@ class AssessmentTests(TestCase):
         override.enable()
         self.addCleanup(storage.cleanup)
         self.addCleanup(override.disable)
-        self.owner = User.objects.create_user('assessment-owner', role='TEACHER')
+        self.owner = approved_teacher(User.objects.create_user('assessment-owner', role='TEACHER'))
         self.student = User.objects.create_user('assessment-student', role='STUDENT', full_name='=SUM(A1)')
         self.other = User.objects.create_user('assessment-other', role='STUDENT')
         self.course = create_course(actor=self.owner, title='Course')
@@ -250,7 +251,7 @@ class AssessmentTests(TestCase):
         self.assertEqual(by_id['q4']['correct'], 1)
 
         # Teacher from another course cannot view dashboard, export, or grade this assessment.
-        other_teacher = User.objects.create_user('assessment-other-teacher', role='TEACHER')
+        other_teacher = approved_teacher(User.objects.create_user('assessment-other-teacher', role='TEACHER'))
         other_client = authenticate_client(APIClient(), other_teacher)
         self.assertEqual(other_client.get(self.detail + 'dashboard/').status_code, 404)
         self.assertEqual(other_client.get(self.detail + 'export/').status_code, 404)

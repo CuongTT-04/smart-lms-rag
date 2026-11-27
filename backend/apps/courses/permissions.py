@@ -1,16 +1,13 @@
 from rest_framework.permissions import BasePermission
 
 from apps.users.models import User
+from apps.users.teaching_access import has_teaching_approval
 
 from .models import Course, CourseMember
 
 
 def can_create_course(user):
-    return bool(
-        user.is_authenticated
-        and user.is_active
-        and user.role == User.Role.TEACHER
-    )
+    return has_teaching_approval(user)
 
 
 def can_manage_course(user, course):
@@ -23,7 +20,11 @@ def can_manage_course(user, course):
 
 
 def can_view_course(user, course):
-    if not user.is_authenticated or not user.is_active:
+    if (
+        not user.is_authenticated
+        or not user.is_active
+        or getattr(user, "status", User.Status.ACTIVE) != User.Status.ACTIVE
+    ):
         return False
     if user.role == User.Role.TEACHER:
         return can_manage_course(user, course)

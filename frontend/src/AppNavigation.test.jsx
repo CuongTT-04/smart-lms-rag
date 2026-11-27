@@ -16,7 +16,7 @@ beforeEach(() => vi.spyOn(window, 'scrollTo').mockImplementation(() => {}))
 
 it.each(['TEACHER', 'STUDENT'])('restores the %s course after session bootstrap on reload, and clears it on logout', async (role) => {
   const owner = `reload-${role}`
-  currentUser.mockResolvedValue({ id: owner, role, username: 'cuong', full_name: 'Cường', status: 'ACTIVE' })
+  currentUser.mockResolvedValue({ id: owner, role, username: 'cuong', full_name: 'Cường', status: 'ACTIVE', teaching_allowed: role === 'TEACHER' })
   const first = render(<App />)
   await screen.findByText('Python')
   await userEvent.click(screen.getByRole('button', { name: role === 'TEACHER' ? 'Khóa học' : 'Khóa học của tôi', exact: true }))

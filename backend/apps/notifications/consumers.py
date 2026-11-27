@@ -22,6 +22,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
             if not ticket or ticket['expires'] <= time.time():
                 await self.close(code=4401); return
             self.user_id = ticket['user_id']
+            self.auth_version = ticket.get('auth_version')
             if not await self.active():
                 await self.close(code=4401); return
             self.group = f'notifications.{self.user_id}'
@@ -31,9 +32,13 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
         except Exception:
             await self.close(code=1013)
 
-    @database_sync_to_async
-    def active(self):
-        return User.objects.filter(pk=self.user_id, is_active=True, status='ACTIVE').exists()
+    def is_active_user(self):
+        filters = {'pk': self.user_id, 'is_active': True, 'status': 'ACTIVE'}
+        if self.auth_version is not None:
+            filters['auth_version'] = self.auth_version
+        return User.objects.filter(**filters).exists()
+
+    active = database_sync_to_async(is_active_user)
 
     async def expire_at(self, expiry):
         try:

@@ -109,9 +109,19 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "apps.users.validators.PasswordComplexityValidator"},
 ]
 
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173").rstrip("/")
 PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", "1800"))
 PASSWORD_RESET_PREVIEW = env_bool("PASSWORD_RESET_PREVIEW", False)
-PASSWORD_RESET_URL = os.getenv("PASSWORD_RESET_URL", "http://localhost:5173/reset-password")
+PASSWORD_RESET_URL = os.getenv("PASSWORD_RESET_URL", f"{FRONTEND_ORIGIN}/reset-password")
+EMAIL_VERIFICATION_URL = os.getenv("EMAIL_VERIFICATION_URL", f"{FRONTEND_ORIGIN}/verify-email")
+EMAIL_VERIFICATION_TIMEOUT = int(os.getenv("EMAIL_VERIFICATION_TIMEOUT", "86400"))
+EMAIL_VERIFICATION_MAX_PER_HOUR = int(os.getenv("EMAIL_VERIFICATION_MAX_PER_HOUR", "3"))
+EMAIL_VERIFICATION_RESEND_COOLDOWN_SECONDS = int(os.getenv("EMAIL_VERIFICATION_RESEND_COOLDOWN_SECONDS", "60"))
+LOGIN_MAX_ATTEMPTS_PER_ACCOUNT = int(os.getenv("LOGIN_MAX_ATTEMPTS_PER_ACCOUNT", "10"))
+LOGIN_ACCOUNT_WINDOW_SECONDS = int(os.getenv("LOGIN_ACCOUNT_WINDOW_SECONDS", "900"))
+LOGIN_MAX_ATTEMPTS_PER_IP = int(os.getenv("LOGIN_MAX_ATTEMPTS_PER_IP", "30"))
+LOGIN_IP_WINDOW_SECONDS = int(os.getenv("LOGIN_IP_WINDOW_SECONDS", "60"))
+RATE_LIMIT_REDIS_URL = os.getenv("RATE_LIMIT_REDIS_URL", "")
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
@@ -138,7 +148,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "apps.users.authentication.VersionedJWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -218,3 +228,15 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        ",".join(dict.fromkeys([*CORS_ALLOWED_ORIGINS, FRONTEND_ORIGIN])),
+    ).split(",")
+    if origin.strip()
+]
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = os.getenv("CSRF_COOKIE_SAMESITE", "Lax")
+CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", not DEBUG)

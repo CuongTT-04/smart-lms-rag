@@ -52,7 +52,8 @@ class AuthenticationAPITests(TestCase):
         self.assertEqual(me.json()["user"], body["user"])
         self.assertEqual(
             set(me.json()["user"]),
-            {"id", "username", "email", "full_name", "avatar_url", "phone", "role", "status",
+            {"id", "username", "email", "email_verified", "email_verified_at",
+             "full_name", "avatar_url", "phone", "role", "status", "teaching_allowed",
              "created_at", "updated_at", "last_login", "teacher_profile"},
         )
 
@@ -71,9 +72,14 @@ class AuthenticationAPITests(TestCase):
         self.assertGreaterEqual(BlacklistedToken.objects.count(), 2)
         self.assertEqual(self.client.post(self.refresh_url).status_code, 401)
 
-    def test_login_does_not_require_csrf_and_cannot_access_removed_endpoint(self):
-        self.assertEqual(self.login().status_code, 200)
-        self.assertEqual(self.client.get("/api/users/csrf/").status_code, 404)
+    def test_csrf_endpoint_issues_cookie_and_session_sets_csrf(self):
+        csrf_response = self.client.get(reverse("users:csrf"))
+        self.assertEqual(csrf_response.status_code, 200)
+        self.assertTrue(csrf_response.json().get("csrfToken"))
+        self.assertIn("csrftoken", csrf_response.cookies)
+        session = self.client.get(self.session_url)
+        self.assertEqual(session.status_code, 200)
+        self.assertIn("csrftoken", session.cookies)
 
     def test_session_restores_a_refresh_cookie_without_401_for_anonymous_visitors(self):
         anonymous = self.client.get(self.session_url)

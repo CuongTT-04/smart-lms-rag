@@ -18,6 +18,20 @@ describe('profile management', () => {
     URL.revokeObjectURL = vi.fn()
   })
 
+  it.each(['STUDENT', 'TEACHER', 'ADMIN'])('shows inline required errors and independent password visibility for %s', async role => {
+    render(<ProfileEditor user={{ ...student, role }} />)
+    await userEvent.click(screen.getByRole('tab', { name: 'Bảo mật' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Đổi mật khẩu', exact: true }))
+    expect(screen.getByText('Vui lòng nhập mật khẩu hiện tại.')).toBeVisible()
+    expect(screen.getByText('Vui lòng nhập mật khẩu mới.')).toBeVisible()
+    expect(screen.getByText('Vui lòng nhập xác nhận mật khẩu.')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Hiện mật khẩu mới', exact: true }))
+    expect(screen.getByLabelText('Mật khẩu mới', { exact: true })).toHaveAttribute('type', 'text')
+    expect(screen.getByLabelText('Mật khẩu hiện tại', { exact: true })).toHaveAttribute('type', 'password')
+    expect(screen.getByLabelText('Xác nhận mật khẩu', { exact: true })).toHaveAttribute('type', 'password')
+    expect(updateProfile).not.toHaveBeenCalled()
+  })
+
   it('saves only changed account fields and updates the parent', async () => {
     const updated = { ...student, full_name: 'Tên mới' }
     updateProfile.mockResolvedValueOnce({ user: updated, requires_login: false })

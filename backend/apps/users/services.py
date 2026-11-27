@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
-from .models import StudentProfile, TeacherProfile, User
+from .models import Institution, StudentProfile, TeacherProfile, User
 
 REGISTRATION_ROLE_CHOICES = [(User.Role.STUDENT, "Student"), (User.Role.TEACHER, "Teacher")]
 logger = logging.getLogger(__name__)
@@ -21,6 +21,34 @@ logger = logging.getLogger(__name__)
 def revoke_refresh_tokens(user):
     for outstanding in OutstandingToken.objects.filter(user=user):
         BlacklistedToken.objects.get_or_create(token=outstanding)
+
+
+def _schedule_close_user_sockets(user_id):
+    from asgiref.sync import async_to_sync
+    from channels.layers import get_channel_layer
+
+    def close_sockets():
+        try:
+            async_to_sync(get_channel_layer().group_send)(
+                f"notifications.{user_id}", {"type": "session.close"},
+            )
+        except Exception:
+            logger.warning("Could not close realtime sockets for user %s; ticket expiry will apply.", user_id)
+
+    transaction.on_commit(close_sockets)
+
+
+@transaction.atomic
+def bump_auth_version(user, *, revoke_tokens=True, close_sockets=True):
+    """Invalidate all existing access/refresh/WS sessions for a user immediately."""
+    locked = User.objects.select_for_update().get(pk=user.pk)
+    locked.auth_version += 1
+    locked.save(update_fields=["auth_version"])
+    if revoke_tokens:
+        revoke_refresh_tokens(locked)
+    if close_sockets:
+        _schedule_close_user_sockets(locked.pk)
+    return locked
 
 
 @transaction.atomic
@@ -122,13 +150,26 @@ def authenticate_user(*, username, password):
 
 
 @transaction.atomic
-def register_user(*, username, email, password, full_name, role, avatar_url="", phone="", learning_goal="", bio="", specialization=""):
+def register_user(*, username, email, password, full_name, role, avatar_url="", phone="", learning_goal="", bio="", specialization="", institution_id=None, institution_other_name=""):
     if role not in dict(REGISTRATION_ROLE_CHOICES):
         raise ValidationError({"role": "Choose STUDENT or TEACHER."})
     if role == User.Role.STUDENT and (bio or specialization):
         raise ValidationError("Teacher profile fields require the TEACHER role.")
     if role == User.Role.TEACHER and learning_goal:
         raise ValidationError({"learning_goal": "This field requires the STUDENT role."})
+    institution = None
+    if not isinstance(institution_other_name, str) or len(institution_other_name) > 255:
+        raise ValidationError({'institution_other_name': 'Provide a school name of at most 255 characters.'})
+    institution_other_name = institution_other_name.strip()
+    if role == User.Role.STUDENT and (institution_id or institution_other_name):
+        raise ValidationError({'institution_id': 'School affiliation requires the TEACHER role.'})
+    if role == User.Role.TEACHER:
+        if bool(institution_id) == bool(institution_other_name):
+            raise ValidationError({'institution_id': 'Choose an institution or provide an unlisted school name.'})
+        if institution_id:
+            institution = Institution.objects.select_for_update().filter(pk=institution_id, active=True).first()
+            if institution is None:
+                raise ValidationError({'institution_id': 'Select an active institution.'})
     user = User.objects.create_user(
         username=username, email=email, password=password, full_name=full_name,
         avatar_url=avatar_url, phone=phone,
@@ -143,5 +184,7 @@ def register_user(*, username, email, password, full_name, role, avatar_url="", 
         profile = user.teacher_profile
         profile.bio = bio
         profile.specialization = specialization
-        profile.save(update_fields=["bio", "specialization", "updated_at"])
+        profile.institution = institution
+        profile.institution_other_name = institution_other_name
+        profile.save(update_fields=["bio", "specialization", "institution", "institution_other_name", "updated_at"], approval_actor=user)
     return user

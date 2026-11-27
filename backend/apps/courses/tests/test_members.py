@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 import uuid
 
@@ -13,8 +14,8 @@ from common.testing import authenticate_client
 
 class MemberAPITests(TestCase):
     def setUp(self):
-        self.teacher = User.objects.create_user("owner", role="TEACHER")
-        self.other = User.objects.create_user("other", role="TEACHER")
+        self.teacher = approved_teacher(User.objects.create_user("owner", role="TEACHER"))
+        self.other = approved_teacher(User.objects.create_user("other", role="TEACHER"))
         self.student = User.objects.create_user("student")
         self.course = create_course(actor=self.teacher, title="Course")
         self.member = CourseMember.objects.create(course=self.course, user=self.student)

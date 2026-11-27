@@ -4,11 +4,23 @@ import os
 from unittest.mock import patch
 from urllib.error import HTTPError
 from django.test import SimpleTestCase
-from apps.ai.remote import generate_answer, NoRedirect
+from apps.ai.remote import generate_answer, summarize_step, NoRedirect
 from apps.documents.exceptions import DocumentError
 
 
 class RemoteTests(SimpleTestCase):
+    @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
+    @patch('apps.ai.remote.build_opener')
+    def test_transport_timeouts_are_not_absent_evidence_or_generic_connection_errors(self, build):
+        from urllib.error import URLError
+        for error in (TimeoutError('PRIVATE'), URLError(TimeoutError('PRIVATE'))):
+            build.return_value.open.side_effect = error
+            for method in (self.call, lambda: summarize_step(phase='map', records=[], config={'timeout_seconds':90})):
+                with self.assertRaises(DocumentError) as caught:
+                    method()
+                self.assertEqual((caught.exception.code, caught.exception.status), ('GENERATION_TIMEOUT', 503))
+                self.assertNotIn('PRIVATE', caught.exception.message)
+
     @patch.dict(os.environ, {'AI_INFERENCE_URL': 'https://example.test', 'AI_INFERENCE_TOKEN': 'x'*40})
     @patch('apps.ai.remote.build_opener')
     def test_tutoring_is_forwarded_and_old_gateway_is_reported_as_config_mismatch(self, build):

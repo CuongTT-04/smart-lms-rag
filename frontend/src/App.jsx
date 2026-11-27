@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { LoaderCircle, Sun } from 'lucide-react'
 import LoginPage from './pages/LoginPage'
-import DashboardPage from './pages/DashboardPage'
+import AdminPage from './admin/AdminPage'
 import TeacherHomePage from './pages/TeacherHomePage'
 import StudentHomePage from './pages/StudentHomePage'
 import RegisterPage from './pages/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import VerifyEmailPage from './pages/VerifyEmailPage'
 import { currentUser, logout, authErrorMessage } from './services/auth.service'
 import { clearAccessToken } from './services/api'
 import { clearNavigation, NavigationProvider } from './hooks/useHistoryState'
@@ -14,7 +15,7 @@ import NotificationProvider from './components/notifications/NotificationProvide
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
-  const publicPage = ['/register', '/forgot-password', '/reset-password'].includes(path)
+  const publicPage = ['/register', '/forgot-password', '/reset-password', '/verify-email'].includes(path)
   const [session, setSession] = useState({ checking: !publicPage, user: null, error: '' })
   const sessionRequestId = useRef(0)
 
@@ -72,7 +73,7 @@ export default function App() {
       ? 'OHAYO | Không gian giảng dạy'
       : session.user?.role === 'STUDENT'
         ? 'OHAYO | Không gian học tập'
-        : session.user ? 'OHAYO | Tài khoản' : 'OHAYO | Đăng nhập'
+        : session.user ? 'OHAYO | Quản trị hệ thống' : 'OHAYO | Đăng nhập'
   }, [session.user, path, publicPage])
 
   async function handleLogout() {
@@ -98,7 +99,8 @@ export default function App() {
   if (path === '/register') return <RegisterPage />
   if (path === '/forgot-password') return <ForgotPasswordPage />
   if (path === '/reset-password') return <ResetPasswordPage />
+  if (path === '/verify-email') return <VerifyEmailPage />
   if (!session.user) return <LoginPage initialError={session.error} initialNotice={session.notice} initialNoticeVariant={session.noticeVariant} onAuthenticated={handleAuthenticated} />
   const profileProps = { user: session.user, onLogout: handleLogout, onUserUpdated: handleUserUpdated, onSessionExpired: handleSessionExpired }
-  return <NavigationProvider key={session.user.id} owner={session.user.id}><NotificationProvider user={session.user}>{session.user.role === 'TEACHER' ? <TeacherHomePage {...profileProps} /> : session.user.role === 'STUDENT' ? <StudentHomePage {...profileProps} /> : <DashboardPage {...profileProps} />}</NotificationProvider></NavigationProvider>
+  return <NavigationProvider key={session.user.id} owner={session.user.id}><NotificationProvider user={session.user}>{session.user.role === 'TEACHER' ? <TeacherHomePage {...profileProps} /> : session.user.role === 'STUDENT' ? <StudentHomePage {...profileProps} /> : <AdminPage {...profileProps} />}</NotificationProvider></NavigationProvider>
 }

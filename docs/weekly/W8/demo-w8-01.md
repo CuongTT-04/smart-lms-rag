@@ -1,4 +1,6 @@
-# W9-01 – Hướng dẫn dữ liệu Demo và Bảng kết quả mong đợi
+# W8-01 – Hướng dẫn dữ liệu Demo và Bảng kết quả mong đợi
+
+**Tuần nghiệm thu là W8.** Code demo dùng lệnh `seed_w9_demo`, biến `W9_DEMO_*`, tên dữ liệu `W9 Demo` và DB/project có tiền tố `w9`. Các tên bên dưới khớp code đã triển khai để chạy lại được.
 
 - **Command:** `python manage.py seed_w9_demo`
 - **Điều kiện bắt buộc để chạy (khóa an toàn mặc định):**

@@ -1,3 +1,4 @@
+from common.testing import approved_teacher
 from apps.courses.models import Classroom
 from django.core.cache import cache
 from django.test import TestCase
@@ -11,7 +12,7 @@ from common.testing import authenticate_client
 class ClassroomPolicyTests(TestCase):
     def setUp(self):
         cache.clear()
-        self.owner = User.objects.create_user('policy-owner', role='TEACHER')
+        self.owner = approved_teacher(User.objects.create_user('policy-owner', role='TEACHER'))
         self.student = User.objects.create_user('policy-student')
         self.course = create_course(actor=self.owner, title='Policy test')
         update_course(actor=self.owner, course=self.course, changes={'status': 'PUBLISHED'})
