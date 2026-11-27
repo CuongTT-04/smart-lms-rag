@@ -212,75 +212,75 @@ def advance_summary(user, task_id, runtime=None):
         with generation_slot(user, 'summary') as admitted:
             owned_task(user, task.pk)
             output = admitted(generate, phase=generation_phase, records=generation_records, config=runtime.config)
-        if (not isinstance(output, dict) or set(output) != {'protocol', 'phase', 'consumed', 'input_tokens', 'paragraphs'}
-                or output['protocol'] != PROTOCOL or output['phase'] != generation_phase
-                or type(output['consumed']) is not int or not (1 if generation_phase == 'map' else 2) <= output['consumed'] <= len(generation_records)
-                or type(output['input_tokens']) is not int or not 0 < output['input_tokens'] <= runtime.config['max_input_tokens']):
-            raise DocumentError('SUMMARY_GENERATION_FAILED', 'Phản hồi tóm tắt không hợp lệ.', 503)
-        if compact_final and output['consumed'] != len(generation_records):
-            raise DocumentError('SUMMARY_GENERATION_FAILED', 'Bước tổng hợp cuối chưa đọc đủ ghi chú.', 503)
-        consumed = output['consumed']
-        allowed = {r['source_id'] for r in generation_records[:consumed]} if generation_phase == 'map' else {
-            s for note in records[:consumed] for p in note['paragraphs'] for s in p['sources']}
-        validate_paragraphs(output['paragraphs'], allowed, require_complete=source_sections)
-        check_output_policy('\n'.join(p['text'] for p in output['paragraphs']),
-                            [source['excerpt'] for source in state['sources']])
-        paragraphs, adjustments = separate_source_footers(output['paragraphs'])
-        if adjustments:
-            state.setdefault('formatting_adjustments', []).append(dict(step=state['steps']+1, changes=adjustments))
-        note = dict(paragraphs=paragraphs)
-        if compact_final:
-            if not note['paragraphs']:
-                raise DocumentError('SUMMARY_GENERATION_FAILED', 'Một nhóm chủ đề chưa được tổng hợp.', 503)
-            state.setdefault('final_sections', []).append(note)
-            synthesis = state.setdefault('final_synthesis', dict(strategy='topic_sections', sections_total=len(state['notes']),
-                sections_completed=0, input_blocks=0, input_characters=0,
-                output_budget_tokens=640, source_association='representative_note_source_not_entailment')
-            )
-            synthesis['sections_completed'] += 1
-            synthesis['input_blocks'] += len(generation_records)
-            synthesis['input_characters'] += sum(len(row['text']) for row in generation_records)
-            if len(state['final_sections']) == len(state['notes']):
-                state['notes'] = [dict(paragraphs=[p for section in state.pop('final_sections') for p in section['paragraphs']])]
-        elif phase == 'map':
-            state['cursor'] += consumed
-            if note['paragraphs']:
-                state['notes'].append(note)
-            if source_sections and state['cursor'] == len(state['blocks']):
-                # Preserve source-grounded paragraphs instead of asking the model to rewrite its own claims.
-                state['source_sections'] = deepcopy(state['notes'])
-                state['final_synthesis'] = dict(strategy=SOURCE_SECTIONS, sections_total=len(state['notes']),
-                    sections_completed=len(state['notes']), input_blocks=state['cursor'],
-                    input_characters=sum(len(row['text']) for row in state['blocks']),
-                    output_budget_tokens=640, generated_notes_rewritten=False)
-                if state['notes']:
-                    state['notes'] = [dict(paragraphs=[p for section in state['notes'] for p in section['paragraphs']])]
-        else:
-            if not note['paragraphs']:
-                raise DocumentError('SUMMARY_GENERATION_FAILED', 'Bản tổng hợp rỗng.', 503)
-            state['notes'] = state['notes'][consumed:]
-            state['next_notes'].append(note)
-            if not state['notes']:
-                state['notes'], state['next_notes'] = state['next_notes'], []
-        state['steps'] += 1
-        state.pop('failure_details', None)
-        completed = state['cursor'] == len(state['blocks']) and len(state['notes']) == 1 and not state['next_notes']
-        owned_task(user, task.pk)
-        with transaction.atomic():
-            current = SummaryTask.objects.select_for_update().get(pk=task.pk)
-            if current.lease_token != lease or current.lease_expires_at <= timezone.now():
-                raise DocumentError('CHAT_SUPERSEDED', 'Bước tóm tắt đã hết hiệu lực.', 409)
+            if (not isinstance(output, dict) or set(output) != {'protocol', 'phase', 'consumed', 'input_tokens', 'paragraphs'}
+                    or output['protocol'] != PROTOCOL or output['phase'] != generation_phase
+                    or type(output['consumed']) is not int or not (1 if generation_phase == 'map' else 2) <= output['consumed'] <= len(generation_records)
+                    or type(output['input_tokens']) is not int or not 0 < output['input_tokens'] <= runtime.config['max_input_tokens']):
+                raise DocumentError('SUMMARY_GENERATION_FAILED', 'Phản hồi tóm tắt không hợp lệ.', 503)
+            if compact_final and output['consumed'] != len(generation_records):
+                raise DocumentError('SUMMARY_GENERATION_FAILED', 'Bước tổng hợp cuối chưa đọc đủ ghi chú.', 503)
+            consumed = output['consumed']
+            allowed = {r['source_id'] for r in generation_records[:consumed]} if generation_phase == 'map' else {
+                s for note in records[:consumed] for p in note['paragraphs'] for s in p['sources']}
+            validate_paragraphs(output['paragraphs'], allowed, require_complete=source_sections)
+            check_output_policy('\n'.join(p['text'] for p in output['paragraphs']),
+                                [source['excerpt'] for source in state['sources']])
+            paragraphs, adjustments = separate_source_footers(output['paragraphs'])
+            if adjustments:
+                state.setdefault('formatting_adjustments', []).append(dict(step=state['steps']+1, changes=adjustments))
+            note = dict(paragraphs=paragraphs)
+            if compact_final:
+                if not note['paragraphs']:
+                    raise DocumentError('SUMMARY_GENERATION_FAILED', 'Một nhóm chủ đề chưa được tổng hợp.', 503)
+                state.setdefault('final_sections', []).append(note)
+                synthesis = state.setdefault('final_synthesis', dict(strategy='topic_sections', sections_total=len(state['notes']),
+                    sections_completed=0, input_blocks=0, input_characters=0,
+                    output_budget_tokens=640, source_association='representative_note_source_not_entailment')
+                )
+                synthesis['sections_completed'] += 1
+                synthesis['input_blocks'] += len(generation_records)
+                synthesis['input_characters'] += sum(len(row['text']) for row in generation_records)
+                if len(state['final_sections']) == len(state['notes']):
+                    state['notes'] = [dict(paragraphs=[p for section in state.pop('final_sections') for p in section['paragraphs']])]
+            elif phase == 'map':
+                state['cursor'] += consumed
+                if note['paragraphs']:
+                    state['notes'].append(note)
+                if source_sections and state['cursor'] == len(state['blocks']):
+                    # Preserve source-grounded paragraphs instead of asking the model to rewrite its own claims.
+                    state['source_sections'] = deepcopy(state['notes'])
+                    state['final_synthesis'] = dict(strategy=SOURCE_SECTIONS, sections_total=len(state['notes']),
+                        sections_completed=len(state['notes']), input_blocks=state['cursor'],
+                        input_characters=sum(len(row['text']) for row in state['blocks']),
+                        output_budget_tokens=640, generated_notes_rewritten=False)
+                    if state['notes']:
+                        state['notes'] = [dict(paragraphs=[p for section in state['notes'] for p in section['paragraphs']])]
+            else:
+                if not note['paragraphs']:
+                    raise DocumentError('SUMMARY_GENERATION_FAILED', 'Bản tổng hợp rỗng.', 503)
+                state['notes'] = state['notes'][consumed:]
+                state['next_notes'].append(note)
+                if not state['notes']:
+                    state['notes'], state['next_notes'] = state['next_notes'], []
+            state['steps'] += 1
+            state.pop('failure_details', None)
+            completed = state['cursor'] == len(state['blocks']) and len(state['notes']) == 1 and not state['next_notes']
             owned_task(user, task.pk)
-            current.state, current.status = state, 'COMPLETED' if completed else 'PENDING'
-            current.error_code = ''
-            current.lease_token, current.lease_expires_at = None, None
-            if completed:
-                current.result = render_result(current, state)
-                ChatResponseRecord.objects.get_or_create(id=current.pk, defaults=dict(user=user))
-            elif state['cursor'] == len(state['blocks']) and not state['notes']:
-                current.status, current.error_code = 'FAILED', 'SUMMARY_SOURCE_INCOMPLETE'
-            current.save()
-        return descriptor(owned_task(user, current.pk))
+            with transaction.atomic():
+                current = SummaryTask.objects.select_for_update().get(pk=task.pk)
+                if current.lease_token != lease or current.lease_expires_at <= timezone.now():
+                    raise DocumentError('CHAT_SUPERSEDED', 'Bước tóm tắt đã hết hiệu lực.', 409)
+                owned_task(user, task.pk)
+                current.state, current.status = state, 'COMPLETED' if completed else 'PENDING'
+                current.error_code = ''
+                current.lease_token, current.lease_expires_at = None, None
+                if completed:
+                    current.result = render_result(current, state)
+                    ChatResponseRecord.objects.get_or_create(id=current.pk, defaults=dict(user=user))
+                elif state['cursor'] == len(state['blocks']) and not state['notes']:
+                    raise DocumentError('SUMMARY_SOURCE_INCOMPLETE', 'Chưa tổng hợp được nội dung từ nguồn.', 503)
+                current.save()
+            return descriptor(owned_task(user, current.pk))
     except Exception as error:
         code = getattr(error, 'code', 'SUMMARY_GENERATION_FAILED')
         safe = code if code in ('GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH', 'GENERATION_UNAVAILABLE',

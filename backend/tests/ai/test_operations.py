@@ -188,6 +188,54 @@ class DocumentReadQuotaTests(TestCase):
 
 
 class OperationalServiceTests(ChatServiceTests):
+    def test_invalid_output_is_failed_instead_of_completed(self):
+        self.runtime.generate.return_value = {**self.output, 'references': []}
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual(caught.exception.status, 503)
+        event = GenerationEvent.objects.get()
+        self.assertEqual((event.status, event.code, event.gateway_calls), ('FAILED', 'INVALID_GENERATION', 1))
+        self.assertIsNotNone(event.finished_at)
+        self.assertIsNotNone(event.duration_ms)
+
+    def test_output_rejected_by_policy_is_recorded_as_failed(self):
+        from apps.ai.providers.base import GenerationError
+        with patch('apps.ai.rag.guardrails.check_output_policy', side_effect=GenerationError('INVALID_GENERATION', 'unsafe')):
+            with self.assertRaises(DocumentError):
+                self.call()
+        self.assertEqual(GenerationEvent.objects.get().status, 'FAILED')
+        self.assertEqual(GenerationEvent.objects.get().code, 'INVALID_GENERATION')
+
+    def test_success_is_completed_only_after_output_validation(self):
+        from apps.ai.services import map_output
+        def validate(*args):
+            self.assertEqual(GenerationEvent.objects.get().status, 'RUNNING')
+            return map_output(*args)
+        with patch('apps.ai.services.map_output', side_effect=validate):
+            self.assertEqual(self.call()['status'], 'ANSWERED')
+        self.assertEqual((GenerationEvent.objects.get().status, GenerationEvent.objects.get().code), ('COMPLETED', ''))
+
+    def test_invalid_history_metadata_records_failed_generation(self):
+        from apps.ai.services import answer_chat
+        with self.assertRaises(DocumentError) as caught:
+            answer_chat(user=self.student, data=self.data, runtime=self.runtime, request_id='history-failure', history=[])
+        self.assertEqual(caught.exception.code, 'GENERATION_CONFIG_MISMATCH')
+        event = GenerationEvent.objects.get()
+        self.assertEqual((event.status, event.code), ('FAILED', 'GENERATION_CONFIG_MISMATCH'))
+
+    def test_http_503_for_invalid_answer_is_counted_as_failed_in_snapshot(self):
+        self.runtime.generate.return_value = {**self.output, 'references': []}
+        client = APIClient()
+        client.force_authenticate(self.student)
+        with patch('apps.ai.services.get_runtime', return_value=self.runtime):
+            response = client.post('/api/ai/chat/', self.data, format='json')
+        self.assertEqual(response.status_code, 503)
+        with patch('apps.ai.operations.gateway_health', return_value={'status': 'READY'}):
+            snapshot = operations_snapshot()
+        self.assertEqual(snapshot['outcomes'], {'FAILED': 1})
+        self.assertEqual(snapshot['errors'], {'INVALID_GENERATION': 1})
+        self.assertEqual(snapshot['generation']['gateway_calls'], 1)
+
     @override_settings(AI_HOURLY_STUDENT=1)
     def test_quota_blocks_model_but_does_not_block_course_reading(self):
         self.call()

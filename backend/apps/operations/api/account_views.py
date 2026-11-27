@@ -190,7 +190,7 @@ class AccountDetailView(AccountAdminView):
         user = action(lambda: User.objects.select_related('teacher_profile__institution', 'teacher_profile__approval').get(pk=user_id))
         return Response(AccountSerializer(user).data)
 
-    @extend_schema(tags=['Administration'], summary='Cập nhật tài khoản', description='Kiểm mật khẩu, lý do và updated_at hiện hành; khóa tài khoản thu hồi phiên, không cho vô hiệu hóa Admin cuối cùng.', request=AccountUpdate, responses={200: AccountSerializer, 409: OpenApiTypes.OBJECT})
+    @extend_schema(tags=['Administration'], summary='Cập nhật tài khoản', description='Kiểm mật khẩu, lý do và updated_at hiện hành; không được sửa tài khoản có quyền cao hơn. Khóa tài khoản thu hồi phiên, không cho vô hiệu hóa Admin cuối cùng.', request=AccountUpdate, responses={200: AccountSerializer, 409: OpenApiTypes.OBJECT})
     def patch(self, request, user_id):
         self.mutation(request, 'change_user')
         data = validated(AccountUpdate, request.data)
@@ -200,7 +200,7 @@ class AccountDetailView(AccountAdminView):
 
 
 class AccountRoleView(AccountAdminView):
-    @extend_schema(tags=['Administration'], summary='Đổi vai trò tài khoản', description='Cần quyền đổi vai trò riêng; giữ dữ liệu lịch sử, chặn chủ khóa chưa lưu trữ và thu hồi phiên cũ.', request=RoleUpdate, responses={200: AccountSerializer, 409: OpenApiTypes.OBJECT})
+    @extend_schema(tags=['Administration'], summary='Đổi vai trò tài khoản', description='Cần quyền đổi vai trò riêng và đủ quyền quản trị đối tượng; giữ dữ liệu lịch sử, chặn chủ khóa chưa lưu trữ và thu hồi phiên cũ. Chuyển khỏi ADMIN thu hồi staff, superuser, nhóm và quyền Django đã gán.', request=RoleUpdate, responses={200: AccountSerializer, 409: OpenApiTypes.OBJECT})
     def post(self, request, user_id):
         self.mutation(request, 'change_user', 'assign_user_role')
         data = validated(RoleUpdate, request.data)

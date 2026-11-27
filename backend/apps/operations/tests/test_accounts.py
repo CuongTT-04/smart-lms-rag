@@ -184,6 +184,91 @@ class AccountApiTests(TestCase):
         self.assertNotIn('changed@example.com', str(audit))
         self.assertNotIn('target@example.com', str(audit))
 
+    def test_change_only_admin_cannot_replace_superuser_recovery_email(self):
+        operator = User.objects.create_user('recovery_operator', role='ADMIN', password=PASSWORD)
+        operator.user_permissions.add(Permission.objects.get(codename='change_user'))
+        client = authenticate_client(APIClient(), operator)
+        self.target = self.admin
+        original_email = self.admin.email
+        response = client.patch(self.url(), self.body(email='attacker@example.com'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.admin.refresh_from_db()
+        self.assertEqual(self.admin.email, original_email)
+        self.assertFalse(LogEntry.objects.filter(object_id=str(self.admin.pk)).exists())
+
+    def test_cannot_edit_admin_with_stronger_group_or_staff_permissions(self):
+        from django.contrib.auth.models import Group
+        operator = User.objects.create_user('lower_admin', role='ADMIN', password=PASSWORD)
+        operator.user_permissions.add(Permission.objects.get(codename='change_user'))
+        client = authenticate_client(APIClient(), operator)
+        group = Group.objects.create(name='Privileged target')
+        group.permissions.add(Permission.objects.get(codename='assign_user_role'))
+        for staff in (False, True):
+            with self.subTest(staff=staff):
+                self.target = User.objects.create_user('higher_admin_' + str(staff), role='ADMIN',
+                    is_staff=staff, email=f'higher-{staff}@example.com', password=PASSWORD)
+                if not staff:
+                    self.target.groups.add(group)
+                original_email = self.target.email
+                response = client.patch(self.url(), self.body(email=f'changed-{staff}@example.com'), format='json')
+                self.assertEqual(response.status_code, 403)
+                self.target.refresh_from_db()
+                self.assertEqual(self.target.email, original_email)
+
+    def test_demoting_superuser_revokes_django_privileges_and_existing_sessions(self):
+        from django.contrib.auth.models import Group
+        from django.test import Client
+        group = Group.objects.create(name='Former admin group')
+        group.permissions.add(Permission.objects.get(codename='assign_user_role'))
+        for role in ('STUDENT', 'TEACHER'):
+            with self.subTest(role=role):
+                self.target = User.objects.create_superuser('demoted_' + role, password=PASSWORD)
+                self.target.groups.add(group)
+                self.target.user_permissions.add(Permission.objects.get(codename='change_user'))
+                jwt_client = authenticate_client(APIClient(), self.target)
+                django_client = Client()
+                django_client.force_login(self.target)
+                self.assertEqual(django_client.get('/admin/').status_code, 200)
+                response = self.client.post(self.url('role/'), self.body(role=role), format='json')
+                self.assertEqual(response.status_code, 200)
+                self.target.refresh_from_db()
+                self.assertEqual(self.target.role, role)
+                self.assertFalse(self.target.is_staff)
+                self.assertFalse(self.target.is_superuser)
+                self.assertFalse(self.target.groups.exists())
+                self.assertFalse(self.target.user_permissions.exists())
+                self.assertEqual(jwt_client.get('/api/users/me/').status_code, 401)
+                self.assertEqual(django_client.get('/admin/').status_code, 302)
+                self.assertFalse(self.target.has_perm('users.change_user'))
+                self.assertEqual(self.client.post(self.url('role/'), self.body(role='ADMIN'), format='json').status_code, 200)
+                self.target.refresh_from_db()
+                self.assertFalse(self.target.is_staff or self.target.is_superuser)
+                self.assertFalse(self.target.groups.exists() or self.target.user_permissions.exists())
+
+    def test_blocked_privileged_admin_cannot_be_taken_over_or_reactivated_by_lower_admin(self):
+        operator = User.objects.create_user('blocked_operator', role='ADMIN', password=PASSWORD)
+        operator.user_permissions.add(Permission.objects.get(codename='change_user'))
+        self.target = User.objects.create_user('blocked_privileged', role='ADMIN', status='BLOCKED',
+            email='blocked@example.com', password=PASSWORD)
+        self.target.user_permissions.add(Permission.objects.get(codename='assign_user_role'))
+        client = authenticate_client(APIClient(), operator)
+        for values in ({'email': 'takeover@example.com'}, {'status': 'ACTIVE'}):
+            self.assertEqual(client.patch(self.url(), self.body(**values), format='json').status_code, 403)
+        self.target.refresh_from_db()
+        self.assertEqual((self.target.email, self.target.status), ('blocked@example.com', 'BLOCKED'))
+
+    def test_failed_demotion_audit_rolls_back_privilege_revocation(self):
+        self.target = User.objects.create_superuser('rollback_superuser', password=PASSWORD)
+        permission = Permission.objects.get(codename='change_user')
+        self.target.user_permissions.add(permission)
+        with patch('apps.users.account_administration.audit_account', side_effect=RuntimeError('audit unavailable')):
+            with self.assertRaises(RuntimeError):
+                self.client.post(self.url('role/'), self.body(role='STUDENT'), format='json')
+        self.target.refresh_from_db()
+        self.assertEqual(self.target.role, 'ADMIN')
+        self.assertTrue(self.target.is_staff and self.target.is_superuser)
+        self.assertTrue(self.target.user_permissions.filter(pk=permission.pk).exists())
+
     def test_permission_removed_is_effective_with_old_jwt(self):
         viewer = User.objects.create_user('removed_viewer', role='ADMIN')
         permission = Permission.objects.get(codename='view_user')

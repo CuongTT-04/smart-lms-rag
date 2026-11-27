@@ -2,9 +2,11 @@
 import json
 
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import connection, transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from .models import StudentProfile, TeacherApproval, TeacherProfile, User
@@ -50,7 +52,8 @@ def authorize_write(actor, password, reason, *permissions, user_id=None):
 def account_snapshot(user):
     # No passwords, tokens, email addresses, phone or arbitrary client fields in audit.
     return dict(role=user.role, status=user.status, auth_version=user.auth_version,
-                email_version=user.email_version, updated_at=user.updated_at.isoformat())
+                email_version=user.email_version, is_staff=user.is_staff, is_superuser=user.is_superuser,
+                updated_at=user.updated_at.isoformat())
 
 
 def audit_account(actor, user, action, reason, before, changed_fields):
@@ -72,6 +75,21 @@ def protect_last_admin(target, *, role=None, status=None):
         others = User.objects.filter(role='ADMIN', status='ACTIVE', is_active=True).exclude(pk=target.pk)
         if not any(effective_admin(user) for user in others):
             raise AccountConflict('Không thể vô hiệu hóa quản trị viên hữu hiệu cuối cùng.')
+
+
+def require_target_authority(actor, target):
+    # Editing recovery email is effectively control of the target's credentials.
+    # Compare effective permissions, including groups, rather than only app roles.
+    if actor.pk == target.pk or actor.is_superuser:
+        return
+    # Inactive accounts still retain their assigned grants. Django's has_perm()
+    # hides those grants, which must not allow taking over a blocked admin.
+    grants = Permission.objects.filter(Q(user=target) | Q(group__user=target)).values_list(
+        'content_type__app_label', 'codename')
+    target_permissions = {f'{app}.{code}' for app, code in grants}
+    if (target.is_superuser or (target.is_staff and not actor.is_staff)
+            or not target_permissions.issubset(actor.get_all_permissions())):
+        raise PermissionError('Không được sửa tài khoản có quyền quản trị cao hơn tài khoản của bạn.')
 
 
 def reset_teacher_decision(user, actor, reason, *, entering):
@@ -134,6 +152,7 @@ def update_administered_user(*, actor, user_id, values, current_password, reason
     if 'status' in values and values['status'] not in User.Status.values:
         raise ValidationError({'status': 'Trạng thái không hợp lệ.'})
     protect_last_admin(target, role=values.get('role'), status=values.get('status'))
+    require_target_authority(admin, target)
     old_role = target.role
     if role_change and old_role == 'TEACHER' and values['role'] != old_role:
         from apps.courses.models import CourseMember
@@ -145,9 +164,21 @@ def update_administered_user(*, actor, user_id, values, current_password, reason
         return target
     for key, value in values.items():
         setattr(target, key, value)
+    demoting = role_change and target.role != 'ADMIN'
+    if demoting:
+        for field in ('is_staff', 'is_superuser'):
+            if getattr(target, field):
+                setattr(target, field, False)
+                changed.add(field)
     target.is_active = target.status == 'ACTIVE'
     target.full_clean(exclude=['password'])
     target.save(update_fields=changed)
+    if demoting:
+        for field in ('groups', 'user_permissions'):
+            relation = getattr(target, field)
+            if relation.exists():
+                relation.clear()
+                changed.add(field)
     if old_role != target.role:
         if old_role == 'TEACHER':
             reset_teacher_decision(target, admin, reason, entering=False)
