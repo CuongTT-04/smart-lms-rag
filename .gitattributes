@@ -13,3 +13,6 @@ Evidence/W08/*.md text eol=lf
 Evidence/W08/*.csv text eol=lf
 Evidence/W08/*.txt text eol=lf
 Evidence/W08/*.json text eol=lf
+
+# W09 evidence hashes bind exact bytes, including screenshots and filtered logs.
+Evidence/W09/** -text whitespace=cr-at-eol

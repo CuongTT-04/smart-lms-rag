@@ -10,6 +10,10 @@
 
 **Thành viên:** Trần Tuấn Cường (`B22DCVT073`), Vũ Nam Dương (`B22DCVT119`).
 
+**Cập nhật kiểm chứng ngày 28/11/2026:** xem [Evidence/W09](../../../Evidence/W09/README.md) và [báo cáo tuần](../../../Evidence/W09/report.md). Backend, frontend và các màn hình Admin đã được kiểm tra; **chưa chốt milestone** vì GR-01 thiếu citation, GR-31 dẫn trang không hỗ trợ ý ALU, hai tỷ lệ citation chat chưa đạt 90%. Đã kiểm nhận so sánh Base–tuned fixed-context ngày 26/11, 14 yêu cầu mỗi nhánh (13 ID), tách riêng với lượt API đủ 36 ca ngày 28/11. Summary hiện dẫn nguồn theo phạm vi, chưa đo liên kết từng ý; SMTP thật và demo thu hồi/mở lại citation trên UI còn chưa chạy. Không coi các ô kế hoạch bên dưới là xác nhận đã nghiệm thu; bảng kết quả thực tế nằm trong Evidence.
+
+**Sau ghép bản vá PR #27:** đã tích hợp commit `f04c7df` trên nhánh Cường, giữ các thay đổi đang làm và sửa tiếp lỗi xác thực/quyền sau model bị đổi thành 503. Hồi quy backend sau ghép: **1.050 đạt / 1.055 chạy, 5 bỏ qua**; ba ca trọng tâm giữ đúng lỗi 401/403 và trạng thái vận hành đạt. Kết quả 36 ca model thật phía trên được giữ làm baseline trước lần ghép này; chưa chạy lại và không tự chuyển các lỗi chất lượng thành đạt. Chi tiết tại [kiểm ghép](../../../Evidence/W09/logs/safe-merge.json).
+
 > **Hướng dẫn agent:** Đọc [SRS](../../SRS.md), bản phân công này, tài liệu gửi riêng `2026-11-24-admin-thanh-toan.md` và mã nguồn hiện tại trước khi triển khai. Làm xong và kiểm chứng từng mục kèm test (viết test → thấy fail đúng lý do → triển khai → chạy hồi quy). Ghi rõ bằng chứng thực chạy; không đánh dấu đạt khi chưa chạy. Không tự `commit`/`push`/`merge` khi chưa được yêu cầu; không đưa secrets, token, dữ liệu lớp thật hoặc log thô nhạy cảm lên Git.
 
 ---

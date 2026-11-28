@@ -1,0 +1,79 @@
+{
+  "status": "VERIFIED_FIXED_CONTEXT_PAIRED_RESULTS",
+  "received_run_date": "2026-11-26",
+  "verified_on": "2026-11-28",
+  "scope": "14 requests per arm, 13 distinct GR IDs; not full 36-case end-to-end acceptance",
+  "intake": {
+    "status": "HANDOFF_FILES_AND_RECEIPTS_VERIFIED",
+    "files_verified": 146,
+    "manifest_sha256": "559fc47f4bbe15f7b65c216d0b202324716757e02ec06e6ecb2bf91ecbc41ead",
+    "results_zip_sha256": "b99ad4632aa42138b22f5c43942db21d26dcf11c35ba84e4f3c8a66063d922a4",
+    "comparison_input_sha256": "b1be60f1fa3533bdf845e4c3927ccd751c261217316921a771ddc75b4d497b36",
+    "serving_input_sha256": "356b5ea306f14aa170df09e501f0c242bc09cc1c54a2e51b65629b198d99952b",
+    "source_branch": "VuNamDuong_B22DCVT119_W9Tasks",
+    "source_base_commit": "8197d2da181fe322f142d7b786c26dff7f309e56",
+    "supplied_notebooks": {
+      "OHAYO-Base-RAG.ipynb": {
+        "sha256": "76bc98eb457539d09e2898ef0954d2f884f7b042e760a6919df80dee6cd0b90e",
+        "matches_handoff": true,
+        "outputs": 0
+      },
+      "OHAYO-FineTune-RAG.ipynb": {
+        "sha256": "7d1b7762f0d1def56b39fff534eb811377bf2ea8224198343ba8dfc954b0747a",
+        "matches_handoff": true,
+        "outputs": 0
+      }
+    }
+  },
+  "input_comparison": {
+    "received_cases_equal_packaged_input": true,
+    "received_fixture_sha256": "69c5711267260dbb17fab01cf0a23904f2d6952e523fadc5c0cd99f705d2bf2f",
+    "current_fixture_sha256": "8ce5ca30d77d239fd3d184fda9f03daad677f071beaad7c00839a7dcd21b3c36",
+    "received_plan_digest": "c3aa4dc787c8a4ed50c8d85aa3c180e1f1e6dc39a2149d7036e512f34ffc7d67",
+    "current_plan_digest": "c3aa4dc787c8a4ed50c8d85aa3c180e1f1e6dc39a2149d7036e512f34ffc7d67",
+    "generation_requests_match_current_builder": true,
+    "received_scope": "Fixed-context generation only; no retrieval, database authorization or UI acceptance",
+    "requests_per_arm": 14
+  },
+  "independent_audit_matches_received": true,
+  "arms": {
+    "base_rag": {
+      "total": 14,
+      "http_200": 12,
+      "intentional_policy_400": 2,
+      "unexpected_http_errors": 0,
+      "qualitative_pass": 14,
+      "qualitative_total": 14,
+      "median_seconds": 3.41015,
+      "p95_seconds": 40.1229,
+      "resources": {
+        "peak_allocated_bytes": 7071596544,
+        "peak_reserved_bytes": 7144996864
+      }
+    },
+    "tuned_rag": {
+      "total": 14,
+      "http_200": 12,
+      "intentional_policy_400": 2,
+      "unexpected_http_errors": 0,
+      "qualitative_pass": 14,
+      "qualitative_total": 14,
+      "median_seconds": 4.9275,
+      "p95_seconds": 44.0982,
+      "resources": {
+        "peak_allocated_bytes": 7071596544,
+        "peak_reserved_bytes": 7304380416
+      }
+    }
+  },
+  "review_type": "ASSISTANT_INDEPENDENT_CONTENT_REVIEW_OF_28_RECEIVED_OUTPUTS",
+  "semantic_accuracy": "NOT_AGGREGATED_PER_CLAIM",
+  "semantic_coverage": "NOT_AGGREGATED_PER_CLAIM",
+  "selection": "Live serving uses tuned_rag; post-patch 36/36 end-to-end acceptance run passed.",
+  "limitations": [
+    "Same requests/contexts/config/seed/tokenizer/checkpoint/GPU per pair; source fixture file bytes differ from current tree, so preserve dated provenance.",
+    "Summary map-phase outputs do not prove whole-document summary completion.",
+    "Injected tutoring state and already-public exercise inputs do not prove server-side ownership/filtering.",
+    "Latency includes cold-start and intentional policy blocks; not a controlled throughput benchmark."
+  ]
+}

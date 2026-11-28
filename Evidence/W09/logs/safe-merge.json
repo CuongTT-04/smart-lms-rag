@@ -1,0 +1,128 @@
+{
+  "status": "VERIFIED_POST_PATCH_WITH_LIVE_RERUN",
+  "branch": "TranTuanCuong_B22DCVT073_W9Tasks",
+  "head": "f04c7df781b0a62be00a42230ab520f4a948a1bb",
+  "main": "8addbca1862aa8bd7a804a5d6a856020d2c81bf7",
+  "same_base_tree": true,
+  "tracked_pending_patch_applies": true,
+  "unmerged_entries": 0,
+  "existing_stash_preserved": true,
+  "original_files_preserved_exact": [
+    ".gitattributes",
+    "backend/apps/ai/api/views.py",
+    "backend/apps/ai/models.py",
+    "backend/tests/ai/test_w4_api.py",
+    "backend/tests/ai/test_w4_service.py",
+    "docs/weekly/W9/phan-cong-w9-guardrails.md",
+    "frontend/src/App.jsx",
+    "frontend/src/admin/AdminPage.jsx",
+    "frontend/src/admin/AdminPage.test.jsx",
+    "frontend/src/admin/admin.css",
+    "frontend/src/admin/components/admin-format.js",
+    "frontend/src/admin/pages/AccountsPage.jsx",
+    "frontend/src/admin/pages/InstitutionsPage.jsx",
+    "frontend/src/admin/pages/OperationsPage.jsx",
+    "frontend/src/admin/services/admin.service.js",
+    "frontend/src/components/CustomSelect.jsx",
+    "frontend/src/index.css",
+    "Evidence/W09/README.md",
+    "Evidence/W09/figures/admin-institutions.png",
+    "Evidence/W09/figures/admin-operations.png",
+    "Evidence/W09/figures/admin-overview.png",
+    "Evidence/W09/figures/guardrails-results.svg",
+    "Evidence/W09/logs/checks.json",
+    "Evidence/W09/logs/citation-review.csv",
+    "Evidence/W09/logs/paired-intake.json",
+    "Evidence/W09/manifest.json",
+    "Evidence/W09/metrics.csv",
+    "Evidence/W09/report.md",
+    "Evidence/W09/test-results.txt",
+    "backend/apps/ai/migrations/0006_generationevent_recovered_at.py",
+    "scripts/verify_w9.py"
+  ],
+  "manual_integration_files": [
+    "backend/apps/ai/services.py",
+    "backend/apps/ai/operations.py"
+  ],
+  "integrated_commit": "f04c7df781b0a62be00a42230ab520f4a948a1bb",
+  "verification": "Fast-forward with restored user edits, citation/reading-order backend patch, full backend regression and full 36/36 live acceptance rerun.",
+  "new_changes_committed": false,
+  "pushed": false,
+  "main_can_change_later": true,
+  "original_artifacts_backed_up": true,
+  "deployment_health": {
+    "backend": "HEALTHY_AFTER_RESTART",
+    "gateway": {
+      "observed_at": "2026-11-28T13:32:37+07:00",
+      "ready": true,
+      "busy": false,
+      "replicas": 2,
+      "in_flight": 0,
+      "config": {
+        "model": "Qwen/Qwen2.5-7B-Instruct",
+        "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+        "prompt_version": "bounded_guidance",
+        "max_input_tokens": 3584,
+        "max_output_tokens": 1024,
+        "timeout_seconds": 90,
+        "temperature": 0
+      },
+      "serving": {
+        "arm": "tuned_rag",
+        "replicas": [
+          {
+            "arm": "tuned_rag",
+            "adapter_sha256": "51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7",
+            "adapter_config_sha256": "fc3c0e7c0ca551b61b9173ab0382a618cf16ec05eb4b0b9bf837bdee1abd3033",
+            "loaded_adapter_tensors": 392,
+            "tensor_values_match": true,
+            "active_adapter": "default",
+            "lora_layers": 196,
+            "trainable_parameters": 0,
+            "model": "Qwen/Qwen2.5-7B-Instruct",
+            "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "device": "cuda:0",
+            "tokenizer_matches_training": true,
+            "tokenizer_source": "verified_adapter_training_tokenizer",
+            "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+          },
+          {
+            "arm": "tuned_rag",
+            "adapter_sha256": "51713be1e630135099f95ed08c89b5be8669b75c9e1908a1346c5c9cc4942ae7",
+            "adapter_config_sha256": "fc3c0e7c0ca551b61b9173ab0382a618cf16ec05eb4b0b9bf837bdee1abd3033",
+            "loaded_adapter_tensors": 392,
+            "tensor_values_match": true,
+            "active_adapter": "default",
+            "lora_layers": 196,
+            "trainable_parameters": 0,
+            "model": "Qwen/Qwen2.5-7B-Instruct",
+            "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+            "device": "cuda:1",
+            "tokenizer_matches_training": true,
+            "tokenizer_source": "verified_adapter_training_tokenizer",
+            "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+          }
+        ],
+        "package_sha256": "356b5ea306f14aa170df09e501f0c242bc09cc1c54a2e51b65629b198d99952b",
+        "gateway_sha256": "c4b7f451d51be802ba2097178fe4372da1f39ff8f4f5d98458da54caa4cec730"
+      }
+    }
+  },
+  "tests": {
+    "backend": {
+      "total": 1060,
+      "passed": 1055,
+      "skipped": 5,
+      "failures": 0
+    },
+    "legacy": {
+      "total": 27,
+      "passed": 27
+    },
+    "tools": {
+      "total": 28,
+      "passed": 28
+    },
+    "frontend": "Prior 413-pass run retained; frontend source bytes unchanged."
+  }
+}

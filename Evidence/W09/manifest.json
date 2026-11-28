@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "week": "W09",
+  "updated_at": "2026-11-28",
+  "status": "READY_FOR_REVIEW",
+  "milestone": "Guardrails, quyền truy cập tài liệu, chống lộ nội dung/citation sai",
+  "source_checkpoint": {
+    "git_head": "f04c7df781b0a62be00a42230ab520f4a948a1bb",
+    "branch": "TranTuanCuong_B22DCVT073_W9Tasks",
+    "working_tree_dirty": true,
+    "byte_basis": "WORKING_TREE_EXACT_BYTES; Evidence/W09/** -text preserves these bytes when staged",
+    "files": {
+      ".gitattributes": {
+        "sha256": "07563d500e58f0b3e3b2df516c53c96b4cf6ce43d6e4644355d5e3b8654dca0a",
+        "size_bytes": 757
+      },
+      "backend/apps/ai/api/views.py": {
+        "sha256": "d04c31d6dff1eca135e7c9524e4102c0bb3cd7532fc511fb0187f787a798d1ea",
+        "size_bytes": 13004
+      },
+      "backend/apps/ai/inference_gateway.py": {
+        "sha256": "f8d4ed42b3a924d5a48e0c9304adad65e959dbb3d541d0c4030e239baf55c54f",
+        "size_bytes": 12547
+      },
+      "backend/apps/ai/migrations/0006_generationevent_recovered_at.py": {
+        "sha256": "4618622889e44c3b6eecfa4a418180e82944d506215613786a68395273698ca7",
+        "size_bytes": 343
+      },
+      "backend/apps/ai/models.py": {
+        "sha256": "e909722c0f330401fc804838db9e515a1ccf489247391535b2a0f2706f638e69",
+        "size_bytes": 5979
+      },
+      "backend/apps/ai/operations.py": {
+        "sha256": "24afd95eb451b92c251e3198e5354121fcb78ca845498b39a8a410a68100d2f9",
+        "size_bytes": 9346
+      },
+      "backend/apps/ai/rag/conversation.py": {
+        "sha256": "61bf59b92976b070757a62a964916220f2f57f5aed7e360b0d8561063f3a2977",
+        "size_bytes": 49262
+      },
+      "backend/apps/ai/services.py": {
+        "sha256": "d4dd4f1d214999bdf3670d3ea0490cba132d6060e29be1a3280e7678f0188d24",
+        "size_bytes": 13218
+      },
+      "backend/apps/ai/tests/test_answer_completeness.py": {
+        "sha256": "e8bb119cd6c56199ab29e24da7547415e1f940e6fbb52ba4f608538bd142a1a6",
+        "size_bytes": 29365
+      },
+      "backend/config/ai/kaggle-dual-gpu.json": {
+        "sha256": "17e7fded00c22d84f3c551ea46617599de13097214004084b25eea3d7ed65c49",
+        "size_bytes": 255
+      },
+      "backend/tests/ai/test_operations.py": {
+        "sha256": "53734be23952e02eeb277a6b6d53922acc108e42919ca3021932d3ee1709c5ec",
+        "size_bytes": 19124
+      },
+      "backend/tests/ai/test_w4_api.py": {
+        "sha256": "4ed62a04c456c134d1624a06df995e19641f71f1035921e64c7cd7a5189ec848",
+        "size_bytes": 2986
+      },
+      "backend/tests/ai/test_w4_service.py": {
+        "sha256": "b123d011c8b3998b4b3f37d474fdf302012b0c7276be184252790cf9cb6e7030",
+        "size_bytes": 16187
+      },
+      "backend/tests/documents/w9_guardrails_fixture.py": {
+        "sha256": "8ce5ca30d77d239fd3d184fda9f03daad677f071beaad7c00839a7dcd21b3c36",
+        "size_bytes": 21537
+      },
+      "data/qa/guardrails-cases.json": {
+        "sha256": "ea93af4d8793e6b8228c446afe160659d59a2957729f01918e201634ff85c2a6",
+        "size_bytes": 14391
+      },
+      "docs/weekly/W9/phan-cong-w9-guardrails.md": {
+        "sha256": "7581995b8968a259d94e76ddd3c8c56e66c50b8d0d9789e77f9e2f580714f79d",
+        "size_bytes": 25229
+      },
+      "frontend/src/App.jsx": {
+        "sha256": "a0654d906b19aba16596c686ef2469c1640458302bd66caf972a4baa23069177",
+        "size_bytes": 5252
+      },
+      "frontend/src/admin/AdminPage.jsx": {
+        "sha256": "2c41f3b667aa4d601a4e98b8f6b9f36fcba96d89b49d6c14782656ab4750bcfa",
+        "size_bytes": 6740
+      },
+      "frontend/src/admin/AdminPage.test.jsx": {
+        "sha256": "4466ae3f97eea54aecd75496040e529d6056d6f16fa23520e5b3b1e92b982999",
+        "size_bytes": 14399
+      },
+      "frontend/src/admin/admin.css": {
+        "sha256": "a37a3b61355d39a80f7f324e2481824176b8e2948ea196dadeda4e37378f1fe7",
+        "size_bytes": 14838
+      },
+      "frontend/src/admin/components/admin-format.js": {
+        "sha256": "2a387cc9144efee48552b3ddbf592f1b95ea644dce9aedf84a1435a34b9fcff5",
+        "size_bytes": 1826
+      },
+      "frontend/src/admin/pages/AccountsPage.jsx": {
+        "sha256": "5430d036acbd983952aea35cf31e95b0bdd742d0d8b0f8446108cdbab1d1732d",
+        "size_bytes": 15273
+      },
+      "frontend/src/admin/pages/InstitutionsPage.jsx": {
+        "sha256": "5d29a43edaf6c6ab080a4f0f1e313b11dc66128d4c2e8cdd963ffadc2af9f30c",
+        "size_bytes": 10243
+      },
+      "frontend/src/admin/pages/OperationsPage.jsx": {
+        "sha256": "d8e1a8556d2e23362c91fa40e5017edee77e13863a47407544f28f464f6dabe2",
+        "size_bytes": 5012
+      },
+      "frontend/src/admin/services/admin.service.js": {
+        "sha256": "a8134550facffdcfa3d33fbf08b271466fcde20e2a1fb494fab5ea604f5bab22",
+        "size_bytes": 1698
+      },
+      "frontend/src/components/CustomSelect.jsx": {
+        "sha256": "3b839ae84e420ce2b1de3613f19e485d3fcb4155d2bc34c1174d7ff6afaaccab",
+        "size_bytes": 6403
+      },
+      "frontend/src/index.css": {
+        "sha256": "9d2b112e13a0f6ba4798051f2fd48ebf8e3145d8d246cdde55a376b94d541b87",
+        "size_bytes": 76647
+      },
+      "scripts/verify_w9.py": {
+        "sha256": "54ccb334e402c5d1e47cfa8f1a96c5f7a8e7e79dc6050cf26e0861d7b31ee8b9",
+        "size_bytes": 25498
+      }
+    }
+  },
+  "serving_arm": "tuned_rag",
+  "gateway_normalization": "Gateway source hash uses LF; working-tree file hash may differ on Windows.",
+  "limitations": [
+    "Assistant content review pending explicit member sign-off",
+    "Summary per-claim citation metrics not measured (input-range citations only; 17/17 content supported)",
+    "Base/tuned fixed-context run verified separately; not full 36-case E2E comparison",
+    "Real SMTP and fresh UI revoke/reopen demonstration not run",
+    "Five optional parser tests skipped in backend container"
+  ],
+  "review_type": "ASSISTANT_CONTENT_REVIEW_PENDING_MEMBER_SIGN_OFF",
+  "layout": [
+    "README.md",
+    "metrics.csv",
+    "test-results.txt",
+    "manifest.json",
+    "figures/",
+    "logs/",
+    "report.md"
+  ],
+  "files": {
+    "figures/admin-institutions.png": {
+      "sha256": "4bb36bb049ff92a89fd6b3d3a6b7233f6008838470e82c253eacb0d85797acab",
+      "size_bytes": 66185
+    },
+    "figures/admin-operations.png": {
+      "sha256": "f7c4c1a95f70eeb015e19e6c0fa2f4dc0ed5a9e46f316efccaa130d7e902f181",
+      "size_bytes": 45910
+    },
+    "figures/admin-overview.png": {
+      "sha256": "ad056ef5d74ab8d32ea7235b052c93dd0184a0c3163ab6f8b386f2281c940564",
+      "size_bytes": 49353
+    },
+    "figures/guardrails-results.svg": {
+      "sha256": "7957877f0fe6043f1234593e6f0dceb96f9af2a7a1b1de489de6d99bc4ebfe9c",
+      "size_bytes": 685
+    },
+    "logs/checks.json": {
+      "sha256": "bb746f27244cb4cb9cafc3ccaae004aca91762ba2bf2e74ef40db26fbf4cac80",
+      "size_bytes": 226118
+    },
+    "logs/citation-review.csv": {
+      "sha256": "3e581ece2dd4556e95777c3047f26bec580ef5ab3785696e37c1fac3dfc794d4",
+      "size_bytes": 4382
+    },
+    "logs/paired-intake.json": {
+      "sha256": "1efa8597098ffc833b019763a07c3a5af5af6e76d2b0c5cd8e91306e8a62ee07",
+      "size_bytes": 3450
+    },
+    "logs/safe-merge.json": {
+      "sha256": "ade9b5c8e2793c450ee397f91e19e04dde537ad3cecff34d01d079dac69f9d42",
+      "size_bytes": 4925
+    },
+    "metrics.csv": {
+      "sha256": "710a2bed622ba6c30971d28bcd95924cc52d72306c95030da45b50950c15bbbd",
+      "size_bytes": 2071
+    },
+    "README.md": {
+      "sha256": "e1237db211a49f9ffdb66d4e63c78621bae601b2437c201bfe0dd1fd575c698a",
+      "size_bytes": 11623
+    },
+    "report.md": {
+      "sha256": "7a9a00cc5d9ba1472ea9b11a90536419d5135d20c664747a9c8a2413ccdba21d",
+      "size_bytes": 3970
+    },
+    "test-results.txt": {
+      "sha256": "9ed320570b80d1a634a8d495e2a364ca0999779eb7af2f957f711011524a4888",
+      "size_bytes": 3877
+    }
+  },
+  "self_hash": "Excluded to avoid recursive checksum; private evidence-receipt.json binds manifest bytes."
+}
