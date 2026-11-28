@@ -376,9 +376,19 @@ class LiveAcceptance(TestCase):
 
     def test_GR_28(self):
         self.execution_kind='MOCK_INVALID_GENERATION_REAL_API'
-        self.provider_override=lambda **kw: dict(status='ANSWERED',answer='Chu kỳ CPU [1].',references=[dict(label=1,source_id='S99')])
+        self.provider_override=lambda **kw: dict(status='ANSWERED',answer='Chu kỳ CPU [1].',
+            references=[dict(label=1,source_id=kw['contexts'][0]['source_id'])],usage=None)
+        control=self.send('GR-28-control','Chu kỳ lệnh CPU gồm những bước nào?')
+        self.assertEqual(control.status_code,200,control.json())
+        self.assertEqual(control.json()['status'],'ANSWERED')
+        self.assertEqual(len(self.calls),1)
+        self.calls.clear()
+        self.provider_override=lambda **kw: dict(status='ANSWERED',answer='Chu kỳ CPU [1].',
+            references=[dict(label=1,source_id='S99')],usage=None)
         r=self.send('GR-28','Chu kỳ lệnh CPU gồm những bước nào?')
-        self.assertEqual(r.status_code,503,r.json());self.assertEqual(len(self.calls),1)
+        self.assertEqual(r.status_code,503,r.json())
+        self.assertEqual(r.json().get('code'),'INVALID_GENERATION')
+        self.assertEqual(len(self.calls),1)
 
     def test_GR_29(self):
         from apps.documents.retrieval_scope import verify_citation_access

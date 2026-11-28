@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import AdminPage from './AdminPage'
 import AccountsPage from './pages/AccountsPage'
@@ -35,6 +35,38 @@ it('contains keyboard focus in mobile navigation and closes it with Escape', asy
   expect(opener).toHaveAttribute('aria-expanded', 'false')
   expect(opener).toHaveFocus()
   expect(container.querySelector('.adm-main').inert).toBe(false)
+})
+it('closes mobile navigation and restores scroll and inert state when widening to desktop', async () => {
+  const listeners = new Set()
+  const media = {
+    matches: true,
+    media: '(max-width: 760px)',
+    addEventListener: vi.fn((event, handler) => { if (event === 'change') listeners.add(handler) }),
+    removeEventListener: vi.fn((event, handler) => { if (event === 'change') listeners.delete(handler) }),
+  }
+  const originalMatchMedia = window.matchMedia
+  Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: vi.fn(() => media) })
+  try {
+    document.body.style.overflow = 'auto'
+    const { container } = mount({ accounts: true })
+    await screen.findByRole('button', { name: 'Tài khoản', exact: true })
+    const opener = screen.getByRole('button', { name: 'Mở điều hướng' })
+    await userEvent.click(opener)
+    expect(opener).toHaveAttribute('aria-expanded', 'true')
+    expect(container.querySelector('.adm-main').inert).toBe(true)
+    expect(document.body.style.overflow).toBe('hidden')
+    act(() => {
+      media.matches = false
+      listeners.forEach(handler => handler({ matches: false, media: media.media }))
+    })
+    expect(opener).toHaveAttribute('aria-expanded', 'false')
+    expect(container.querySelector('.adm-main').inert).toBe(false)
+    expect(document.body.style.overflow).toBe('auto')
+    expect(opener).not.toHaveFocus()
+  } finally {
+    document.body.style.overflow = ''
+    Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: originalMatchMedia })
+  }
 })
 it('shows only permitted navigation and keeps the personal profile available', async () => {
   mount({ accounts: true })
