@@ -10,6 +10,10 @@
 
 **Thành viên:** Trần Tuấn Cường (`B22DCVT073`), Vũ Nam Dương (`B22DCVT119`).
 
+**Cập nhật kiểm chứng ngày 28/11/2026:** kết quả hiện tại xem tại [báo cáo tóm tắt Evidence/W09](../../../Evidence/W09/README.md). Ma trận sau bản vá citation đạt 36/36 tình huống; hồi quy backend đạt 1.055/1.060, năm ca bỏ qua; frontend đạt 413/413. Đã bổ sung ảnh mở lại PDF bị chặn sau thu hồi công bố và ảnh nhận thư/xác minh qua SMTP thật trong môi trường thử riêng. Luồng mở lại citation trên UI và việc áp dụng SMTP vào backend vận hành còn cần kiểm; kết quả đối chiếu nội dung chờ thành viên ký duyệt. So sánh Base–tuned fixed-context gồm 14 yêu cầu mỗi nhánh, được ghi riêng với ma trận 36 tình huống.
+
+**Mốc kiểm chứng sau ghép PR #27 (trước lượt chạy cuối):** đã tích hợp `f04c7df` và sửa lỗi xác thực/quyền sau model bị đổi thành 503; lượt hồi quy tại mốc này đạt 1.050/1.055, năm ca bỏ qua. Kết quả trước vá được giữ riêng để đối chiếu, không dùng thay kết quả sau sửa. Nhật ký ghép được lưu tại `.private/w9-evidence-review-20261128/logs/safe-merge.json`; bản tóm tắt và kết quả hiện hành nằm trong Evidence/W09.
+
 > **Hướng dẫn agent:** Đọc [SRS](../../SRS.md), bản phân công này, tài liệu gửi riêng `2026-11-24-admin-thanh-toan.md` và mã nguồn hiện tại trước khi triển khai. Làm xong và kiểm chứng từng mục kèm test (viết test → thấy fail đúng lý do → triển khai → chạy hồi quy). Ghi rõ bằng chứng thực chạy; không đánh dấu đạt khi chưa chạy. Không tự `commit`/`push`/`merge` khi chưa được yêu cầu; không đưa secrets, token, dữ liệu lớp thật hoặc log thô nhạy cảm lên Git.
 
 ---

@@ -14,7 +14,7 @@ export function adminError(error) {
   if (error?.status === 429) return 'Bạn thao tác quá nhanh. Vui lòng đợi một phút rồi thử lại.'
   if (error?.status === 400) {
     const data = error.data
-    return Object.entries(data || {}).map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(' ') : String(value)}`).join(' · ') || 'Vui lòng kiểm tra các trường đã nhập.'
+    return Object.entries(data || {}).map(([key, value]) => `${({ non_field_errors: '', detail: '', email: 'Email', username: 'Tên đăng nhập', reason: 'Lý do', start_date: 'Từ ngày', end_date: 'Đến ngày', current_password: 'Mật khẩu xác nhận' })[key] ?? 'Thông tin'}${['non_field_errors', 'detail'].includes(key) ? '' : ': '}${Array.isArray(value) ? value.join(' ') : String(value)}`).join(' · ') || 'Vui lòng kiểm tra các trường đã nhập.'
   }
   return 'Chưa kết nối được dữ liệu. Vui lòng thử lại.'
 }

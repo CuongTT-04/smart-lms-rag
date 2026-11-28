@@ -381,7 +381,9 @@ def multipart_evidence_groups(question, contexts):
     if not 2 <= len(parts) <= 4:
         return []
     units = build_evidence_units(contexts)
-    normalized = {unit['evidence_id']: ' ' + ' '.join(words(unit['text'])) + ' ' for unit in units}
+    from .summary import _page_scope
+    normalized = {unit['evidence_id']: ' ' + ' '.join(words(unit['text'])) + ' '
+                  for unit in units if not _page_scope(unit['text'])}
     groups = []
     for part in parts:
         tokens = words(part)

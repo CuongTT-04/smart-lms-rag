@@ -193,6 +193,20 @@ class MultipartCoverageTests(TestCase):
             validate_multipart_coverage(self.question, raw, contexts)
         self.assertEqual(caught.exception.missing_evidence[0]['text'], contexts[0].text)
 
+    def test_page_scope_disclaimer_does_not_capture_negative_topic_as_evidence(self):
+        contexts = [
+            replace(self.contexts[1], source_id='S1', chunk_id='p2',
+                    text='Bo nho dem luu du lieu thuong dung de giam do tre.\n'
+                         'Trang nay chi mo ta bo nho dem, khong mo ta giao thuc mang.'),
+            replace(self.contexts[0], source_id='S2', chunk_id='p1',
+                    text='Giao thuc mang quy dinh cach dong goi va truyen goi tin.'),
+        ]
+        groups = multipart_evidence_groups(
+            'Nêu giao thức mạng và bộ nhớ đệm, trích nguồn cho từng ý.', contexts)
+        self.assertEqual(len(groups), 2)
+        self.assertEqual(groups[0]['evidence_ids'], ['E2.1'])
+        self.assertEqual(groups[1]['evidence_ids'], ['E1.1'])
+
 
 class EnumerationCoverageTests(TestCase):
     def setUp(self):

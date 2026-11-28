@@ -5,6 +5,16 @@ from tests.documents.test_retrieval_scope import ScopeFixture
 
 
 class ChatApiTests(ScopeFixture):
+    def test_infrastructure_error_never_discloses_connection_details(self):
+        self.client.force_authenticate(self.student)
+        for code in ('RETRIEVAL_UNAVAILABLE', 'GENERATION_UNAVAILABLE'):
+            with self.subTest(code=code), patch('apps.ai.services.get_runtime',
+                    side_effect=DocumentError(code, 'Private connection text', 503)):
+                response = self.client.post('/api/ai/chat/', self.data, format='json')
+            self.assertEqual(response.status_code, 503)
+            self.assertEqual(response.data['code'], code)
+            self.assertNotIn('Private connection text', str(response.data))
+
     def test_chat_is_not_wrapped_in_request_transaction(self):
         from django.urls import resolve
         self.assertIn('default',resolve('/api/ai/chat/').func._non_atomic_requests)

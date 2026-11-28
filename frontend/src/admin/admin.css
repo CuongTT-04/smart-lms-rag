@@ -94,3 +94,19 @@ html:has(.adm-shell) { overflow-x:clip; }
 @media(max-width:760px) { .adm-sidebar:not(.open) { visibility:hidden; pointer-events:none; } }
 @media(max-width:1150px) { .adm-shell { grid-template-columns:210px minmax(0,1fr); }.adm-content { padding:28px 24px; }.adm-topbar { padding:0 24px; }.adm-stat-grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:760px) { .adm-shell { grid-template-columns:minmax(0,1fr); }.adm-sidebar { position:fixed; left:0; width:250px; transform:translateX(-100%); transition:transform .2s; z-index:60; }.adm-sidebar.open { transform:translateX(0); }.adm-nav-shade { display:block!important; position:fixed; inset:0; border:0; background:#203e3255; z-index:50; }.adm-menu-button,.adm-mobile-close { display:grid!important; place-items:center; border:0; background:none; color:#688370; min-height:42px; min-width:42px; }.adm-mobile-close { position:absolute; right:4px; top:65px; width:36px!important; }.adm-topbar { height:70px; padding:0 15px; gap:8px; }.adm-topbar > div:first-of-type > span,.adm-topbar > div:first-of-type > svg { display:none; }.adm-content { padding:25px 16px; }.adm-page-heading { align-items:flex-start; flex-direction:column; gap:16px; }.adm-page-heading h1 { font-size:25px; }.adm-stat-grid { gap:10px; }.adm-stat { padding:16px; }.adm-stat > strong { font-size:29px; }.adm-two-columns { grid-template-columns:1fr; gap:0; }.adm-toolbar > .adm-field { flex:1; min-width:135px; }.adm-toolbar > .adm-search { flex-basis:100%; }.adm-toolbar .custom-select-trigger { min-width:0; width:100%; }.adm-field input { font-size:16px; }.adm-panel { padding:19px; }.adm-table-panel { padding:0; }.adm-table-panel table { min-width:650px; }.adm-modal-backdrop { padding:12px; }.adm-modal { padding:20px; max-height:94svh; }.adm-form-grid { grid-template-columns:1fr; }.adm-details > div { grid-template-columns:115px 1fr; gap:10px; }.adm-person { flex-wrap:wrap; }.adm-person > .adm-status { margin-left:0; }.adm-confirm-form { padding:14px; }.adm-footer { padding-left:16px; } }
+
+/* Reserve the active marker so every sidebar row keeps the same geometry. */
+.adm-sidebar nav button { display:grid; grid-template-columns:19px minmax(0,1fr) 16px; min-height:48px; }
+.adm-sidebar nav button span { white-space:nowrap; }
+.adm-sidebar nav button > svg:last-child:not(:first-child) { grid-column:3; }
+.adm-sidebar button,.adm-text-button { color:#486451; }
+.adm-page-heading p,.adm-panel > p,.adm-table-panel th,.adm-table-panel td small,.adm-field > label,.adm-pagination,.adm-info { color:#526c5b; }
+.adm-status.good { color:#356b49; }
+.adm-institution-toolbar { display:grid; grid-template-columns:minmax(0,2fr) minmax(165px,1fr) auto; align-items:end; }
+.adm-institution-toolbar .custom-select-trigger { width:100%; }
+.adm-view-enter { animation:adm-view-in 180ms ease-out; }
+@keyframes adm-view-in { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+@media(max-width:760px) { .adm-institution-toolbar { grid-template-columns:minmax(0,1fr); }.adm-institution-toolbar > .adm-field { min-width:0; } }
+@media(prefers-reduced-motion:reduce) { .adm-view-enter { animation:none; }.adm-sidebar { transition:none; } }
+
+@media(min-width:761px) and (max-width:1150px) { .adm-shell { grid-template-columns:240px minmax(0,1fr); } }

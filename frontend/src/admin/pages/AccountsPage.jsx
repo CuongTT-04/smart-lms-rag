@@ -4,7 +4,7 @@ import InstitutionCombobox from '../../components/InstitutionCombobox'
 import useAdminData from '../hooks/useAdminData'
 import { adminError, writeAdmin } from '../services/admin.service'
 import { Feedback, Field, Modal, Pagination, SelectField, Status, ValidatedForm } from '../components/AdminControls'
-import { APPROVALS, approvalSource, dateText, labelOf, ROLES, STATUSES } from '../components/admin-format'
+import { APPROVALS, auditAction, approvalSource, dateText, labelOf, ROLES, STATUSES } from '../components/admin-format'
 
 const ALL = [['', 'Tất cả']]
 
@@ -66,7 +66,7 @@ function MutationForm({ user, mode, onCancel, onSaved, onConflict }) {
 function History({ path }) {
   const [offset, setOffset] = useState(0)
   const resource = useAdminData(`${path}?offset=${offset}&limit=20`)
-  return <section className="adm-history"><h3>Lịch sử thay đổi</h3><Feedback resource={resource} empty={!resource.data?.results?.length}><ol>{resource.data?.results.map(row => <li key={row.id}><strong>{row.action || row.details?.action}</strong><time>{dateText(row.created_at || row.action_time)}</time><p>{row.reason || row.details?.reason}</p><small>{row.revision ? `Phiên bản ${row.revision}` : 'Đã ghi nhận thay đổi'}</small></li>)}</ol></Feedback><Pagination offset={offset} count={resource.data?.count || 0} onChange={setOffset} /></section>
+  return <section className="adm-history"><h3>Lịch sử thay đổi</h3><Feedback resource={resource} empty={!resource.data?.results?.length}><ol>{resource.data?.results.map(row => <li key={row.id}><strong>{auditAction(row.action || row.details?.action)}</strong><time>{dateText(row.created_at || row.action_time)}</time><p>{row.action === 'LEGACY_APPROVED' ? 'Giữ quyền giảng dạy của giáo viên đã có khi triển khai xét duyệt.' : row.reason || row.details?.reason}</p><small>{row.revision ? `Phiên bản ${row.revision}` : 'Đã ghi nhận thay đổi'}</small></li>)}</ol></Feedback><Pagination offset={offset} count={resource.data?.count || 0} onChange={setOffset} /></section>
 }
 
 function CreateAccount({ onClose, onSaved }) {

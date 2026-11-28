@@ -188,6 +188,36 @@ class DocumentReadQuotaTests(TestCase):
 
 
 class OperationalServiceTests(ChatServiceTests):
+    def test_account_blocked_after_generation_keeps_auth_error_and_event_code(self):
+        from apps.users.models import User
+
+        def generate(**kwargs):
+            User.objects.filter(pk=self.student.pk).update(status='BLOCKED', is_active=False)
+            return self.output
+
+        self.runtime.generate.side_effect = generate
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual((caught.exception.code, caught.exception.status), ('AUTH_REQUIRED', 401))
+        event = GenerationEvent.objects.get()
+        self.assertEqual((event.status, event.code, event.gateway_calls), ('FAILED', 'AUTH_REQUIRED', 1))
+
+    def test_teacher_revoked_after_generation_keeps_permission_error_and_event_code(self):
+        from apps.ai.services import answer_chat
+        from apps.users.models import TeacherApproval
+        from apps.users.teaching_access import TeacherNotApproved
+
+        def generate(**kwargs):
+            TeacherApproval.objects.filter(teacher_profile__user=self.owner).update(
+                status='REVOKED', source='ADMIN', decided_by=self.owner, decided_at=timezone.now())
+            return self.output
+
+        self.runtime.generate.side_effect = generate
+        with self.assertRaises(TeacherNotApproved):
+            answer_chat(user=self.owner, data=self.data, runtime=self.runtime, request_id='revoked-teacher')
+        event = GenerationEvent.objects.get()
+        self.assertEqual((event.status, event.code, event.gateway_calls), ('FAILED', 'TEACHER_NOT_APPROVED', 1))
+
     def test_invalid_output_is_failed_instead_of_completed(self):
         self.runtime.generate.return_value = {**self.output, 'references': []}
         with self.assertRaises(DocumentError) as caught:

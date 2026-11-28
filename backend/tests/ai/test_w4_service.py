@@ -172,6 +172,10 @@ class ChatServiceTests(ScopeFixture):
         self.assertNotIn('Ví dụ', result['answer'])
         self.assertNotIn('Tên giảng viên', result['answer'])
         self.assertEqual(result['memory']['turns_used'], 0)
+        from apps.ai.models import GenerationEvent
+        event = GenerationEvent.objects.latest('created_at')
+        self.assertEqual(event.code, 'GENERATION_INCOMPLETE_ANSWER')
+        self.assertIsNotNone(event.recovered_at)
         self.data['question'] = 'Quy trình thanh toán diễn ra như thế nào?'
         with self.assertRaises(DocumentError) as caught:
             self.call()
@@ -199,3 +203,53 @@ class ChatServiceTests(ScopeFixture):
         self.runtime.generate.side_effect=generate
         with self.assertRaises(DocumentError) as caught: self.call()
         self.assertEqual(caught.exception.code,'AI_NOT_ALLOWED')
+
+    def test_stateless_qa_enables_structured_citation_protocol_without_exposing_memory(self):
+        self.runtime.generate.return_value = {
+            **self.output,
+            '_memory': dict(protocol='chat_history_v1', turns_used=0, turns_dropped=0, history_tokens=0),
+        }
+        result = self.call()
+        self.assertEqual(self.runtime.generate.call_args.kwargs['history'], [])
+        self.assertNotIn('memory', result)
+        self.assertEqual(result['status'], 'ANSWERED')
+
+        self.runtime.generate.return_value = {**self.output, '_memory': dict(protocol='legacy')}
+        with self.assertRaises(DocumentError) as caught:
+            self.call()
+        self.assertEqual(caught.exception.code, 'GENERATION_CONFIG_MISMATCH')
+
+        assessment = Assessment.objects.create(
+            session=self.session, kind='TEXT', mode='PRACTICE',
+            title='Ôn tập', description='Đọc tài liệu.', due_at=timezone.now() + timedelta(days=1),
+            is_published=True,
+        )
+        self.data.update(mode='hint', assessment_id=str(assessment.pk))
+        self.runtime.generate.return_value = self.output
+        self.call()
+        self.assertNotIn('history', self.runtime.generate.call_args.kwargs)
+
+    def test_same_document_hits_within_budget_are_presented_in_page_reading_order(self):
+        self.version.page_count = 3
+        self.version.save(update_fields=['page_count'])
+        p2 = {**self.hit, 'chunk_id': 'chunk-p2', 'text': 'Nội dung trang 2 về ALU.',
+              'source': {**self.hit['source'], 'page_number': 2}}
+        p1 = {**self.hit, 'chunk_id': 'chunk-p1', 'text': 'Nội dung trang 1 về CPU.',
+              'source': {**self.hit['source'], 'page_number': 1}}
+        p3 = {**self.hit, 'chunk_id': 'chunk-p3', 'text': 'Nội dung trang 3 về thanh ghi.',
+              'source': {**self.hit['source'], 'page_number': 3}}
+        self.retrieval.return_value = [p2, p1, p3]
+        result = self.call()
+        sent = self.runtime.generate.call_args.kwargs['contexts']
+        self.assertEqual([c['page_number'] for c in sent], [1, 2, 3])
+        self.assertEqual([c['source_id'] for c in sent], ['S1', 'S2', 'S3'])
+        self.assertEqual(result['citations'][0]['page_number'], 1)
+        self.assertEqual(result['citations'][0]['excerpt'], p1['text'])
+
+        # Oversized context sets keep retrieval rank order so token budgeting does not drop top hits.
+        large_p2 = {**p2, 'text': 'A' * 1600}
+        large_p1 = {**p1, 'text': 'B' * 1600}
+        self.retrieval.return_value = [large_p2, large_p1]
+        self.call()
+        sent_large = self.runtime.generate.call_args.kwargs['contexts']
+        self.assertEqual([c['page_number'] for c in sent_large], [2, 1])

@@ -1,0 +1,20 @@
+category,metric,numerator,denominator,value,status,scope
+guardrails,cases_passed,36,36,1,PASS,Configured tuned_rag post-patch; mixed live API and injected boundary checks
+tests,backend_passed,1055,1060,1055,PASS_WITH_5_SKIPS,Total 1060; do not count skipped as passed
+tests,legacy_documents_passed,27,27,27,PASS,Separate test settings and database
+tests,comparison_tools_passed,28,28,28,PASS,Preflight/runner tools; does not establish GPU comparison
+tests,frontend_passed,413,413,413,PASS,61 files; jsdom (frontend bytes unchanged since run)
+access,unauthorized_disclosures,0,17,0,PASS_WITHIN_MATRIX,Selected synthetic denial cases
+citation,technical_validity,13,13,1,PASS,One counted reference object per primary response; parent setup excluded
+citation,chat_claim_accuracy,17,17,1,PASS,"Chat QA only (4 answerable cases, 17 claims); assistant review pending member sign-off"
+citation,chat_claim_coverage,17,17,1,PASS,"Chat QA only (4 answerable cases, 17 expected claims); assistant review pending member sign-off"
+qa,answer_rate,4,4,1,MEASURED,GR-01 GR-02 GR-18 GR-31
+qa,refusal_rate_on_answerable,0,4,0,MEASURED,All 4 answerable QA cases returned ANSWERED
+qa,correct_insufficient,2,2,1,PASS,GR-03 GR-11
+summary,content_supported,17,17,1,MEASURED,Content review against input range; not per-claim citation accuracy
+summary,per_claim_citation_accuracy,,,,NOT_MEASURED,Input-range citations lack explicit claim links
+summary,per_claim_citation_coverage,,,,NOT_MEASURED,No invented reviewer-generated citation links
+comparison,base_tuned_fixed_context_review,28,28,28,VERIFIED_RECEIVED_RUN,14 requests per arm covering 13 distinct GR IDs; not 36-case end-to-end acceptance
+email,smtp_real,,,,VERIFIED_CONTROLLED_RUN,Real Gmail SMTP; recipient received and confirmed email in isolated test DB on 2026-11-28; running backend console config unchanged
+ui,revoke_then_reopen_citation,,,,NOT_RUN,Ayo citation reopening still pending; separate PDF reopening after publication revocation verified through UI
+ui,revoke_then_reopen_pdf,,,,VERIFIED_CONTROLLED_RUN,"Student opened PDF, teacher revoked publication, same PDF reopening denied; isolated test DB; figures/material-*.jpg"

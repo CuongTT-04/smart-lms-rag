@@ -2,6 +2,7 @@
 import math
 import re
 from time import monotonic
+from django.core.exceptions import PermissionDenied
 from apps.documents.exceptions import DocumentError
 from apps.documents.retrieval_scope import resolve_scope
 from apps.documents.retrieval_adapter import assert_scope_and_citations_live
@@ -78,6 +79,29 @@ def validate_final_scope(user, data, scope, exercise, citations):
     assert_scope_and_citations_live(user, scope, citations=citations)
 
 
+def _order_contexts_for_reading(hits, *, max_chars=3000):
+    """Order small same-document hit sets by page so cross-page context stays natural.
+
+    Large hit sets retain retrieval rank order so token budgeting keeps top hits.
+    """
+    if len(hits) <= 1 or sum(len(hit.get('text') or '') for hit in hits) > max_chars:
+        return hits
+    groups = {}
+    for index, hit in enumerate(hits):
+        source = hit.get('source') or {}
+        key = (source.get('document_id'), source.get('version_id'))
+        groups.setdefault(key, []).append((index, hit))
+    ordered = []
+    for entries in groups.values():
+        entries.sort(key=lambda item: (
+            (item[1].get('source') or {}).get('page_number') is None,
+            (item[1].get('source') or {}).get('page_number') or 0,
+            item[0],
+        ))
+        ordered.extend(hit for _, hit in entries)
+    return ordered
+
+
 def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=None):
     if data['mode'] == 'summary':
         from .summary import answer_summary
@@ -101,6 +125,7 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
             data.get('document_ids'),data['mode'])
     if scope.document_ids and len(scope.allowed_version_ids) != len(scope.document_ids):
         raise DocumentError('NOT_FOUND', 'Học liệu không khả dụng hoặc bạn không có quyền truy cập.', 404)
+    recovered_event = None
     contexts=[]
     memory=None
     final_scope_checked=False
@@ -123,6 +148,7 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
             if exc.status==503:
                 raise DocumentError('RETRIEVAL_UNAVAILABLE','Không thể truy xuất học liệu lúc này.',503) from exc
             raise
+        hits=_order_contexts_for_reading(hits)
         contexts=[{'source_id':f'S{i}', 'chunk_id':hit['chunk_id'],'text':hit['text'],
             **{key:value for key,value in hit['source'].items() if key!='course_id'}} for i,hit in enumerate(hits,1)]
     if contexts:
@@ -131,9 +157,12 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
             raise DocumentError('SCOPE_CHANGED', 'Nội dung bài tập đã thay đổi. Vui lòng tải lại.', 409)
         assert_scope_and_citations_live(user, scope, citations=contexts)
         try:
+            use_structured_qa=history is None and data['mode']=='qa' and exercise is None
             arguments=dict(question=data['question'], mode=data['mode'], contexts=contexts, exercise=exercise, config=runtime.config)
             if history is not None:
                 arguments['history']=history
+            elif use_structured_qa:
+                arguments['history']=[]
             if tutoring is not None:
                 arguments['tutoring']=tutoring
             from .operations import generation_slot
@@ -150,6 +179,11 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
                     memory=output.pop('_memory',None)
                     if not isinstance(memory,dict) or memory.get('protocol')!='chat_history_v1':
                         raise DocumentError('GENERATION_CONFIG_MISMATCH','Gateway chưa hỗ trợ context nhiều lượt. Cần đồng bộ cell mới.',503)
+                elif use_structured_qa and isinstance(output, dict) and '_memory' in output:
+                    output=dict(output)
+                    memory_ack=output.pop('_memory',None)
+                    if not isinstance(memory_ack,dict) or memory_ack.get('protocol')!='chat_history_v1':
+                        raise DocumentError('GENERATION_CONFIG_MISMATCH','Gateway chưa hỗ trợ context nhiều lượt. Cần đồng bộ cell mới.',503)
                 status,answer,citations=validate_generated_answer(output,contexts,data['mode'])
                 validate_final_scope(user,data,scope,exercise,citations)
                 final_scope_checked=True
@@ -158,6 +192,7 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
             if exc.code == 'GENERATION_INCOMPLETE_ANSWER' and data['mode'] == 'qa':
                 output = extract_procedure_answer(data['question'], contexts)
             if output is not None:
+                recovered_event = generate.event
                 if history is not None:
                     memory = dict(protocol='chat_history_v1', turns_used=0, turns_dropped=len(history), history_tokens=0)
                 status,answer,citations=validate_generated_answer(output,contexts,data['mode'])
@@ -168,8 +203,10 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
                 if exc.code in {'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'GENERATION_TIMEOUT',
                         'OUT_OF_MEMORY', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH',
                         'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT',
-                        'NOT_FOUND', 'SCOPE_CHANGED', 'AI_NOT_ALLOWED'}: raise
+                        'AUTH_REQUIRED', 'NOT_FOUND', 'SCOPE_CHANGED', 'AI_NOT_ALLOWED'}: raise
                 raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
+        except PermissionDenied:
+            raise
         except Exception as exc:
             raise DocumentError('GENERATION_UNAVAILABLE','Mô hình AI chưa sẵn sàng. Vui lòng thử lại.',503) from exc
     else:
@@ -188,4 +225,9 @@ def answer_chat(*, user, data, request_id, runtime=None, history=None, tutoring=
         from .followups import suggested_questions
         result['suggested_questions'] = suggested_questions(data['question'], citations,
             mode=data['mode'], status=status, history=history)
+    if recovered_event is not None:
+        from django.utils import timezone
+        from .models import GenerationEvent
+        GenerationEvent.objects.filter(pk=recovered_event.pk, status='FAILED',
+            code='GENERATION_INCOMPLETE_ANSWER').update(recovered_at=timezone.now())
     return result

@@ -20,7 +20,7 @@ SAFE_CODES = frozenset({'AI_QUOTA_EXCEEDED', 'AI_QUEUE_FULL', 'AI_QUEUE_TIMEOUT'
     'GENERATION_TIMEOUT', 'GENERATION_UNAVAILABLE', 'GENERATION_BUSY', 'GENERATION_CONFIG_MISMATCH',
     'INVALID_GENERATION', 'OUTPUT_LIMIT_REACHED', 'INCOMPLETE_GENERATION', 'OUT_OF_MEMORY',
     'SUMMARY_GENERATION_FAILED', 'SUMMARY_SOURCE_INCOMPLETE', 'SCOPE_CHANGED', 'NOT_FOUND',
-    'AI_NOT_ALLOWED', 'INVALID_REQUEST'}) | VALIDATION_ERROR_CODES
+    'AI_NOT_ALLOWED', 'AUTH_REQUIRED', 'TEACHER_NOT_APPROVED', 'INVALID_REQUEST'}) | VALIDATION_ERROR_CODES
 
 
 def limits():
@@ -123,6 +123,7 @@ def generation_slot(user, mode):
                 if math.isfinite(elapsed):
                     GenerationEvent.objects.filter(pk=event.pk).update(duration_ms=max(0, elapsed))
 
+        call.event = event
         yield call
     except BaseException as exc:
         code = getattr(exc, 'code', '')
@@ -172,6 +173,6 @@ def operations_snapshot():
                    waiting=GenerationEvent.objects.filter(status='QUEUED').count()),
         outcomes={row['status']: row['total'] for row in events.values('status').annotate(total=Count('id'))},
         errors={row['code']: row['total'] for row in events.exclude(code='').values('code').annotate(total=Count('id'))},
-        generation=events.aggregate(gateway_calls=Sum('gateway_calls'), mean_generation_ms=Avg('duration_ms'),
+        generation=events.aggregate(recovered_calls=Count('recovered_at'), gateway_calls=Sum('gateway_calls'), mean_generation_ms=Avg('duration_ms'),
                                     input_tokens=Sum('input_tokens'), output_tokens=Sum('output_tokens')),
         gateway=gateway_health())

@@ -582,7 +582,7 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .custom-select-trigger:disabled { cursor: not-allowed; opacity: .6; }
 .custom-select-popup { position: fixed; z-index: 2000; overflow-y: auto; overscroll-behavior: contain; padding: 5px; border: 1px solid #d5e2d9; border-radius: 7px; background: #fff; box-shadow: 0 8px 28px #173b2e24; }
 .custom-select-popup ul { margin: 0; padding: 0; list-style: none; }
-.custom-select-popup [role=option] { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 10px 12px; border-radius: 4px; color: #315443; font-family: 'Be Vietnam Pro', sans-serif; font-size: 16px; line-height: 1.6; cursor: pointer; }
+.custom-select-popup [role=option] { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 10px 12px; border-radius: 4px; color: #315443; font-family: 'Be Vietnam Pro', sans-serif; font-size: inherit; line-height: 1.6; cursor: pointer; }
 .custom-select-popup [role=option] > span { min-width: 0; overflow-wrap: anywhere; }
 .custom-select-popup [role=option] svg { flex-shrink: 0; }
 .custom-select-popup [role=option][aria-selected=true] { background: #e8f3ec; color: #245b3e; font-weight: 600; }
@@ -879,3 +879,13 @@ h1 { font-size: 32px; font-weight: 600; line-height: 1.4; margin: 18px 0 15px; }
 .warning-banner, .info-banner { display:flex; align-items:center; gap:10px; padding:13px; border:1px solid #d2e1da; border-radius:6px; font-size:14px; line-height:1.8; overflow-wrap:anywhere; }
 .warning-banner { color:#8b512b; border-color:#efcfaf; background:#fff4e8; }
 .info-banner { color:#4e6e60; background:#f0f5f2; }
+
+.custom-select-popup { animation:select-appear 150ms ease-out; }
+.custom-select-popup [role=option] { transition:background-color 120ms ease, transform 120ms ease; }
+.custom-select-popup [role=option]:hover:not([aria-disabled=true]) { transform:scale(.985); }
+@keyframes select-appear { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+@media(prefers-reduced-motion:reduce) { .custom-select-popup { animation:none; }.custom-select-popup [role=option] { transition:none; }.custom-select-popup [role=option]:hover { transform:none; } }
+
+.custom-select-popup.is-closing { pointer-events:none; animation:select-disappear 150ms ease-in forwards; }
+@keyframes select-disappear { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(.96); } }
+@media(prefers-reduced-motion:reduce) { .custom-select-popup.is-closing { animation:none; opacity:0; } }

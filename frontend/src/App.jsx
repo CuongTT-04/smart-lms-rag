@@ -68,7 +68,7 @@ export default function App() {
 
   useEffect(() => {
     document.title = publicPage
-      ? `OHAYO | ${{ '/register': 'Đăng ký', '/forgot-password': 'Quên mật khẩu', '/reset-password': 'Đặt mật khẩu mới' }[path]}`
+      ? `OHAYO | ${{ '/register': 'Đăng ký', '/forgot-password': 'Quên mật khẩu', '/reset-password': 'Đặt mật khẩu mới', '/verify-email': 'Xác minh email' }[path]}`
       : session.user?.role === 'TEACHER'
       ? 'OHAYO | Không gian giảng dạy'
       : session.user?.role === 'STUDENT'
