@@ -50,6 +50,8 @@ class ChatView(APIView):
             if exc.status==404: message='Tài nguyên không khả dụng hoặc bạn không có quyền truy cập.'
             elif exc.status==409: message='Học liệu hoặc quyền truy cập đã thay đổi. Vui lòng tải lại.'
             elif exc.status==400: message='Yêu cầu không hợp lệ. Vui lòng kiểm tra dữ liệu.'
+            elif code in {'RETRIEVAL_UNAVAILABLE', 'GENERATION_UNAVAILABLE'}:
+                message='Dịch vụ AI hoặc chỉ mục học liệu chưa sẵn sàng. Vui lòng thử lại sau.'
             else: message=exc.message
             return Response({'request_id':request_id,'code':code,'message':message},status=exc.status)
         response=super().handle_exception(exc)

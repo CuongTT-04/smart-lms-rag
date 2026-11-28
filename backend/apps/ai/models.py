@@ -19,6 +19,7 @@ class GenerationEvent(models.Model):
     input_tokens = models.PositiveIntegerField(null=True)
     output_tokens = models.PositiveIntegerField(null=True)
     duration_ms = models.FloatField(null=True)
+    recovered_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     finished_at = models.DateTimeField(null=True)
