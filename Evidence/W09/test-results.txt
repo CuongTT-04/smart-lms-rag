@@ -1,4 +1,4 @@
-W09 verification — 2026-11-28 — READY_FOR_REVIEW
+W09 automated verification — 2026-11-28 — READY_FOR_REVIEW
 
 Final backend regression (post-patch): 1060 total, 1055 PASS, 5 SKIP, 0 failure/error; 176.424s runner including DB setup/teardown.
 Legacy documents settings (post-patch): 27 PASS; 7.044s.
@@ -15,7 +15,7 @@ Isolated live matrix (live-post-patch): 36 PASS / 36 (0 FAIL) in 205.714s.
   GR-31: 200 ANSWERED, [1] -> page 1 (CPU), [2] -> page 2 (ALU) (9/9 claims supported).
   Chat QA totals: accuracy 17/17 = 100%, coverage 17/17 = 100%, answerable 4/4, unanswerable 2/2.
 Historical pre-patch live baseline (live-final): 34 PASS / 36 (GR-01 FAIL, GR-31 FAIL; 8/14 = 57.14% accuracy, 8/17 = 47.06% coverage) — retained privately for audit trail.
-Selections and exact private artifact hashes: logs/checks.json.
+Selections and exact private artifact hashes are archived locally at .private/w9-evidence-review-20261128/logs/checks.json.
 
 Reproduce from repository root (PowerShell, Docker backend running):
   docker compose exec -T backend mkdir -p /app/scripts /app/data/qa
@@ -46,4 +46,13 @@ tests.ai.test_tutoring.TutoringTests.test_state_grammar_is_supported_by_actual_l
 
 UI observed through browser on 2026-11-28: overview, teacher approval (existing LEGACY teacher), institutions (7), operations (ready, two replicas); no console errors. No live account approval/revocation or real SMTP performed.
 Primary summaries: input-range citations only, per-claim citation metrics NOT_MEASURED (17/17 content supported).
-Paired Base/tuned run received (2026-11-26) and independently verified (2026-11-28): 14 requests/arm, 13 distinct GR IDs. Each arm: 12 HTTP200 + 2 intentional policy400, no unexpected HTTP errors. Qualitative review 14/14 each. See logs/paired-intake.json.
+Paired Base/tuned run received (2026-11-26) and independently verified (2026-11-28): 14 requests/arm, 13 distinct GR IDs. Each arm: 12 HTTP200 + 2 intentional policy400, no unexpected HTTP errors. Qualitative review 14/14 each. See the local private archive .private/w9-evidence-review-20261128/logs/paired-intake.json.
+
+Additional UI/email evidence on 2026-11-28 (after the automated run above):
+- Separate PostgreSQL DB w9_demo_evidence_20261128, synthetic accounts/PDF; existing LMS records unchanged.
+- Student opened the published PDF; teacher revoked its publication through UI; student reopened the same material and was denied. Screenshots: figures/material-authorized.jpg, material-publication-revoked.jpg, material-access-denied.jpg.
+- This confirms the PDF reopening path only. Reopening an Ayo citation after revocation is still pending.
+- Real Gmail SMTP sent the OHAYO verification email to the requested PTIT mailbox. Recipient supplied screenshots of the received mail, confirmation page and successful verification. SMTP was overridden for this controlled run; the running backend still uses console email configuration.
+- Separate synthetic-account UI check rejected reuse of an already consumed verification link.
+- These additions do not rerun or change the backend/frontend test counts above.
+- Logs and report.md are retained outside the submission package in .private/w9-evidence-review-20261128/.

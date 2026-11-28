@@ -1,9 +1,19 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "week": "W09",
   "updated_at": "2026-11-28",
   "status": "READY_FOR_REVIEW",
   "milestone": "Guardrails, quyền truy cập tài liệu, chống lộ nội dung/citation sai",
+  "serving_arm": "tuned_rag",
+  "gateway_normalization": "Gateway source hash uses LF; working-tree file hash may differ on Windows.",
+  "review_type": "ASSISTANT_CONTENT_REVIEW_PENDING_MEMBER_SIGN_OFF",
+  "layout": [
+    "README.md",
+    "metrics.csv",
+    "test-results.txt",
+    "manifest.json",
+    "figures/"
+  ],
   "source_checkpoint": {
     "git_head": "f04c7df781b0a62be00a42230ab520f4a948a1bb",
     "branch": "TranTuanCuong_B22DCVT073_W9Tasks",
@@ -122,76 +132,249 @@
         "sha256": "54ccb334e402c5d1e47cfa8f1a96c5f7a8e7e79dc6050cf26e0861d7b31ee8b9",
         "size_bytes": 25498
       }
-    }
+    },
+    "description": "Historical code checkpoint used by automated verification; retained unchanged. See packaging_checkpoint for this documentation update."
   },
-  "serving_arm": "tuned_rag",
-  "gateway_normalization": "Gateway source hash uses LF; working-tree file hash may differ on Windows.",
+  "packaging_checkpoint": {
+    "git_head": "4c9bc49bdfaaedbcca0168821481fea5e95a6ada",
+    "branch": "TranTuanCuong_B22DCVT073_W9Tasks",
+    "report_url": "https://docs.google.com/document/d/1IdbA9T8Y5_o9T7AMJmaGvnJ817NEuZlg/edit",
+    "report_sha256": "09e9d026b237a185b9cb0a4d826622623f7046a699e9b2dd1fdd6af4e182aa3a",
+    "source_images": [
+      {
+        "path": "figures/guardrails-base-tuned-results.png",
+        "report_image_order": 3,
+        "report_part": "/word/media/image4.png",
+        "sha256": "1a061565ebd018402ecab83801f71aaebdcc4a508166b418595bada35a03ce84"
+      },
+      {
+        "path": "figures/guardrails-base-tuned-latency.png",
+        "report_image_order": 4,
+        "report_part": "/word/media/image2.png",
+        "sha256": "cbeb9f0cb253f95bac94f54f2966c18bd73c8264431092ff96096ab5295655e4"
+      },
+      {
+        "path": "figures/admin-overview.jpg",
+        "report_image_order": 5,
+        "report_part": "/word/media/image7.jpg",
+        "sha256": "c8699457f6b56a24535da0ee9ba2289678ae48658ecfef5f4e1e0de82db10467"
+      },
+      {
+        "path": "figures/admin-accounts.jpg",
+        "report_image_order": 6,
+        "report_part": "/word/media/image12.jpg",
+        "sha256": "9d87a905cc5bff5a2fd6fb65d7466b62d497e3ae6ed910319f6874839c1f7f41"
+      },
+      {
+        "path": "figures/admin-create-account.png",
+        "report_image_order": 7,
+        "report_part": "/word/media/image6.png",
+        "sha256": "be90ea6563a8ca1bdd0d32c35c608f909d8ba6ea678db4873ae4e1d564f06800"
+      },
+      {
+        "path": "figures/admin-teacher-approval.jpg",
+        "report_image_order": 8,
+        "report_part": "/word/media/image9.jpg",
+        "sha256": "275e03baaa6a3c320755860a17fc4f93781ff173fdc4189226e986011144be1a"
+      },
+      {
+        "path": "figures/admin-account-details.png",
+        "report_image_order": 9,
+        "report_part": "/word/media/image13.png",
+        "sha256": "cbd9f503a718101d8b6c9feb6a9738efe47d52de60c9c2d7ed34147654e50c53"
+      },
+      {
+        "path": "figures/admin-institutions.jpg",
+        "report_image_order": 10,
+        "report_part": "/word/media/image8.jpg",
+        "sha256": "0eb7dfbc7ec61cb9c3d0b85a0e5fa8c74983abd869c49c58208087b9d473213f"
+      },
+      {
+        "path": "figures/admin-create-institution.png",
+        "report_image_order": 11,
+        "report_part": "/word/media/image11.png",
+        "sha256": "904c46cb42903364e5bf7233c6d225216c8bc1eb664434ba13a44dec8120cae0"
+      },
+      {
+        "path": "figures/admin-import-institutions.png",
+        "report_image_order": 12,
+        "report_part": "/word/media/image10.png",
+        "sha256": "769a26997a626180928ea9ecb0a449c640f7a596c2fdf082ee3c24c5d9e3b9a7"
+      },
+      {
+        "path": "figures/admin-operations.jpg",
+        "report_image_order": 13,
+        "report_part": "/word/media/image5.jpg",
+        "sha256": "7584e60b1ad04eaea445333a86290eff22f336ea935a1fc528157605bb069ee0"
+      },
+      {
+        "path": "figures/material-authorized.jpg",
+        "report_image_order": 14,
+        "report_part": "/word/media/image14.jpg",
+        "sha256": "0afb48f9b7df2887f24a90acbd70a3fa53132e8d18d40a01fd4e79b8c82da3c1"
+      },
+      {
+        "path": "figures/material-publication-revoked.jpg",
+        "report_image_order": 15,
+        "report_part": "/word/media/image15.jpg",
+        "sha256": "86def18d064be0812360d41df37e9d57bd71b9414b88ca305714511d154211ad"
+      },
+      {
+        "path": "figures/material-access-denied.jpg",
+        "report_image_order": 16,
+        "report_part": "/word/media/image16.jpg",
+        "sha256": "d45d44332bda307cc74493979449f128f8de96df1bca08c20d96433cc84488c0"
+      },
+      {
+        "path": "figures/email-received.png",
+        "report_image_order": 17,
+        "report_part": "/word/media/image19.png",
+        "sha256": "0f1cebb5da73220051f780860cf4148f6c1a7e3f749d16d073ab9e75e9e49645"
+      },
+      {
+        "path": "figures/email-confirmation.png",
+        "report_image_order": 18,
+        "report_part": "/word/media/image20.png",
+        "sha256": "7ea37efaf02787220fc3ad3c95111b2fd191e50e33ba425d135d2a33bc948859"
+      },
+      {
+        "path": "figures/email-verified.png",
+        "report_image_order": 19,
+        "report_part": "/word/media/image21.png",
+        "sha256": "f07df9b87bc9b3de6b090cd6573737ea632da37d3447ba5be8f115c0bdeb4bf6"
+      },
+      {
+        "path": "figures/email-link-reused-denied.jpg",
+        "report_image_order": 20,
+        "report_part": "/word/media/image18.jpg",
+        "sha256": "2aa8b5ee5070c8846f9933fbf402eec6b6cc26c1a168eea6ab9f81ec368dbe3b"
+      }
+    ],
+    "excluded_report_images": [
+      {
+        "order": 1,
+        "reason": "Cover logo; not a UI screenshot or chart"
+      },
+      {
+        "order": 2,
+        "reason": "Terminal/code screenshot excluded as requested"
+      }
+    ],
+    "report_reference_update": "Evidence references aligned with submission layout; screenshots unchanged."
+  },
+  "private_archive": {
+    "path": ".private/w9-evidence-review-20261128/",
+    "contents": [
+      "logs/",
+      "report.md",
+      "README.md",
+      "manifest.json",
+      "metrics.csv",
+      "test-results.txt",
+      "figures-before-restructure/"
+    ],
+    "submission_files": false
+  },
+  "additional_evidence": {
+    "pdf_reopening_after_revocation": "VERIFIED_CONTROLLED_RUN",
+    "email_smtp_received_and_verified": "VERIFIED_CONTROLLED_RUN",
+    "environment": "Isolated test database and SMTP settings; running backend console configuration unchanged",
+    "email_link_reuse": "DENIED_IN_SEPARATE_SYNTHETIC_ACCOUNT_UI_CHECK"
+  },
   "limitations": [
-    "Assistant content review pending explicit member sign-off",
-    "Summary per-claim citation metrics not measured (input-range citations only; 17/17 content supported)",
-    "Base/tuned fixed-context run verified separately; not full 36-case E2E comparison",
-    "Real SMTP and fresh UI revoke/reopen demonstration not run",
+    "Automated content review pending explicit member sign-off",
+    "Summary per-claim citation metrics not measured; 17/17 content supported within input range",
+    "Base/tuned fixed-context run is separate from the 36-case mixed-execution matrix",
+    "Ayo citation reopening after revocation on UI still pending; PDF reopening verified separately",
+    "Real SMTP verified in isolated run; running backend still uses console configuration",
     "Five optional parser tests skipped in backend container"
   ],
-  "review_type": "ASSISTANT_CONTENT_REVIEW_PENDING_MEMBER_SIGN_OFF",
-  "layout": [
-    "README.md",
-    "metrics.csv",
-    "test-results.txt",
-    "manifest.json",
-    "figures/",
-    "logs/",
-    "report.md"
-  ],
   "files": {
-    "figures/admin-institutions.png": {
-      "sha256": "4bb36bb049ff92a89fd6b3d3a6b7233f6008838470e82c253eacb0d85797acab",
-      "size_bytes": 66185
+    "figures/admin-account-details.png": {
+      "sha256": "cbd9f503a718101d8b6c9feb6a9738efe47d52de60c9c2d7ed34147654e50c53",
+      "size_bytes": 98977
     },
-    "figures/admin-operations.png": {
-      "sha256": "f7c4c1a95f70eeb015e19e6c0fa2f4dc0ed5a9e46f316efccaa130d7e902f181",
-      "size_bytes": 45910
+    "figures/admin-accounts.jpg": {
+      "sha256": "9d87a905cc5bff5a2fd6fb65d7466b62d497e3ae6ed910319f6874839c1f7f41",
+      "size_bytes": 58255
     },
-    "figures/admin-overview.png": {
-      "sha256": "ad056ef5d74ab8d32ea7235b052c93dd0184a0c3163ab6f8b386f2281c940564",
-      "size_bytes": 49353
+    "figures/admin-create-account.png": {
+      "sha256": "be90ea6563a8ca1bdd0d32c35c608f909d8ba6ea678db4873ae4e1d564f06800",
+      "size_bytes": 58270
     },
-    "figures/guardrails-results.svg": {
-      "sha256": "7957877f0fe6043f1234593e6f0dceb96f9af2a7a1b1de489de6d99bc4ebfe9c",
-      "size_bytes": 685
+    "figures/admin-create-institution.png": {
+      "sha256": "904c46cb42903364e5bf7233c6d225216c8bc1eb664434ba13a44dec8120cae0",
+      "size_bytes": 85416
     },
-    "logs/checks.json": {
-      "sha256": "bb746f27244cb4cb9cafc3ccaae004aca91762ba2bf2e74ef40db26fbf4cac80",
-      "size_bytes": 226118
+    "figures/admin-import-institutions.png": {
+      "sha256": "769a26997a626180928ea9ecb0a449c640f7a596c2fdf082ee3c24c5d9e3b9a7",
+      "size_bytes": 101247
     },
-    "logs/citation-review.csv": {
-      "sha256": "3e581ece2dd4556e95777c3047f26bec580ef5ab3785696e37c1fac3dfc794d4",
-      "size_bytes": 4382
+    "figures/admin-institutions.jpg": {
+      "sha256": "0eb7dfbc7ec61cb9c3d0b85a0e5fa8c74983abd869c49c58208087b9d473213f",
+      "size_bytes": 62635
     },
-    "logs/paired-intake.json": {
-      "sha256": "1efa8597098ffc833b019763a07c3a5af5af6e76d2b0c5cd8e91306e8a62ee07",
-      "size_bytes": 3450
+    "figures/admin-operations.jpg": {
+      "sha256": "7584e60b1ad04eaea445333a86290eff22f336ea935a1fc528157605bb069ee0",
+      "size_bytes": 48701
     },
-    "logs/safe-merge.json": {
-      "sha256": "ade9b5c8e2793c450ee397f91e19e04dde537ad3cecff34d01d079dac69f9d42",
-      "size_bytes": 4925
+    "figures/admin-overview.jpg": {
+      "sha256": "c8699457f6b56a24535da0ee9ba2289678ae48658ecfef5f4e1e0de82db10467",
+      "size_bytes": 51165
+    },
+    "figures/admin-teacher-approval.jpg": {
+      "sha256": "275e03baaa6a3c320755860a17fc4f93781ff173fdc4189226e986011144be1a",
+      "size_bytes": 53869
+    },
+    "figures/email-confirmation.png": {
+      "sha256": "7ea37efaf02787220fc3ad3c95111b2fd191e50e33ba425d135d2a33bc948859",
+      "size_bytes": 1321368
+    },
+    "figures/email-link-reused-denied.jpg": {
+      "sha256": "2aa8b5ee5070c8846f9933fbf402eec6b6cc26c1a168eea6ab9f81ec368dbe3b",
+      "size_bytes": 94230
+    },
+    "figures/email-received.png": {
+      "sha256": "0f1cebb5da73220051f780860cf4148f6c1a7e3f749d16d073ab9e75e9e49645",
+      "size_bytes": 57434
+    },
+    "figures/email-verified.png": {
+      "sha256": "f07df9b87bc9b3de6b090cd6573737ea632da37d3447ba5be8f115c0bdeb4bf6",
+      "size_bytes": 1327001
+    },
+    "figures/guardrails-base-tuned-latency.png": {
+      "sha256": "cbeb9f0cb253f95bac94f54f2966c18bd73c8264431092ff96096ab5295655e4",
+      "size_bytes": 65755
+    },
+    "figures/guardrails-base-tuned-results.png": {
+      "sha256": "1a061565ebd018402ecab83801f71aaebdcc4a508166b418595bada35a03ce84",
+      "size_bytes": 86308
+    },
+    "figures/material-access-denied.jpg": {
+      "sha256": "d45d44332bda307cc74493979449f128f8de96df1bca08c20d96433cc84488c0",
+      "size_bytes": 47084
+    },
+    "figures/material-authorized.jpg": {
+      "sha256": "0afb48f9b7df2887f24a90acbd70a3fa53132e8d18d40a01fd4e79b8c82da3c1",
+      "size_bytes": 49306
+    },
+    "figures/material-publication-revoked.jpg": {
+      "sha256": "86def18d064be0812360d41df37e9d57bd71b9414b88ca305714511d154211ad",
+      "size_bytes": 78909
     },
     "metrics.csv": {
-      "sha256": "710a2bed622ba6c30971d28bcd95924cc52d72306c95030da45b50950c15bbbd",
-      "size_bytes": 2071
+      "sha256": "6d68b03a6c40c59cff97aabf2f628b1b43fa08c70b575f6971b1bb28256143e0",
+      "size_bytes": 2172
     },
     "README.md": {
-      "sha256": "e1237db211a49f9ffdb66d4e63c78621bae601b2437c201bfe0dd1fd575c698a",
-      "size_bytes": 11623
-    },
-    "report.md": {
-      "sha256": "7a9a00cc5d9ba1472ea9b11a90536419d5135d20c664747a9c8a2413ccdba21d",
-      "size_bytes": 3970
+      "sha256": "9a8262f74cc768c4b44eb4acff5f16f066b9b3b3a85d103436e86ba81ba683d8",
+      "size_bytes": 7627
     },
     "test-results.txt": {
-      "sha256": "9ed320570b80d1a634a8d495e2a364ca0999779eb7af2f957f711011524a4888",
-      "size_bytes": 3877
+      "sha256": "0980c3358e9d95ccec2c8bb26a38a84451d0ef88e2b308be9f3c94262432d22b",
+      "size_bytes": 5111
     }
   },
-  "self_hash": "Excluded to avoid recursive checksum; private evidence-receipt.json binds manifest bytes."
+  "manifest_hashes_itself": false,
+  "checksum_byte_basis": "Exact on-disk bytes; Evidence/W09/** uses -text"
 }
