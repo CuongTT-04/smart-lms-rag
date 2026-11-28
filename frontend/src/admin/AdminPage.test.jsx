@@ -19,6 +19,23 @@ function mount(capabilities) {
   adminRequest.mockImplementation(async path => path === 'capabilities/' ? { user_id: user.id, capabilities } : { results: [], count: 0 })
   return render(<NavigationProvider owner={user.id}><AdminPage user={user} onLogout={vi.fn()} /></NavigationProvider>)
 }
+it('contains keyboard focus in mobile navigation and closes it with Escape', async () => {
+  vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue([{ width: 100, height: 44 }])
+  const { container } = mount({ accounts: true })
+  await screen.findByRole('button', { name: 'Tài khoản', exact: true })
+  const opener = screen.getByRole('button', { name: 'Mở điều hướng' })
+  await userEvent.click(opener)
+  expect(opener).toHaveAttribute('aria-expanded', 'true')
+  expect(container.querySelector('.adm-main').inert).toBe(true)
+  const logout = screen.getByRole('button', { name: 'Đăng xuất', exact: true })
+  logout.focus()
+  await userEvent.keyboard('{Tab}')
+  expect(screen.getByRole('link', { name: /OHAYO/ })).toHaveFocus()
+  await userEvent.keyboard('{Escape}')
+  expect(opener).toHaveAttribute('aria-expanded', 'false')
+  expect(opener).toHaveFocus()
+  expect(container.querySelector('.adm-main').inert).toBe(false)
+})
 it('shows only permitted navigation and keeps the personal profile available', async () => {
   mount({ accounts: true })
   expect(await screen.findByRole('button', { name: 'Tài khoản', exact: true })).toBeVisible()

@@ -9,6 +9,7 @@ export default function CustomSelect({ children, value, onChange, disabled = fal
   const options = Children.toArray(children).filter(isValidElement).map((child) => ({ value: child.props.value, label: child.props.children, disabled: !!child.props.disabled }))
   const selected = options.findIndex((option) => option.value === value)
   const [open, setOpen] = useState(false)
+  const [visible, setVisible] = useState(false)
   const [active, setActive] = useState(0)
   const [position, setPosition] = useState({})
   const trigger = useRef(null)
@@ -16,20 +17,27 @@ export default function CustomSelect({ children, value, onChange, disabled = fal
   const typed = useRef({ text: '', time: 0 })
   const expanded = open && !disabled
 
+  useEffect(() => {
+    if (expanded) return
+    const timer = setTimeout(() => setVisible(false), 150)
+    return () => clearTimeout(timer)
+  }, [expanded])
+
   function measure() {
     const rect = trigger.current.getBoundingClientRect()
-    const width = Math.min(Math.max(rect.width, 180), window.innerWidth - 24)
+    const width = Math.min(rect.width, window.innerWidth - 24)
     const below = window.innerHeight - rect.bottom - 16
     const above = rect.top - 16
     const desired = Math.min(320, options.length * 44 + 12)
     const flip = below < desired && above > below
     const maxHeight = Math.max(44, Math.min(320, flip ? above : below))
-    setPosition({ width, left: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)), top: flip ? Math.max(12, rect.top - Math.min(desired, maxHeight) - 6) : rect.bottom + 6, maxHeight })
+    const fontSize = getComputedStyle(trigger.current).fontSize
+    setPosition({ fontSize, transformOrigin: flip ? 'bottom center' : 'top center', width, left: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)), top: flip ? Math.max(12, rect.top - Math.min(desired, maxHeight) - 6) : rect.bottom + 6, maxHeight })
   }
   function show(index = selected) {
     if (disabled) return
     const next = index >= 0 && !options[index]?.disabled ? index : options.findIndex((option) => !option.disabled)
-    setActive(next); measure(); setOpen(true); typed.current = { text: '', time: 0 }
+    setActive(next); measure(); setVisible(true); setOpen(true); typed.current = { text: '', time: 0 }
   }
   function choose(index) {
     const option = options[index]
@@ -82,12 +90,12 @@ export default function CustomSelect({ children, value, onChange, disabled = fal
       const text = (now - typed.current.time < 700 ? typed.current.text : '') + event.key.toLocaleLowerCase('vi')
       typed.current = { text, time: now }
       const index = options.findIndex((option) => !option.disabled && String(option.label).toLocaleLowerCase('vi').startsWith(text))
-      if (index >= 0) { if (!expanded) { measure(); setOpen(true) } setActive(index) }
+      if (index >= 0) { if (!expanded) { measure(); setVisible(true); setOpen(true) } setActive(index) }
     }
   }
   return <>
     <button ref={trigger} id={controlId} type="button" role="combobox" className="custom-select-trigger" aria-label={label} aria-expanded={expanded} aria-haspopup="listbox" aria-controls={expanded ? listId : undefined} aria-activedescendant={expanded && active >= 0 ? `${listId}-${active}` : undefined} disabled={disabled} onClick={() => expanded ? setOpen(false) : show()} onKeyDown={keyDown} onBlur={(event) => { if (!popup.current?.contains(event.relatedTarget)) setOpen(false) }}><span>{options[selected]?.label ?? 'Chọn một giá trị'}</span><ChevronDown size={17} aria-hidden="true" /></button>
     {name && <input type="hidden" name={name} value={value} disabled={disabled} />}
-    {expanded && createPortal(<div ref={popup} className="custom-select-popup" style={position}><ul id={listId} role="listbox" aria-label={label}>{options.map((option, index) => <li key={option.value} id={`${listId}-${index}`} role="option" aria-selected={option.value === value} aria-disabled={option.disabled || undefined} className={active === index ? 'is-active' : ''} onPointerMove={() => { if (!option.disabled) setActive(index) }} onMouseDown={(event) => event.preventDefault()} onClick={() => choose(index)}><span>{option.label}</span>{option.value === value && <Check size={17} aria-hidden="true" />}</li>)}</ul></div>, document.body)}
+    {(expanded || visible) && createPortal(<div ref={popup} aria-hidden={!expanded} inert={!expanded} className={`custom-select-popup${expanded ? '' : ' is-closing'}`} style={position}><ul id={listId} role="listbox" aria-label={label}>{options.map((option, index) => <li key={option.value} id={`${listId}-${index}`} role="option" aria-selected={option.value === value} aria-disabled={option.disabled || undefined} className={active === index ? 'is-active' : ''} onPointerMove={() => { if (!option.disabled) setActive(index) }} onMouseDown={(event) => event.preventDefault()} onClick={() => choose(index)}><span>{option.label}</span>{option.value === value && <Check size={17} aria-hidden="true" />}</li>)}</ul></div>, document.body)}
   </>
 }
